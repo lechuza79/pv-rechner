@@ -26,6 +26,30 @@ Use the existing session inventory and Git history before work. Send messages on
 user authorization. A written handoff is usable without a live conversation with the
 platform session. Never copy uncommitted files from a foreign worktree.
 
+## Keep the guide current: every contributing session owns its changes
+
+Documentation maintenance is part of delivery, not a separate follow-up for the platform
+session. Every widget session checks the current guide before its next work package and
+updates it in the same commit/PR when its work changes shared guidance:
+
+- Register new reusable components in the existing component registry, and new widgets
+  and capabilities in their existing registries. Add their purpose, intended use and
+  source reference to the relevant guide section so the next session can find them.
+- Update affected sizing/presentation rules, style and typography roles, control usage,
+  data/host/export contracts and examples when their implementation changes.
+- Correct renamed or removed components and outdated references. Explain replacements
+  and compatibility where existing consumers still need them.
+- Keep implementation values and the complete component inventory in their canonical
+  owners. This guide provides usage guidance and links, not a second copied registry.
+
+For a local change that leaves this guidance valid, record “Guide unchanged” with a
+short reason in the handoff. Do not create a documentation edit just to satisfy a box.
+The reviewer checks this maintenance statement alongside the integration evidence;
+missing documentation for a changed shared contract makes the contribution incomplete.
+The platform session coordinates shared changes but does not inherit documentation debt
+from contributors. Existing sessions must reread the guide before their next package;
+updates do not automatically refresh an old worktree or a session's loaded context.
+
 ## Start with a small change contract
 
 Record these points in the task/PR before editing; no separate specification is needed:
@@ -189,6 +213,7 @@ Change: widget / purpose / change class
 Reference: accepted URL or revision; preserved variants and interactions
 Ownership: branch + commit; shared files and affected consumers
 Integration: registry / renderer / data / hosts / compatible old entry points
+Guidance: updated guide/registry paths and sections, or unchanged with reason
 Checks: exact revision, commands or CI link; browser URLs + widths + interactions
 Exports: actual file checked; request/queue/delivery status if applicable
 Exceptions: unsupported capabilities with reason; remaining blockers (or none)
