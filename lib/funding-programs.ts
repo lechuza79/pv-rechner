@@ -16003,6 +16003,104 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["pv"],
   },
+  "elmshorn-klimaschutzfonds": {
+    id: "elmshorn-klimaschutzfonds", name: "Klimaschutzfonds Elmshorn",
+    traeger: "Stadt Elmshorn (Geschäftsstelle Klimaschutzfonds)", level: "kommune", region: "Elmshorn und elf Nachbargemeinden",
+    bundesland: "Schleswig-Holstein", agsCode: "01056015",
+    // ALL 12 MEMBERS as named in guideline no. 1 and 4 and on the programme
+    // page, each resolved with foerder:ags on 14.10.2026: Elmshorn 01056015,
+    // Altenmoor 01061004, Bokholt-Hanredder 01056008, Horst (Holstein)
+    // 01061044, Kiebitzreihe 01061050, Klein Nordende 01056029, Klein
+    // Offenseth-Sparrieshoop 01056030, Kölln-Reisiek 01056031, Raa-Besenbek
+    // 01056042, Seester 01056033, Seestermühe 01056045, Seeth-Ekholt 01056046.
+    // Four members lie in Kreis Steinburg (01061), so no county prefix fits.
+    // "Horst" is Horst (Holstein): the 29th accountability report lists it
+    // with the Amt Horst-Herzhorn (Kreis Steinburg).
+    agsCodes: [
+      "01056015", "01061004", "01056008", "01061044", "01061050", "01056029",
+      "01056030", "01056031", "01056042", "01056033", "01056045", "01056046",
+    ],
+    url: "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+    stand: "Oktober 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss je kWp für Photovoltaik-Anlagen und Pauschale für einen Stromspeicher (Mittel bis 2027 ausgeschöpft)",
+    maxFoerderung: "höchstens 50 % der Investitionskosten",
+    rates: [
+      { label: "PV-Anlage", value: "bis zu 100 € pauschal plus 100 € je kWp, gefördert werden höchstens die ersten 6 kWp je Standort (bis 700 €)" },
+      { label: "Stromspeicher (einer je Anlage)", value: "bis zu 500 € pauschal" },
+    ],
+    conditions: [
+      "Die Mittel der Antragsrunde ab 1. Oktober 2026 sind ausgeschöpft; die nächste Runde für Photovoltaik und Speicher beginnt 2027, der Termin steht noch nicht fest",
+      "Antrag vor Beginn: Material darf erst nach dem Bewilligungsbescheid geliefert und die Anlage erst danach installiert werden, außer die Geschäftsstelle stimmt einem vorzeitigen Beginn zu; den Auftrag darf man vorher erteilen",
+      "Antrag mit unterschriebenem Formular und verbindlichem Kostenangebot als PDF per E-Mail an die Geschäftsstelle oder per Post; Mieter brauchen die schriftliche Zustimmung des Eigentümers",
+      "Gefördert wird in Elmshorn, Altenmoor, Bokholt-Hanredder, Horst, Kiebitzreihe, Klein Nordende, Klein Offenseth-Sparrieshoop, Kölln-Reisiek, Raa-Besenbek, Seester, Seestermühe und Seeth-Ekholt, jeweils nur wenn die Gemeinde ihren Beitrag für das Jahr eingezahlt hat",
+      "Die Förderung beträgt höchstens 50 % der Investitionskosten; andere Förderungen können angerechnet werden",
+      "Stecker-Solargeräte bis 800 W Wechselrichterleistung sind ausgeschlossen",
+      "Je Antragsteller höchstens drei Maßnahmen in zehn Jahren; die Zweckbindung beträgt zehn Jahre",
+      "Vergeben wird nach Eingang, solange die Mittel des Antragsfensters reichen; ausgezahlt wird nach Abschluss gegen Nachweis, ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // Read 14.10.2026 in the original: programme page (heading "Fördermittel
+    // ausgeschöpft": "Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026
+    // sind bereits ausgeschöpft. Das nächste Antragsfenster für den
+    // Förderschwerpunkt Photovoltaikanlagen und Batteriespeicher wird in 2027
+    // starten."), guideline of 01.04.2024 (FID 3302.7930.1) no. 3.2 a/b "pauschal
+    // bis zu 100 EUR zzgl. 100 EUR pro kWp … auf die ersten 6 kWp pro
+    // Anlagenstandort begrenzt", "Stromspeicher pauschal bis zu 500 EUR", no. 5.1
+    // start only after the Zuwendungsbescheid, application form 11.2024
+    // (FID 2326.5486.1), 29th accountability report (January 2026: 76,166 EUR
+    // expected contributions for 2026, two windows from 1 April and 1 October).
+    // Council 3/3 incl. adversarial reviewer; its correction (start only after
+    // approval, not merely after the application) taken over. Quarter projects
+    // (planning costs for heat networks of at least three units) and case-by-case
+    // Beirat items are out of household scope. No structured rate: exhausted
+    // until 2027, and "bis zu" leaves the amount to the office.
+  },
+  "elmshorn-stadtwerke-co2": {
+    id: "elmshorn-stadtwerke-co2", name: "CO2-Minderungsprogramm 2026",
+    traeger: "Stadtwerke Elmshorn", level: "kommune", region: "Elmshorn",
+    bundesland: "Schleswig-Holstein", agsCode: "01056015",
+    url: "https://www.stadtwerke-elmshorn.de/de/Privatkunden/Produkte/Energieloesungen/Foerderung/",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-01", endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Einmaliger Zuschuss je kWp für Photovoltaik und Pauschalen für den Umstieg von Öl- oder alten Gasheizungen auf eine Wärmepumpe (nur Gas- und Ökostromkunden der Stadtwerke)",
+    rates: [
+      { label: "PV-Anlage", value: "98 € je kWp, höchstens für die ersten 6 kWp (bis 588 €)", nur: ["pv"] },
+      { label: "Wärmepumpe statt Ölheizung (elektrisch mit Jahresarbeitszahl über 4,0 oder Gas-Wärmepumpe)", value: "1.030 € pauschal", nur: ["waermepumpe"] },
+      { label: "Wärmepumpe statt Gasheizung von 2006 oder älter", value: "471 € pauschal", nur: ["waermepumpe"] },
+      { label: "Hybrid aus Wärmepumpe und Gas-Brennwertkessel", value: "819 € statt Ölheizung, 263 € statt alter Gasheizung", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Nur für private Eigentümer oder Mieter überwiegend bewohnter Gebäude, die Erdgas- und Ökostromkunden der Stadtwerke Elmshorn sind; nur bei einer rein elektrischen Wärmepumpe genügt der Ökostromvertrag",
+      "Gefördert wird nur im Netzgebiet der Stadtwerke Elmshorn; gewerbliche Nutzung und die kommerzielle Wohnungswirtschaft sind ausgeschlossen, Mieter brauchen die Erlaubnis des Vermieters",
+      "Antrag mit Formular und Angebot des Installationsbetriebs vor Beginn der Maßnahme; nach der Bewilligung muss die Anlage binnen drei Monaten umgesetzt sein, sonst erlischt die Bewilligung",
+      "Für eine reine elektrische Wärmepumpe ist eine erwartete Jahresarbeitszahl über 4,0 nachzuweisen, was meist nur Erdwärmepumpen schaffen; für eine Hybridheizung gelten die Vorgaben des Gebäudeenergiegesetzes für Hybridheizungen",
+      "Beim Heizungstausch sind ein hydraulischer Abgleich und eine optimierte Heizkurve durchzuführen und nachzuweisen; beim Ersatz einer Gasheizung belegt das letzte Messprotokoll des Schornsteinfegers das Baujahr",
+      "Wärmepumpen nur im Bestand, Photovoltaik auch im Neubau; nur von Fachbetrieben fest installierte Anlagen, je Gebäude eine Heizung und eine PV-Anlage; Stecker-Solargeräte bis 800 W werden nicht gefördert",
+      "Ausgezahlt wird nach Fertigstellung und Inbetriebnahme gegen Rechnung; bei PV ist die Anmeldung im Marktstammdatenregister nachzuweisen",
+      "Wer innerhalb von fünf Jahren nach der Auszahlung den Strom- oder Gasanbieter wechselt, zahlt je verbleibendes Jahr ein Fünftel zurück",
+      "Das Programm gilt für 2026 und ist auf 36.000 € begrenzt; vergeben wird nach Eingang, mit Erreichen des Volumens endet es, ein Rechtsanspruch besteht nicht; ob noch Mittel übrig sind, wissen nur die Stadtwerke",
+      "Kundenbindung — daher nicht pauschal eingerechnet",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "waermepumpe"],
+    // Guideline "CO2-Minderungsprogramm 2026" (Stand 2. Januar 2026) and
+    // application form 2026 read 14.10.2026; programme page (JS-rendered) read
+    // in a real browser the same day, no exhaustion notice. No. 4 d "PV-Anlage:
+    // 98,- Euro pro kWp. Die Förderung ist auf die ersten 6 kWp
+    // Anlagenleistung begrenzt", 4 a/b heat-pump amounts, no. 2 "sofern sie
+    // Erdgas- und Ökostromkunden der Stadtwerke Elmshorn sind (Kunden mit
+    // elektrischer Wärmepumpe nur Ökostrom)", no. 6 "gilt für das Jahr 2026 und
+    // ist auf 36.000 Euro begrenzt". Solar thermal items (182–1.118 EUR) are out
+    // of our scope. Council 2/2 incl. adversarial reviewer, who recomputed every
+    // amount from "CO2-Minderung x CO2 Preis x 5 Jahre" at 65 EUR/t; its
+    // corrections (gas-contract exemption only for a purely electric heat pump,
+    // chimney-sweep proof, payout and register proof, small budget) taken over.
+    // No structured rate: the
+    // customer tie-in cannot be modelled (same as hockenheim-stadtwerke-*).
+  },
 
   // ─── Aufgenommen am 26.09.2026: Stadt Celle, Klimaschutzfonds ────────────────
   "celle-klimaschutzfonds": {

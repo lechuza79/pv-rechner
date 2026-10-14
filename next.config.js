@@ -527,6 +527,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/walldorf", destination: "/photovoltaik-foerderung/baden-wuerttemberg/walldorf", permanent: true },
       { source: "/photovoltaik-foerderung/hirschberg-bergstrasse", destination: "/photovoltaik-foerderung/baden-wuerttemberg/hirschberg-bergstrasse", permanent: true },
       { source: "/photovoltaik-foerderung/schwetzingen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/schwetzingen", permanent: true },
+      { source: "/photovoltaik-foerderung/elmshorn", destination: "/photovoltaik-foerderung/schleswig-holstein/elmshorn", permanent: true },
       { source: "/photovoltaik-foerderung/hockenheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/hockenheim", permanent: true },
       { source: "/photovoltaik-foerderung/laudenbach", destination: "/photovoltaik-foerderung/baden-wuerttemberg/laudenbach", permanent: true },
       { source: "/photovoltaik-foerderung/oftersheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/oftersheim", permanent: true },

@@ -94651,5 +94651,126 @@
         "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf"
       }
     ]
+  },
+  {
+    "regionId": "01056015",
+    "name": "Elmshorn",
+    "checkedAt": "2026-10-14T14:14:24Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Stadtwerke und Kreisebene Pinneberg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Elmshorn hat zwei Programme, beide am 14.10.2026 neu aufgenommen: den Klimaschutzfonds der Stadt mit elf Nachbargemeinden (PV bis zu 100 € plus 100 € je kWp für höchstens 6 kWp, Speicher bis zu 500 €; Mittel der Runde ab 1. Oktober 2026 ausgeschöpft, nächste Runde 2027) und das CO2-Minderungsprogramm 2026 der Stadtwerke (98 € je kWp bis 6 kWp, Wärmepumpe statt Öl 1.030 € bzw. statt alter Gasheizung 471 €; nur für Gas- und Ökostromkunden, 36.000 € Topf). Beide ohne Rechenwert (ausgeschöpft bzw. Kundenbindung). Kein Balkonkraftwerk-Zuschuss (beide schließen Stecker-Geräte bis 800 W aus). Kreisweit gilt der katalogisierte Gründach-Zuschuss mit PV-Aufschlag. Gegengeprüft: Fonds 3/3, Stadtwerke 2/2, je mit widersprechendem Prüfer. Wiederprüfung zum Start der Fondsrunde 2027.",
+    "searches": [
+      "Förderseite der Stadt mit allen Unterseiten (Klimaschutzfonds, Beirat, Weitere Fördermöglichkeiten) am 14.10.2026 im Original gelesen",
+      "Richtlinie des Klimaschutzfonds vom 01.04.2024, Antragsformular 11.2024 und 29. Rechenschaftsbericht (Januar 2026) gelesen",
+      "Förderseite der Stadtwerke im echten Browser gelesen (Seite rendert per JavaScript), Richtlinie und Antrag 2026 gelesen",
+      "Gegenprüfung Klimaschutzfonds durch drei unabhängige Prüfer, Stadtwerke durch zwei, je einer widersprechend",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag, Landesprogramm 2023 beendet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "finding": "Am 14.10.2026 gelesen: „Die Fördermittel aus der Antragsrunde ab 1. Oktober 2026 sind bereits ausgeschöpft. Das nächste Antragsfenster für den Förderschwerpunkt Photovoltaikanlagen und Batteriespeicher wird in 2027 starten.“ Programm im Katalog als elmshorn-klimaschutzfonds."
+      },
+      {
+        "url": "https://www.elmshorn.de/loadDocument.phtml?Ext=PDF&FID=3302.7930.1",
+        "finding": "Richtlinie 01.04.2024 gelesen: Nr. 3.2 „Photovoltaik-Anlagen pauschal bis zu 100 EUR zzgl. 100 EUR pro kWp … auf die ersten 6 kWp pro Anlagenstandort begrenzt“, „Stromspeicher pauschal bis zu 500 EUR“; Nr. 5.1 Beginn erst nach Zuwendungsbescheid."
+      },
+      {
+        "url": "https://www.stadtwerke-elmshorn.de/de/Privatkunden/Produkte/Energieloesungen/Foerderung/CO2-Minderung-Richtlinie-2026.pdf",
+        "finding": "Richtlinie Stand 2. Januar 2026 gelesen: „PV-Anlage: 98,- Euro pro kWp. Die Förderung ist auf die ersten 6 kWp Anlagenleistung begrenzt“; Wärmepumpe statt Öl 1.030 €, statt Gas Bj. 2006 oder älter 471 €; nur „Erdgas- und Ökostromkunden der Stadtwerke Elmshorn“; „auf 36.000 Euro begrenzt“. Programm im Katalog als elmshorn-stadtwerke-co2."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme",
+        "finding": "Übersichtsseite am 14.10.2026 gelesen: „Der Bund, das Land Schleswig-Holstein und die Stadt Elmshorn stellen eine Vielzahl an unterschiedlichen Fördermöglichkeiten … bereit“ — Verweisseite ohne eigene Beträge."
+      },
+      {
+        "url": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn/Beirat-zum-Klimaschutzfonds",
+        "finding": "Beiratsseite am 14.10.2026 gelesen: Zusammensetzung des Beirats und Sitzungsprotokolle bis 23.04.2026; keine abweichenden Förderbedingungen."
+      },
+      {
+        "url": "https://www.stadtwerke-elmshorn.de/de/Privatkunden/Produkte/Energieloesungen/Foerderung/",
+        "finding": "Förderseite der Stadtwerke am 14.10.2026 im echten Browser gelesen: „Wir fördern Maßnahmen zur CO2-Reduzierung in Gebäuden“, Downloads Richtlinie und Förderantrag 2026, kein Ausschöpfungshinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite gelesen; verweist auf Bund, Land, Stadt und Stadtwerke, kein eigener Förderinhalt.",
+        "evidenceUrl": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme"
+      },
+      {
+        "url": "elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
+        "disposition": "reviewed",
+        "reason": "Programmseite vollständig gelesen; Programm aufgenommen (elmshorn-klimaschutzfonds).",
+        "evidenceUrl": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn"
+      },
+      {
+        "url": "elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn/Beirat-zum-Klimaschutzfonds",
+        "disposition": "reviewed",
+        "reason": "Beiratsseite gelesen: Zusammensetzung und Sitzungsprotokolle, keine abweichenden Förderbedingungen.",
+        "evidenceUrl": "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn/Beirat-zum-Klimaschutzfonds"
+      },
+      {
+        "url": "elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Weitere-F%C3%B6rderm%C3%B6glichkeiten",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Landesprogramm (2023 beendet, im Katalog), BAFA, KfW und das CO2-Minderungsprogramm der Stadtwerke; letzteres aufgenommen (elmshorn-stadtwerke-co2).",
+        "evidenceUrl": "https://www.stadtwerke-elmshorn.de/de/Privatkunden/Produkte/Energieloesungen/Foerderung/"
+      }
+    ]
+  },
+  {
+    "regionId": "01056039",
+    "name": "Pinneberg",
+    "checkedAt": "2026-10-14T14:21:14Z",
+    "recheckAt": "2027-01-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Stadtwerke Südholstein und Kreisebene Pinneberg.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Pinneberg zahlt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Ihre Klimaschutzseite nennt nur das Gründach-Programm des Kreises (im Katalog als pinneberg-gruendach-pv), die Energieberatung im Rathaus und die Wärmeplanung; die Suche der Stadt findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe, Solar und Zuschuss nur städtische Bauprojekte, Personal- und Sportförderung. Die Stadtwerke Südholstein werben mit keinem Förderprogramm für Haushalte (Startseite im echten Browser gelesen). Stand 14.10.2026.",
+    "searches": [
+      "Klimaschutzseite der Stadt am 14.10.2026 gelesen",
+      "Volltextsuche pinneberg.de am 14.10.2026: förderprogramm (zwei Seiten), photovoltaik, balkonkraftwerk, wärmepumpe, solar, zuschuss — kein Bürgerzuschuss für Energie",
+      "Stadtwerke Südholstein (Pinneberg): Startseite und Produktmenü im echten Browser gelesen, kein Förderprogramm",
+      "Katalog nach Programmen des Kreises Pinneberg (01056) und des Landes durchsucht: nur Gründach-Zuschuss mit PV-Aufschlag, Landesprogramm 2023 beendet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.pinneberg.de/rathaus/planung/klimaschutz",
+        "finding": "Am 14.10.2026 gelesen: Klimaschutzkonzept, Wärme- und Kälteplan; verlinkt „Förderprogramm für MEHR GRÜN im Kreis Pinneberg“ und „Solaranlage oder Begrünung auf Dach?“ — kein eigenes städtisches Förderprogramm."
+      },
+      {
+        "url": "https://www.pinneberg.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm",
+        "finding": "Suche am 14.10.2026 gelesen (zwei Seiten): Demokratie leben, Sportbox, Aktive Stadt- und Ortsteilzentren, Kunstrasenplatz, Kreis-Gründachprogramm — kein Energiezuschuss der Stadt."
+      },
+      {
+        "url": "https://www.pinneberg.de/meldungsdetailseite?tx_news_pi1%5Baction%5D=detail&tx_news_pi1%5Bcontroller%5D=News&tx_news_pi1%5Bnews%5D=193&cHash=4d7c1891f0e5855bb5d15909049d0c7f",
+        "finding": "Meldung gelesen: Förderbescheide für den Kunstrasenplatz des SC Pinneberg — fachfremd."
+      },
+      {
+        "url": "https://www.sw-suedholstein.de/",
+        "finding": "Startseite der Stadtwerke Südholstein am 14.10.2026 im Browser gelesen: Produkte Strom, Gas, Wärme, Wasser, E-Mobilität, Glasfaser; kein Förderprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pinneberg.de/meldungsdetailseite?tx_news_pi1%5Baction%5D=detail&amp;tx_news_pi1%5Bcontroller%5D=News&amp;tx_news_pi1%5Bnews%5D=193&amp;cHash=4d7c1891f0e5855bb5d15909049d0c7f",
+        "disposition": "reviewed",
+        "reason": "Kunstrasenplatz-Förderung, fachfremd.",
+        "evidenceUrl": "https://www.pinneberg.de/meldungsdetailseite?tx_news_pi1%5Baction%5D=detail&tx_news_pi1%5Bcontroller%5D=News&tx_news_pi1%5Bnews%5D=193&cHash=4d7c1891f0e5855bb5d15909049d0c7f"
+      },
+      {
+        "url": "pinneberg.de/suchergebnis?tx_kesearch_pi1%5Bpage%5D=2&amp;tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Zweite Suchseite gelesen: nur Städtebauförderung (Aktive Stadt- und Ortsteilzentren).",
+        "evidenceUrl": "https://www.pinneberg.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm"
+      },
+      {
+        "url": "pinneberg.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Erste Suchseite gelesen: kein Energiezuschuss der Stadt, nur Verweis auf das Kreis-Gründachprogramm.",
+        "evidenceUrl": "https://www.pinneberg.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm"
+      }
+    ]
   }
 ]
