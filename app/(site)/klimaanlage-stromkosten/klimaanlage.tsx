@@ -18,7 +18,7 @@ import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconSun, IconCheck } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
-import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
+import { DEFAULT_AIRCON_CONFIG as CFG, AC_REAL_FACTOR } from "../../../lib/aircon-config";
 import { calcAircon, compareDevices, acquisitionRange, calcAirconHeating, acHeatSpecKwhPerM2, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
 import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
 import { useSharedPlz } from "../../../lib/location";
@@ -767,7 +767,9 @@ function GlossaryHint() {
       <InfoTooltip title="Effizienz (SEER)" ariaLabel="Was bedeutet der Effizienz-Wert?" size={iconSizes.sm}>
         Der Wert sagt, wie viel Kühlung ein Gerät pro Kilowattstunde Strom liefert. Wir rechnen mit der
         Effizienz im echten Betrieb über eine ganze Saison, nicht mit der Zahl vom Typenschild — die fällt
-        im Labor günstiger aus als zu Hause. Wichtig dabei: Bei Split-Geräten steht auf dem Label ein
+        im Labor günstiger aus als zu Hause. Wir ziehen dafür einheitlich {Math.round((1 - AC_REAL_FACTOR) * 100)} % ab;
+        Messungen zeigen im Alltag rund 10 % bis über 30 % weniger als auf dem Etikett (Quellen auf der
+        Datenstand-Seite). Wichtig dabei: Bei Split-Geräten steht auf dem Label ein
         Saisonwert (SEER), bei Monoblöcken dagegen ein Volllast-Wert (EER), der in einer Prüfkammer ohne
         Fenster gemessen wird. Dort kann keine warme Luft nachströmen — im Wohnzimmer schon. Deshalb sind
         die beiden Label-Zahlen nicht vergleichbar, und wir rechnen sie auf eine gemeinsame Grundlage um.

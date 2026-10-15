@@ -57,12 +57,28 @@ export type AcDeviceId = "monoblock" | "portasplit" | "split";
 // optimistisch" ist kein Grund — siehe scripts/klimaanlage-verify.md.
 // Erzwungen von lib/__tests__/aircon.test.ts ("Effizienz-Systematik").
 
-/** Abschlag Labor → Realbetrieb, EINHEITLICH für alle Gerätetypen.
- *  Peer-reviewed (Energy and Buildings 2025, akkreditierte kalorimetrische
- *  Messung, 4 Split-Inverter): Abweichung zwischen genormtem SEER und realen
- *  Endnutzer-Einstellungen "bis zu 50 %". "Bis zu" ist der Worst Case; wir
- *  setzen mit 15 % bewusst das konservative Ende an, weil ein Rechner den
- *  typischen Fall treffen soll, nicht den Extremfall. */
+/** Abschlag Labor → Realbetrieb, EINHEITLICH für alle Gerätetypen und für
+ *  Kühlen wie Heizen. A CHOSEN value inside a documented range, not a value
+ *  read off one study (closed 15.10.2026, operator decision: no paid full text):
+ *
+ *  · RISE for the Swedish Energy Agency (Nordsyn, TemaNord 2020:544, p. 38–39,
+ *    citing Nakos et al., 11th IEA Heat Pump Conference 2014): 4 air-to-air
+ *    heat pumps in the lab, own control instead of the locked compressor
+ *    frequencies of EN 14825 — 3 of 4 reach up to approx. 10 % lower SCOP.
+ *    The lower edge: the control effect alone, EU method, heating only.
+ *  · DNV/University of Nebraska for NEEP (Heat Pump Rating Representativeness,
+ *    Phase 2, 2024, tables 7-2): 5 heat pumps metered in three test houses,
+ *    US rating (DOE Appendix M1) vs. field seasonal efficiency — mean absolute
+ *    deviation 22 % cooling / 36 % heating, mostly overpredicting; the two
+ *    ductless units 43 % / 64 % (sample "too small to generalize"). US method,
+ *    not EN 14825 — an indication of size and direction, not a transferable value.
+ *  · Erginer & Aydoğdu (Energy and Buildings 350/2026, 116631, accredited
+ *    calorimeter, 4 split inverters, EN 14825 vs. user settings): "up to 50 %"
+ *    for SEER and SCOP together; per-metric values only in the paid full text.
+ *
+ *  15 % sits above the pure control effect and at the low end of what field
+ *  and user-setting studies report — for split units it is more likely too
+ *  small than too large. Archived: docs/quellen/Nordsyn-RISE_…, docs/quellen/NEEP_…. */
 export const AC_REAL_FACTOR = 0.85;
 
 /** Effektive Jahres-Effizienz aus Labelwert + struktureller Korrektur.
@@ -81,17 +97,13 @@ export function effectiveSeer(labelValue: number, structuralFactor: number): num
  * ideale Wärmeverteilung — ist von niemandem quantifiziert; ihn zu schätzen
  * wäre der Ermessens-Abschlag, den die Systematik verbietet.
  *
- * ÜBERTRAGENER FAKTOR, BEWUSST KONSERVATIV (Entscheidung des Betreibers,
- * 28.07.2026): `AC_REAL_FACTOR` ist am Kühlen belegt, nicht am Heizen. Die
- * Leitquelle (Erginer & Aydoğdu) misst beide Richtungen am selben Gerät, nennt
- * frei aber nur den gemeinsamen Wert — die Aufteilung je Metrik steht im
- * kostenpflichtigen Volltext. Vorher stand hier ein Handwert ohne jede
- * Herleitung, und Heizen war dadurch optimistischer gerechnet als Kühlen: die
- * Ersparnis gegenüber Gas fiel rund ein Drittel zu hoch aus. Die Übertragung
- * ist die konservative Wahl — sie kann die Ersparnis höchstens zu niedrig
- * zeigen, und das ist bei einer Ersparnis-Angabe die richtige Richtung.
- * Steht der Volltext zur Verfügung, wird der Heiz-Faktor durch den dort
- * belegten ersetzt (Runbook scripts/klimaanlage-verify.md → 4.5).
+ * DERSELBE FAKTOR WIE BEIM KÜHLEN (Entscheidung des Betreibers, 28.07.2026;
+ * Beleglage abgeschlossen 15.10.2026): Für das Heizen liegt die belegte
+ * Spanne bei rund 10 % (RISE, eigene Regelung statt fester Frequenzen) bis
+ * 36 % (NEEP-Feldmessung, US-Verfahren) — Quellen bei `AC_REAL_FACTOR`. Vorher
+ * stand hier ein Handwert ohne Herleitung, und Heizen war dadurch
+ * optimistischer gerechnet als Kühlen: die Ersparnis gegenüber Gas fiel rund
+ * ein Drittel zu hoch aus.
  */
 export function effectiveScop(labelValue: number): number {
   return Math.round(labelValue * AC_REAL_FACTOR * 10) / 10;
@@ -174,20 +186,12 @@ export interface AcDevice {
   // Drittel zu hoch (Beispiel 40 m² teilsaniert: 106 € statt 71 € im Jahr). Die
   // Grundaussage — Split heizt in der Übergangszeit günstiger als Gas — bleibt.
   //
-  // Der Faktor ist am KÜHLEN belegt und aufs Heizen ÜBERTRAGEN; die Begründung
-  // steht bei effectiveScop. Das ist die bewusst konservative Wahl (Entscheidung
-  // des Betreibers, 28.07.2026) statt eines unbelegten Handwerts.
-  //
-  // OFFEN (bis 01/2027): Der am Heizen belegte Abschlag steht nur im
-  // kostenpflichtigen Volltext der Leitquelle. Kommt er, ersetzt er den
-  // übertragenen Faktor (Runbook 4.5) — dann bekommt effectiveScop einen eigenen
-  // Faktor statt AC_REAL_FACTOR.
-  // Frist am 15.10.2026 um ein Quartal verlängert: Alle freien Wege sind erneut
-  // geprüft und zu (Unpaywall/OpenAlex "closed", ScienceDirect/ResearchGate/CORE
-  // 403, ORCID ohne Preprint). Was bleibt, kostet Geld (Kauf ~30 €) oder ist
-  // neuer Außenkontakt (Autorenanfrage) — beides liegt beim Betreiber und ist ihm
-  // mit Empfehlung vorgelegt. Ohne Freigabe bis 01/2027: als „geprüft, Beleg
-  // nicht beschaffbar“ schließen statt erneut verlängern.
+  // Heizen und Kühlen tragen denselben Abschlag; Beleglage und Spanne stehen
+  // bei AC_REAL_FACTOR. GESCHLOSSEN 15.10.2026 (Entscheidung des Betreibers):
+  // Der kostenpflichtige Volltext von Erginer & Aydoğdu wird nicht gekauft; zwei
+  // frei zugängliche Messreihen (RISE/Nordsyn, NEEP) belegen die Spanne, in der
+  // die 15 % liegen. Erst wieder öffnen, wenn eine Messreihe nach EN 14825 mit
+  // getrennten Werten je Richtung erscheint.
   //
   // Recherchestand 07/2026 (zwei unabhängige Läufe, Herstellerdatenblätter):
   //  · Mobile Split: der einzige belegte Labelwert der ganzen Kategorie ist
@@ -202,22 +206,11 @@ export interface AcDevice {
   //    auf den Mittelklasse-Median 4,6 zieht, beschreibt ein Gerät, das es nicht
   //    gibt.
   //
-  // Zum Stand der Leitquelle: Die Studie hinter AC_REAL_FACTOR (Erginer &
-  // Aydoğdu, Energy and Buildings 350/2026, Art. 116631, DOI
-  // 10.1016/j.enbuild.2025.116631, akkreditiertes Kalorimeter) misst SEER UND
-  // SCOP am selben Gerät, berichtet frei aber nur „bis zu 50 %" für beide
-  // zusammen. Die Aufteilung je Metrik steht im kostenpflichtigen Volltext.
   // Alle frei zugänglichen Feldzahlen zum Heizen liegen unter 0,85 × Label,
   // tragen aber je einen Confounder (Kaltklima / Passivhaus / Flüstermodus) und
-  // stützen deshalb auch keinen anderen Faktor. Deshalb der übertragene statt
-  // eines geschätzten Werts — ein Ermessens-Abschlag wäre genau das, was die
-  // Systematik verbietet.
-  //
-  // ACHTUNG BEIM AUFLÖSEN: Derselbe Volltext trägt auch den am KÜHLEN belegten
-  // Abschlag. AC_REAL_FACTOR = 0,85 ist heute aus „bis zu 50 %" gewählt, nicht
-  // daraus abgelesen — der Volltext prüft also nicht nur den Heiz-, sondern
-  // auch den Kühlwert, und der trägt die Effizienz ALLER Gerätetypen.
-  // Vorgehen: scripts/klimaanlage-verify.md → 4.5.
+  // stützen deshalb keinen eigenen Heiz-Faktor. Ein Wechsel von AC_REAL_FACTOR
+  // bewegt die Effizienz ALLER Gerätetypen — nur mit neuer Messreihe, siehe
+  // scripts/klimaanlage-verify.md → 4.5.
   canHeat: boolean;
   /** Typenschild-SCOP (EN 14825). Basis für `scop` — nie direkt verrechnen. */
   labelScop?: number;
@@ -502,7 +495,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
   // waren der Befund der Inhalts-Inventur vom 25.08.2026.
   gridCo2PerKwh: 0.38,
 
-  source: "ERA5 (Copernicus) über das offene Datenarchiv von Open-Meteo (Kühlgradstunden heute), NASA NEX-GDDP-CMIP6 mit acht Klimamodellen (Projektion), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
+  source: "ERA5 (Copernicus) über das offene Datenarchiv von Open-Meteo (Kühlgradstunden heute), NASA NEX-GDDP-CMIP6 mit acht Klimamodellen (Projektion), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), RISE für die schwedische Energiebehörde (Nordsyn 2020), NEEP-Feldmessung 2024, Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
   validFrom: "2026-07-15",
   // Quarterly run 15.10.2026 reached the lead sources (EPREL fiches, Eurovent
   // certificates, retailer listings, reduco cost guide, EU "Have your say" API)
