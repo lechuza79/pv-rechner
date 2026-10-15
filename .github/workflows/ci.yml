@@ -254,9 +254,19 @@ jobs:
       # LOKAL bleibt es beim Dev-Server (`npm run test:e2e` unveraendert): Dort
       # laeuft ohnehin nur der eine Test, an dem gerade gearbeitet wird, und ein
       # voller Build je Durchlauf waere die falsche Rechnung.
+      # DIAGNOSE (temporary, reverted before merge): simulate an Energy-Charts
+      # outage. Shard 1: packets to the host vanish (connect timeout, the slow
+      # path). Shard 2: connection refused (fast failure). Shard 3: real host.
+      - name: DIAGNOSE simulate Energy-Charts outage
+        if: matrix.scherbe != 3
+        run: |
+          ip=${{ matrix.scherbe == 1 && '10.255.255.1' || '127.0.0.1' }}
+          echo "$ip api.energy-charts.info" | sudo tee -a /etc/hosts
+          getent hosts api.energy-charts.info
+          curl -sS -m 5 -o /dev/null -w '%{http_code}\n' https://api.energy-charts.info/public_power?country=de || echo "energy-charts unreachable as intended"
       - name: E2E smoke tests (Playwright)
         timeout-minutes: 22
-        run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3
+        run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3 --repeat-each=15 --retries=0 --trace=retain-on-failure e2e/race-dashboard-layout.spec.ts e2e/landkreis-vorschau.spec.ts e2e/ranking-combination-behavior.spec.ts e2e/diag-alt/ --grep "race content stays|district sections reuse|district chart proportions|ranking list action remains|mobile category navigation" 2>&1 | tee e2e-diag.log; test ${PIPESTATUS[0]} -eq 0
         env:
           E2E_BUILD: "1"
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —
@@ -293,11 +303,13 @@ jobs:
       # Playwright schreibt die Verfolgung erst beim Abschluss eines Versuchs.
       # Gegen einen Abbruch hilft das Schritt-Zeitlimit oben, nicht der Upload.
       - name: Upload Playwright-Ablaufverfolgung
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: test-results/
+          name: playwright-report-${{ matrix.scherbe }}
+          path: |
+            test-results/
+            e2e-diag.log
           retention-days: 7
 
   # DER NAME BLEIBT, WEIL DER GESCHÜTZTE ZWEIG IHN VERLANGT.
