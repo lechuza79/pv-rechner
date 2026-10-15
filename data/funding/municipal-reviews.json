@@ -96965,5 +96965,332 @@
         "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
       }
     ]
+  },
+  {
+    "regionId": "01058010",
+    "name": "Bargstall",
+    "checkedAt": "2026-10-15T02:09:48Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bargstall gehört zum Amt Hohner Harde, verwaltet vom Amt Fockbek (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Ämter führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht aller 16 Gemeinden enthält keine solche Richtlinie, die „Fördervorhaben“ sind Mittel an die Kommunen selbst, die Amtssuche findet nichts, und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "sources": [
+      {
+        "url": "rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben",
+        "disposition": "reviewed",
+        "reason": "Liste der Fördermittel, die Ämter und Gemeinden selbst erhalten haben (Radverkehr, LED, Freibad) — kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      },
+      {
+        "url": "rathaus-fockbek.de/fileadmin/_processed_/5/c/csm_Foerdervorhaben_Freibad_Elsdorf-Westermuehlen_29a8282e2f.webp",
+        "disposition": "replaced",
+        "reason": "Bildtafel (Förderhinweis) zum Freibad Elsdorf-Westermühlen, eingebunden in die gelesene Fördervorhaben-Seite — Fördermittel an die Gemeinde.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      },
+      {
+        "url": "rathaus-fockbek.de/fileadmin/_processed_/6/1/csm_Bekanntmachung_Foerderung_LED_Breiholz_fc2486f635.webp",
+        "disposition": "replaced",
+        "reason": "Förderhinweis-Bild zur LED-Straßenbeleuchtung Breiholz auf der gelesenen Fördervorhaben-Seite — kommunales Projekt.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      },
+      {
+        "url": "rathaus-fockbek.de/fileadmin/_processed_/f/d/csm_Bekanntmachung_Foerderung_LED_Strassenbeleuchtung_Fockbek_2._BA_e01cfaf2c3.webp",
+        "disposition": "replaced",
+        "reason": "Förderhinweis-Bild zur LED-Straßenbeleuchtung Fockbek (2. BA) auf der gelesenen Fördervorhaben-Seite — kommunales Projekt.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      }
+    ],
+    "searches": [
+      "rathaus-fockbek.de Fördervorhaben-Seite gelesen (15.10.2026)",
+      "Ortsrecht der Ämter Fockbek und Hohner Harde und aller 16 Gemeinden über 67 Stichwortseiten gelesen (15.10.2026)",
+      "Volltextsuche rathaus-fockbek.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderprogramm, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (keine Privathaushalte) und eingestelltes Landesprogramm berücksichtigt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik Fockbek, Hohner Harde, Bargstall, Friedrichsholm, Königshügel, Elsdorf-Westermühlen — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben",
+        "finding": "Am 15.10.2026 im Original gelesen: „Hier finden Sie verschiedene Förderprojekte unserer Gemeinden und Ämter“ — Radverkehrsprojekt „RaD stark!“ (NKI, 2019–2022), Mobilitätsentwicklungsplan, LED-Schulbeleuchtung Amt Hohner Harde, LED-Straßenbeleuchtung Breiholz/Fockbek, Freibad Elsdorf-Westermühlen, Flutlicht Fockbek. Alles Fördermittel an die Kommunen, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-fockbek.de/herzlich-willkommen/unsere-16-gemeinden/ortsrecht",
+        "finding": "Ortsrecht der Ämter Fockbek und Hohner Harde und aller 16 Gemeinden am 15.10.2026 vollständig über die Stichwortseiten gelesen (67 Kategorieseiten, 289 Titel): einzige Förderrichtlinien sind Jugendpflegefahrten (Fockbek, Nübbel, Rickert) und Reetdach-Erhaltung (Alt Duvenstedt) — keine Richtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.rathaus-fockbek.de/suche",
+        "finding": "Volltextsuche am 15.10.2026: „Balkonkraftwerk“ und „Stecker“ 0 Treffer; „Photovoltaik“ nur Solar-Webinar, Wärmeplanung, Vergaben, Ortskernkonzepte; „Zuschuss“/„Förderprogramm“ nur Fördervorhaben-Seite, Ortskernkonzepte (Lärmsanierung), Gleichstellung, Jugendpflege-Grundsätze; „Wärmepumpe“ nur kommunale Wärmeplanung Hohn/Sophienhamm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (zuletzt am 15.10.2026 im Lauf Schlei-Ostsee gelesen): antragsberechtigt nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen — keine Privathaushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "01058056",
+    "name": "Friedrichsholm",
+    "checkedAt": "2026-10-15T02:09:48Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Friedrichsholm gehört zum Amt Hohner Harde, verwaltet vom Amt Fockbek (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Ämter führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht aller 16 Gemeinden enthält keine solche Richtlinie, die „Fördervorhaben“ sind Mittel an die Kommunen selbst, die Amtssuche findet nichts, und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "sources": [
+      {
+        "url": "rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben",
+        "disposition": "reviewed",
+        "reason": "Liste der Fördermittel, die Ämter und Gemeinden selbst erhalten haben (Radverkehr, LED, Freibad) — kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      },
+      {
+        "url": "rathaus-fockbek.de/fileadmin/_processed_/5/c/csm_Foerdervorhaben_Freibad_Elsdorf-Westermuehlen_29a8282e2f.webp",
+        "disposition": "replaced",
+        "reason": "Bildtafel (Förderhinweis) zum Freibad Elsdorf-Westermühlen, eingebunden in die gelesene Fördervorhaben-Seite — Fördermittel an die Gemeinde.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      },
+      {
+        "url": "rathaus-fockbek.de/fileadmin/_processed_/6/1/csm_Bekanntmachung_Foerderung_LED_Breiholz_fc2486f635.webp",
+        "disposition": "replaced",
+        "reason": "Förderhinweis-Bild zur LED-Straßenbeleuchtung Breiholz auf der gelesenen Fördervorhaben-Seite — kommunales Projekt.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      },
+      {
+        "url": "rathaus-fockbek.de/fileadmin/_processed_/f/d/csm_Bekanntmachung_Foerderung_LED_Strassenbeleuchtung_Fockbek_2._BA_e01cfaf2c3.webp",
+        "disposition": "replaced",
+        "reason": "Förderhinweis-Bild zur LED-Straßenbeleuchtung Fockbek (2. BA) auf der gelesenen Fördervorhaben-Seite — kommunales Projekt.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      }
+    ],
+    "searches": [
+      "rathaus-fockbek.de Fördervorhaben-Seite gelesen (15.10.2026)",
+      "Ortsrecht der Ämter Fockbek und Hohner Harde und aller 16 Gemeinden über 67 Stichwortseiten gelesen (15.10.2026)",
+      "Volltextsuche rathaus-fockbek.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderprogramm, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (keine Privathaushalte) und eingestelltes Landesprogramm berücksichtigt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik Fockbek, Hohner Harde, Bargstall, Friedrichsholm, Königshügel, Elsdorf-Westermühlen — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben",
+        "finding": "Am 15.10.2026 im Original gelesen: „Hier finden Sie verschiedene Förderprojekte unserer Gemeinden und Ämter“ — Radverkehrsprojekt „RaD stark!“ (NKI, 2019–2022), Mobilitätsentwicklungsplan, LED-Schulbeleuchtung Amt Hohner Harde, LED-Straßenbeleuchtung Breiholz/Fockbek, Freibad Elsdorf-Westermühlen, Flutlicht Fockbek. Alles Fördermittel an die Kommunen, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-fockbek.de/herzlich-willkommen/unsere-16-gemeinden/ortsrecht",
+        "finding": "Ortsrecht der Ämter Fockbek und Hohner Harde und aller 16 Gemeinden am 15.10.2026 vollständig über die Stichwortseiten gelesen (67 Kategorieseiten, 289 Titel): einzige Förderrichtlinien sind Jugendpflegefahrten (Fockbek, Nübbel, Rickert) und Reetdach-Erhaltung (Alt Duvenstedt) — keine Richtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.rathaus-fockbek.de/suche",
+        "finding": "Volltextsuche am 15.10.2026: „Balkonkraftwerk“ und „Stecker“ 0 Treffer; „Photovoltaik“ nur Solar-Webinar, Wärmeplanung, Vergaben, Ortskernkonzepte; „Zuschuss“/„Förderprogramm“ nur Fördervorhaben-Seite, Ortskernkonzepte (Lärmsanierung), Gleichstellung, Jugendpflege-Grundsätze; „Wärmepumpe“ nur kommunale Wärmeplanung Hohn/Sophienhamm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (zuletzt am 15.10.2026 im Lauf Schlei-Ostsee gelesen): antragsberechtigt nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen — keine Privathaushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "01058089",
+    "name": "Königshügel",
+    "checkedAt": "2026-10-15T02:09:48Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Königshügel gehört zum Amt Hohner Harde, verwaltet vom Amt Fockbek (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Ämter führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht aller 16 Gemeinden enthält keine solche Richtlinie, die „Fördervorhaben“ sind Mittel an die Kommunen selbst, die Amtssuche findet nichts, und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "sources": [
+      {
+        "url": "rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben",
+        "disposition": "reviewed",
+        "reason": "Liste der Fördermittel, die Ämter und Gemeinden selbst erhalten haben (Radverkehr, LED, Freibad) — kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      },
+      {
+        "url": "rathaus-fockbek.de/fileadmin/_processed_/5/c/csm_Foerdervorhaben_Freibad_Elsdorf-Westermuehlen_29a8282e2f.webp",
+        "disposition": "replaced",
+        "reason": "Bildtafel (Förderhinweis) zum Freibad Elsdorf-Westermühlen, eingebunden in die gelesene Fördervorhaben-Seite — Fördermittel an die Gemeinde.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      },
+      {
+        "url": "rathaus-fockbek.de/fileadmin/_processed_/6/1/csm_Bekanntmachung_Foerderung_LED_Breiholz_fc2486f635.webp",
+        "disposition": "replaced",
+        "reason": "Förderhinweis-Bild zur LED-Straßenbeleuchtung Breiholz auf der gelesenen Fördervorhaben-Seite — kommunales Projekt.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      },
+      {
+        "url": "rathaus-fockbek.de/fileadmin/_processed_/f/d/csm_Bekanntmachung_Foerderung_LED_Strassenbeleuchtung_Fockbek_2._BA_e01cfaf2c3.webp",
+        "disposition": "replaced",
+        "reason": "Förderhinweis-Bild zur LED-Straßenbeleuchtung Fockbek (2. BA) auf der gelesenen Fördervorhaben-Seite — kommunales Projekt.",
+        "evidenceUrl": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben"
+      }
+    ],
+    "searches": [
+      "rathaus-fockbek.de Fördervorhaben-Seite gelesen (15.10.2026)",
+      "Ortsrecht der Ämter Fockbek und Hohner Harde und aller 16 Gemeinden über 67 Stichwortseiten gelesen (15.10.2026)",
+      "Volltextsuche rathaus-fockbek.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderprogramm, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (keine Privathaushalte) und eingestelltes Landesprogramm berücksichtigt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik Fockbek, Hohner Harde, Bargstall, Friedrichsholm, Königshügel, Elsdorf-Westermühlen — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben",
+        "finding": "Am 15.10.2026 im Original gelesen: „Hier finden Sie verschiedene Förderprojekte unserer Gemeinden und Ämter“ — Radverkehrsprojekt „RaD stark!“ (NKI, 2019–2022), Mobilitätsentwicklungsplan, LED-Schulbeleuchtung Amt Hohner Harde, LED-Straßenbeleuchtung Breiholz/Fockbek, Freibad Elsdorf-Westermühlen, Flutlicht Fockbek. Alles Fördermittel an die Kommunen, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-fockbek.de/herzlich-willkommen/unsere-16-gemeinden/ortsrecht",
+        "finding": "Ortsrecht der Ämter Fockbek und Hohner Harde und aller 16 Gemeinden am 15.10.2026 vollständig über die Stichwortseiten gelesen (67 Kategorieseiten, 289 Titel): einzige Förderrichtlinien sind Jugendpflegefahrten (Fockbek, Nübbel, Rickert) und Reetdach-Erhaltung (Alt Duvenstedt) — keine Richtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.rathaus-fockbek.de/suche",
+        "finding": "Volltextsuche am 15.10.2026: „Balkonkraftwerk“ und „Stecker“ 0 Treffer; „Photovoltaik“ nur Solar-Webinar, Wärmeplanung, Vergaben, Ortskernkonzepte; „Zuschuss“/„Förderprogramm“ nur Fördervorhaben-Seite, Ortskernkonzepte (Lärmsanierung), Gleichstellung, Jugendpflege-Grundsätze; „Wärmepumpe“ nur kommunale Wärmeplanung Hohn/Sophienhamm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (zuletzt am 15.10.2026 im Lauf Schlei-Ostsee gelesen): antragsberechtigt nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen — keine Privathaushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "01058047",
+    "name": "Elsdorf-Westermühlen",
+    "checkedAt": "2026-10-15T02:09:48Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Elsdorf-Westermühlen gehört zum Amt Hohner Harde, verwaltet vom Amt Fockbek (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Ämter führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht aller 16 Gemeinden enthält keine solche Richtlinie, die „Fördervorhaben“ sind Mittel an die Kommunen selbst, die Amtssuche findet nichts, und der Klimaschutzfonds des Kreises fördert keine Privathaushalte. Die Gemeinde-Website (Startseite, Aktuelles, Berichte, Bürgerinfo, Gemeinde, Gemeindevertretung) nennt nur eine Potenzialflächenanalyse für Freiflächen-PV (Stand 15.10.2026).",
+    "sources": [
+      {
+        "url": "elsdorf-westermuehlen.de/index.php/betreuung-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite der Kita („Betreuung & Förderung“ = pädagogische Förderung der Kinder) — kein Energiebezug.",
+        "evidenceUrl": "https://www.elsdorf-westermuehlen.de/index.php/betreuung-foerderung.html"
+      },
+      {
+        "url": "elsdorf-westermuehlen.de/index.php/index.php/betreuung-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite der Kita („Betreuung & Förderung“ = pädagogische Förderung der Kinder) — kein Energiebezug.",
+        "evidenceUrl": "https://www.elsdorf-westermuehlen.de/index.php/betreuung-foerderung.html"
+      },
+      {
+        "url": "elsdorf-westermuehlen.de/index.php/index.php/index.php/betreuung-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite der Kita („Betreuung & Förderung“ = pädagogische Förderung der Kinder) — kein Energiebezug.",
+        "evidenceUrl": "https://www.elsdorf-westermuehlen.de/index.php/betreuung-foerderung.html"
+      }
+    ],
+    "searches": [
+      "rathaus-fockbek.de Fördervorhaben-Seite gelesen (15.10.2026)",
+      "Ortsrecht der Ämter Fockbek und Hohner Harde und aller 16 Gemeinden über 67 Stichwortseiten gelesen (15.10.2026)",
+      "Volltextsuche rathaus-fockbek.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderprogramm, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (keine Privathaushalte) und eingestelltes Landesprogramm berücksichtigt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik Fockbek, Hohner Harde, Bargstall, Friedrichsholm, Königshügel, Elsdorf-Westermühlen — kein Programm",
+      "elsdorf-westermuehlen.de: Startseite, Aktuelles, Aktuelle Berichte, Bürgerinfo, Gemeinde, Gemeindevertretung nach Zuschuss/Förderprogramm/Photovoltaik/Solar/Balkonkraftwerk/Wärmepumpe/Klimaschutz durchsucht (15.10.2026): nur Download „Potenzialflächenanalyse Freiflächen Photovoltaik“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-fockbek.de/unser-online-rathaus/bauen-entwicklung/foerdervorhaben",
+        "finding": "Am 15.10.2026 im Original gelesen: „Hier finden Sie verschiedene Förderprojekte unserer Gemeinden und Ämter“ — Radverkehrsprojekt „RaD stark!“ (NKI, 2019–2022), Mobilitätsentwicklungsplan, LED-Schulbeleuchtung Amt Hohner Harde, LED-Straßenbeleuchtung Breiholz/Fockbek, Freibad Elsdorf-Westermühlen, Flutlicht Fockbek. Alles Fördermittel an die Kommunen, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-fockbek.de/herzlich-willkommen/unsere-16-gemeinden/ortsrecht",
+        "finding": "Ortsrecht der Ämter Fockbek und Hohner Harde und aller 16 Gemeinden am 15.10.2026 vollständig über die Stichwortseiten gelesen (67 Kategorieseiten, 289 Titel): einzige Förderrichtlinien sind Jugendpflegefahrten (Fockbek, Nübbel, Rickert) und Reetdach-Erhaltung (Alt Duvenstedt) — keine Richtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.rathaus-fockbek.de/suche",
+        "finding": "Volltextsuche am 15.10.2026: „Balkonkraftwerk“ und „Stecker“ 0 Treffer; „Photovoltaik“ nur Solar-Webinar, Wärmeplanung, Vergaben, Ortskernkonzepte; „Zuschuss“/„Förderprogramm“ nur Fördervorhaben-Seite, Ortskernkonzepte (Lärmsanierung), Gleichstellung, Jugendpflege-Grundsätze; „Wärmepumpe“ nur kommunale Wärmeplanung Hohn/Sophienhamm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (zuletzt am 15.10.2026 im Lauf Schlei-Ostsee gelesen): antragsberechtigt nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen — keine Privathaushalte."
+      },
+      {
+        "url": "https://www.elsdorf-westermuehlen.de/index.php/betreuung-foerderung.html",
+        "finding": "Am 15.10.2026 gelesen: Kita-Seite „Betreuung & Förderung“ — „Die Förderung der Kinder geschieht ganzheitlich.“ Kein Energie- oder Zuschussbezug."
+      }
+    ]
+  },
+  {
+    "regionId": "01058008",
+    "name": "Ascheffel",
+    "checkedAt": "2026-10-15T02:09:48Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ascheffel gehört zum Amt Hüttener Berge (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht der Gemeinde (18 Vorschriften) und des Amtes (49) enthält nur Zuschüsse für Jugendpflegefahrten und Ehrungen, die Gemeindesuche findet nur Infoveranstaltungen und den allgemeinen Hinweis auf Landes- und Bundesförderung, und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "sources": [
+      {
+        "url": "gemeinde-ascheffel.de/component/finder/search?q=f%C3%B6rderprogramme&amp;Itemid=101",
+        "disposition": "reviewed",
+        "reason": "Suchergebnis „förderprogramme“: einziger Treffer ist die AG Energie (2023) mit dem allgemeinen Satz, Landes- und Bundespolitik böten Förderprogramme — kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.gemeinde-ascheffel.de/component/finder/search?q=f%C3%B6rderprogramme&Itemid=101"
+      }
+    ],
+    "searches": [
+      "Volltextsuche gemeinde-ascheffel.de (15.10.2026): förderprogramme 1 Treffer (AG Energie), Balkonkraftwerk/Stecker/Speicher 0, Photovoltaik 5 (Infoveranstaltungen 2023, AG Energie), Förderung 7 (Kita, Dörpsmobil, Vereine), Wärmepumpe 1 (Infoabend Amt + Verbraucherzentrale 2026)",
+      "Ortsrecht der Gemeinde Ascheffel (18 Vorschriften) und des Amtes Hüttener Berge (49 Vorschriften) am 15.10.2026 gelesen",
+      "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (keine Privathaushalte) und eingestelltes Landesprogramm berücksichtigt",
+      "Websuche (15.10.2026): Hüttener Berge/Ascheffel Förderung Balkonkraftwerk Photovoltaik Zuschuss — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-ascheffel.de/component/finder/search?q=f%C3%B6rderprogramme&Itemid=101",
+        "finding": "Am 15.10.2026 gelesen: einziger Treffer „AG gemeindeeigene, klimafreundliche Energie“ (10.07.2023): „Sowohl Landes- als auch Bundespolitik bieten großzügige Förderprogramme.“ — Hinweis, kein Gemeindeprogramm."
+      },
+      {
+        "url": "https://www.amt-huettener-berge.de/gemeinden/ascheffel/ortsrecht",
+        "finding": "Ortsrecht der Gemeinde Ascheffel am 15.10.2026 gelesen (18 Vorschriften): einzige Zuschussrichtlinie betrifft Jugendpflegefahrten anerkannter Jugendgruppen; daneben Wappen/Ehrungen, Haushalt, Hundesteuer, Feuerwehr, Straßenreinigung, Wasser."
+      },
+      {
+        "url": "https://www.amt-huettener-berge.de/das-amt/ortsrecht",
+        "finding": "Ortsrecht des Amtes Hüttener Berge am 15.10.2026 gelesen (49 Vorschriften): Verwaltung, Finanzen, Schul- und Kitaverbände, Breitbandzweckverband — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (zuletzt am 15.10.2026 im Lauf Schlei-Ostsee gelesen): antragsberechtigt nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen — keine Privathaushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "01058104",
+    "name": "Melsdorf",
+    "checkedAt": "2026-10-15T02:09:48Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Melsdorf gehört zum Amt Achterwehr (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Gemeinde-Website verweist nur auf das kostenlose Solardachkataster des Kreises, das Amt Achterwehr wurde am 22.09.2026 vollständig geprüft (Sitemap, Suche, Bekanntmachungen der Amtsgemeinden) und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "sources": [
+      {
+        "url": "melsdorf.de/service",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Übersicht (Kontakt, Merkblätter Baum-/Knickschutz, Solardachkataster, Schadenmeldung) — kein Zuschuss.",
+        "evidenceUrl": "https://www.melsdorf.de/service"
+      },
+      {
+        "url": "melsdorf.de/service/solardachkataster",
+        "disposition": "reviewed",
+        "reason": "Hinweis auf das kostenlose Solardachkataster der Klimaschutzagentur — Information, kein Zuschuss.",
+        "evidenceUrl": "https://www.melsdorf.de/service/solardachkataster"
+      }
+    ],
+    "searches": [
+      "melsdorf.de: Startseite, Bürgerservice, Merkblätter, Solardachkataster, Neuigkeiten, Ortsrecht-Hinweis gelesen (15.10.2026)",
+      "Amt Achterwehr: Sitemap (672 Adressen), Volltextsuche und Amtliche Bekanntmachungen der Amtsgemeinden am 22.09.2026 geprüft (siehe Achterwehr) — keine Förderrichtlinie für Energieanlagen; Satzungsliste der Gemeinde Melsdorf beim Amt am 15.10.2026 aufgerufen, Filter liefert 0 Einträge",
+      "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (keine Privathaushalte) und eingestelltes Landesprogramm berücksichtigt",
+      "Websuche (15.10.2026): Melsdorf Förderung Balkonkraftwerk Photovoltaik Zuschuss — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.melsdorf.de/service",
+        "finding": "Am 15.10.2026 gelesen: Bürgerservice mit Kontakt, Merkblättern (Baum-/Knickschutz der Unteren Naturschutzbehörde), Solardachkataster, Schadenmeldung — kein Förderangebot."
+      },
+      {
+        "url": "https://www.melsdorf.de/service/solardachkataster",
+        "finding": "Am 15.10.2026 gelesen: „Solardachkataster Rendsburg-Eckernförde ist online!“ — kostenlose Auskunft der Klimaschutzagentur, ob sich eine PV-Anlage lohnt. Kein Zuschuss."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/aktuelles/foerderungen/",
+        "finding": "Am 22.09.2026 gelesen (Prüfung Achterwehr): im Amt geförderte Maßnahmen nur LED-Umrüstungen der Gemeinde Ottendorf — Fördermittel an die Gemeinde."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (zuletzt am 15.10.2026 im Lauf Schlei-Ostsee gelesen): antragsberechtigt nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen — keine Privathaushalte."
+      }
+    ]
   }
 ]
