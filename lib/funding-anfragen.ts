@@ -85,16 +85,29 @@ export function faelligeAnfragen(
     empfaenger: string | null;
     /** Tage seit dem Kommunen-Anschreiben an dieselbe Stelle; null = keins. */
     tageSeitBrief?: number | null;
+    /** Region key of the municipality the question goes to. */
+    region?: string | null;
   }[],
   schonGefragt: Set<string>,
   max = MAX_JE_LAUF,
+  /** Regions that already received a question, under any case id. */
+  gefragteRegionen: Set<string> = new Set(),
 ): { senden: string[]; uebersprungen: { programId: string; grund: string }[] } {
   const senden: string[] = [];
   const uebersprungen: { programId: string; grund: string }[] = [];
+  // One municipality, one question. A catalogue programme and a reviewed
+  // clarification are different case ids for the same office (Gerbrunn,
+  // 14 Oct 2026: both were queued), so "never twice" has to hold per region,
+  // not only per id — within the run as well as across runs.
+  const regionen = new Set(gefragteRegionen);
   for (const k of kandidaten) {
     if (!k.eskaliert) continue;
     if (schonGefragt.has(k.programId)) {
       uebersprungen.push({ programId: k.programId, grund: "schon einmal gefragt — kein Nachfassen" });
+      continue;
+    }
+    if (k.region && regionen.has(k.region)) {
+      uebersprungen.push({ programId: k.programId, grund: "dieselbe Gemeinde wurde schon gefragt — kein zweiter Brief" });
       continue;
     }
     if (!k.empfaenger) {
@@ -113,8 +126,38 @@ export function faelligeAnfragen(
       continue;
     }
     senden.push(k.programId);
+    if (k.region) regionen.add(k.region);
   }
   return { senden, uebersprungen };
+}
+
+/**
+ * Builds the selected cases in order until `max` are ready.
+ *
+ * A case rejected while building (mailbox not verifiable, mandatory notice
+ * missing) must not take a slot: on 14 and 15 Oct 2026 one unverifiable
+ * mailbox sat at the front of the queue and cost every run one of its three
+ * places, indefinitely. The rejected ones are returned so the run still
+ * reports them.
+ */
+export async function bisZurHoechstzahl<T>(
+  ids: string[],
+  bauen: (id: string) => Promise<T>,
+  istAbgewiesen: (e: unknown) => boolean,
+  max = MAX_JE_LAUF,
+): Promise<{ fertige: T[]; abgewiesen: { id: string; fehler: unknown }[]; uebrig: string[] }> {
+  const fertige: T[] = [];
+  const abgewiesen: { id: string; fehler: unknown }[] = [];
+  let i = 0;
+  for (; i < ids.length && fertige.length < max; i++) {
+    try {
+      fertige.push(await bauen(ids[i]));
+    } catch (e) {
+      if (!istAbgewiesen(e)) throw e;
+      abgewiesen.push({ id: ids[i], fehler: e });
+    }
+  }
+  return { fertige, abgewiesen, uebrig: ids.slice(i) };
 }
 
 /**

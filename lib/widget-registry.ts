@@ -514,7 +514,7 @@ export const WIDGETS = {
   },
   regionalAnnualGrowth: {
     id: "regional-annual-growth", title: "Zubau pro Jahr", kind: "chart",
-    configuration: {presentations:{full:widgetVariant('cartesian',{supportsAllocation:true,minAllocatedHeight:640,gridSizes:['list','stage'],plot:'fixed-responsive'})},themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Jährlicher Zubau an Solaranlagen", period: "Verfügbare Registerjahre"},
+    configuration: {presentations:{full:widgetVariant('cartesian',{supportsAllocation:true,minAllocatedHeight:640,gridSizes:['list','stage'],plot:'fixed-responsive'}),compact:widgetVariant('cartesian',{label:'Kompakte Einbettung',params:{presentation:'compact'},supportsAllocation:true,minAllocatedHeight:400,plot:'fixed-responsive',includes:['Title','Period controls','Annual bars and labels','Source and Solar Check credit','Help and export'],omits:[]})},themes: ["light", "dark", "hero"], background: false, sharing: true, data: "Jährlicher Zubau an Solaranlagen", period: "Verfügbare Registerjahre"},
     place: {title: "Zubau pro Jahr · {ort}", shareText: "Zubau pro Jahr · {ort} – Solar Check"},
     exampleParams: {ags: "05370020"},
     shareUrl: `${SITE}/solar-atlas`, shareText: "Zubau pro Jahr – Solar Check",

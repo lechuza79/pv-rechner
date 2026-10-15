@@ -4,6 +4,15 @@ import {curatedGalleryEntries} from '../widget-gallery';
 import {WIDGET_GRID_SIZES,gridExtent} from '../widget-composition';
 import {embedCode} from '../embed-code';
 describe('Reference widget contracts',()=>{
+ it('offers a compact annual-growth embed without changing existing full grid slots',()=>{
+  const full=widgetPresentationContract('regional-annual-growth')!;
+  const compact=widgetPresentationContract('regional-annual-growth','compact')!;
+  expect(full.minAllocatedHeight).toBe(640);
+  expect(full.gridSizes).toEqual(['list','stage']);
+  expect(compact.minAllocatedHeight).toBe(400);
+  expect(compact.params).toEqual({presentation:'compact'});
+  expect(compact.gridSizes).toBeUndefined();
+ });
  it('declares real variants with ordered width requirements and uncropped content height',()=>{
   for(const id of ['pv-kostenrennen','gemeinde-ranking','stromhandel','welt-zubaurennen','regional-current-power']){
    const full=widgetPresentationContract(id)!;

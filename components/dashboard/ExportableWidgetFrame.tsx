@@ -1,5 +1,6 @@
 "use client";
 import {useCallback, useEffect, useLayoutEffect, useState, type ComponentProps, type ReactNode, type Ref} from 'react';
+import {fsPx} from "../../lib/theme";
 import {trackWidgetEvent} from "../../lib/analytics";
 import {widgetScope, WIDGET_ACTIONS, type WidgetAction} from "../../lib/widget-analytics";
 import {captureNodeToBlob} from '../../lib/chart-export';
@@ -219,8 +220,10 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
       }
       const a = body.getBoundingClientRect(), b = plot.getBoundingClientRect();
       const controls = partner ? frameNode?.querySelector<HTMLElement>('.sc-widget-tools') : undefined;
-      const top = controls ? controls.getBoundingClientRect().bottom + 8 : b.top;
-      setPlotRail({top: top-a.top, height: Math.max(0,b.bottom-10-top)});
+      // Ordinary embeds use the complete chart area, including annotation space.
+      const chartTop = plot.closest<HTMLElement>('[data-widget-plot]')?.getBoundingClientRect().top ?? b.top;
+      const top = controls ? controls.getBoundingClientRect().bottom + 8 : chartTop;
+      setPlotRail({top: top-a.top, height: Math.max(0,b.bottom-(partner ? 10 : 0)-top)});
     };
     measure();
     const observer = new ResizeObserver(measure);
@@ -297,7 +300,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
           } : undefined,
         }:undefined}
         // Only a registered embed route can produce usable embed code.
-        embed={einbetten && embeddable(def) ? {onEmbed: () => setEmbedOpen(true),direct:einbetten.preview} : {unavailable: 'Für dieses Diagramm noch nicht verfügbar.'}} />;
+        embed={einbetten && embeddable(def) ? {onEmbed: () => setEmbedOpen(true),direct:def.id === "regional-annual-growth" ? false : einbetten.preview} : {unavailable: 'Für dieses Diagramm noch nicht verfügbar.'}} />;
   const exportCaption = exportDescription ?? frame.subtitle;
   const redundantCaption = typeof exportCaption === 'string' && exportUnit && chartQuantityLabel(exportCaption) === chartQuantityLabel(exportUnit);
   const content = <ExportNotesProvider>
@@ -310,7 +313,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
         ? <div data-partner-header-measure="" data-sc-export-ignore="" aria-hidden="true" inert style={{position:"absolute",insetInline:0,top:0,visibility:"hidden",opacity:0,pointerEvents:"none"}}><WidgetBrandHeader brand={partner.brand} mode="full"/></div>
         : <WidgetBrandHeader brand={partner.brand} mode={partner.header}/> : frame.masthead}
       context={frame.context ?? (partner ? `Stand: ${stand}` : undefined)}
-      bodyAside={partner || sourcePlacement === 'plot' ? <div data-plot-source-rail style={{position:'absolute',top:plotRail?.top ?? 12,height:plotRail?.height,bottom:plotRail ? undefined : 16,right:6,width:28,pointerEvents:'none'}}><WidgetSourceEdge widget={def} stand={stand} visible={!!partner || sourceVisible} spalten={2} ownCredit={!!partner || sourceBranding} minFontSize={partner ? 10 : undefined}/></div> : frame.bodyAside}
+      bodyAside={partner || sourcePlacement === 'plot' ? <div data-plot-source-rail style={{position:'absolute',top:plotRail?.top ?? 12,height:plotRail?.height,bottom:plotRail ? undefined : 16,right:6,width:28,pointerEvents:'none'}}><WidgetSourceEdge widget={def} stand={stand} visible={!!partner || sourceVisible} spalten={2} ownCredit={!!partner || sourceBranding} minFontSize={fsPx("--font-size-micro")}/></div> : frame.bodyAside}
       exportSubtitle={<>
         {chartMetadataLabel({scope:exportScope ?? (typeof frame.title === 'string' && place && frame.title.includes(place) ? undefined : place), dataAsOf:stand, unit:exportUnit, period:stateLabel})}
         {exportCaption && !redundantCaption && <> · {typeof exportCaption === 'string' ? chartQuantityLabel(exportCaption) : exportCaption}</>}

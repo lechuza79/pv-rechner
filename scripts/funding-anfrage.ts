@@ -447,7 +447,7 @@ async function zeigeListe(d: Db) {
 async function autoLauf(d: Db, senden: boolean) {
   const { FUNDING_PROGRAMS } = await import("../lib/funding-programs");
   const { arbeitsvorrat, istErreichbarkeit } = await import("../lib/funding-verify-state");
-  const { faelligeAnfragen } = await import("../lib/funding-anfragen");
+  const { faelligeAnfragen, bisZurHoechstzahl } = await import("../lib/funding-anfragen");
   const { heuteInBerlin } = await import("../lib/zeit");
 
   // Die Spalte heißt in der Tabelle `source` und im Modell `erreichbarkeit` —
@@ -489,13 +489,25 @@ async function autoLauf(d: Db, senden: boolean) {
     (await hole<{ program_id: string }>(d, "funding_anfragen?select=program_id&order=id")).map((z) => z.program_id),
   );
 
+  const regionVon = (id: string): string | null => clarification(id)?.regionId ?? FUNDING_PROGRAMS[id]?.agsCode ?? null;
+  // Regions with a reviewed clarification queued: the catalogue path stays out
+  // of them, so the municipality gets the specific question, not a second one.
+  const vorgemerkt = new Set(municipalReviews.filter(r => r.outcome === "klaerung" && r.enquiry).map(r => r.regionId));
+  const gefragteRegionen = new Set([...gefragt].map(regionVon).filter((r): r is string => !!r));
+
   const kandidaten = [];
   for (const s of stand.filter((x) => x.eskalation)) {
+    const region = regionVon(s.programId);
+    if (region && vorgemerkt.has(region)) {
+      console.log(`Nicht ausgewählt: ${s.programId} — für diese Gemeinde ist eine geprüfte Rückfrage vorgemerkt.`);
+      continue;
+    }
     kandidaten.push({
       programId: s.programId,
       eskaliert: true,
       empfaenger: await empfaengerFuer(d, s.programId),
       tageSeitBrief: await tageSeitAnschreiben(d, s.programId),
+      region,
     });
   }
 
@@ -508,12 +520,13 @@ async function autoLauf(d: Db, senden: boolean) {
       console.log(`Nicht ausgewählt: ${review.enquiry.id} — Kontaktsperre oder fehlender Kontaktstatus.`);
       continue;
     }
-    kandidaten.unshift({ programId: review.enquiry.id, eskaliert: true, empfaenger: review.enquiry.recipient, tageSeitBrief: await tageSeitAnschreiben(d, review.enquiry.id) });
+    kandidaten.unshift({ programId: review.enquiry.id, eskaliert: true, empfaenger: review.enquiry.recipient, tageSeitBrief: await tageSeitAnschreiben(d, review.enquiry.id), region: review.regionId });
   }
   const requestedCase = arg("fall");
   if (requestedCase && !clarification(requestedCase)) abbruch("Unbekannte oder abgeschlossene kommunale Rückfrage.");
   const selected = requestedCase ? kandidaten.filter(k => k.programId === requestedCase) : kandidaten;
-  const { senden: zuSenden, uebersprungen } = faelligeAnfragen(selected, gefragt);
+  // Selection without the cap; the cap applies to cases that actually build.
+  const { senden: zuSenden, uebersprungen } = faelligeAnfragen(selected, gefragt, Infinity, gefragteRegionen);
 
   console.log(`Prüffälle (Quellenausfall oder geprüfte Sachfrage): ${kandidaten.length}`);
   for (const u of uebersprungen) console.log(`  übersprungen: ${u.programId} — ${u.grund}`);
@@ -521,19 +534,10 @@ async function autoLauf(d: Db, senden: boolean) {
     console.log("Nichts zu fragen.");
     return;
   }
-  console.log(`Fällig: ${zuSenden.join(", ")}`);
-
-  const fertige = [];
-  const abgewiesen: string[] = [];
-  for (const id of zuSenden) {
-    try {
-      fertige.push(await baueAnfrage(d, id));
-    } catch (e) {
-      if (!(e instanceof FallAbgewiesen)) throw e;
-      abgewiesen.push(id);
-      console.error(`Abgewiesen: ${id} — ${e.message}`);
-    }
-  }
+  const { fertige, abgewiesen, uebrig } = await bisZurHoechstzahl(zuSenden, id => baueAnfrage(d, id), e => e instanceof FallAbgewiesen);
+  for (const a of abgewiesen) console.error(`Abgewiesen: ${a.id} — ${(a.fehler as Error).message}`);
+  for (const id of uebrig) console.log(`  übersprungen: ${id} — Höchstzahl dieses Laufs erreicht`);
+  console.log(`Fällig: ${fertige.map(f => f.id).join(", ") || "—"}`);
   // A rejected case still turns the run red, but only after the others went out.
   if (abgewiesen.length) process.exitCode = 1;
   if (!fertige.length) return;

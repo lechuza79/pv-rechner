@@ -186,7 +186,7 @@ Dann per Auge in `lib/aircon-config.ts`:
       Fraunhofer ISE macht nur Wärmepumpen.) Falls doch → großer Fund, Config neu
       herleiten.
 
-### 4.5 SCOP: Systematik umgestellt, Faktor noch übertragen (Frist 10/2026)
+### 4.5 SCOP: Systematik umgestellt, Faktor noch übertragen (Frist 01/2027)
 
 **Erledigt am 28.07.2026 (Entscheidung des Betreibers):** `scop` läuft jetzt über
 dieselbe Ableitung wie `seer` — `effectiveScop(labelScop) = labelScop ×
@@ -234,7 +234,7 @@ Vorschlag. Entschieden hat sie deshalb ein Mensch, nicht der Wächter.
    unsere Basis. Wer versehentlich die Warmer-Spalte zieht, überschätzt um ~20 %.
    Erkennbar an den 1400 Volllaststunden: `SCOP = Pdesign × 1400 h / Verbrauch`.
 
-**Schritte zum Auflösen (bis 10/2026):**
+**Schritte zum Auflösen (bis 01/2027):**
 - [x] `labelScop` + `effectiveScop` analog `effectiveSeer` eingeführt, beide
       Split-Typen gemeinsam umgestellt (28.07.2026).
 - [x] Wärmepreis-Invariante gegengeprüft: 3,4/3,6 ergibt 10,0 bzw. 9,4 ct/kWh
@@ -246,6 +246,11 @@ Vorschlag. Entschieden hat sie deshalb ein Mensch, nicht der Wächter.
       sciencedirect.com läuft in 403 (geprüft 28.07.2026); OpenAlex, Crossref und
       Semantic Scholar führen kein Abstract. Nächste Stufen: Bibliothekszugang,
       Autorenanfrage (Volkan Erginer / G. Aydoğdu), Fernleihe.
+      15.10.2026 erneut geprüft, alle freien Wege zu (Unpaywall/OpenAlex
+      „closed", ScienceDirect/ResearchGate/CORE 403, ORCID-Werkliste ohne
+      Preprint). Kauf bzw. Autorenanfrage dem Betreiber vorgelegt; Frist einmal
+      auf 01/2027 verlängert. Ohne Freigabe bis dahin: als „geprüft, Beleg nicht
+      beschaffbar" schließen, nicht erneut verlängern.
 - [ ] Trägt der Volltext einen **SCOP**-spezifischen Abschlag → `effectiveScop`
       bekommt einen eigenen Faktor statt `AC_REAL_FACTOR`.
 - [ ] Trägt er einen **SEER**-spezifischen Abschlag → `AC_REAL_FACTOR` selbst
@@ -255,7 +260,7 @@ Vorschlag. Entschieden hat sie deshalb ein Mensch, nicht der Wächter.
 - [ ] Trägt er keinen von beiden → bewusst so lassen und das hier als „geprüft,
       Beleg existiert nicht" abschließen, statt die Frist stumpf zu verlängern.
 
-Die Frist selbst hängt am Marker `OFFEN (bis 10/2026)` in `lib/aircon-config.ts`
+Die Frist selbst hängt am Marker `OFFEN (bis 01/2027)` in `lib/aircon-config.ts`
 und wird von `lib/__tests__/offene-punkte-waechter.test.ts` erzwungen — läuft sie
 ab, schlägt der Pre-commit-Hook an.
 

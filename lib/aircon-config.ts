@@ -178,10 +178,16 @@ export interface AcDevice {
   // steht bei effectiveScop. Das ist die bewusst konservative Wahl (Entscheidung
   // des Betreibers, 28.07.2026) statt eines unbelegten Handwerts.
   //
-  // OFFEN (bis 10/2026): Der am Heizen belegte Abschlag steht nur im
+  // OFFEN (bis 01/2027): Der am Heizen belegte Abschlag steht nur im
   // kostenpflichtigen Volltext der Leitquelle. Kommt er, ersetzt er den
   // übertragenen Faktor (Runbook 4.5) — dann bekommt effectiveScop einen eigenen
   // Faktor statt AC_REAL_FACTOR.
+  // Frist am 15.10.2026 um ein Quartal verlängert: Alle freien Wege sind erneut
+  // geprüft und zu (Unpaywall/OpenAlex "closed", ScienceDirect/ResearchGate/CORE
+  // 403, ORCID ohne Preprint). Was bleibt, kostet Geld (Kauf ~30 €) oder ist
+  // neuer Außenkontakt (Autorenanfrage) — beides liegt beim Betreiber und ist ihm
+  // mit Empfehlung vorgelegt. Ohne Freigabe bis 01/2027: als „geprüft, Beleg
+  // nicht beschaffbar“ schließen statt erneut verlängern.
   //
   // Recherchestand 07/2026 (zwei unabhängige Läufe, Herstellerdatenblätter):
   //  · Mobile Split: der einzige belegte Labelwert der ganzen Kategorie ist
@@ -498,13 +504,10 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   source: "ERA5 (Copernicus) über das offene Datenarchiv von Open-Meteo (Kühlgradstunden heute), NASA NEX-GDDP-CMIP6 mit acht Klimamodellen (Projektion), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
   validFrom: "2026-07-15",
-  // Jüngster Tag, für den eine Prüfung der KÜHL-Werte im Repo belegt ist: der
-  // Monoblock-Preis wurde am 27.07.2026 gegen Que Choisir (via test.de) neu
-  // belegt. Bewusst NICHT der spätere Commit vom 31.07.2026 — der betraf die
-  // Heizseite. `validFrom` bleibt beim 15.07., dem Stand der Werte.
-  geprueftIso: "2026-07-27",
-  // Von den beiden zusammengefuehrten Staenden gewinnt das FRUEHERE Pruefdatum:
-  // Der Quartals-Waechter laeuft ohnehin, und das spaetere Datum wuerde die
-  // Kuehl-Effizienzen laenger ungeprueft altern lassen.
-  reviewBy: "2026-10-15",
+  // Quarterly run 15.10.2026 reached the lead sources (EPREL fiches, Eurovent
+  // certificates, retailer listings, reduco cost guide, EU "Have your say" API)
+  // and confirmed every label, SCOP and price value unchanged. `validFrom` stays
+  // at 15.07., the date of the values themselves.
+  geprueftIso: "2026-10-15",
+  reviewBy: "2027-01-15",
 };

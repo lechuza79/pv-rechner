@@ -210,7 +210,7 @@
 .sc-widget-actions{position:relative;z-index:1;}
 
 /* The annual chart reserves a source lane beside its plot, never beside its footer. */
-.sc-widget[data-source-placement=plot] .sc-widget-body{position:relative;padding-right:34px;}
+.sc-widget[data-source-placement=plot] .sc-widget-body{position:relative;padding-right:calc(var(--plot-source-width,28px) + 12px);}
 @container(max-width:420px){
  .sc-widget[data-source-placement=plot] .sc-widget-head{flex-direction:column;gap:12px;}
  .sc-widget[data-source-placement=plot] .sc-widget-head h4{flex:none;}
