@@ -32,8 +32,23 @@ async function mittigKlicken(ziel: import("@playwright/test").Locator) {
 }
 
 async function platzierungWaehlen(page: import("@playwright/test").Page, wahl: string) {
-  await mittigKlicken(page.getByRole("button", { name: /Platzierung nach/ }));
-  await mittigKlicken(page.getByRole("button", { name: wahl, exact: true }).first());
+  // By keyboard, like the jump test below: the stress run (4 workers, 15 Oct
+  // 2026) showed the pointer losing to a page that is still shifting — tooltip,
+  // place search and the opened table took turns covering the trigger even
+  // after centring. This test is about where the box lands, not about pointer
+  // reachability, and Enter on a focused button is the same activation.
+  const trigger = page.getByRole("button", { name: /Platzierung nach/ });
+  const option = trigger.locator("xpath=..").getByRole("button", { name: wahl, exact: true });
+  await expect(async () => {
+    if (!(await option.isVisible())) {
+      await trigger.focus();
+      await page.keyboard.press("Enter");
+    }
+    await expect(option).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 15_000 });
+  await option.focus();
+  await page.keyboard.press("Enter");
+  await expect(option).toBeHidden();
 }
 
 
