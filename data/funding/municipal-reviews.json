@@ -61941,8 +61941,8 @@
     },
     "enquiry": {
       "id": "klaerung-03459007",
-      "recipient": "badbergen@artland.de",
-      "recipientSource": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+      "recipient": "info@artland.de",
+      "recipientSource": "https://www.artland.de/impressum",
       "website": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
       "question": "Auf der Seite der Samtgemeinde Artland steht für den Badberger Klimafonds, dass für 2025 Haushaltsmittel bereitgestellt wurden; für Quakenbrück und Menslage ist 2026 bereits genannt. Stehen für den Badberger Klimafonds auch 2026 Mittel bereit, sodass Anträge für Photovoltaik-Dachanlagen und Speicher möglich sind?"
     }
@@ -97596,16 +97596,9 @@
       }
     ],
     "nextAction": {
-      "kind": "enquiry",
-      "dueAt": "2026-10-15T07:00:00Z",
-      "detail": "Rückfrage an das Amt Dänischer Wohld vormerken (Versand nur über den bestehenden Versandlauf zur Bürozeit). Bis zur Antwort kein Katalogeintrag; nach 14 Tagen ohne Antwort Amtsseiten und Ortsrecht erneut prüfen."
-    },
-    "enquiry": {
-      "id": "klaerung-01058165",
-      "recipient": "poststelle@amtdw.landsh.de",
-      "recipientSource": "https://www.amt-daenischer-wohld.de/politik-amt-gemeinden/ortsrecht/",
-      "website": "https://www.amt-daenischer-wohld.de",
-      "question": "Das Klimaschutzkonzept der Gemeinde Tüttendorf (Stand 11/2025) nennt als Maßnahme einen Zuschuss der Gemeinde für Balkonkraftwerke, Photovoltaik-Anlagen und Speicher und als nächsten Schritt eine Förderrichtlinie. Hat die Gemeindevertretung Tüttendorf eine solche Richtlinie beschlossen, und kann man derzeit einen Zuschuss beantragen? Falls ja: Wo finde ich die Richtlinie mit Betrag und Bedingungen? Falls nein, hilft mir auch diese kurze Auskunft."
+      "kind": "manual",
+      "dueAt": "2026-10-16T08:00:00Z",
+      "detail": "Die einzige veröffentlichte Adresse des Amts Dänischer Wohld ist poststelle@amtdw.landsh.de (Landesnetz-Domain, nicht die Amtswebsite amt-daenischer-wohld.de); der Versand kann sie nicht als Postfach dieser Gemeinde belegen und weist sie ab. Nächster Schritt: Kontaktformular oder eine Adresse auf der Amtswebsite suchen; sonst die Frage über die Gemeinde Tüttendorf selbst stellen."
     }
   },
   {
@@ -98079,6 +98072,209 @@
         "disposition": "reviewed",
         "reason": "Klimaschutzkonzept 2023, Maßnahme ENER-1 „Förderprogramm Balkonkraftwerke“ geplant; der Verwaltungsbericht 2025 nennt die umgesetzten Klimaschutzmaßnahmen ohne ein solches Programm, die Volltextsuche findet keines.",
         "evidenceUrl": "https://www.schwentinental.de/fileadmin/user_upload/Verwaltungsbericht_2025.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01057043",
+    "name": "Laboe",
+    "checkedAt": "2026-10-15T08:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Laboe (Amt Probstei) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Der Haushaltsplan 2026 enthält PV nur für die gemeindeeigene Sporthalle und Zuschüsse nur an Vereine, Feuerwehr, Jugend- und Seniorenarbeit sowie einen Beitrag an die Klimaschutzagentur des Kreises; die Volltextsuche des Amtes findet kein Gemeindeprogramm. Das Kreisprogramm gilt nur für Kommunen und Einrichtungen, das Landesprogramm ist seit 16.11.2023 gestoppt. Stand 15.10.2026.",
+    "searches": [
+      "amt-probstei.de Volltextsuche (15.10.2026): Balkonkraftwerk, Photovoltaik, Förderung, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderrichtlinie",
+      "Haushaltsplan 2026 Laboe (PDF, 13.651 Zeilen) nach Photovoltaik, Balkon, Stecker, Wärmepumpe, Klimaschutz, Zuschuss durchsucht",
+      "Kreisprogramm Plön (Richtlinie Nr. 27) aus dem Lauf 15.10.2026 06Z: nur Kommunen/Einrichtungen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-probstei.de/suche?id=57&tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "Volltextsuche amt-probstei.de (Amt und Gemeinden der Probstei, darunter Laboe und Schönberg) am 15.10.2026: Balkonkraftwerk (keine Treffer), Photovoltaik, Förderung, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderrichtlinie — Treffer nur Haushaltspläne, Vergaben (PV auf Gemeindegebäuden), Fördermaßnahmen FÜR die Gemeinden (Kommunalrichtlinie, Schulsanierung), Behördenwegweiser; kein Gemeindeprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-probstei.de/fileadmin/Dateien/Buergerservice___Politik/Buergerservice/Satzungen/Laboe/Laboe_Haushalt_2026_0526.pdf",
+        "finding": "Haushaltsplan 2026: „Sporthalle: Photovoltaikanlage“ (Investition der Gemeinde); Transferkonten 5318xx nur Feuerwehr, Grundschule, VHS, Kinder-/Jugendfreizeiten, Weihnachtshilfswerk, Seniorenarbeit, Nachtbus, Ferienpass, Vereine; 11170.542904 „Klimaschutzagentur des Kreises“ 15.000 € — kein Förderansatz für Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/fachinhalte/F/foerderprogramme/MELUR/LPLR/europaeischerLandwirtschaftsfondsEinstieg.html",
+        "finding": "Landesseite „Förderung der ländlichen Entwicklung durch den Europäischen Landwirtschaftsfonds für die Entwicklung des ländlichen Raums (ELER)“, letzte Aktualisierung 08.04.2021 — EU-/Landesförderung des ländlichen Raums, kein Zuschuss einer Gemeinde für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schleswig-holstein.de/DE/fachinhalte/F/foerderprogramme/MELUR/LPLR/europaeischerLandwirtschaftsfondsEinstieg.html",
+        "disposition": "reviewed",
+        "reason": "Landesseite zum EU-Landwirtschaftsfonds für den ländlichen Raum (ELER) — kein Gemeindeprogramm für Haushalte.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/fachinhalte/F/foerderprogramme/MELUR/LPLR/europaeischerLandwirtschaftsfondsEinstieg.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01057073",
+    "name": "Schönberg (Holstein)",
+    "checkedAt": "2026-10-15T08:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schönberg (Holstein) (Amt Probstei) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Der Haushaltsplan 2026 führt Photovoltaik und Wärmepumpe nur als Hochbaumaßnahme an der gemeindeeigenen Liegenschaft Sprüttenhuus und Zuschüsse nur an Vereine, Tafel, Senioren- und Jugendarbeit sowie den Umweltbeirat; die Volltextsuche des Amtes findet kein Gemeindeprogramm. Stand 15.10.2026.",
+    "searches": [
+      "amt-probstei.de Volltextsuche (15.10.2026): Balkonkraftwerk, Photovoltaik, Förderung, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderrichtlinie",
+      "Haushaltsplan 2026 Schönberg (PDF, 11.439 Zeilen) nach Photovoltaik, Balkon, Stecker, Wärmepumpe, Klimaschutz, Zuschuss durchsucht",
+      "Kreisprogramm Plön (Richtlinie Nr. 27) aus dem Lauf 15.10.2026 06Z: nur Kommunen/Einrichtungen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-probstei.de/suche?id=57&tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "Volltextsuche amt-probstei.de (Amt und Gemeinden der Probstei, darunter Laboe und Schönberg) am 15.10.2026: Balkonkraftwerk (keine Treffer), Photovoltaik, Förderung, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderrichtlinie — Treffer nur Haushaltspläne, Vergaben (PV auf Gemeindegebäuden), Fördermaßnahmen FÜR die Gemeinden (Kommunalrichtlinie, Schulsanierung), Behördenwegweiser; kein Gemeindeprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.amt-probstei.de/fileadmin/Dateien/Buergerservice___Politik/Buergerservice/Satzungen/Schoenberg/Schoenberg_Haushalt_2026.pdf",
+        "finding": "Haushaltsplan 2026: Liegenschaft Sprüttenhuus „Auszahlungen aus Hochbaumaßnahmen — Photovoltaik, Wärmepumpe 70.000“ (Gemeindegebäude); Transferkonten nur Feuerwehr, Tafel, Seniorenarbeit, Umweltbeirat, Jugendverbände, Spieliothek — kein Förderansatz für Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/fachinhalte/F/foerderprogramme/MELUR/LPLR/europaeischerLandwirtschaftsfondsEinstieg.html",
+        "finding": "Landesseite „Förderung der ländlichen Entwicklung durch den Europäischen Landwirtschaftsfonds für die Entwicklung des ländlichen Raums (ELER)“, letzte Aktualisierung 08.04.2021 — EU-/Landesförderung des ländlichen Raums, kein Zuschuss einer Gemeinde für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schleswig-holstein.de/DE/fachinhalte/F/foerderprogramme/MELUR/LPLR/europaeischerLandwirtschaftsfondsEinstieg.html",
+        "disposition": "reviewed",
+        "reason": "Landesseite zum EU-Landwirtschaftsfonds für den ländlichen Raum (ELER) — kein Gemeindeprogramm für Haushalte.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/fachinhalte/F/foerderprogramme/MELUR/LPLR/europaeischerLandwirtschaftsfondsEinstieg.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01057047",
+    "name": "Löptin",
+    "checkedAt": "2026-10-15T08:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Löptin (Amt Preetz-Land) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine Förderrichtlinie, die Gemeindeseite findet zu Förderprogramm, Photovoltaik, Balkon, Solar, Zuschuss und Wärmepumpe nichts, das aktuelle Amtsblatt nennt kein Programm. Stand 15.10.2026.",
+    "searches": [
+      "loeptin.4lima.de Suche (15.10.2026): förderprogramm, Photovoltaik, Balkon, Solar, Zuschuss, Förderung (nur Visitenkarte), Wärmepumpe",
+      "amtpreetzland.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Förderprogramm, Zuschuss Photovoltaik, Wärmepumpe",
+      "Ortsrecht Löptin (10 Satzungen) gesichtet",
+      "Amtsschimmel 09-10/2026 (PDF) durchsucht"
+    ],
+    "evidence": [
+      {
+        "url": "https://loeptin.4lima.de/?print&function=search&search=f%C3%B6rderprogramm",
+        "finding": "Gemeindeseite Löptin: Suchergebnis „förderprogramm“ wurde nicht gefunden; ebenso Photovoltaik, Balkon, Solar, Zuschuss, Wärmepumpe."
+      },
+      {
+        "url": "https://www.amtpreetzland.de/verwaltung-politik/kommunalpolitik/ortsrecht-satzungen/Stichwort/loeptin",
+        "finding": "Ortsrecht Löptin am 15.10.2026: Hauptsatzung (2024), Entschädigungs-, Hundesteuer-, Straßenreinigungs-, Wasser- und Abwassersatzungen, Benutzungsordnung Dorfhaus — keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.amtpreetzland.de/fileadmin/Amt/Dateien/Mitteilungsblatt/Jahrgang_2026/Amtsschimmel_5-26_online.pdf",
+        "finding": "Amtsblatt „Amtsschimmel“ 09-10/2026 durchsucht: Photovoltaik nur in einer Firmenanzeige zur EEG-Vergütung, kein Förderprogramm einer Gemeinde. Volltextsuche amtpreetzland.de: Balkonkraftwerk keine Treffer; Förderprogramm/Wärmepumpe nur ältere Amtsblätter und ein kostenloser Wärmepumpen-Eignungstest im Barkauer Land."
+      }
+    ],
+    "sources": [
+      {
+        "url": "loeptin.4lima.de/?amp;print&amp;function=search&amp;search=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite der Gemeinde: „Suchergebnis „förderprogramm“ wurde nicht gefunden.“; Ortsrecht ohne Förderrichtlinie.",
+        "evidenceUrl": "https://www.amtpreetzland.de/verwaltung-politik/kommunalpolitik/ortsrecht-satzungen/Stichwort/loeptin"
+      }
+    ]
+  },
+  {
+    "regionId": "01057053",
+    "name": "Nehmten",
+    "checkedAt": "2026-10-15T08:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nehmten (Amt Großer Plöner See) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht der Gemeinde (Hauptsatzung 2026, Friedhof, Hebesätze, Kindergarten, Straßenreinigung, Wasser, Zweitwohnungssteuer) enthält keine Förderrichtlinie, die Suche der Amtsseite findet zu Balkonkraftwerk, Photovoltaik, Förderrichtlinie und Wärmepumpe keine Ergebnisse, die Gemeindeseite ebenso nichts. Stand 15.10.2026.",
+    "searches": [
+      "nehmten.de Suche (15.10.2026): förderprogramm, Photovoltaik, Balkon, Solar, Zuschuss, Förderung, Wärmepumpe — jeweils nicht gefunden",
+      "amt-gps.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Förderrichtlinie, Wärmepumpe — „Keine Ergebnisse gefunden.“",
+      "Ortsrecht Nehmten (9 Satzungen) und Gemeindeseite auf amt-gps.de gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://nehmten.de/?function=search&search=f%C3%B6rderprogramm",
+        "finding": "Gemeindeseite Nehmten: Suchergebnis „förderprogramm“ wurde nicht gefunden; ebenso Photovoltaik, Balkon, Solar, Zuschuss, Förderung, Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-gps.de/amtsverwaltung-politik/ortsrecht",
+        "finding": "Ortsrecht Nehmten: Entschädigungs-, Friedhofs-, Friedhofsgebühren-, Haupt- (2026), Hebesatz-, Kindergarten-, Straßenreinigungs-, Wasser- und Zweitwohnungssteuersatzung — keine Förderrichtlinie. Amtssuche zu Balkonkraftwerk/Photovoltaik/Förderrichtlinie/Wärmepumpe: „Keine Ergebnisse gefunden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "nehmten.de/?amp;print&amp;function=search&amp;search=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchseite der Gemeinde: „Suchergebnis „förderprogramm“ wurde nicht gefunden.“; Ortsrecht ohne Förderrichtlinie.",
+        "evidenceUrl": "https://www.amt-gps.de/amtsverwaltung-politik/ortsrecht"
+      }
+    ]
+  },
+  {
+    "regionId": "01060",
+    "name": "Kreis Segeberg",
+    "checkedAt": "2026-10-15T08:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Kreis Segeberg hat keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Bürgerservice-Einträge zu Balkon-PV und Heizungen beschreiben das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Investitionsbank SH), das seit dem 16.11.2023 gestoppt ist; die übrigen Treffer sind Bundesleistungen (BEG/KfW, Energieberatung) und das Solarkataster. Das Klimaschutzkonzept setzt auf Energieberatung und Effizienznetzwerke, nicht auf Zuschüsse. Stand 15.10.2026.",
+    "searches": [
+      "segeberg.de Volltextsuche (15.10.2026): Balkonkraftwerk, Photovoltaik, Förderprogramm, Batteriespeicher, Wärmepumpe, Klimaschutzfonds, Förderrichtlinie",
+      "Bürgerservice-Einträge Balkon-PV (Landesprogramm) und Solarpanelen (Leistungskatalog) im Original gelesen",
+      "Lebenslagen-Seite Klimaschutz und Energie gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=3466.2110.1",
+        "finding": "Bürgerservice-Eintrag (Landesleistung, Ansprechpunkt Investitionsbank SH): „Im Rahmen des Förderprogramms »Klimaschutz für Bürgerinnen und Bürger« konnten Sie folgende Fördergegenstände beantragen: PV-Balkon-Anlage: max. Förderung 200 Euro“; Hinweis: „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden aktuell bearbeitet“ — Landesprogramm, gestoppt, kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.segeberg.de/index.php?ffmod=suche&such=Photovoltaik",
+        "finding": "Volltextsuche segeberg.de am 15.10.2026 (Balkonkraftwerk, Photovoltaik, Förderprogramm, Batteriespeicher, Wärmepumpe, Klimaschutzfonds, Förderrichtlinie): nur Bürgerservice-Einträge zu Landes-/Bundesleistungen (Landesprogramm Balkon-PV und Heizungen, gestoppt; BEG/KfW-Leistungen; Energieberatung), Solarkataster, Klimaschutzkonzept und Pressemeldungen — kein Kreisprogramm für Haushalte. Klimaschutzseite des Kreises: Ziele Energieeffizienznetzwerke, private Energieberatung, Beschaffung, Bildung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "segeberg.de/B%C3%BCrger-innen-Service/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Eintrag zu einer Landesleistung (Leistungsnummer 99400321017000 bzw. Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Balkon-PV max. 200 €, Stopp 16.11.2023) — kein Kreisprogramm.",
+        "evidenceUrl": "https://www.segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=3466.2110.1"
+      },
+      {
+        "url": "segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Eintrag zu einer Landesleistung (Leistungsnummer 99400321017000 bzw. Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Balkon-PV max. 200 €, Stopp 16.11.2023) — kein Kreisprogramm.",
+        "evidenceUrl": "https://www.segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=3466.2110.1"
+      },
+      {
+        "url": "segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=3466.14&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&ModID=10&object=tx%7C3466.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Buchstaben-Filter (A/B/C) derselben Bürgerservice-Liste, kein eigenes Dokument; der Eintrag selbst ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (gestoppt 16.11.2023).",
+        "evidenceUrl": "https://www.segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=3466.2110.1"
+      },
+      {
+        "url": "segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=3466.14&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&ModID=10&object=tx%7C3466.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Buchstaben-Filter (A/B/C) derselben Bürgerservice-Liste, kein eigenes Dokument; der Eintrag selbst ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (gestoppt 16.11.2023).",
+        "evidenceUrl": "https://www.segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=3466.2110.1"
+      },
+      {
+        "url": "segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=3466.14&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&ModID=10&object=tx%7C3466.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Buchstaben-Filter (A/B/C) derselben Bürgerservice-Liste, kein eigenes Dokument; der Eintrag selbst ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (gestoppt 16.11.2023).",
+        "evidenceUrl": "https://www.segeberg.de/B%C3%BCrger-innen-Service/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=3466.2110.1"
+      },
+      {
+        "url": "segeberg.de/B%C3%BCrger-innen-Service/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Unternehmen des Güterkraftverkehrs — andere Zielgruppe.",
+        "evidenceUrl": "https://www.segeberg.de/index.php?ffmod=suche&such=Photovoltaik"
       }
     ]
   }
