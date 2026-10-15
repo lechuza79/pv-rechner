@@ -97607,5 +97607,479 @@
       "website": "https://www.amt-daenischer-wohld.de",
       "question": "Das Klimaschutzkonzept der Gemeinde Tüttendorf (Stand 11/2025) nennt als Maßnahme einen Zuschuss der Gemeinde für Balkonkraftwerke, Photovoltaik-Anlagen und Speicher und als nächsten Schritt eine Förderrichtlinie. Hat die Gemeindevertretung Tüttendorf eine solche Richtlinie beschlossen, und kann man derzeit einen Zuschuss beantragen? Falls ja: Wo finde ich die Richtlinie mit Betrag und Bedingungen? Falls nein, hilft mir auch diese kurze Auskunft."
     }
+  },
+  {
+    "regionId": "01057",
+    "name": "Kreis Plön",
+    "checkedAt": "2026-10-15T06:11:55Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Kreis Plön fördert Photovoltaik mit Batteriespeicher nur für Kommunen, kommunale Unternehmen, Schul- und Kita-Träger, Vereine und kirchliche/gemeinnützige Einrichtungen (Richtlinie Nr. 27, 05.11.2024; Antrag bis 30.04. bei der Klimaschutzagentur), daneben E-Mobilität. Die Einträge zu Balkon-PV und Heizungen betreffen das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, das seit 16.11.2023 gestoppt ist. Kein Kreiszuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte (Stand 15.10.2026).",
+    "searches": [
+      "kreis-ploen.de Volltextsuche (15.10.2026): steckerfertige, Balkonkraftwerk, Photovoltaik, Batteriespeicher, Heizung, Klimaschutzfonds",
+      "Seite „Förderprogramme des Kreises“ und Richtlinie Photovoltaik/Batteriespeicher (PDF) im Original gelesen",
+      "Dienstleistungseinträge Steckersolar und nicht-fossile Heizungen im Browser gelesen",
+      "klimaschutz-ploen.de (Klimaschutzagentur) Startseite: nur Beratung und Fördermittelakquise für Kommunen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kreis-ploen.de/B%C3%BCrgerservice/F%C3%B6rderprogramme-des-Kreises.php?object=tx,2158.3442.1",
+        "finding": "„Förderprogramme des Kreises“ am 15.10.2026 gelesen: Richtlinie zur Förderung von Photovoltaikanlagen und Batteriespeichern — „Zuwendungsberechtigte sind Kommunen, Einrichtungen und Unternehmen, die zu 100 % in kommunaler Hand sind im Kreis Plön“ (dazu Schul-/Kita-Träger, Sportvereine, kulturelle, gemeinnützige und kirchliche Einrichtungen). Zweites Programm: E-Mobilität (öffentliche Ladeinfrastruktur, Car-/Bikesharing). Kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.kreis-ploen.de/media/custom/3932_220_1.PDF",
+        "finding": "Richtlinie (PDF) Nr. 4.1: „Zuwendungsempfänger/-innen sind die kreisangehörigen Kommunen im Kreis Plön sowie Einrichtungen im Kreis Plön, die unter 4.4 näher definiert werden.“ Gegenstand 2.1: Anlagen auf Gebäuden im Besitz von Kommunen und Einrichtungen."
+      },
+      {
+        "url": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Balkon-PV max. 200 €, Wärmepumpe max. 2.000 €): „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden aktuell bearbeitet“ — Landesprogramm, seit 16.11.2023 gestoppt, kein kommunales Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kreis-ploen.de/B%C3%BCrgerservice/Pressedienst/Anpassung-der-F%C3%B6rderrichtlinie-zur-Installation-von-Photovoltaikanlagen-in-Verbindung-mit-Batteriespeichern.php",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung 14.11.2024 zur Kreis-Richtlinie Photovoltaik mit Batteriespeicher an und auf kommunalen Gebäuden — Zuwendungsempfänger Kommunen und Einrichtungen, keine Privathaushalte.",
+        "evidenceUrl": "https://www.kreis-ploen.de/B%C3%BCrgerservice/F%C3%B6rderprogramme-des-Kreises.php?object=tx,2158.3442.1"
+      },
+      {
+        "url": "kreis-ploen.de/B%C3%BCrgerservice/Pressedienst/Anpassung-der-F%C3%B6rderrichtlinie-zur-Installation-von-Photovoltaikanlagen-in-Verbindung-mit-Batteriespeichern.php?ModID=255&FID=3932.18097.1&kat=2156.5&text=Anpassung_der_F%C3%B6rderrichtlinie_zur_Installation_von_Photovoltaikanlagen_in_Verbindung_mit_Batteriespeichern",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung 14.11.2024 zur Kreis-Richtlinie Photovoltaik mit Batteriespeicher an und auf kommunalen Gebäuden — Zuwendungsempfänger Kommunen und Einrichtungen, keine Privathaushalte.",
+        "evidenceUrl": "https://www.kreis-ploen.de/B%C3%BCrgerservice/F%C3%B6rderprogramme-des-Kreises.php?object=tx,2158.3442.1"
+      },
+      {
+        "url": "kreis-ploen.de/B%C3%BCrgerservice/Pressedienst/Anpassung-der-F%C3%B6rderrichtlinie-zur-Installation-von-Photovoltaikanlagen-in-Verbindung-mit-Batteriespeichern.php?object=tx,3932.5.1&amp;ModID=7&amp;FID=3932.18097.1&amp;NavID=2158.17&amp;text=Anpassung%25der%25F%C3%B6rderrichtlinie%25zur%25Installation%25von%25Photovoltaikanlagen%25in%25Verbindung%25mit%25Batteriespeichern&amp;kat=2156.5",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung 14.11.2024 zur Kreis-Richtlinie Photovoltaik mit Batteriespeicher an und auf kommunalen Gebäuden — Zuwendungsempfänger Kommunen und Einrichtungen, keine Privathaushalte.",
+        "evidenceUrl": "https://www.kreis-ploen.de/B%C3%BCrgerservice/F%C3%B6rderprogramme-des-Kreises.php?object=tx,2158.3442.1"
+      },
+      {
+        "url": "kreis-ploen.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Stopp am 16.11.2023, kein Kreisprogramm.",
+        "evidenceUrl": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1"
+      },
+      {
+        "url": "kreis-ploen.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Dienstleistung für Kommunen (Kommunalrichtlinie), kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.kreis-ploen.de/B%C3%BCrgerservice/F%C3%B6rderprogramme-des-Kreises.php?object=tx,2158.3442.1"
+      },
+      {
+        "url": "kreis-ploen.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Stopp am 16.11.2023, kein Kreisprogramm.",
+        "evidenceUrl": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1"
+      },
+      {
+        "url": "kreis-ploen.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Unternehmen des Güterkraftverkehrs — andere Zielgruppe.",
+        "evidenceUrl": "https://www.kreis-ploen.de/B%C3%BCrgerservice/F%C3%B6rderprogramme-des-Kreises.php?object=tx,2158.3442.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01057057",
+    "name": "Plön",
+    "checkedAt": "2026-10-15T06:11:55Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Plön bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Klimaschutzseiten nennen einen Klimaschutzwettbewerb mit Preisgeldern und einen kostenlosen Wärmepumpen-Eignungstest im Forschungsprojekt KWIKK (keine Geldleistung); der Verweis auf Fördermöglichkeiten betrifft das gestoppte Landesprogramm. Stand 15.10.2026.",
+    "searches": [
+      "ploen.de Volltextsuche (15.10.2026): Photovoltaik, Balkonkraftwerk, Solar, Speicher, Zuschuss, Förderprogramm, Wärmepumpe, Klimaschutz",
+      "Klimaschutz-Seite und Klimaschutz/Aktuelles gelesen",
+      "Meldungen Solaroffensive (Infoabend) und Klimawellen gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ploen.de/PL%C3%96N-entwickeln/Klimaschutz/Aktuelles/",
+        "finding": "Klimaschutz/Aktuelles am 15.10.2026: KWIKK-Wärmepumpen-Eignungstest „für alle Teilnehmenden kostenlos“ (Forschungsprojekt, BMWE-gefördert), Klimaschutzwettbewerb 2026 mit Preisgeldern — kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.ploen.de/index.php?ffmod=suche&such=Photovoltaik",
+        "finding": "Volltextsuche ploen.de, acht Begriffe: Treffer nur Klimaschutzkonzept, Klimaschutzwettbewerb, Solaroffensive-Infoabend, Vergabe einer PV-Anlage mit Speicher für ein städtisches Gebäude, Zuschüsse für Veranstaltungen/Freizeitfahrten/Wohngeld."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ploen.de/Kurzmen%C3%BC/Richtlinien-zur-F%C3%B6rderung-von-Veranstaltungen-in-der-Stadt-Pl%C3%B6n.php",
+        "disposition": "reviewed",
+        "reason": "Richtlinie zur Förderung von Veranstaltungen — kein Energiebezug.",
+        "evidenceUrl": "https://www.ploen.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "ploen.de/PL%C3%96N-aktuell/Stadtnachrichten/-Pl%C3%B6n-schl%C3%A4gt-Klimawellen-Neue-Homepage-Inhalte-und-Klimaschutz-F%C3%B6rderm%C3%B6glichkeiten.php",
+        "disposition": "reviewed",
+        "reason": "Meldung 16.06.2020: verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (seit 16.11.2023 gestoppt), kein Stadtprogramm.",
+        "evidenceUrl": "https://www.ploen.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "ploen.de/PL%C3%96N-aktuell/Stadtnachrichten/%C3%96ffentliche-Bekanntmachung-der-Satzung-der-Stadt-Pl%C3%B6n-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-f%C3%BCr-die-Errichtung-eines-selbst-genutzten-Eigenheimes-sowie-den-Erwerb-eines-Eigenheimes-in-der-Stadt-Pl%C3%B6n-Ansiedlungsf%C3%B6rderungssatzung-.php",
+        "disposition": "reviewed",
+        "reason": "Ansiedlungsförderungssatzung: Zuschuss für Errichtung/Erwerb eines selbst genutzten Eigenheims — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.ploen.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "ploen.de/PL%C3%96N-aktuell/Stadtnachrichten/B%C3%BCrgermeister-Winter-richtet-sich-an-die-Bundeshauptstadt-und-sagt-Corona-hat-es-bewiesen-Die-F%C3%B6rderung-des-l%C3%A4ndlichen-Raumes-ist-systemrelevant-Finger-weg-von-ELER-Mitteln-.php",
+        "disposition": "reviewed",
+        "reason": "Meldung zu EU-Mitteln für den ländlichen Raum (ELER), kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.ploen.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "ploen.de/PL%C3%96N-aktuell/Stadtnachrichten/Klimaschutzwettbewerb-2026-Neues-Motto-neue-Kategorien-mehr-Preisgelder.php?object=tx,3319.5.1&amp;ModID=7&amp;FID=3319.37301.1&amp;NavID=3319.12&amp;text=%D6ffentliche%25Bekanntmachung%25der%25Satzung%25der%25Stadt%25Pl%F6n%25%FCber%25die%25Gew%E4hrung%25eines%25Zuschusses%25f%FCr%25die%25Errichtung%25eines%25selbst%25genutzten%25Eigenheimes%25sowie%25den%25Erwerb%25eines%25Eigenheimes%25in%25der%25Stadt%25Pl%F6n%25Ansiedlungsf%F6rderungssatzung%25&amp;kat=3319.3",
+        "disposition": "reviewed",
+        "reason": "Ansiedlungsförderungssatzung: Zuschuss für Errichtung/Erwerb eines selbst genutzten Eigenheims — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.ploen.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "ploen.de/PL%C3%96N-aktuell/Stadtnachrichten/Pl%C3%B6n-erh%C3%A4lt-Absage-f%C3%BCr-F%C3%B6rdermittel.php",
+        "disposition": "reviewed",
+        "reason": "Fördermittel an die Stadt (Sporthalle, Radverkehr) — kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.ploen.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "ploen.de/PL%C3%96N-aktuell/Stadtnachrichten/Stadt-Pl%C3%B6n-erh%C3%A4lt-erneut-stattliche-F%C3%B6rderung-321-500-.php",
+        "disposition": "reviewed",
+        "reason": "Fördermittel an die Stadt (Sporthalle, Radverkehr) — kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.ploen.de/index.php?ffmod=suche&such=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "01057025",
+    "name": "Heikendorf",
+    "checkedAt": "2026-10-15T06:11:55Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Heikendorf (Amt Schrevenborn) hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche des Amtes findet kein Gemeindeprogramm, das Ortsrecht enthält nur die Satzung eines Klimaschutzbeirates, der Produktplan 2026 keinen Förderansatz. Stand 15.10.2026.",
+    "searches": [
+      "amt-schrevenborn.de Volltextsuche (15.10.2026), elf Begriffe",
+      "Ortsrecht Heikendorf (59 Satzungen/Ordnungen) gesichtet",
+      "Produktplan Haushalt 2026 Heikendorf (PDF) durchsucht",
+      "heikendorf.de löst nicht auf"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik",
+        "finding": "Volltextsuche amt-schrevenborn.de (Website des Amtes und seiner Gemeinden Heikendorf, Mönkeberg, Schönkirchen) am 15.10.2026: Photovoltaik (109 Treffer), Balkon* (119), Stecker* (5), Solar* (220), Speicher, Förderrichtlinie (32), Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Klimafonds (1) — kein Zuschussprogramm einer Gemeinde für Haushalte; Förderrichtlinien nur Ladeinfrastruktur-Hinweis, Biodiversität im Tourismus, Mobilität."
+      },
+      {
+        "url": "https://www.amt-schrevenborn.de/Amt-Gemeinden/Heikendorf/Ortsrecht/",
+        "finding": "Ortsrecht Heikendorf: einzige Klima-Satzung ist die „Satzung … über die Bildung eines Klimaschutzbeirates“; keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.amt-schrevenborn.de/loadDocument.phtml?FID=4157.738.1&Ext=PDF",
+        "finding": "Produktplan Haushalt 2026 der Gemeinde Heikendorf durchsucht: kein Ansatz für Klimaschutz-, PV-, Balkonkraftwerk- oder Wärmepumpenzuschüsse; der einzige „Stecker“-Treffer ist Feuerwehrausstattung."
+      },
+      {
+        "url": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Balkon-PV max. 200 €, Wärmepumpe max. 2.000 €): „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden aktuell bearbeitet“ — Landesprogramm, seit 16.11.2023 gestoppt, kein kommunales Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/Aktuelles/F%C3%B6rderprogramm-Ladeinfrastruktur-f%C3%BCr-Elektrofahrzeuge.php",
+        "disposition": "reviewed",
+        "reason": "Meldung des Amtes zu einem Landes-/Bundesprogramm für Ladeinfrastruktur — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/Aktuelles/Klimaschutzf%C3%B6rderprogramm-des-Landes-um-weitere-2-Millionen-Euro-aufgestockt.php",
+        "disposition": "reviewed",
+        "reason": "Meldung vom 19.06.2020 über das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Landesprogramm, am 16.11.2023 gestoppt, kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1"
+      },
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/Aktuelles/Klimaschutzf%C3%B6rderprogramm-des-Landes-um-weitere-2-Millionen-Euro-aufgestockt.php?object=tx,4157.5.1&amp;ModID=7&amp;FID=2782.1790.1&amp;NavID=2782.8&amp;text=Klimaschutzf%C3%B6rderprogramm%25des%25Landes%25um%25weitere%252%25Millionen%25Euro%25aufgestockt&amp;kat=2100.3&amp;startkat=1.218&amp;max=10",
+        "disposition": "reviewed",
+        "reason": "Meldung vom 19.06.2020 über das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Landesprogramm, am 16.11.2023 gestoppt, kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1"
+      },
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/M%C3%B6nkeberg/Gemeindeprojekte-/F%C3%B6rderprojekte",
+        "disposition": "reviewed",
+        "reason": "Mönkeberger Förderprojekte: LED-Sanierung Sporthalle und Straßenbeleuchtung mit Bundesmitteln — Förderung FÜR die Gemeinde.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "amt-schrevenborn.de/Kurzmen%C3%BC/F%C3%B6rderung_HSS.php",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 404 (Seite nicht gefunden); Thema laut Adresse Schul-/Mitfahrbank-Förderung, kein Energiebezug; die Volltextsuche des Amtes findet kein Energie-Programm.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "amt-schrevenborn.de/Kurzmen%C3%BC/F%C3%B6rderung-Mitfahrb%C3%A4nke.php",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 404 (Seite nicht gefunden); Thema laut Adresse Schul-/Mitfahrbank-Förderung, kein Energiebezug; die Volltextsuche des Amtes findet kein Energie-Programm.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "heikendorf.de/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCw0MTU3LjUuMSZhbXA7TW9kSUQ9MjU1JmFtcDtGSUQ9Mjc4Mi4xNzkwLjEiLCJNb2RJRCI6IjI1NSIsIlZUTGEiOjF9",
+        "disposition": "reviewed",
+        "reason": "Klick-Zählweiterleitung der Volltextsuche (vt_stats), kein eigenes Dokument; die Domain löst nicht mehr auf. Inhalt über die Volltextsuche des Amtes Schrevenborn erfasst.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "heikendorf.de/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCw0MTU3LjUuMSZhbXA7TW9kSUQ9MjU1JmFtcDtGSUQ9Mjc4Mi4xODQzLjEiLCJNb2RJRCI6IjI1NSIsIlZUTGEiOjF9",
+        "disposition": "reviewed",
+        "reason": "Klick-Zählweiterleitung der Volltextsuche (vt_stats), kein eigenes Dokument; die Domain löst nicht mehr auf. Inhalt über die Volltextsuche des Amtes Schrevenborn erfasst.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "01057051",
+    "name": "Mönkeberg",
+    "checkedAt": "2026-10-15T06:11:55Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mönkeberg (Amt Schrevenborn) hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Förderprojekte-Seite listet Bundesmittel für die Gemeinde (LED-Beleuchtung), das Ortsrecht (28 Einträge) enthält keine Förderrichtlinie, die Volltextsuche des Amtes kein Gemeindeprogramm. Stand 15.10.2026.",
+    "searches": [
+      "amt-schrevenborn.de Volltextsuche (15.10.2026), elf Begriffe",
+      "Ortsrecht Mönkeberg gesichtet",
+      "Förderprojekte Mönkeberg gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik",
+        "finding": "Volltextsuche amt-schrevenborn.de (Website des Amtes und seiner Gemeinden Heikendorf, Mönkeberg, Schönkirchen) am 15.10.2026: Photovoltaik (109 Treffer), Balkon* (119), Stecker* (5), Solar* (220), Speicher, Förderrichtlinie (32), Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Klimafonds (1) — kein Zuschussprogramm einer Gemeinde für Haushalte; Förderrichtlinien nur Ladeinfrastruktur-Hinweis, Biodiversität im Tourismus, Mobilität."
+      },
+      {
+        "url": "https://www.amt-schrevenborn.de/Amt-Gemeinden/M%C3%B6nkeberg/Ortsrecht/",
+        "finding": "Ortsrecht Mönkeberg (28 Satzungen/Ordnungen): keine Förder- oder Zuschussrichtlinie."
+      },
+      {
+        "url": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Balkon-PV max. 200 €, Wärmepumpe max. 2.000 €): „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden aktuell bearbeitet“ — Landesprogramm, seit 16.11.2023 gestoppt, kein kommunales Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/Aktuelles/F%C3%B6rderprogramm-Ladeinfrastruktur-f%C3%BCr-Elektrofahrzeuge.php",
+        "disposition": "reviewed",
+        "reason": "Meldung des Amtes zu einem Landes-/Bundesprogramm für Ladeinfrastruktur — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/Aktuelles/Klimaschutzf%C3%B6rderprogramm-des-Landes-um-weitere-2-Millionen-Euro-aufgestockt.php",
+        "disposition": "reviewed",
+        "reason": "Meldung vom 19.06.2020 über das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Landesprogramm, am 16.11.2023 gestoppt, kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1"
+      },
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/Aktuelles/Klimaschutzf%C3%B6rderprogramm-des-Landes-um-weitere-2-Millionen-Euro-aufgestockt.php?object=tx,4157.5.1&amp;ModID=7&amp;FID=2782.1790.1&amp;NavID=2782.8&amp;text=Klimaschutzf%C3%B6rderprogramm%25des%25Landes%25um%25weitere%252%25Millionen%25Euro%25aufgestockt&amp;kat=2100.3&amp;startkat=1.218&amp;max=10",
+        "disposition": "reviewed",
+        "reason": "Meldung vom 19.06.2020 über das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Landesprogramm, am 16.11.2023 gestoppt, kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1"
+      },
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/M%C3%B6nkeberg/Gemeindeprojekte-/F%C3%B6rderprojekte",
+        "disposition": "reviewed",
+        "reason": "Mönkeberger Förderprojekte: LED-Sanierung Sporthalle und Straßenbeleuchtung mit Bundesmitteln — Förderung FÜR die Gemeinde.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "amt-schrevenborn.de/Kurzmen%C3%BC/F%C3%B6rderung_HSS.php",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 404 (Seite nicht gefunden); Thema laut Adresse Schul-/Mitfahrbank-Förderung, kein Energiebezug; die Volltextsuche des Amtes findet kein Energie-Programm.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "amt-schrevenborn.de/Kurzmen%C3%BC/F%C3%B6rderung-Mitfahrb%C3%A4nke.php",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 404 (Seite nicht gefunden); Thema laut Adresse Schul-/Mitfahrbank-Förderung, kein Energiebezug; die Volltextsuche des Amtes findet kein Energie-Programm.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "01057074",
+    "name": "Schönkirchen",
+    "checkedAt": "2026-10-15T06:11:55Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schönkirchen (Amt Schrevenborn) hatte im September 2022 eine Balkonkraftwerk-Förderung beschlossen und im Dezember 2022 wieder aufgehoben (Verweis auf die Landesförderung). Heute kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; Ortsrecht ohne Förderrichtlinie. Stand 15.10.2026.",
+    "searches": [
+      "amt-schrevenborn.de Volltextsuche (15.10.2026), elf Begriffe",
+      "Meldung zur Aufhebung des Balkonkraftwerk-Beschlusses gelesen",
+      "Ortsrecht Schönkirchen (22 Einträge) gesichtet",
+      "schoenkirchen.de löst nicht auf"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik",
+        "finding": "Volltextsuche amt-schrevenborn.de (Website des Amtes und seiner Gemeinden Heikendorf, Mönkeberg, Schönkirchen) am 15.10.2026: Photovoltaik (109 Treffer), Balkon* (119), Stecker* (5), Solar* (220), Speicher, Förderrichtlinie (32), Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Klimafonds (1) — kein Zuschussprogramm einer Gemeinde für Haushalte; Förderrichtlinien nur Ladeinfrastruktur-Hinweis, Biodiversität im Tourismus, Mobilität."
+      },
+      {
+        "url": "https://www.amt-schrevenborn.de/index.php?object=tx,4157.5.1&ModID=255&FID=2782.14872.1",
+        "finding": "Meldung 08.12.2022 (Schönkirchen): „Im September hatte die Gemeindevertretung die Förderung von kleinen Photovoltaik-Anlagen (so genannte Balkonkraftwerke) für Privathaushalte … beschlossen. … wurde der Beschluss … jetzt wieder aufgehoben.“"
+      },
+      {
+        "url": "https://www.amt-schrevenborn.de/Amt-Gemeinden/Sch%C3%B6nkirchen/Ortsrecht/",
+        "finding": "Ortsrecht Schönkirchen: keine Förderrichtlinie für Energie (nur Schul-/OGS-Satzungen u. ä.)."
+      },
+      {
+        "url": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Balkon-PV max. 200 €, Wärmepumpe max. 2.000 €): „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden aktuell bearbeitet“ — Landesprogramm, seit 16.11.2023 gestoppt, kein kommunales Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/Aktuelles/F%C3%B6rderprogramm-Ladeinfrastruktur-f%C3%BCr-Elektrofahrzeuge.php",
+        "disposition": "reviewed",
+        "reason": "Meldung des Amtes zu einem Landes-/Bundesprogramm für Ladeinfrastruktur — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/Aktuelles/Klimaschutzf%C3%B6rderprogramm-des-Landes-um-weitere-2-Millionen-Euro-aufgestockt.php",
+        "disposition": "reviewed",
+        "reason": "Meldung vom 19.06.2020 über das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Landesprogramm, am 16.11.2023 gestoppt, kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1"
+      },
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/Aktuelles/Klimaschutzf%C3%B6rderprogramm-des-Landes-um-weitere-2-Millionen-Euro-aufgestockt.php?object=tx,4157.5.1&amp;ModID=7&amp;FID=2782.1790.1&amp;NavID=2782.8&amp;text=Klimaschutzf%C3%B6rderprogramm%25des%25Landes%25um%25weitere%252%25Millionen%25Euro%25aufgestockt&amp;kat=2100.3&amp;startkat=1.218&amp;max=10",
+        "disposition": "reviewed",
+        "reason": "Meldung vom 19.06.2020 über das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Landesprogramm, am 16.11.2023 gestoppt, kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1"
+      },
+      {
+        "url": "amt-schrevenborn.de/Amt-Gemeinden/M%C3%B6nkeberg/Gemeindeprojekte-/F%C3%B6rderprojekte",
+        "disposition": "reviewed",
+        "reason": "Mönkeberger Förderprojekte: LED-Sanierung Sporthalle und Straßenbeleuchtung mit Bundesmitteln — Förderung FÜR die Gemeinde.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "amt-schrevenborn.de/Kurzmen%C3%BC/F%C3%B6rderung_HSS.php",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 404 (Seite nicht gefunden); Thema laut Adresse Schul-/Mitfahrbank-Förderung, kein Energiebezug; die Volltextsuche des Amtes findet kein Energie-Programm.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "amt-schrevenborn.de/Kurzmen%C3%BC/F%C3%B6rderung-Mitfahrb%C3%A4nke.php",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 404 (Seite nicht gefunden); Thema laut Adresse Schul-/Mitfahrbank-Förderung, kein Energiebezug; die Volltextsuche des Amtes findet kein Energie-Programm.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "schoenkirchen.de/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCw0MTU3LjUuMSZhbXA7TW9kSUQ9MjU1JmFtcDtGSUQ9Mjc4Mi4xNzkwLjEiLCJNb2RJRCI6IjI1NSIsIlZUTGEiOjF9",
+        "disposition": "reviewed",
+        "reason": "Klick-Zählweiterleitung der Volltextsuche (vt_stats), kein eigenes Dokument; die Domain löst nicht mehr auf. Inhalt über die Volltextsuche des Amtes Schrevenborn erfasst.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      },
+      {
+        "url": "schoenkirchen.de/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCw0MTU3LjUuMSZhbXA7TW9kSUQ9MjU1JmFtcDtGSUQ9Mjc4Mi4xODQzLjEiLCJNb2RJRCI6IjI1NSIsIlZUTGEiOjF9",
+        "disposition": "reviewed",
+        "reason": "Klick-Zählweiterleitung der Volltextsuche (vt_stats), kein eigenes Dokument; die Domain löst nicht mehr auf. Inhalt über die Volltextsuche des Amtes Schrevenborn erfasst.",
+        "evidenceUrl": "https://www.amt-schrevenborn.de/index.php?ffmod=suche&such=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "01057062",
+    "name": "Preetz",
+    "checkedAt": "2026-10-15T06:11:55Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Preetz bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die städtische Balkonkraftwerk-Seite vermittelt Paketangebote örtlicher Fachbetriebe (Selbstverpflichtung, Stand 01.10.2024) und sagt ausdrücklich: „Eine Förderung gibt es derzeit nicht mehr.“ Die einzige „Förderrichtlinie“ der Stadt betrifft Wirtschaftsförderung für Unternehmen. Stand 15.10.2026.",
+    "searches": [
+      "preetz.de Volltextsuche (15.10.2026): Photovoltaik, Balkonkraftwerk, Speicher, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Solar",
+      "Klimaschutz-Seiten Balkonkraftwerk, Solarstrom für Mehrfamilienhäuser, Wärmewende gelesen",
+      "„Förderrichtlinie“ (PDF) gelesen: Wirtschaftsförderung KMU"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.preetz.de/Verwaltung-Politik/Klimaschutz/Balkonkraftwerk/",
+        "finding": "Wörtlich: „Eine Förderung gibt es derzeit nicht mehr.“ Stattdessen Selbstverpflichtung Preetzer Fachfirmen zu Balkonkraftwerk-Paketen."
+      },
+      {
+        "url": "https://www.preetz.de/media/custom/2942_1295_1.PDF",
+        "finding": "„Richtlinien für die Bewilligung von Zuschüssen … für kleine bis mittelständische Unternehmen sowie Existenzgründer im Rahmen der Wirtschaftsförderung“ — kein Energieprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "preetz.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023); die Stadtseite Balkonkraftwerk sagt: „Eine Förderung gibt es derzeit nicht mehr.“",
+        "evidenceUrl": "https://www.preetz.de/Verwaltung-Politik/Klimaschutz/Balkonkraftwerk/"
+      },
+      {
+        "url": "preetz.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023); die Stadtseite Balkonkraftwerk sagt: „Eine Förderung gibt es derzeit nicht mehr.“",
+        "evidenceUrl": "https://www.preetz.de/Verwaltung-Politik/Klimaschutz/Balkonkraftwerk/"
+      },
+      {
+        "url": "preetz.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=2942.13&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&ort=2942.1&object=tx%7C2942.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023); die Stadtseite Balkonkraftwerk sagt: „Eine Förderung gibt es derzeit nicht mehr.“",
+        "evidenceUrl": "https://www.preetz.de/Verwaltung-Politik/Klimaschutz/Balkonkraftwerk/"
+      },
+      {
+        "url": "preetz.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=2942.13&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&ort=2942.1&object=tx%7C2942.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023); die Stadtseite Balkonkraftwerk sagt: „Eine Förderung gibt es derzeit nicht mehr.“",
+        "evidenceUrl": "https://www.preetz.de/Verwaltung-Politik/Klimaschutz/Balkonkraftwerk/"
+      },
+      {
+        "url": "preetz.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=2942.13&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&ort=2942.1&object=tx%7C2942.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Dienstleistungseintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023); die Stadtseite Balkonkraftwerk sagt: „Eine Förderung gibt es derzeit nicht mehr.“",
+        "evidenceUrl": "https://www.preetz.de/Verwaltung-Politik/Klimaschutz/Balkonkraftwerk/"
+      },
+      {
+        "url": "preetz.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Unternehmen des Güterkraftverkehrs — andere Zielgruppe.",
+        "evidenceUrl": "https://www.preetz.de/Verwaltung-Politik/Klimaschutz/Balkonkraftwerk/"
+      }
+    ]
+  },
+  {
+    "regionId": "01057091",
+    "name": "Schwentinental",
+    "checkedAt": "2026-10-15T06:11:55Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwentinental hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Klimaschutzkonzept (2023) plante als Maßnahme ENER-1 ein Balkonkraftwerk-Programm für Mieter; der Verwaltungsbericht 2025 führt die umgesetzten Klimaschutzmaßnahmen (Wärmeplanung, Energiemanagement, LED, Radverkehr) ohne ein solches Programm, die Website verweist nur auf die Landesförderung, die Stadtwerke nennen keinen Zuschuss. Stand 15.10.2026.",
+    "searches": [
+      "schwentinental.de Suche (15.10.2026): Förderung (53 Treffer), Balkonkraftwerk, Balkon, Photovoltaik, Zuschuss, Wärmepumpe, Speicher",
+      "Klimaschutzkonzept 2023 Maßnahme ENER-1 gelesen",
+      "Verwaltungsbericht 2025 Kapitel 8.8 Klimaschutz gelesen",
+      "stadtwerke-schwentinental.de Startseite gesichtet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwentinental.de/fileadmin/user_upload/Verwaltungsbericht_2025.pdf",
+        "finding": "Verwaltungsbericht 2025, Kap. 8.8 „Im Jahr 2025 wurden folgende Maßnahmen umgesetzt und/oder auf den Weg gebracht“: Wärmeplanung, Energiemanagement, LED-Sportplätze/Straßenbeleuchtung, Radverkehr — kein Förderprogramm für Haushalte; „Balkonkraftwerk“ kommt im Bericht nicht vor."
+      },
+      {
+        "url": "https://www.schwentinental.de/fileadmin/user_upload/Stadt_Schwentinental_Klimaschutzkonzept_Stand_04.04.2023.pdf",
+        "finding": "Maßnahme ENER-1 „Förderprogramm Balkonkraftwerke (Mini-PV-Anlagen)“, Priorität 1, Hemmnisse „personelle Ressourcen, Haushaltsmittel“ — Planung, keine Richtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwentinental.de/detail/foerderrichtlinie-fuer-steckerfertige-pv-balkonanlagen-des-landes-schleswig-holstein",
+        "disposition": "reviewed",
+        "reason": "Hinweis der Stadt auf die Landesförderung für Balkon-PV (bis 200 €); verweist für Fragen an das Ministerium — kein Stadtprogramm.",
+        "evidenceUrl": "https://www.schwentinental.de/fileadmin/user_upload/Verwaltungsbericht_2025.pdf"
+      },
+      {
+        "url": "schwentinental.de/fileadmin/user_upload/Stadt_Schwentinental_Klimaschutzkonzept_Stand_04.04.2023.pdf",
+        "disposition": "reviewed",
+        "reason": "Klimaschutzkonzept 2023, Maßnahme ENER-1 „Förderprogramm Balkonkraftwerke“ geplant; der Verwaltungsbericht 2025 nennt die umgesetzten Klimaschutzmaßnahmen ohne ein solches Programm, die Volltextsuche findet keines.",
+        "evidenceUrl": "https://www.schwentinental.de/fileadmin/user_upload/Verwaltungsbericht_2025.pdf"
+      }
+    ]
   }
 ]
