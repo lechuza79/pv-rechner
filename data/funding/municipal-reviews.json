@@ -97643,15 +97643,17 @@
   {
     "regionId": "01058165",
     "name": "Tüttendorf",
-    "checkedAt": "2026-10-15T04:14:16Z",
-    "recheckAt": "2026-11-12T08:00:00Z",
+    "checkedAt": "2026-10-15T18:12:00Z",
+    "recheckAt": "2026-12-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "klaerung",
-    "conclusion": "Das Klimaschutzkonzept der Gemeinde Tüttendorf (Stand 11/2025) sieht als Maßnahme 6 (Priorität 3) eine „Förderung über die Gemeinde für z. B. Zuschuss für Balkonkraftanlagen, PV-Anlagen, Speicher“ vor, mit dem Schritt „Vorlage für Förderrichtlinie verfassen“. Ob die Gemeindevertretung eine Richtlinie beschlossen hat, ist nicht belegt: Ortsrecht und Ratsinformation des Amts Dänischer Wohld sind nur über ein eingebettetes Fremdelement lesbar, die Amtsseiten und Websuche nennen kein Programm. Kein Katalogeintrag, deshalb Rückfrage.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Tüttendorf bietet derzeit keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Klimaschutzkonzept (Stand 11/2025) schlägt eine solche Förderung nur als Maßnahme 6 mit Priorität 3 vor („Vorlage für Förderrichtlinie verfassen“). Die Gemeindevertretung hat das Konzept laut den Kommunalpolitik-Meldungen des Amts lediglich „zur Kenntnis genommen“ und ihm „signifikante Schwächen“ attestiert; die Meldungen bis Oktober 2026 nennen keinen Beschluss einer Förderrichtlinie, eine Websuche findet keine. Das Ortsrecht des Amts ist nur über ein eingebettetes Fremdelement einsehbar und deshalb ungelesen. Wegen der vorgeschlagenen Maßnahme frühere Wiedervorlage (Dezember 2026). Stand 15.10.2026.",
     "searches": [
       "amt-daenischer-wohld.de: Seitenverzeichnis (398 Seiten) gefiltert; Photovoltaik-, Klima-, AktivRegion- und Ortsrechtsseiten gelesen (15.10.2026)",
       "Klimaschutzkonzept Tüttendorf (PDF, 11/2025) nach Förder-/Zuschuss-/Balkon-Stellen durchsucht",
-      "Websuche „Tüttendorf Gemeinde Förderrichtlinie Balkonkraftwerk Photovoltaik Speicher Zuschuss“ und „Amt Dänischer Wohld Ratsinformationssystem Tüttendorf …“"
+      "Websuche „Tüttendorf Gemeinde Förderrichtlinie Balkonkraftwerk Photovoltaik Speicher Zuschuss“ und „Amt Dänischer Wohld Ratsinformationssystem Tüttendorf …“",
+      "amt-daenischer-wohld.de: Kommunalpolitik-Meldungen Tüttendorf (Juni 2025 bis Oktober 2026) im Volltext nach Klimaschutzkonzept, Förderrichtlinie, Balkon, Photovoltaik, Speicher durchsucht (15.10.2026)",
+      "Websuche „Tüttendorf Gemeindevertretung Förderrichtlinie Balkonkraftwerk 2026“ — nur Richtlinien anderer Orte"
     ],
     "evidence": [
       {
@@ -97669,6 +97671,10 @@
       {
         "url": "https://www.amt-daenischer-wohld.de/politik-amt-gemeinden/ortsrecht/",
         "finding": "Ortsrecht-Seite zeigt Inhalt nur nach Einwilligung in ein Fremdelement („Dieses Element wurde ausgeblendet …“); Kontakt im Seitenfuß: poststelle@amtdw.landsh.de."
+      },
+      {
+        "url": "https://www.amt-daenischer-wohld.de/politik-amt-gemeinden/aktuelles-aus-der-kommunalpolitik/tuettendorf/",
+        "finding": "Am 15.10.2026 gelesen: „Klimaschutzkonzept: Die Klimaschutzagentur des Kreises hat für die Gemeinde Tüttendorf ein Klimaschutzkonzept erstellt. Die Gemeindevertretung hat es zur Kenntnis genommen. … Nach Auffassung der Gemeinde weist das Konzept einige signifikante Schwächen auf“. Weitere Energiethemen nur PV-Freiflächenpark, Windparks, PV auf Kita-Dächern; kein Förderprogramm für Haushalte."
       }
     ],
     "sources": [
@@ -97684,12 +97690,7 @@
         "reason": "AktivRegion-Verweisseite, kein Haushaltszuschuss.",
         "evidenceUrl": "https://www.amt-daenischer-wohld.de/wirtschaft-klima-umweltschutz/aktivregion-eckernfoerder-bucht/"
       }
-    ],
-    "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-10-16T08:00:00Z",
-      "detail": "Die einzige veröffentlichte Adresse des Amts Dänischer Wohld ist poststelle@amtdw.landsh.de (Landesnetz-Domain, nicht die Amtswebsite amt-daenischer-wohld.de); der Versand kann sie nicht als Postfach dieser Gemeinde belegen und weist sie ab. Nächster Schritt: Kontaktformular oder eine Adresse auf der Amtswebsite suchen; sonst die Frage über die Gemeinde Tüttendorf selbst stellen."
-    }
+    ]
   },
   {
     "regionId": "01057",
@@ -98700,6 +98701,122 @@
         "disposition": "reviewed",
         "reason": "Am 15.10.2026 gelesen: Nachrichtenübersicht (Ehrenamtspreis, Bürgerservicebüro, Naturschutzbeauftragte) mit Navigationslink „Fördermaßnahmen“; dieser führt nur auf geförderte LED-Projekte der Stadt, kein Programm für Haushalte.",
         "evidenceUrl": "https://www.kaltenkirchen.de/de/rathaus-politik/aktuelles/foerdermassnahmen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01060005",
+    "name": "Bad Segeberg",
+    "checkedAt": "2026-10-15T18:08:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Bad Segeberg bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Photovoltaik“ verweist auf das Solarkataster und die Wirtschaftlichkeit der Eigenversorgung, „Energieberatung“ auf die kostenlose Beratung der Verbraucherzentrale (Fördermöglichkeiten nur BAFA/KfW), „Aktivitäten und Maßnahmen“ beschreibt geförderte Projekte der Stadt selbst (LED-Umrüstungen, Sanierungskonzepte, Nationale Klimaschutzinitiative). Das Quartierskonzept Südstadt (Stand 29.11.2018) nennt nur Bundesförderung. Der Kreis Segeberg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "bad-segeberg.de: Umwelt- und Klimaschutz (Photovoltaik, Energieberatung, Aktivitäten und Maßnahmen, Aktuelle Meldungen, Klimawandel und -schutz) im Volltext gelesen",
+      "Quartierskonzept Südstadt (PDF, 2018) nach städtischem Förderprogramm/Zuschuss der Stadt durchsucht — kein Treffer",
+      "Websuche: \"Bad Segeberg\" Stadt Förderprogramm Zuschuss Balkonkraftwerk/Photovoltaik/Batteriespeicher — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bad-segeberg.de/bauen-wirtschaft-klima/umwelt-und-klimaschutz/photovoltaik",
+        "finding": "Am 15.10.2026 gelesen: Informationsseite zu Eigenstrom und Solarkataster („trotz sinkender Förderungen durch das EEG-Gesetz“), kein Zuschuss der Stadt."
+      },
+      {
+        "url": "https://www.bad-segeberg.de/bauen-wirtschaft-klima/umwelt-und-klimaschutz/energieberatung",
+        "finding": "Am 15.10.2026 gelesen: Beratungsangebot der Verbraucherzentrale Schleswig-Holstein; „Fördermöglichkeiten: BAFA, KfW“, kein städtisches Programm."
+      },
+      {
+        "url": "https://www.bad-segeberg.de/bauen-wirtschaft-klima/umwelt-und-klimaschutz/aktivitaeten-und-massnahmen",
+        "finding": "Am 15.10.2026 gelesen: geförderte Maßnahmen der Stadt (LED-Straßenbeleuchtung, Schulen, Sanierungsmanagement), keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.bad-segeberg.de/fileadmin/Gemeinde/Dateien/Klimaschutz/Energetische_Sanierung/Bericht_IEQK_Bad_Segeberg_S%C3%BCdstadt.PDF",
+        "finding": "Am 15.10.2026 gelesen: Integriertes energetisches Quartierskonzept Südstadt, Stand 29.11.2018; nennt KfW-/BAFA-Programme, kein Förderprogramm oder Zuschuss der Stadt für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-segeberg.de/fileadmin/Gemeinde/Dateien/Klimaschutz/Energetische_Sanierung/Bericht_IEQK_Bad_Segeberg_S%C3%BCdstadt.PDF",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Integriertes energetisches Quartierskonzept Südstadt, Stand 29.11.2018 — Konzeptbericht, nennt Bundesförderung (KfW/BAFA), kein Förderprogramm der Stadt für Haushalte.",
+        "evidenceUrl": "https://www.bad-segeberg.de/fileadmin/Gemeinde/Dateien/Klimaschutz/Energetische_Sanierung/Bericht_IEQK_Bad_Segeberg_S%C3%BCdstadt.PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "01060019",
+    "name": "Ellerau",
+    "checkedAt": "2026-10-15T18:08:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Ellerau bietet keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Ihre einzige Förderseite („Förderprogramme“, Adresse /klimaschutzprogramme) verweist auf Landes- und Bundesprogramme, darunter das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stromspeicher, PV-Balkonanlage, nicht fossile Heizung), das als beendetes Landesprogramm bereits im Katalog steht. Der Kreis Segeberg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "ellerau.de: Startseite und Förderprogramme-Seite im Volltext gelesen (die Navigation führt „Förderprogramme“ nur auf diese eine Seite)",
+      "Websuche: Gemeinde Ellerau Förderung Balkonkraftwerk/Photovoltaik/Stromspeicher Zuschuss — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://ellerau.de/klimaschutzprogramme/",
+        "finding": "Am 15.10.2026 gelesen: „Neue Förderprogramme für Schleswig-Holstein“ — Verweise auf Landesprogramme, „Digital Jetzt“ (Bund, KMU) und „Zuschüsse aus dem Klimaschutzprogramm des Landes für Ellerauer Bürgerinnen und Bürger … einen Zuschuss vom Land“; kein Programm der Gemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ellerau.de/klimaschutzprogramme",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen (Weiterleitung auf https://ellerau.de/klimaschutzprogramme/): Sammelseite mit Landes- und Bundesprogrammen; das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ steht als beendetes Landesprogramm im Katalog, kein eigenes Programm der Gemeinde.",
+        "evidenceUrl": "https://ellerau.de/klimaschutzprogramme/"
+      }
+    ]
+  },
+  {
+    "regionId": "01060039",
+    "name": "Henstedt-Ulzburg",
+    "checkedAt": "2026-10-15T18:08:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Henstedt-Ulzburg bietet ausdrücklich keine eigene Förderung: „Die Gemeinde selbst bietet keine Förderungen an, aber der Kreis Segeberg und der Bund stellen Fördertöpfe …“ (Seite „Selbst aktiv werden“). Angeboten wird die kostenlose ehrenamtliche Bürgersolarberatung. Die Seite „Förderprogramme“ betrifft die AktivRegion Alsterland (LEADER), das Klimaschutzkonzept 2023 ist ein Konzeptbericht. Der Kreis Segeberg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "henstedt-ulzburg.de: Startseite, Förderprogramme, Klimaschutz (Selbst aktiv werden, Aktuelles, Klimaschutz in Henstedt-Ulzburg) im Volltext gelesen",
+      "Alte Projekt- und Suchadressen (projekte.html, suchen.html) antworten nicht mehr bzw. mit 404; ersetzt durch die neuen Klimaschutzseiten"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.henstedt-ulzburg.de/bauen-wohnen-klima/klimaschutz/selbst-aktiv-werden",
+        "finding": "Am 15.10.2026 gelesen: „Die Gemeinde selbst bietet keine Förderungen an, aber der Kreis Segeberg und der Bund stellen Fördertöpf[e]“; Bürgersolarberatung „alle Leistungen sind kostenfrei“."
+      },
+      {
+        "url": "https://www.henstedt-ulzburg.de/bauen-wohnen-klima/bauen-wohnen/foerderprogramme",
+        "finding": "Am 15.10.2026 gelesen: „AktivRegion Alsterland bietet Förderprogramme“ (LEADER-Projektförderung), kein Zuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "henstedt-ulzburg.de/fileadmin/Gemeinde/Dateien/Bauen_Wohnen_Klima/Konzepte_und_Projekte/Klimaschutz/20230310_Integriertes_Klimaschutzkonzept_Henstedt-Ulzburg.pdf",
+        "disposition": "replaced",
+        "reason": "Klimaschutzkonzept vom 10.03.2023 (Konzeptbericht). Ob die Gemeinde eine Förderung anbietet, entscheidet die aktuelle Seite „Selbst aktiv werden“, die das am 15.10.2026 ausdrücklich verneint.",
+        "evidenceUrl": "https://www.henstedt-ulzburg.de/bauen-wohnen-klima/klimaschutz/selbst-aktiv-werden"
+      },
+      {
+        "url": "henstedt-ulzburg.de/projekte.html",
+        "disposition": "replaced",
+        "reason": "Alte Adresse, am 15.10.2026 404. Die Projekt- und Klimaschutzinhalte stehen jetzt unter /bauen-wohnen-klima/klimaschutz/; die Seite „Selbst aktiv werden“ verneint eine eigene Förderung.",
+        "evidenceUrl": "https://www.henstedt-ulzburg.de/bauen-wohnen-klima/klimaschutz/selbst-aktiv-werden"
+      },
+      {
+        "url": "henstedt-ulzburg.de/suchen.html?keywords=f%C3%B6rderprogramm&amp;pdf=181",
+        "disposition": "replaced",
+        "reason": "Suchergebnis-Adresse der alten Website, nicht mehr erreichbar. Die aktuelle Förderprogramme-Seite (AktivRegion) und „Selbst aktiv werden“ (keine eigene Förderung) sind gelesen.",
+        "evidenceUrl": "https://www.henstedt-ulzburg.de/bauen-wohnen-klima/klimaschutz/selbst-aktiv-werden"
+      },
+      {
+        "url": "henstedt-ulzburg.de/suchen.html?keywords=forderprogrammen",
+        "disposition": "replaced",
+        "reason": "Suchergebnis-Adresse der alten Website, nicht mehr erreichbar. Die aktuelle Förderprogramme-Seite (AktivRegion) und „Selbst aktiv werden“ (keine eigene Förderung) sind gelesen.",
+        "evidenceUrl": "https://www.henstedt-ulzburg.de/bauen-wohnen-klima/klimaschutz/selbst-aktiv-werden"
       }
     ]
   }

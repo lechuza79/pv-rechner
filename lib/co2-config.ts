@@ -18,7 +18,9 @@
 //    er als besonders eilbedürftige Vorlage nach Art. 76 Abs. 2 S. 4 GG an den
 //    Bundesrat (BR-Drs. 462/26, Fristablauf 25.09.2026). Seit dem 07.09.2026 ist
 //    er im Bundestag eingebracht (BT-Drs. 21/7869, hib-Meldung vom 08.09.2026),
-//    dort aber nicht beschlossen, nicht verkündet, nicht in Kraft. (Bis zum
+//    am 15.10.2026 vom Bundestag in der Ausschussfassung (BT-Drs. 21/8626)
+//    beschlossen; zweiter Durchgang im Bundesrat und Verkündung stehen aus,
+//    nicht in Kraft (Details beim Prüfdatum unten). (Bis zum
 //    15.09.2026 stand in diesem Kommentar noch „im Bundestag weder eingebracht"
 //    — die `source`-Zeile unten trug die Drucksache da schon.)
 //    Bis zum 12.08.2026 stand hier "Referentenentwurf, ohne Kabinettsbeschluss" —
@@ -83,7 +85,7 @@ export interface Co2PriceConfig {
 export const CO2_PRICE: Co2PriceConfig = {
   anchors: {
     2026: 55, // BEHG-Korridor-Boden (konservativ; gesetzliche Spanne 55–65)
-    2027: 65, // Korridor-Decke; das Einfrieren für 2027 ist erst ein Gesetzentwurf (siehe oben)
+    2027: 65, // Korridor-Decke; das Einfrieren für 2027 hat der Bundestag beschlossen, in Kraft ist es noch nicht (siehe oben)
   },
   annualIncrease: 8,
   validFrom: "2026-08-14",
@@ -126,11 +128,26 @@ export const CO2_PRICE: Co2PriceConfig = {
   // ist KEIN Beschluss, der Entwurf geht danach in den Ausschuss. Zustand
   // unverändert: Regierungsentwurf, eingebracht; 2027 bleibt damit die
   // Korridor-Decke aus dem Entwurf, nicht geltendes Recht.
-  geprueftIso: "2026-09-23",
+  // 15.10.2026: STATE CHANGE (own change, own source — gate rule 1). The
+  // Bundestag passed the bill in the committee version: "Der Bundestag hat am
+  // Donnerstag, 15. Oktober 2026, nach 20-minütiger Aussprache den vom
+  // Umweltausschuss geänderten Gesetzentwurf … (21/7869) beschlossen" (roll-call
+  // vote 19:15–19:36, Beschlussempfehlung 21/8626 lit. a "Gesetzentwurf in
+  // Ausschussfassung annehmen" — angenommen), bundestag.de Textarchiv
+  // kw39-de-brennstoffemissionshandelsgesetz-1211312. The committee left Art. 1
+  // unchanged, i.e. § 10 (2) sentence 4 still reads "Für die Jahre 2026 und 2027
+  // wird ein Preiskorridor mit einem Mindestpreis von 55 Euro … und einem
+  // Höchstpreis von 65 Euro … festgelegt"; it only changed Art. 2 (auction
+  // volume, surplus/top-up prices in the BEHV). Values unchanged. Still open:
+  // second passage in the Bundesrat (Einspruchsgesetz — no consent required, the
+  // Bundesrat can only call the mediation committee), promulgation, entry into
+  // force the day after promulgation. Council 3/3 (one adversarial) + Legal-Judge
+  // approved the wording on 15.10.2026.
+  geprueftIso: "2026-10-15",
   // Bewusst VOR dem erwarteten Bundestagsbeschluss (Herbst 2026): Ein Satz, der
   // "Bundestag steht aus" sagt, wird am Tag des Beschlusses von selbst falsch.
   reviewBy: "2026-11-30",
-  source: "BEHG für 2026 (Korridor-Boden 55 €/t); für 2027 die Korridor-Decke von 65 €/t aus dem Gesetzentwurf zum Einfrieren des Korridors 55–65 €/t — Regierungsentwurf, vom Bundeskabinett am 12.08.2026 beschlossen, seit 14.08.2026 im Bundesrat (BR-Drs. 462/26) und seit 07.09.2026 im Bundestag (BT-Drs. 21/7869), Bundestagsbeschluss und Verkündung stehen aus; ab 2028 EU-Emissionshandel (Start 2028, EU-Umweltrat 11/2025) als konservative Forecast-Kurve",
+  source: "BEHG für 2026 (Korridor-Boden 55 €/t); für 2027 die Korridor-Decke von 65 €/t aus dem Dritten BEHG-Änderungsgesetz, das den Korridor 55–65 €/t auch für 2027 festschreiben soll — Regierungsentwurf vom Bundeskabinett am 12.08.2026 beschlossen (BR-Drs. 462/26, BT-Drs. 21/7869), vom Bundestag am 15.10.2026 in der Ausschussfassung (BT-Drs. 21/8626) beschlossen; zweiter Durchgang im Bundesrat und Verkündung stehen aus, in Kraft ist es noch nicht; ab 2028 EU-Emissionshandel (Start 2028, EU-Umweltrat 11/2025) als konservative Forecast-Kurve",
 };
 
 /** CO2-Preis in €/t für ein absolutes Kalenderjahr (rollover-sicher). */

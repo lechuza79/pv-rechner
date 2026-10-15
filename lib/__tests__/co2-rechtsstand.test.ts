@@ -6,7 +6,8 @@ import { CO2_PRICE } from "../co2-config";
  *
  * Die Kette: Koalitionsausschuss 12.05.2026 → Referentenentwurf 03.07.2026 →
  * Kabinettsbeschluss 12.08.2026 → Bundesrat (erster Durchgang, BR-Drs. 462/26,
- * zugeleitet 14.08.2026) → Bundestag → Verkündung → in Kraft. Jeder Schritt macht
+ * zugeleitet 14.08.2026) → Bundestag (beschlossen 15.10.2026) → Bundesrat
+ * (zweiter Durchgang) → Verkündung → in Kraft. Jeder Schritt macht
  * den Satz daneben falsch, und der Satz steht sichtbar auf /datenstand.
  *
  * Am 14.08.2026 stand dort noch "Referentenentwurf 07/2026, noch nicht
@@ -25,9 +26,13 @@ describe("CO2-Preis 2027: Rechtsstand des Dritten BEHG-Änderungsgesetzes", () =
     expect(CO2_PRICE.source).not.toMatch(/Referentenentwurf/);
   });
 
-  it("sagt sichtbar, dass Bundestag und Verkündung noch ausstehen", () => {
-    expect(CO2_PRICE.source).toMatch(/Bundestag/);
-    expect(CO2_PRICE.source).toMatch(/steh(en|t) aus/);
+  it("nennt den Bundestagsbeschluss vom 15.10.2026 und dass Bundesrat und Verkündung noch ausstehen", () => {
+    // Since 15.10.2026 "Bundestagsbeschluss steht aus" is false; the next state
+    // change is the Bundesrat's second passage, then promulgation.
+    expect(CO2_PRICE.source).toMatch(/vom Bundestag am 15\.10\.2026 .*beschlossen/);
+    expect(CO2_PRICE.source).not.toMatch(/Bundestagsbeschluss und Verkündung stehen aus/);
+    expect(CO2_PRICE.source).toMatch(/Bundesrat und Verkündung stehen aus/);
+    expect(CO2_PRICE.source).toMatch(/in Kraft ist es noch nicht/);
   });
 
   it("verschärft nicht zum Zustimmungsgesetz — das BEHG-ÄndG ist ein Einspruchsgesetz", () => {

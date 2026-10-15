@@ -411,7 +411,7 @@ export default async function DatenstandPage() {
         <Section
           title="CO₂-Preis (Heizen)"
           stand={monthYear(CO2_PRICE.validFrom)}
-          intro="Aufschlag auf Gas/Öl im Wärmepumpen-Vergleich. Für das laufende Jahr gilt der gesetzliche Korridor. Dass er auch im nächsten Jahr gilt, hat die Koalition beschlossen und das Kabinett als Gesetzentwurf auf den Weg gebracht; beschlossen ist das Gesetz noch nicht. Wir rechnen trotzdem damit, weil das die vorsichtigere Annahme ist. Danach ein konservativer Forecast für den EU-Emissionshandel ab 2028."
+          intro="Aufschlag auf Gas/Öl im Wärmepumpen-Vergleich. Für das laufende Jahr gilt der gesetzliche Korridor. Dass er auch im nächsten Jahr gilt, hat der Bundestag am 15. Oktober 2026 beschlossen; der Bundesrat befasst sich noch einmal damit, verkündet und in Kraft ist das Gesetz noch nicht. Wir rechnen trotzdem damit, weil das die vorsichtigere Annahme ist. Danach ein konservativer Forecast für den EU-Emissionshandel ab 2028."
           rows={co2Rows}
           source={`${CO2_PRICE.source}. Nächste Prüfung bis ${monthYear(CO2_PRICE.reviewBy)}.`}
           aufAnfrage={`Ein €/t-Wert je Kalenderjahr ab ${YEAR}`}
