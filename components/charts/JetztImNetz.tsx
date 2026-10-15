@@ -28,6 +28,7 @@ import { v, space, pad } from "../../lib/theme";
 import { LoadingDots } from "../LoadingDots";
 import JetztDonut, { jetztAusReihe } from "./JetztDonut";
 import ErzeugungWidget from "../ErzeugungWidget";
+import EnergyDataNotice from "../energy/EnergyDataNotice";
 import { quellenHinweis } from "../../lib/energy-ersatzstand";
 
 export default function JetztImNetz({ initialData }: { initialData?: GenerationData }) {
@@ -91,9 +92,7 @@ export default function JetztImNetz({ initialData }: { initialData?: GenerationD
 
       {/* Energy-Charts down: either SMARD's live numbers or our stored copy. */}
       {hinweis && (
-        <p role="status" style={{ ...satz, margin: `0 0 ${space.sm}px`, color: v("--color-text-muted") }}>
-          {hinweis}
-        </p>
+        <EnergyDataNotice stale={!!data.stale} details={hinweis}/>
       )}
 
       {/* Einordnung ÜBER den Karten */}

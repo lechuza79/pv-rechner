@@ -57,6 +57,12 @@ On-site instances suppress the visible source edge in favor of the host's source
 
 ### Migration completeness
 
+A working, approved visualization is the migration baseline, not a design proposal. Record its concrete source route, renderer and relevant states before adapting it. Reuse the same implementation; migrate only the host integration (registry, frame, embed, export and source attribution). Do not invent or rewrite titles, status lines, labels, controls, spacing, legends or animations unless explicitly requested. Necessary provenance and methodology stay in the existing information/source surfaces rather than becoming new visible copy.
+
+Move required styles and tokens into the shared component contract: a widget must not accidentally depend on the host navigation or page stylesheet. Do not repair missing dependencies with a parallel embed-specific renderer or a sequence of local visual overrides. Both the original page and embed must consume the same corrected implementation.
+
+Before declaring migration complete, compare the original and migrated renderer with identical data and selection at desktop and narrow widths. Cover overview, region selection, every distinct drilldown level, hover/focus, close/back navigation and export, including long labels. Check text and control parity as well as appearance. A screenshot of the initial state alone is not migration acceptance; the operator must not have to rediscover previously solved behavior. Document any intentional host-only differences explicitly.
+
 A migration inventories and retains all quick presets, period steppers, switches, tool actions and export state before changing appearance. `WidgetPresetButtons` supplies reusable quick ranges alongside the independent year stepper. `WidgetPreviewCard` marks every preview as `onsite=1`; the gallery owns the aggregate source section, while exports keep their source edge. The energy-frame token adapter bridges legacy chart text, grid and tooltip tokens to the shared theme. Semantic series colors require a separate consistent palette review; do not replace categories with one accent color.
 
 

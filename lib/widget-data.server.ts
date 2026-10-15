@@ -1,4 +1,5 @@
 import 'server-only';
+import {radarDataEndpoint} from './strommix-radar-source';
 import {cache} from 'react';
 import {livePreviewJson,usesLivePreviewData,livePreviewSnapshotState} from './preview-data';
 import {liveWidgetDataUrl,validateLiveWidgetData} from './widget-data-services';
@@ -23,7 +24,11 @@ export function widgetDataDependencies(widgetId:string,query:Record<string,strin
  if(widgetId==='region-solarleistung')return [`/api/region/solartag?ags=${query.bl??'06'}`];
  if(reference.has(widgetId))return ['/api/widgets/reference-data'];
  if(['pv-kostenrennen','heizkostenrennen','gruengas-heizkosten'].includes(widgetId))return ['/api/prices'];
+ if(widgetId==='strommix-radar'||(widgetId==='strommix'&&query.darstellung==='radar'))return [radarDataEndpoint(query)];
  if(widgetId==='strommix')return ['/api/energy/generation?country=de&hours=168','/api/energy/nuclear-import?hours=168'];
+ if(widgetId==='regional-hourly-mix')return ['/api/strommix-regional'];
+ if(widgetId==='pumpspeicher')return ['/api/energy/generation?country=de&hours=24'];
+ if(widgetId==='physischer-stromhandel')return ['/api/energy/physical-flows','/api/energy/import-mix'];
  if(widgetId==='ee-ampel')return ['/api/energy/generation?country=de&hours=24'];
  if(widgetId==='erzeugung')return ['/api/energy/generation?hours=26&trim=0','/api/mastr/summary?region=de&type=solar&segment=alle'];
  if(widgetId==='karte')return ['/api/mastr/summary?region=de&type=solar&segment=alle','/api/mastr/choropleth?parent=de&type=solar&segment=alle'];

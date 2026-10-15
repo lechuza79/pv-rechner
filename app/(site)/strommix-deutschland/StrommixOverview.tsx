@@ -15,6 +15,7 @@ import ErzeugungWidget from '../../../components/ErzeugungWidget';
 import ScrollIndicator from '../../../components/ScrollIndicator';
 import LiveDataStatus from '../../../components/LiveDataStatus';
 import {LoadingDots} from '../../../components/LoadingDots';
+import EnergyDataNotice from '../../../components/energy/EnergyDataNotice';
 import {quellenHinweis} from '../../../lib/energy-ersatzstand';
 import stage from '../../../components/EnergyEditorialStage.module.css';
 import foundation from '../../../components/social/atlas-foundations.module.css';
@@ -48,13 +49,13 @@ export default function StrommixOverview({initialData, renderedAt, section='hero
   widgets:<WidgetPresentationProvider appearance={{theme:'light'}}><ErzeugungWidget nackt onsite highlightTs={values?.ts}/></WidgetPresentationProvider>
  }]}/>;
  const radarWidget=<StrommixRadarWidget points={data.data} provenance={data} timestamp={radarTimestamp} onChange={setRadarTimestamp} hero={splitHero} hideLabels={splitHero&&!showTimelineLabels} loading={loading} retrievedAt={retrievedAt} renderedAt={renderedAt??initialData?.retrievedAt??"1970-01-01T00:00:00Z"}/>;
- const flows=<ElectricityFlowSummary editorial={section==='flows'} retrievedAt={retrievedAt} renderedAt={renderedAt??initialData?.retrievedAt??"1970-01-01T00:00:00Z"} point={data.data.at(-1)} stale={data.stale}/>;
+ const flows=<ElectricityFlowSummary editorial={section==='flows'} retrievedAt={retrievedAt} renderedAt={renderedAt??initialData?.retrievedAt??"1970-01-01T00:00:00Z"} point={data.data.at(-1)} stale={data.stale} fallback={data.fallback}/>;
  if(section==='flows')return <section id="speicher-stromhandel" className={`${stage.stage} ${foundation.foundation}`} data-story-scheme="dark"><div className={stage.flowSection}><header className={stage.sectionIntro}><h2>Speicher und Stromhandel</h2><p>Wie viel Strom wird gespeichert, abgegeben und über Deutschlands Grenzen ausgetauscht?</p></header><WidgetPresentationProvider appearance={{theme:'dark'}}><div className={stage.flowGrid}>{flows}</div></WidgetPresentationProvider></div></section>;
  if(splitHero)return <ViewportStage><section className={`${stage.stage} ${foundation.foundation}`} data-story-scheme="dark" aria-labelledby="strommix-title"><div className={stage.splitHero}>
  <div ref={introRef} className={stage.splitIntro}><LiveDataStatus observedAt={radarFrame?.ts} showObservedAt retrievedAt={retrievedAt} renderedAt={renderedAt??initialData?.retrievedAt??"1970-01-01T00:00:00Z"} refreshPage={false}/><h1 id="strommix-title">Strommix Deutschland live</h1>
  <p>Wie viel Strom liefern Wind, Sonne, Kohle und Gas? Entdecke Deutschlands aktuelle Stromerzeugung und ihren Verlauf über die letzten 24 Stunden.</p>
  {values&&largest&&<p>Zuletzt stammten <strong>{anteilZahl(values.eeSharePct)} % aus erneuerbaren Energien</strong>. Den größten Beitrag lieferte <strong>{largest.label} mit {anteilZahl(largest.value/values.totalMw*100)} %</strong>.</p>}
- {notice&&<p role="status">{notice}</p>}
+ {notice&&<EnergyDataNotice details={notice} stale={!!data.stale}/>}
  <ScrollIndicator href="#speicher-stromhandel">Zahlen einordnen</ScrollIndicator></div>
  <div className={stage.splitVisual}><WidgetPresentationProvider appearance={{theme:'dark'}}>{radarWidget}</WidgetPresentationProvider></div>
  </div></section></ViewportStage>;
@@ -67,7 +68,7 @@ export default function StrommixOverview({initialData, renderedAt, section='hero
   <div className={stage.heroMeta}><LiveDataStatus retrievedAt={retrievedAt} renderedAt={renderedAt??initialData?.retrievedAt??"1970-01-01T00:00:00Z"} refreshPage={review}/></div>
   <div className={stage.intro}><Heading id={headingId}>{secondary?"Erneuerbare im aktuellen Strommix":"Strommix Deutschland live"}</Heading>
   <p>{values&&largest?<>Im zuletzt gemeldeten Strommix deckten erneuerbare Energien <strong>{anteilZahl(values.eeSharePct)} %</strong> der öffentlichen Nettostromerzeugung ohne Pumpspeicher-Abgabe. <strong>{largest.label}</strong> lieferte mit {anteilZahl(largest.value/values.totalMw*100)} % den größten Einzelbeitrag.</>:<>Wie viel Strom liefern Wind, Sonne, Kohle und Gas? Hier findest du den aktuellen Strommix Deutschlands und die Entwicklung im Tages- und Jahresverlauf.</>}</p>
-  {notice&&<p role="status">{notice}</p>}
+  {notice&&<EnergyDataNotice details={notice} stale={!!data.stale}/>}
   <ScrollIndicator href={scrollTarget}>Zahlen einordnen</ScrollIndicator></div>
   {visual?<div className={stage.mapHeroVisual}>{visual}</div>:<EnergyMonitor scheme="dark" className={`${stage.teasers} strommix-hero-tiles`} kpis={<WidgetPresentationProvider appearance={{theme:'dark'}}><WidgetFrame title={review?"Strommix im Überblick":"Erneuerbare im Strommix"} kind="donut" help={<>Öffentliche Nettostromerzeugung ohne Speicherabgabe und Stromimporte. Datenstand: {timestamp??'nicht verfügbar'}. Die Anteile werden aus derselben Erzeugungsreihe wie die Texte berechnet. Alle Prozentwerte beziehen sich auf die gesamte Erzeugung; der aufgeklappte Ring zeigt die Zusammensetzung der gewählten Gruppe.</>}>
   {values&&review?<ShareDonut overview neutralOverview legendColumns={3} palette="neutral" label="Aktueller Strommix nach Energieträger" values={strommixGroups(generation)} totalCenter={{value:(values.totalMw/1000).toLocaleString('de-DE',{maximumFractionDigits:1}),unit:'GW',label:'Stromerzeugung'}} formatValue={v=>({value:anteilZahl(v/values.totalMw*100),unit:'%'})}/>:values?<ShareDonut defaultIndex={0} showLegend={false} palette="neutral" label="Anteil erneuerbarer Energien" values={[{label:'Erneuerbare',value:values.eeSharePct,visual:'/illustrations/energy/mix-renewables.webp'},{label:'Übrige Erzeugung',value:100-values.eeSharePct}]} formatValue={v=>({value:anteilZahl(v),unit:'%'})}/>:<p role="status">{loading?<LoadingDots/>:error?'Daten gerade nicht erreichbar.':'Noch keine Daten verfügbar.'}</p>}

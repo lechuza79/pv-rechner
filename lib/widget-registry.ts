@@ -181,6 +181,29 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.energyCharts],
     cta: { label: "Alle Energiedaten ansehen", href: "/strommix-deutschland" },
   },
+  pumpedStorage: {
+    id:"pumpspeicher",title:"Pumpspeicher in Deutschland",kind:"chart",
+    configuration:{presentations:{full:widgetVariant('cartesian',{maxWidth:560,contentSizing:'Existing flow bars retain their natural height, labels and common GW scale.'})},themes:['light','dark','hero'],background:false,sharing:true,data:'Aktuelle Leistung in Deutschland',period:'Neuester verfügbarer Messpunkt'},
+    shareUrl:`${SITE}/strommix-deutschland#speicher-stromhandel`,shareText:'Pumpspeicher in Deutschland – Solar Check',sources:[DATA_SOURCES.energyCharts],
+  },
+  physicalTrade: {
+    id:"physischer-stromhandel",title:"Physische Stromimporte und Stromexporte",kind:"chart",
+    configuration:{presentations:{full:widgetVariant('cartesian',{maxWidth:760,contentSizing:'Existing flow bars retain their natural height, labels and common GW scale.'})},themes:['light','dark','hero'],background:false,sharing:true,data:'Aktuelle Leistung in Deutschland',period:'Neuester verfügbarer Messpunkt'},
+    shareUrl:`${SITE}/strommix-deutschland#speicher-stromhandel`,shareText:'Physische Stromimporte und Stromexporte – Solar Check',sources:[DATA_SOURCES.energyCharts],
+  },
+  strommixRadar: {
+    id: "strommix-radar",
+    title: "Stromerzeugung nach Energieträger",
+    kind: "chart",
+    configuration: {presentations:{
+      full:widgetVariant('radial',{maxWidth:760,contentSizing:'The existing radar preserves its proportions; heading, playback and source determine card height.'}),
+      hero:widgetVariant('radial',{label:'Hero / Story',params:{presentation:'hero'},maxWidth:760,contentSizing:'The same radar and playback without the duplicate heading.',includes:['Radar with carrier illustrations','Fixed daily scale','Playback and source/export menu'],omits:['Duplicate widget heading']})
+    },themes:['light','dark','hero'],background:false,sharing:true,autoplay:true,data:'Öffentliche Stromerzeugung in Deutschland; optional datierter Stand',period:'Letzte 24 Stunden bis zum neuesten oder ausdrücklich gewählten Stand'},
+    shareUrl: `${SITE}/strommix-deutschland`,
+    shareText: "Strommix Deutschland – live bei Solar Check",
+    sources: [DATA_SOURCES.energyCharts],
+    cta: {label:"Strommix im Detail",href:"/strommix-deutschland"},
+  },
   atomstromJahr: {
     id: "atomstrom-jahr",
     title: "Atomstrom-Import im Jahresverlauf",
@@ -506,16 +529,16 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.mastr], embeddable: false,
   },
   regionalHourlyMix: {
-    id:'regional-hourly-mix',title:'Regionaler Strommix im Stundenvergleich',kind:'chart',
-    configuration:{themes:['dark'],background:false,sharing:true,data:'Modellierte Erzeugung in 13 Regionen',period:'Stündlich'},
-    shareUrl:`${SITE}/strommix-deutschland?variante=regional#bundeslaender`,shareText:'Regionaler Strommix im Stundenvergleich – Solar Check',
-    sources:[DATA_SOURCES.co2map,DATA_SOURCES.bkg],embeddable:false,
+    id:'regional-hourly-mix',title:'Regionaler Strommix',kind:'chart',
+    configuration:{presentations:{full:widgetVariant('map',{maxWidth:1200,contentSizing:'Hourly regional map with time selection and regional detail; natural content height.'})},themes:['dark'],background:false,sharing:true,data:'Modellierte Erzeugung in 13 Regionen',period:'Stündlich'},
+    shareUrl:`${SITE}/strommix-deutschland?variante=regional#bundeslaender`,shareText:'Regionaler Strommix – Solar Check',
+    sources:[DATA_SOURCES.co2map,DATA_SOURCES.bkg],
   },
   stateElectricityMap: {
     id: "state-electricity-map", title: "Strommix der Bundesländer", kind: "chart",
-    configuration: {themes:["dark"],background:false,sharing:true,data:"Nettostromerzeugung je Bundesland",period:"Kalenderjahr oder seit Jahresbeginn"},
+    configuration: {presentations:{full:widgetVariant("map",{maxWidth:1200,contentSizing:"National map with year selection and regional detail; natural content height."})},themes:["dark"],background:false,sharing:true,data:"Nettostromerzeugung je Bundesland",period:"Kalenderjahr oder seit Jahresbeginn"},
     shareUrl: `${SITE}/strommix-deutschland#bundeslaender`, shareText:"Strommix der Bundesländer – Solar Check",
-    sources:[DATA_SOURCES.energyCharts,DATA_SOURCES.bkg],embeddable:false,
+    sources:[DATA_SOURCES.energyCharts,DATA_SOURCES.bkg],
   },
   regionalMap: {
     id: "regional-map", title: "3D-Karte im regionalen Vergleich", kind: "chart",

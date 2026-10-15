@@ -12,6 +12,16 @@ export function RadarChart({rows,max:providedMax,unit='%',label,artwork}:{rows:R
  const [runtimeReady,setRuntimeReady]=useState(false);
  const [artReady,setArtReady]=useState(false);
  useEffect(()=>{
+  if(!artwork)return;
+  let mounted=true;
+  const ready=()=>{if(mounted)setArtReady(true);};
+  window.addEventListener('sc-radar-art-ready',ready);
+  // Next deduplicates scripts; every chart instance still needs readiness.
+  void customElements.whenDefined('solar-illustration').then(()=>{if(mounted)setRuntimeReady(true);});
+  if((window as Window & {SolarCheckIllustrations?:{radarFamilyV4?:boolean}}).SolarCheckIllustrations?.radarFamilyV4)ready();
+  return()=>{mounted=false;window.removeEventListener('sc-radar-art-ready',ready);};
+ },[artwork]);
+ useEffect(()=>{
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){currentRows.current=rows;setAnimatedRows(rows);return;}
   const from=new Map(currentRows.current.map(row=>[row.id,row.value]));
   const start=performance.now();let frame=0;
@@ -34,7 +44,7 @@ export function RadarChart({rows,max:providedMax,unit='%',label,artwork}:{rows:R
  return <div className="sc-radar" role="group" aria-label={label} onPointerMove={event=>{
   event.currentTarget.querySelectorAll<HTMLElement & {canMove?:()=>boolean;move?:(x:number,y:number)=>void}>('solar-illustration').forEach(motif=>{if(!motif.canMove?.())return;const b=motif.getBoundingClientRect();motif.move?.(Math.max(-1,Math.min(1,(event.clientX-b.left)/b.width*2-1)),Math.max(-1,Math.min(1,(event.clientY-b.top)/b.height*2-1)));});
  }} onPointerLeave={event=>event.currentTarget.querySelectorAll<HTMLElement & {move?:(x:number,y:number)=>void}>('solar-illustration').forEach(motif=>motif.move?.(0,0))}>
- {artwork&&<><Script src="/illustrations-motion/solar-illustrations.js" onReady={()=>setRuntimeReady(true)}/>{runtimeReady&&<Script src="/illustrations-motion/radar-v4/register.js" onReady={()=>setArtReady(true)}/>}<div className="sc-radar-art" aria-hidden="true">{artReady&&rows.map((row,i)=>{const [x,y]=point(i,225);return <div key={row.id} className="sc-radar-motif" style={{left:`${x/6}%`,top:`${y/5.6}%`}}>{createElement('solar-illustration',{motif:`radar-${row.id}`,label:row.label,thumbnail:''})}</div>;})}</div></>}
+ {artwork&&<><Script src="/illustrations-motion/solar-illustrations.js" onReady={()=>setRuntimeReady(true)}/>{runtimeReady&&<Script src="/illustrations-motion/radar-v4/register.js" onReady={()=>{setArtReady(true);window.dispatchEvent(new Event('sc-radar-art-ready'));}}/>}<div className="sc-radar-art" aria-hidden="true">{artReady&&rows.map((row,i)=>{const [x,y]=point(i,225);return <div key={row.id} className="sc-radar-motif" style={{left:`${x/6}%`,top:`${y/5.6}%`}}>{createElement('solar-illustration',{motif:`radar-${row.id}`,label:row.label,thumbnail:''})}</div>;})}</div></>}
  <svg viewBox="0 0 600 560" aria-labelledby={titleId}><title id={titleId}>{label}</title>
  <defs><radialGradient id={`${titleId}-fill`} gradientUnits="userSpaceOnUse" cx="300" cy="280" r="175"><stop offset="0" stopColor="var(--widget-accent)" stopOpacity=".03"/><stop offset="1" stopColor="var(--widget-accent)" stopOpacity=".32"/></radialGradient></defs>
  {[1/3,2/3,1].map((r,i)=><path key={r} d={gridPath(175*r)} className="sc-radar-grid" strokeDasharray={i===1?'2 6':undefined}/>)}

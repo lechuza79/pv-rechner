@@ -91,8 +91,9 @@
 
 .sc-share-breadcrumb{font:400 var(--sc-type-body-size,16px)/1.5 var(--font-text);gap:8px;}
 .sc-share-breadcrumb>span:first-child:not(:last-child){color:var(--widget-muted);}
-.sc-share-breadcrumb .sc-search-close{position:static;width:26px;height:26px;flex:0 0 26px;color:inherit;}
-.sc-share-breadcrumb .sc-search-close:hover{background:color-mix(in srgb,currentColor 10%,transparent);}
+/* Chart controls must not depend on the site navigation stylesheet. */
+.sc-share-breadcrumb .sc-share-close{display:grid;place-items:center;width:26px;height:26px;padding:0;flex:0 0 26px;border:0;border-radius:50%;background:none;color:inherit;cursor:pointer;}
+.sc-share-breadcrumb .sc-share-close:hover{background:color-mix(in srgb,currentColor 10%,transparent);}
 .sc-share-donut[data-detail-layout] .sc-share-level{display:grid;grid-template-columns:minmax(80px,.85fr) minmax(0,1.15fr);gap:12px;align-items:center;}
 .sc-share-donut[data-detail-layout] .sc-share-ring{width:100%;max-width:190px;}
 .sc-share-donut[data-detail-layout] .sc-share-legend{grid-template-columns:1fr;margin:0;gap:0;}

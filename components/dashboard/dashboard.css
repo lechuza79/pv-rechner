@@ -216,6 +216,10 @@
  .sc-widget[data-source-placement=plot] .sc-widget-head h4{flex:none;}
  .sc-widget[data-source-placement=plot] .sc-widget-tools{margin-left:0;justify-content:flex-start;}
 }
+/* These standalone widgets have menu-only headers; keep the menu beside the title. */
+.sc-widget:is([data-widget-id=pumpspeicher],[data-widget-id=physischer-stromhandel],[data-widget-id=state-electricity-map])[data-source-placement=plot] > .sc-widget-head{flex-direction:row;flex-wrap:nowrap;}
+.sc-widget:is([data-widget-id=pumpspeicher],[data-widget-id=physischer-stromhandel],[data-widget-id=state-electricity-map])[data-source-placement=plot] > .sc-widget-head h4{flex:1 1 0;min-width:0;}
+.sc-widget:is([data-widget-id=pumpspeicher],[data-widget-id=physischer-stromhandel],[data-widget-id=state-electricity-map])[data-source-placement=plot] > .sc-widget-head .sc-widget-tools{margin-left:auto;justify-content:flex-end;}
 /* Immersive widgets retain the same title, help and export actions. */
 .sc-widget[data-heading-placement=overlay] > .sc-widget-head{position:absolute;inset:0 0 auto;z-index:8;border-radius:var(--widget-radius,16px) var(--widget-radius,16px) 0 0;padding-bottom:24px;background:linear-gradient(var(--widget-bg,var(--color-bg)) 0%,transparent 100%);pointer-events:none;}
 .sc-widget[data-heading-placement=overlay] > .sc-widget-head .sc-widget-tools{pointer-events:auto;}

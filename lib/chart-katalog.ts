@@ -42,6 +42,7 @@ export const CHART_KATALOG: KatalogEintrag[] = [
   { datei: "charts/RadialChartLayout", art: "baustein", wofuer: "Gemeinsame Anordnung von radialem Plot, Zeitraum und Abspielsteuerung." },
   { datei: "charts/SparklineMetric", art: "baustein", wofuer: "Kompakte Tagesbalken mit hervorgehobener Kennzahl für Hero-Vorschauen." },
 
+  {datei:"energy/ElectricityFlowWidgets",art:"widget",wofuer:"Pumped storage and physical electricity trade reuse existing power and diverging bars across editorial pages, embeds and dashboards."},
   { datei: "energy/NuclearYearWidget", art: "widget", wofuer: "Calendar-year import months, origin countries and generation totals using shared category bars and export frame." },
   {datei:"charts/WeatherMicroTile",art:"widget",wofuer:"Compact weather tile with modelled power, shared timestamp and optional wind day profile."},
   {datei:"charts/WindMicroCompass",art:"baustein",wofuer:"Wind flow particles scaled to speed, respecting the meteorological origin direction."},
@@ -82,6 +83,7 @@ export const CHART_KATALOG: KatalogEintrag[] = [
 
   // ─── Fertige Widgets ──────────────────────────────────────────────────────
   { datei: "ErzeugungWidget", art: "widget", wofuer: "Erneuerbaren-Erzeugung als Radial, wechselt auf Wunsch selbst durch die Träger (autoswitchMs)." },
+  {datei:"energy/StrommixRadarWidget",art:"widget",wofuer:"Shared Strommix radar for editorial hero, gallery, dashboard, story preview and standalone embed, with fixed daily scale and common playback/export."},
   { datei: "StrommixWidget", art: "widget", wofuer: "Gemeinsamer Strommix-Verlauf mit Zeitraumwahl, Import-Overlay und zentralem Export fuer Seite und Embed." },
   { datei: "charts/JetztDonut", art: "widget", wofuer: "Strommix-Momentaufnahme aus dem letzten Punkt einer Erzeugungsreihe." },
   { datei: "charts/ZubauWidget", art: "widget", wofuer: "PV-Zubau über die Jahre mit Förder-Meilensteinen (Zeitleiste + Chart)." },

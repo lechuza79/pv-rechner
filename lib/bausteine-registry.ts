@@ -347,7 +347,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: [],
+    bestehtAus: ["WidgetControls", "Icons"],
   },
   {datei: "components/FundingStand.tsx", name: "FundingStand", zweck: "Shared funding verification date, value period and freshness caveats.", gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: []},
   {datei: "components/FundingSources.tsx", name: "FundingSources", zweck: "Official source context for funding pages in the shared footer position.", gruppe: "struktur", ebene: "zusammensetzung", stand: "verbindlich", bestehtAus: ["DataSourcesSection"]},

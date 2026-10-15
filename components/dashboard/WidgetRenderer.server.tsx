@@ -5,6 +5,11 @@ import {allWidgets} from '../../lib/widget-registry';
 // Compatibility adapters resolve existing route components. Identity, metadata,
 // data preparation, chart rendering and exports remain in their existing owners.
 const routes = {
+  '/embed/regional-hourly-mix': () => import('../../app/(embed)/embed/regional-hourly-mix/page'),
+  '/embed/pumpspeicher': () => import('../../app/(embed)/embed/pumpspeicher/page'),
+  '/embed/physischer-stromhandel': () => import('../../app/(embed)/embed/physischer-stromhandel/page'),
+  '/embed/state-electricity-map': () => import('../../app/(embed)/embed/state-electricity-map/page'),
+
   '/embed/atomstrom-jahr': () => import('../../app/(embed)/embed/atomstrom-jahr/page'),
   '/embed/landschaft-karte': () => import('../../app/(embed)/embed/landschaft-karte/page'),
   '/embed/kommunen-landschaft': () => import('../../app/(embed)/embed/kommunen-landschaft/page'),
@@ -12,6 +17,7 @@ const routes = {
   '/embed/pv-kostenrennen': () => import('../../app/(embed)/embed/pv-kostenrennen/page'),
   '/embed/heizkostenrennen': () => import('../../app/(embed)/embed/heizkostenrennen/page'),
   '/embed/gruengas-heizkosten': () => import('../../app/(embed)/embed/gruengas-heizkosten/page'),
+  '/embed/strommix-radar': () => import('../../app/(embed)/embed/strommix-radar/page'),
   '/embed/strommix': () => import('../../app/(embed)/embed/strommix/page'),
   '/embed/strommix-anteil': () => import('../../app/(embed)/embed/strommix-anteil/page'),
   '/embed/atomstrom-tage': () => import('../../app/(embed)/embed/atomstrom-tage/page'),

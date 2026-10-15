@@ -23,3 +23,6 @@
 
 /* Standalone image exports need an opaque, readable chart surface. */
 [data-sc-export-capture] .sc-widget:has(.sc-radar){background:var(--widget-surface)}
+
+/* Registered cards own their padding; the editorial hero keeps its plain surface. */
+.sc-strommix-radar-frame[data-surface="card"] > .sc-widget-body{padding:var(--widget-padding);}

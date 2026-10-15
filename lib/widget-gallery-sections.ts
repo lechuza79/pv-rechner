@@ -31,6 +31,10 @@ export interface WidgetSection {
 }
 
 export const SECTIONS: WidgetSection[] = [
+ {id:'regional-hourly-mix',label:'Regionaler Strommix',intro:'Modellierte stündliche Erzeugung in 13 Regionen mit Regionsauswahl.',attribution:{path:'/strommix-deutschland?variante=regional',text:'Regionaler Strommix – Solar Check'},showFrameWidth:true,variants:[{id:'regional-hourly-mix',label:'Vollständig',src:'/embed/regional-hourly-mix',height:760}]},
+ {id:'pumpspeicher',label:'Pumpspeicher',intro:'Pumpspeicher mit den vorhandenen Darstellungen und Daten.',attribution:{path:'/strommix-deutschland',text:'Pumpspeicher – Solar Check'},showFrameWidth:true,variants:[{id:'pumpspeicher',label:'Vollständig',src:'/embed/pumpspeicher',height:300}]},
+ {id:'physischer-stromhandel',label:'Physischer Stromhandel',intro:'Physischer Stromhandel mit den vorhandenen Darstellungen und Daten.',attribution:{path:'/strommix-deutschland',text:'Physischer Stromhandel – Solar Check'},showFrameWidth:true,variants:[{id:'physischer-stromhandel',label:'Vollständig',src:'/embed/physischer-stromhandel',height:640}]},
+ {id:'state-electricity-map',label:'Strommix der Bundesländer',intro:'Strommix der Bundesländer mit den vorhandenen Darstellungen und Daten.',attribution:{path:'/strommix-deutschland',text:'Strommix der Bundesländer – Solar Check'},showFrameWidth:true,variants:[{id:'state-electricity-map',label:'Vollständig',src:'/embed/state-electricity-map',height:760}]},
   {id:'atomstrom-jahr',label:'Atomstrom im Jahresverlauf',intro:'Der vorhandene Jahresrückblick mit Monatsmengen, Herkunftsländern und deutscher Stromerzeugung.',attribution:{path:'/atomstrom-import/2025',text:'Atomstrom-Jahresrückblick — Solar Check'},showFrameWidth:true,
    variants:[{id:'atomstrom-jahr-months',label:'Monatsmengen',src:'/embed/atomstrom-jahr',params:{year:'2025',view:'months'},height:480},{id:'atomstrom-jahr-countries',label:'Herkunftsländer',src:'/embed/atomstrom-jahr',params:{year:'2025',view:'countries'},height:520},{id:'atomstrom-jahr-generation',label:'Stromerzeugung',src:'/embed/atomstrom-jahr',params:{year:'2025',view:'generation'},height:400}]},
   {
@@ -61,6 +65,14 @@ export const SECTIONS: WidgetSection[] = [
     showFrameWidth: true,
     supportsSettings: true,
     variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 460 }],
+  },
+  {
+    id: "strommix-radar",
+    label: "Strommix · Radar",
+    intro: "Die Anteile der Energieträger im Tagesverlauf: mit gemeinsamer Skala, Stunden-Navigation und abspielbaren Viertelstundenwerten.",
+    attribution: {path:"/strommix-deutschland",text:"Strommix Deutschland – Solar Check"},
+    showFrameWidth: true,
+    variants: [{id:"strommix-radar",label:"Radar",src:"/embed/strommix-radar",height:720}],
   },
   {
     id: "ee-ampel",

@@ -9,6 +9,7 @@ import {
 } from "../WidgetExport";
 import { WIDGETS, WIDGET_MAX_WIDTH_COMPACT } from "../../lib/widget-registry";
 import { useGenerationMix } from "../../lib/energy";
+import EnergyDataNotice from "./EnergyDataNotice";
 import { quellenHinweis } from "../../lib/energy-ersatzstand";
 import { useWidgetTheme } from "../../lib/useWidgetTheme";
 import {
@@ -162,7 +163,7 @@ export default function EeAmpelWidget() {
               {/* Upstream down, last stored copy: the level texts speak about
                   "now", so they give way to the note with the real time. */}
               {genData.stale && current
-                ? quellenHinweis(genData, current.ts)
+                ? <EnergyDataNotice stale={!!genData.stale} details={quellenHinweis(genData, current.ts)!}/>
                 : level ? LEVELS[level].text : "Die aktuellen Erzeugungsdaten werden geladen."}
             </div>
           </div>
@@ -178,9 +179,7 @@ export default function EeAmpelWidget() {
           the attribution SMARD's licence requires. (A stored copy is named in
           the level text above instead.) */}
       {genData.fallback === "smard" && !genData.stale && current && (
-        <div role="status" style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", paddingTop: 4 }}>
-          {quellenHinweis(genData, current.ts)}
-        </div>
+        <EnergyDataNotice stale={!!genData.stale} details={quellenHinweis(genData, current.ts)!}/>
       )}
 
       <div style={{ marginTop: 12 }}>

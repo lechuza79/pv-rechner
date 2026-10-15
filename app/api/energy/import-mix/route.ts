@@ -1,4 +1,5 @@
 import {NextRequest,NextResponse} from 'next/server';
+import {livePreviewResponse} from '../../../../lib/preview-data';
 import {unstable_cache} from 'next/cache';
 import {fetchCrossBorderFlows,fetchPublicPower} from '../../../../lib/energy-api';
 import {latestPhysicalFlows} from '../../../../lib/physical-flows';
@@ -21,6 +22,7 @@ const load=unstable_cache(async()=>{
  return {snapshot:calculateTradeMix(calculateImportMix(latest.ts,row.data,mixes),latest.exportGw,generation),retrievedAt:new Date().toISOString()};
 },['german-trade-mix-v2'],{revalidate:900});
 export async function GET(req:NextRequest){
+ const preview=await livePreviewResponse(req);if(preview)return preview;
  const limited=rateLimit(req,'import-mix');if(limited)return limited;
  try{return NextResponse.json(await load());}catch{return NextResponse.json({snapshot:null,error:'Importmix derzeit nicht verfügbar.'},{status:503});}
 }

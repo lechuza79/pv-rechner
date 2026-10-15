@@ -49,3 +49,7 @@
 @media(max-width:600px){.overlapAfter{padding-bottom:104px}}
 
 @media(max-width:1050px){.heading{max-width:600px;margin-inline:auto;margin-bottom:48px}.heading p{font-size:16px;line-height:1.7}}
+
+.standalone{min-width:0}.standalone :global(.sc-widget-body){padding:var(--widget-padding)}
+
+.standalone{--color-bg-page:var(--atlas-surface);--color-bg-raised:var(--atlas-card);--color-text-primary:var(--atlas-text);--color-text-secondary:var(--atlas-secondary);--color-text-muted:#7e989b;--color-text-faint:#46656b;--color-border:#b0c8c3;--color-bg-muted:#29474d;--color-brand:var(--atlas-action)}
