@@ -75,6 +75,36 @@ Stichtag steht in `DEFAULT_BALKON_CONFIG.reviewBy`.
 > Umbau auf `lib/balkon-sim.ts` aus einer Stunden-Simulation her, statt sie als
 > kalibrierte Konstanten anzunehmen. Es gibt hier also nichts mehr zu kalibrieren.
 
+## Set-Preise: Abgleich mit dem Partnerkatalog (seit 15.10.2026)
+
+Die Startpreise der drei Sets folgen einer Rechenregel, nicht mehr einer
+Handrecherche allein: je Set die lieferbare Partner-Variante **mit
+Balkonhalterung und ohne Speicher**, deren Modulleistung am nächsten liegt,
+auf 10 € gerundet (`lib/balkon-partner-referenz.ts`, Tests in
+`lib/__tests__/balkon-partner-referenz.test.ts`).
+
+1. Marktspanne je Set unabhängig recherchieren (Agent-Prompt unten, Punkt 1) —
+   Leitquelle ADAC/test.de/Verbraucherzentrale, sonst Preisvergleich. Der
+   Partner selbst zählt **nicht** als Marktquelle.
+2. `npm run balkon:partnerpreise -- --markt duo=<min>-<max>,max=<min>-<max>`
+   (und `single=…`, falls der Partner die Klasse führt).
+3. Urteil je Set:
+   - **`uebernehmen`** → Preis selbst setzen, **ohne 30-%-Sprunggrenze**: Zwei
+     unabhängige Quellen stimmen überein, das ersetzt die Grenze (Gate,
+     Bedingung 4, Ausnahme). `validFrom` auf den Monat, `geprueftIso` auf heute,
+     den Test „the stored start prices are this rule applied …" auf den neuen
+     Katalogauszug ziehen (Auszug + erwartete Preise ersetzen, Regel nicht
+     anfassen), `[auto]`-Commit mit Partner-Variante, Preis und Marktquelle.
+   - **`bestaetigt`** → nur `geprueftIso`.
+   - **`widerspruch`** → Partner liegt außerhalb der Marktspanne (Aktion,
+     Katalogfehler oder Marktbruch): normaler Gate-Weg, über 30 % Vorschlag.
+   - **`ohne-partner`** (heute: `single`) → normaler Gate-Weg mit der
+     Marktrecherche allein.
+
+Speicherpreise laufen weiter über die Handrecherche: Die Partner-Speicher sind
+gleichstromgekoppelte Erweiterungen eines anderen Systems, kein Nachrüst-
+Speicher wie die hinterlegten Größen.
+
 ## Modell-Validierung (nicht quartalsweise — nur bei Modelländerungen)
 
 Das Modell wurde 07/2026 gegen den **HTW Berlin Stecker-Solar-Simulator** validiert
@@ -132,8 +162,9 @@ Dem Assistenten sagen: **„Lauf die Balkonkraftwerk-Prüfung."**
 ## Nach der Prüfung
 
 - **Bei `abweichung` bei den Preisen:** Set- und Speicher-Preise sind Markt-
-  Richtwerte (kein Ermessens-/Rechtsfall) → `sets[].price` bzw. `storage[].price`
-  in `lib/balkon-config.ts` anpassen, `validFrom`/`reviewBy` hochsetzen,
+  Richtwerte (kein Ermessens-/Rechtsfall) → Set-Preise nach dem
+  Partnerkatalog-Abgleich oben, Speicher-Preise nach Gate (≤ 30 % selbst) in
+  `lib/balkon-config.ts` anpassen, `validFrom`/`reviewBy` hochsetzen,
   `npm run build` + `npm test` grün (`lib/__tests__/balkon.test.ts`), committen.
 - **Bei `abweichung` bei den Grenzen/Anmeldung (Gesetzes-/Normänderung):** das ist
   ein Rechtsfall → **kein Auto-Fix**. Council (`scripts/council-verify.md`) laufen

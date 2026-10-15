@@ -57,7 +57,9 @@ const GEPRUEFT = [
   { name: "GREEN_GAS_CONFIG", geprueftIso: GREEN_GAS_CONFIG.geprueftIso, validFrom: GREEN_GAS_CONFIG.validFrom, reviewBy: GREEN_GAS_CONFIG.reviewBy },
   { name: "GREEN_GAS_CONFIG (Rechtsstand)", geprueftIso: GREEN_GAS_CONFIG.geprueftRechtIso, validFrom: GREEN_GAS_CONFIG.validFrom, reviewBy: GREEN_GAS_CONFIG.reviewBy },
   { name: "CO2_PRICE", geprueftIso: CO2_PRICE.geprueftIso, validFrom: CO2_PRICE.validFrom, reviewBy: CO2_PRICE.reviewBy },
-  { name: "BALKON_RECHT", geprueftIso: BALKON_RECHT.geprueftIso, validFrom: DEFAULT_BALKON_CONFIG.validFrom, reviewBy: DEFAULT_BALKON_CONFIG.reviewBy },
+  // The legal sentences have no value date of their own: a price change must not
+  // force a legal re-check, so they are compared against their own check date.
+  { name: "BALKON_RECHT", geprueftIso: BALKON_RECHT.geprueftIso, validFrom: BALKON_RECHT.geprueftIso, reviewBy: DEFAULT_BALKON_CONFIG.reviewBy },
   { name: "DEFAULT_BALKON_CONFIG", geprueftIso: DEFAULT_BALKON_CONFIG.geprueftIso, validFrom: DEFAULT_BALKON_CONFIG.validFrom, reviewBy: DEFAULT_BALKON_CONFIG.reviewBy },
 ];
 

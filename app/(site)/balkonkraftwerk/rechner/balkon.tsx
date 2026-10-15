@@ -47,6 +47,7 @@ import { DATA_SOURCES } from "../../../../lib/data-sources";
 import StatCard from "../../../../components/calculator/ResultStatCard";
 import StandNoteView from "../../../../components/StandNoteView";
 import type { StandSeite } from "../../../../lib/stand-format";
+import { setKlasse } from "../../../../lib/balkon-partner-referenz";
 
 const STEPS = ["Haushalt & Standort", "Ausrichtung"];
 // One word each for the step indicator; the current one is the step heading.
@@ -330,7 +331,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
   const fundingChanged = pendingPlace !== null || (appliedFunding !== null && JSON.stringify(appliedFunding) !== JSON.stringify(previewFundingContext));
 
   const ratedOffers = useMemo(() => besteAngebote(katalog.daten?.angebote ?? [], angebotBasis, CFG, fundingContext), [katalog.daten, angebotBasis, fundingContext]);
-  const offerSetId = (offer: Pick<ShopAngebot, "moduleWp">): BalkonSetId => offer.moduleWp <= 600 ? "single" : offer.moduleWp <= 1200 ? "duo" : "max";
+  const offerSetId = (offer: Pick<ShopAngebot, "moduleWp">): BalkonSetId => setKlasse(offer.moduleWp);
   const explicitOffer = useMemo(() => {
     const found = katalog.daten?.angebote.find(entry => entry.id === offerId && entry.lieferbar);
     return found ? bewerteAngebot(found, angebotBasis, CFG, fundingContext) : undefined;
