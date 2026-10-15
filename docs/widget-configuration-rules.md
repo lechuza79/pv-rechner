@@ -213,3 +213,5 @@ portable compositions and their renderer are implemented here.
 - The local development cold build was unusually slow under machine load; subsequent
   reference responses were successful. This is not a production performance measurement.
   No deployment or exhaustive acceptance of all prepared places is implied.
+
+The canonical Strommix page and `/embed/regional-hourly-mix` both render `RegionalHourlyMap` with the same hourly reader, map, drilldown, controls and export. The page owns the section heading and source list; the embed displays its frame heading and source footer. Neither host creates a separate chart or adds host-only selection controls. The annual map remains a separate, explicitly annual widget.

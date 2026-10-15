@@ -1,19 +1,18 @@
 import {stateElectricityGeometry,stateElectricityWater} from '../lib/district-geometry';
-import {loadStateElectricity} from '../lib/state-electricity-server';
-import RegionalElectricityViews from './RegionalElectricityViews';
 import {loadRegionalHourly} from '../lib/co2map-server';
-import StateElectricityMap from './StateElectricityMap';
+import {CO2_REGIONS} from '../lib/co2map';
+import RegionalHourlyMap from './RegionalHourlyMap';
 import styles from './StateElectricityMap.module.css';
 import foundation from './social/atlas-foundations.module.css';
-export default async function StateElectricitySection({review=false,hero=false,nested=false}:{nested?:boolean;review?:boolean;hero?:boolean}){
- const [shapes,data,sceneContext,hourly]=await Promise.all([stateElectricityGeometry(),loadStateElectricity().catch(()=>null),stateElectricityWater(),review?loadRegionalHourly().catch(()=>null):null]);
+
+export default async function StateElectricitySection({hero=false,nested=false,selected="",time="latest"}:{selected?:string;time?:string;nested?:boolean;hero?:boolean}){
+ const [shapes,sceneContext,data]=await Promise.all([stateElectricityGeometry(),stateElectricityWater(),loadRegionalHourly().catch(()=>null)]);
  return <section id="bundeslaender" className={`${styles.section} ${hero?styles.heroSection:""} ${nested?styles.overlapAfter:""} ${foundation.foundation}`} data-story-scheme="dark" aria-labelledby="state-electricity-heading">
   <div className={styles.inner}>
-   {!hero&&<header className={styles.heading}><h2 id="state-electricity-heading">Strommix nach Bundesland</h2>
-   {hero&&<p>{data?.year} bisher · Stromerzeugung nach Energieträger. Wähle ein Bundesland auf der Karte.</p>}
-   {review?<p>Wie erzeugt deine Region Strom? Vergleiche die modellierte stündliche Erzeugung in 13 Regionen oder die Jahresmengen der 16 Bundesländer. Beide Ansichten zeigen Erzeugung, nicht den Verbrauch inklusive Stromimporten.</p>:<p>Wie viel Strom erzeugen die Bundesländer aus Wind, Solar, Kohle und weiteren Energieträgern? Vergleiche die Jahresmengen {nested&&data?`für ${data.year} `:''}– im laufenden Jahr bis zum verfügbaren Datenstand. Die regionalen Werte sind teilweise modelliert; Wind auf See wird separat ausgewiesen.</p>}</header>}
-   {hero&&<p id="state-electricity-heading" className={styles.period}>{data?.year} bisher · Jahresstrommengen nach Bundesland, teilweise modelliert. Wind auf See wird separat ausgewiesen.</p>}
-   {review?<RegionalElectricityViews sceneContext={sceneContext} shapes={shapes} annual={data} hourly={hourly}/>:<StateElectricityMap nested={nested} hero={hero} sceneContext={sceneContext} shapes={shapes} initialData={data}/>}
+   <header className={styles.heading}><h2 id="state-electricity-heading">Strommix nach Bundesland</h2>
+    <p>Wie viel Strom erzeugt deine Region aus Wind, Solar und weiteren Energieträgern? Die Karte zeigt die zuletzt verfügbaren modellierten Stundenwerte in Gigawatt. Berlin und Brandenburg, Bremen und Niedersachsen sowie Hamburg und Schleswig-Holstein sind jeweils zusammengefasst.</p>
+   </header>
+   <RegionalHourlyMap nested initialSelected={CO2_REGIONS.some(([id])=>id===selected)?selected:""} initialTime={data?.hours.some(hour=>hour.ts===time)?time:"latest"} shapes={shapes} sceneContext={sceneContext} initialData={data}/>
   </div>
  </section>;
 }
