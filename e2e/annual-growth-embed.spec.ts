@@ -64,3 +64,26 @@ for (const width of [1280, 375, 320]) {
     await expect(page.getByLabel('Zeitraum des Zubaus')).toHaveValue('5');
   });
 }
+
+for (const width of [1280, 375]) {
+  test(`annual growth embed deep link opens only the outer dialog at ${width}px`, async ({page}) => {
+    await page.setViewportSize({width,height:900});
+    const url='/embed/galerie/regional-annual-growth?ags=05370020&range=5&theme=light&dialog=embed';
+    await page.goto(url);
+    const dialog=page.getByRole('dialog',{name:'Widget einbetten'});
+    await expect(dialog).toBeVisible();
+    const preview=page.frameLocator('iframe');
+    await expect(preview.getByLabel('Zeitraum des Zubaus')).toHaveValue('5');
+    await expect(preview.getByRole('dialog')).toHaveCount(0);
+    await dialog.getByRole('button',{name:'Einbettungscode anzeigen',exact:true}).click();
+    const code=await dialog.getByLabel('Einbettungscode',{exact:true}).inputValue();
+    expect(code).toContain('ags=05370020');
+    expect(code).not.toContain('dialog=');
+    await dialog.getByRole('button',{name:'Schließen',exact:true}).click();
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(url.replace('&dialog=embed',''));
+    await page.reload();
+    await expect(page.getByLabel('Zeitraum des Zubaus')).toHaveValue('5');
+    await expect(dialog).not.toBeVisible();
+  });
+}
