@@ -9,10 +9,31 @@ async function openRankingTable(page: import("@playwright/test").Page) {
     has: page.getByText(/^Alle .* in der ausführlichen Tabelle$/),
   });
   await expect(disclosure).toBeAttached();
-  if (await disclosure.getAttribute("open") === null) {
-    await disclosure.locator("summary").click();
-  }
-  await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+  const rows = page.locator(".atlas-tabelle-scroller .atlas-rank-row");
+  // Opened but empty is a lost toggle, not a slow table: measured in CI, the
+  // rows follow a working click within one second, while a failing first
+  // attempt sat 28 s on a closed disclosure whose summary had been clicked
+  // during hydration. So prove the rows and open again otherwise.
+  await expect(async () => {
+    if (await disclosure.getAttribute("open") === null) {
+      await mittigKlicken(disclosure.locator("summary"));
+    }
+    await expect(rows.first()).toBeVisible({ timeout: 8_000 });
+  }).toPass({ timeout: 25_000 });
+}
+
+// Scroll a control to the middle before clicking it. Scrolled only "into
+// view", it lands at the viewport edge under the sticky section rail or page
+// actions, and Playwright then retries against the covering element until the
+// test times out (90 s on the Eifelkreis table in CI, 15 Oct 2026).
+async function mittigKlicken(ziel: import("@playwright/test").Locator) {
+  await ziel.evaluate((element) => element.scrollIntoView({ block: "center", inline: "nearest" }));
+  await ziel.click({ timeout: 3_000 });
+}
+
+async function platzierungWaehlen(page: import("@playwright/test").Page, wahl: string) {
+  await mittigKlicken(page.getByRole("button", { name: /Platzierung nach/ }));
+  await mittigKlicken(page.getByRole("button", { name: wahl, exact: true }).first());
 }
 
 
@@ -391,8 +412,7 @@ for (const [name, viewport] of [
       expect(getrennt.pfeileAn).toBe(1);
 
       // Andere Platzierung wählen: die Box wandert mit dem Feld darüber.
-      await page.getByRole("button", { name: /Platzierung nach/ }).click();
-      await page.getByRole("button", { name: "CO₂ gespart", exact: true }).first().click();
+      await platzierungWaehlen(page, "CO₂ gespart");
       await page.waitForTimeout(400);
       const umgestellt = await zustand();
       expect(umgestellt.box).toEqual(["co2"]);
@@ -615,8 +635,7 @@ test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
       ];
       for (const [wahl, key] of platzierungen) {
         if (key !== "perCapita") {
-          await page.getByRole("button", { name: /Platzierung nach/ }).click();
-          await page.getByRole("button", { name: wahl, exact: true }).first().click();
+          await platzierungWaehlen(page, wahl);
         }
         // Auf den Zustand warten, nicht auf die Uhr: Unter Last hat ein fester
         // Wartewert schon die alte Spalte gemessen.
@@ -710,8 +729,7 @@ test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufe
         ["Anlagen", "count"],
       ] as const) {
         if (key !== "perCapita") {
-          await page.getByRole("button", { name: /Platzierung nach/ }).click();
-          await page.getByRole("button", { name: wahl, exact: true }).first().click();
+          await platzierungWaehlen(page, wahl);
           // Auf den Zustand warten, nicht auf die Uhr.
           await expect(page.locator(`[data-spaltenkopf="${key}"][data-platziert]`)).toHaveCount(1, { timeout: 10_000 });
           await kopfInDenBlick();
