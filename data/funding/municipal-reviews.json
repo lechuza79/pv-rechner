@@ -98825,5 +98825,442 @@
         "evidenceUrl": "https://www.henstedt-ulzburg.de/bauen-wohnen-klima/klimaschutz/selbst-aktiv-werden"
       }
     ]
+  },
+  {
+    "regionId": "01061",
+    "name": "Kreis Steinburg",
+    "checkedAt": "2026-10-15T20:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Kreis Steinburg bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Seine einzige gefundene Förderseite ist die Förderstiftung (Jugend, Familie, Bildung, Kultur; nur gemeinnützige juristische Personen; für 2026 ff. ohne Mittel). Die Förderübersichten von Itzehoe und Amt Kellinghusen nennen als Kreisbeitrag nur die kostenlose Energieberatung mit der Verbraucherzentrale. Stand 15.10.2026.",
+    "searches": [
+      "steinburg.de: Startseite nach Klima-/Energie-/Förderseiten durchsucht — nur Förderstiftung, Sportförderung, Wirtschaftsförderung, Abfallwirtschaft",
+      "Websuche „Kreis Steinburg Förderung Balkonkraftwerk Batteriespeicher Zuschuss“ — nur Programme anderer Kreise",
+      "Förderübersichten Itzehoe und Amt Kellinghusen auf Kreisprogramme gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.steinburg.de/politik/foerderstiftung.html",
+        "finding": "Am 15.10.2026 gelesen: Förderstiftung für „Jugend-, Familien-, Bildungs- und Erziehungs- sowie der Kulturarbeit“; Hinweis „Für die Jahre 2026 ff. stehen der Förderstiftung des Kreises Steinburg keine finanziellen Mittel zur Verfügung.“ Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.itzehoe.de/umwelt-klima-bau-verkehr/klimaschutz/foerderungen-fuers-eigenheim",
+        "finding": "Am 15.10.2026 gelesen: Tabelle „Förderungen fürs Eigenheim“ nennt nur Bundesförderung (Energieberatung EBW, BEG Einzelmaßnahmen/Heizungstausch, BEG Wohngebäude) und die kostenlose Beratung der Verbraucherzentrale mit dem Kreis Steinburg; kein Zuschuss der Stadt."
+      },
+      {
+        "url": "https://www.amt-kellinghusen.de/zukunft-gestalten/klimaschutz/beratung-foerderung",
+        "finding": "Am 15.10.2026 gelesen: Stromspiegel, Energieberatung der Verbraucherzentrale, Solarkataster, Förderübersicht nur mit Bundesprogrammen (BEG, Förderdatenbank, NKI) und regionalen Programmen für kommunale Akteure (AktivRegion, KliKom, Bürgerenergiefonds); kein Zuschuss für private Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "steinburg.de/politik/foerderstiftung.html",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Förderstiftung für Jugend/Familie/Kultur, für 2026 ff. ohne Mittel; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.steinburg.de/politik/foerderstiftung.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01061046",
+    "name": "Itzehoe",
+    "checkedAt": "2026-10-15T20:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Itzehoe bietet keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Ihre Seite „Förderungen fürs Eigenheim“ listet ausschließlich Bundesförderung (Energieberatung, BEG-Einzelmaßnahmen, BEG-Wohngebäude) und die kostenlose Beratung der Verbraucherzentrale in Kooperation mit dem Kreis Steinburg. Der Kreis ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "itzehoe.de: Klimaschutz › Förderungen fürs Eigenheim im Volltext gelesen",
+      "Websuche „Itzehoe Stadt Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss 2026“ — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.itzehoe.de/umwelt-klima-bau-verkehr/klimaschutz/foerderungen-fuers-eigenheim",
+        "finding": "Am 15.10.2026 gelesen: Tabelle „Förderungen fürs Eigenheim“ nennt nur Bundesförderung (Energieberatung EBW, BEG Einzelmaßnahmen/Heizungstausch, BEG Wohngebäude) und die kostenlose Beratung der Verbraucherzentrale mit dem Kreis Steinburg; kein Zuschuss der Stadt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "itzehoe.de/umwelt-klima-bau-verkehr/klimaschutz/foerderungen-fuers-eigenheim",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: nur Bundesförderung und Beratung, kein städtisches Programm.",
+        "evidenceUrl": "https://www.itzehoe.de/umwelt-klima-bau-verkehr/klimaschutz/foerderungen-fuers-eigenheim"
+      }
+    ]
+  },
+  {
+    "regionId": "01061089",
+    "name": "Rade",
+    "checkedAt": "2026-10-15T20:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Rade (Amt Kellinghusen) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Klimaschutzseiten des Amts (Beratung & Förderung, Klimaschutzmanagement) nennen nur Bundesprogramme, Beratung und Förderprogramme für kommunale Akteure; die Förderstiftung des Kreises fördert nur gemeinnützige Träger. Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "amt-kellinghusen.de: Startseite nach Klima-/Förderseiten durchsucht; Beratung & Förderung, Klimaschutzmanagement und Förderstiftung im Volltext gelesen",
+      "Websuche „Kreis Steinburg Förderung Balkonkraftwerk Batteriespeicher Zuschuss Kellinghusen“ — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-kellinghusen.de/zukunft-gestalten/klimaschutz/beratung-foerderung",
+        "finding": "Am 15.10.2026 gelesen: Stromspiegel, Energieberatung der Verbraucherzentrale, Solarkataster, Förderübersicht nur mit Bundesprogrammen (BEG, Förderdatenbank, NKI) und regionalen Programmen für kommunale Akteure (AktivRegion, KliKom, Bürgerenergiefonds); kein Zuschuss für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-kellinghusen.de/zukunft-gestalten/projekte/foerderstiftung-des-kreises-steinburg",
+        "finding": "Am 15.10.2026 gelesen: Förderstiftung des Kreises Steinburg, Antragsteller „können grundsätzlich nur juristische Personen … die gemeinnützig … tätig sind“; kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-kellinghusen.de/zukunft-gestalten/klimaschutz/klimaschutzmanagement",
+        "finding": "Am 15.10.2026 gelesen: Klimaschutzkonzept und Projektliste des Amts (LED-Umrüstungen über NKI, Dach-PV auf Feuerwehrhaus Oeschebüttel, Ladesäulen); keine Förderung privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-kellinghusen.de/zukunft-gestalten/klimaschutz/beratung-foerderung",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Beratung, Bundes- und Kommunalprogramme; kein Haushaltszuschuss des Amts oder der Gemeinde.",
+        "evidenceUrl": "https://www.amt-kellinghusen.de/zukunft-gestalten/klimaschutz/beratung-foerderung"
+      },
+      {
+        "url": "amt-kellinghusen.de/zukunft-gestalten/projekte/foerderstiftung-des-kreises-steinburg",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Kreisstiftung nur für gemeinnützige juristische Personen.",
+        "evidenceUrl": "https://www.amt-kellinghusen.de/zukunft-gestalten/projekte/foerderstiftung-des-kreises-steinburg"
+      }
+    ]
+  },
+  {
+    "regionId": "01061019",
+    "name": "Brokstedt",
+    "checkedAt": "2026-10-15T20:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Brokstedt (Amt Kellinghusen) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Der einzige Fund auf der Gemeindeseite ist eine Vereinsmeldung des Motorsportclubs; die Klimaschutzseiten des Amts nennen nur Bundesprogramme, Beratung und kommunale Förderprogramme (Projekt in Brokstedt: LED-Umrüstung der Grundschule über die Nationale Klimaschutzinitiative). Stand 15.10.2026.",
+    "searches": [
+      "gemeinde-brokstedt.de: Fundseite gelesen",
+      "amt-kellinghusen.de: Beratung & Förderung und Klimaschutzmanagement im Volltext gelesen",
+      "Websuche „Amt Horst-Herzhorn“/Krempe/Lägerdorf/Brokstedt Zuschuss Balkonkraftwerk Photovoltaik private Haushalte — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-brokstedt.de/msc-brokstedt-will-bundesliga-unterbau-weiter-foerdern/",
+        "finding": "Am 15.10.2026 gelesen: Vereinsmeldung des MSC Brokstedt (März 2022) zur Nachwuchsförderung im Motorsport; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.amt-kellinghusen.de/zukunft-gestalten/klimaschutz/beratung-foerderung",
+        "finding": "Am 15.10.2026 gelesen: Stromspiegel, Energieberatung der Verbraucherzentrale, Solarkataster, Förderübersicht nur mit Bundesprogrammen (BEG, Förderdatenbank, NKI) und regionalen Programmen für kommunale Akteure (AktivRegion, KliKom, Bürgerenergiefonds); kein Zuschuss für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-kellinghusen.de/zukunft-gestalten/klimaschutz/klimaschutzmanagement",
+        "finding": "Am 15.10.2026 gelesen: Klimaschutzkonzept und Projektliste des Amts (LED-Umrüstungen über NKI, Dach-PV auf Feuerwehrhaus Oeschebüttel, Ladesäulen); keine Förderung privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-brokstedt.de/msc-brokstedt-will-bundesliga-unterbau-weiter-foerdern",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Vereinsmeldung, kein Förderprogramm.",
+        "evidenceUrl": "https://www.gemeinde-brokstedt.de/msc-brokstedt-will-bundesliga-unterbau-weiter-foerdern/"
+      },
+      {
+        "url": "gemeinde-brokstedt.de/msc-brokstedt-will-bundesliga-unterbau-weiter-foerdern/itemDataObject.url",
+        "disposition": "replaced",
+        "reason": "Fehlerhafte Crawler-Adresse derselben Vereinsmeldung (in der Quellentabelle als entfernt vermerkt); die echte Seite ist gelesen.",
+        "evidenceUrl": "https://www.gemeinde-brokstedt.de/msc-brokstedt-will-bundesliga-unterbau-weiter-foerdern/"
+      }
+    ]
+  },
+  {
+    "regionId": "01061037",
+    "name": "Herzhorn",
+    "checkedAt": "2026-10-15T20:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Herzhorn (Amt Horst-Herzhorn) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderseiten des Amts listen nur Projekte, die Amt und Gemeinden selbst gefördert bekommen haben (in Herzhorn Photovoltaik auf Kindergarten und Dörpshuus), und erklären die AktivRegion. Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "amt-horst-herzhorn.de: Startseite nach Klima-/Energie-/Förderseiten durchsucht; einzige Förderrubrik „Förderungen“ (AktivRegion, Projekte) und die Projektlisten aller Gemeinden gelesen",
+      "Websuche „Amt Horst-Herzhorn“/Krempe/Lägerdorf/Brokstedt Zuschuss Balkonkraftwerk Photovoltaik private Haushalte — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte des Amts (Energiemanagementsystem und integriertes Klimaschutzkonzept, beide Nationale Klimaschutzinitiative); keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "finding": "Am 15.10.2026 gelesen: Erklärung der AktivRegion/LEADER-Förderung über den regionalen Verein; kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte der Gemeinde Herzhorn selbst („Photovoltaiknutzung Kindergarten“ und „Photovoltaiknutzung Dörpshuus“ über ELER/GAP, Neubau Gemeindevereinshaus); Förderung FÜR die Gemeinde, nicht für Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte der Gemeinde Blomesche Wildnis (Neubau Kindertagesstätte, Land/Kreis); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Altenmoor (Quartierskonzept KfW 432, PV/Wärmepumpe Feuerwehr über ELER); Förderung für die Gemeinde selbst."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Borsfleth (Ortsentwicklungskonzept GAK, PV-Anlage auf dem Gemeindehaus über AktivRegion-Regionalbudget); Förderung für die Gemeinde selbst."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 abgerufen: Seite „geförderte Projekte“ der Nachbargemeinde Engelbrechtsche Wildnis ohne Projekt- oder Förderinhalt im Text; betrifft nicht die Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Horst (Photovoltaiknutzung Bauhof über ELER, Radabstellbügel, Calisthenics-Park); Förderung für die Gemeinde selbst."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Erklärseite zur AktivRegion, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte des Amts selbst (NKI), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Altenmoor für sich selbst.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Gemeinde Blomesche Wildnis (Kita), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Borsfleth für sich selbst.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 abgerufen: Seite der Nachbargemeinde ohne Förderinhalt; die Haushaltsfrage klären die Amtsseiten.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Gemeinde Herzhorn für sich selbst (PV auf Kindergarten/Dörpshuus).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Gemeinde Horst für sich selbst (PV Bauhof).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "01061012",
+    "name": "Blomesche Wildnis",
+    "checkedAt": "2026-10-15T20:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Blomesche Wildnis (Amt Horst-Herzhorn) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderseiten des Amts listen nur Projekte, die Amt und Gemeinden selbst gefördert bekommen haben (in Blomesche Wildnis der Kita-Neubau), und erklären die AktivRegion. Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "amt-horst-herzhorn.de: Startseite nach Klima-/Energie-/Förderseiten durchsucht; einzige Förderrubrik „Förderungen“ (AktivRegion, Projekte) und die Projektlisten aller Gemeinden gelesen",
+      "Websuche „Amt Horst-Herzhorn“/Krempe/Lägerdorf/Brokstedt Zuschuss Balkonkraftwerk Photovoltaik private Haushalte — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte des Amts (Energiemanagementsystem und integriertes Klimaschutzkonzept, beide Nationale Klimaschutzinitiative); keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "finding": "Am 15.10.2026 gelesen: Erklärung der AktivRegion/LEADER-Förderung über den regionalen Verein; kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte der Gemeinde Herzhorn selbst („Photovoltaiknutzung Kindergarten“ und „Photovoltaiknutzung Dörpshuus“ über ELER/GAP, Neubau Gemeindevereinshaus); Förderung FÜR die Gemeinde, nicht für Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte der Gemeinde Blomesche Wildnis (Neubau Kindertagesstätte, Land/Kreis); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Altenmoor (Quartierskonzept KfW 432, PV/Wärmepumpe Feuerwehr über ELER); Förderung für die Gemeinde selbst."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Borsfleth (Ortsentwicklungskonzept GAK, PV-Anlage auf dem Gemeindehaus über AktivRegion-Regionalbudget); Förderung für die Gemeinde selbst."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 abgerufen: Seite „geförderte Projekte“ der Nachbargemeinde Engelbrechtsche Wildnis ohne Projekt- oder Förderinhalt im Text; betrifft nicht die Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Horst (Photovoltaiknutzung Bauhof über ELER, Radabstellbügel, Calisthenics-Park); Förderung für die Gemeinde selbst."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Erklärseite zur AktivRegion, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte des Amts selbst (NKI), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Altenmoor für sich selbst.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Gemeinde Blomesche Wildnis (Kita), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Borsfleth für sich selbst.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 abgerufen: Seite der Nachbargemeinde ohne Förderinhalt; die Haushaltsfrage klären die Amtsseiten.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Gemeinde Herzhorn für sich selbst (PV auf Kindergarten/Dörpshuus).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Gemeinde Horst für sich selbst (PV Bauhof).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "01061041",
+    "name": "Hohenfelde",
+    "checkedAt": "2026-10-15T20:10:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Hohenfelde (Amt Horst-Herzhorn) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderseiten des Amts listen nur Projekte, die Amt und Gemeinden selbst gefördert bekommen haben (für Hohenfelde ist keine eigene Projektliste befüllt), und erklären die AktivRegion. Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "amt-horst-herzhorn.de: Startseite nach Klima-/Energie-/Förderseiten durchsucht; einzige Förderrubrik „Förderungen“ (AktivRegion, Projekte) und die Projektlisten aller Gemeinden gelesen",
+      "Websuche „Amt Horst-Herzhorn“/Krempe/Lägerdorf/Brokstedt Zuschuss Balkonkraftwerk Photovoltaik private Haushalte — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte des Amts (Energiemanagementsystem und integriertes Klimaschutzkonzept, beide Nationale Klimaschutzinitiative); keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "finding": "Am 15.10.2026 gelesen: Erklärung der AktivRegion/LEADER-Förderung über den regionalen Verein; kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte der Gemeinde Herzhorn selbst („Photovoltaiknutzung Kindergarten“ und „Photovoltaiknutzung Dörpshuus“ über ELER/GAP, Neubau Gemeindevereinshaus); Förderung FÜR die Gemeinde, nicht für Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte der Gemeinde Blomesche Wildnis (Neubau Kindertagesstätte, Land/Kreis); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Altenmoor (Quartierskonzept KfW 432, PV/Wärmepumpe Feuerwehr über ELER); Förderung für die Gemeinde selbst."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Borsfleth (Ortsentwicklungskonzept GAK, PV-Anlage auf dem Gemeindehaus über AktivRegion-Regionalbudget); Förderung für die Gemeinde selbst."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 abgerufen: Seite „geförderte Projekte“ der Nachbargemeinde Engelbrechtsche Wildnis ohne Projekt- oder Förderinhalt im Text; betrifft nicht die Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Horst (Photovoltaiknutzung Bauhof über ELER, Radabstellbügel, Calisthenics-Park); Förderung für die Gemeinde selbst."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Erklärseite zur AktivRegion, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte des Amts selbst (NKI), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Altenmoor für sich selbst.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Gemeinde Blomesche Wildnis (Kita), keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Borsfleth für sich selbst.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 abgerufen: Seite der Nachbargemeinde ohne Förderinhalt; die Haushaltsfrage klären die Amtsseiten.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Gemeinde Herzhorn für sich selbst (PV auf Kindergarten/Dörpshuus).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Gemeinde Horst für sich selbst (PV Bauhof).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte"
+      }
+    ]
   }
 ]
