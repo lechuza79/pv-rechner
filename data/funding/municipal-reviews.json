@@ -99310,6 +99310,12 @@
         "disposition": "replaced",
         "reason": "Druckansicht derselben, am 15.10.2026 gelesenen Seite zum KfW-Programm „Jung kauft Alt“.",
         "evidenceUrl": "https://www.krempe.de/seite/728657/kfw-f%C3%B6rderprogramm-jung-kauft-alt.html"
+      },
+      {
+        "url": "krempe.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Kontaktformular-Adresse der Stadtseite (vom Crawler als unerreichbar erfasst), keine Förderseite; die Förderfrage klären die am 15.10.2026 gelesenen Seiten zur KfW-Förderung, zur Städtebauförderung und die Startseite.",
+        "evidenceUrl": "https://www.krempe.de/"
       }
     ]
   },
@@ -99349,6 +99355,26 @@
       {
         "url": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
         "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Horst für sich selbst (Photovoltaik Bauhof über ELER)."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 abgerufen: Seite der Nachbargemeinde Engelbrechtsche Wildnis ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "finding": "Am 15.10.2026 gelesen: Erklärung der AktivRegion/LEADER-Förderung über den regionalen Verein; kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Altenmoor für sich selbst (Quartierskonzept, PV/Wärmepumpe Feuerwehr)."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Borsfleth für sich selbst (PV auf dem Gemeindehaus über das Regionalbudget)."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Blomesche Wildnis (Kita-Neubau); keine Haushaltsförderung."
       }
     ],
     "sources": [
@@ -99363,6 +99389,42 @@
         "disposition": "reviewed",
         "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Horst für sich selbst, betrifft keine Haushaltsförderung in Krempdorf.",
         "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte des Amts selbst (Energiemanagementsystem, Klimaschutzkonzept über die Nationale Klimaschutzinitiative); keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 abgerufen: Seite der Nachbargemeinde Engelbrechtsche Wildnis ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Erklärung der AktivRegion/LEADER-Förderung über den regionalen Verein; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Altenmoor für sich selbst (Quartierskonzept, PV/Wärmepumpe Feuerwehr).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Borsfleth für sich selbst (PV auf dem Gemeindehaus über das Regionalbudget).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Blomesche Wildnis (Kita-Neubau); keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte"
       }
     ]
   },
@@ -99402,6 +99464,22 @@
       {
         "url": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
         "finding": "Am 15.10.2026 abgerufen: Seite der Nachbargemeinde Engelbrechtsche Wildnis ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Altenmoor für sich selbst (Quartierskonzept, PV/Wärmepumpe Feuerwehr)."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Borsfleth für sich selbst (PV auf dem Gemeindehaus über das Regionalbudget)."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "finding": "Am 15.10.2026 gelesen: Erklärung der AktivRegion/LEADER-Förderung über den regionalen Verein; kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Blomesche Wildnis (Kita-Neubau); keine Haushaltsförderung."
       }
     ],
     "sources": [
@@ -99416,6 +99494,36 @@
         "disposition": "reviewed",
         "reason": "Am 15.10.2026 abgerufen: Seite der Nachbargemeinde ohne Förderinhalt; die Haushaltsfrage klären die Amts- und Sommerland-Seiten.",
         "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Altenmoor für sich selbst (Quartierskonzept, PV/Wärmepumpe Feuerwehr).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/altenmoor/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Borsfleth für sich selbst (PV auf dem Gemeindehaus über das Regionalbudget).",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/borsfleth/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Erklärung der AktivRegion/LEADER-Förderung über den regionalen Verein; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/aktivregion"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Blomesche Wildnis (Kita-Neubau); keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/blomesche-wildnis/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte des Amts selbst (Energiemanagementsystem, Klimaschutzkonzept über die Nationale Klimaschutzinitiative); keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte"
       }
     ]
   },
