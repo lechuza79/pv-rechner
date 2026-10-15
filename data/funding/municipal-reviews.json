@@ -98817,6 +98817,12 @@
         "disposition": "replaced",
         "reason": "Suchergebnis-Adresse der alten Website, nicht mehr erreichbar. Die aktuelle Förderprogramme-Seite (AktivRegion) und „Selbst aktiv werden“ (keine eigene Förderung) sind gelesen.",
         "evidenceUrl": "https://www.henstedt-ulzburg.de/bauen-wohnen-klima/klimaschutz/selbst-aktiv-werden"
+      },
+      {
+        "url": "henstedt-ulzburg.de/suchen.html?keywords=forderprogramme",
+        "disposition": "replaced",
+        "reason": "Suchergebnis-Adresse der alten Website (in der Quellentabelle bereits als entfernt vermerkt). Die aktuelle Förderprogramme-Seite (AktivRegion) und „Selbst aktiv werden“ (keine eigene Förderung) sind gelesen.",
+        "evidenceUrl": "https://www.henstedt-ulzburg.de/bauen-wohnen-klima/klimaschutz/selbst-aktiv-werden"
       }
     ]
   }
