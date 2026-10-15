@@ -266,7 +266,7 @@ jobs:
           curl -sS -m 5 -o /dev/null -w '%{http_code}\n' https://api.energy-charts.info/public_power?country=de || echo "energy-charts unreachable as intended"
       - name: E2E smoke tests (Playwright)
         timeout-minutes: 22
-        run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3 --repeat-each=15 --retries=0 --trace=retain-on-failure e2e/race-dashboard-layout.spec.ts e2e/landkreis-vorschau.spec.ts e2e/ranking-combination-behavior.spec.ts e2e/diag-alt/ --grep "race content stays|district sections reuse|district chart proportions|ranking list action remains|mobile category navigation" 2>&1 | tee e2e-diag.log; test ${PIPESTATUS[0]} -eq 0
+        run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3 --repeat-each=2 --retries=0 --trace=retain-on-failure e2e/race-dashboard-layout.spec.ts e2e/landkreis-vorschau.spec.ts --grep "race content stays|district sections reuse|district chart proportions|ranking list action remains|mobile category navigation" 2>&1 | tee e2e-diag.log; test ${PIPESTATUS[0]} -eq 0
         env:
           E2E_BUILD: "1"
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —

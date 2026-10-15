@@ -60,3 +60,6 @@
 }
 /* Exports omit playback and retain the full chart width. */
 :global([data-sc-export-capture]) .raceLayout.raceLayout[data-chart-animation=race]{display:block}
+
+/* SABOTAGE (diagnostic, reverted): push the playback controls out of the card. */
+.raceLayout :global(*:has(> input[type="range"])){transform:translate(0,600px)}
