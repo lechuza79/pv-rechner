@@ -19,3 +19,14 @@
 @media(max-width:480px) { .settings { padding:16px; gap:16px; } .settings>button { width:100%; padding-inline:12px; } }
 
 @media(max-width:900px) { .workspace { grid-template-columns:minmax(0,1fr); gap:24px; } .sidebar,.preview { grid-column:1; grid-row:auto; } .sidebar { position:static; max-height:none; overflow:visible; } }
+
+/* Modal host reuses the partner workspace without its page or brand header. */
+.dialogWorkspace { margin-top:0; }
+.dialogWorkspace .sidebar { position:static; max-height:none; overflow:visible; }
+.dialogWorkspace .hint { font-size:var(--font-size-small); }
+.dialogWorkspace .preview h2 { font-size:var(--font-size-lead); }
+.dialogWorkspace .code textarea { font-size:var(--font-size-body); }
+.dialogWorkspace .settings { gap:16px; }
+
+.dialogActions { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.dialogActions a { color:var(--color-text-secondary); font-size:var(--font-size-small); }

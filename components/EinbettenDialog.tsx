@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Modal, {ModalSticky} from "./Modal";
+import PartnerWidgetConfigurator from "./PartnerWidgetConfigurator";
 import AutoHeightIframe from "./AutoHeightIframe";
 import ActionButton from "./ActionButton";
 import SelectField from "./SelectField";
@@ -52,6 +53,7 @@ export default function EinbettenDialog({
   const [kopiert, setKopiert] = useState(false);
   const [resize,setResize]=useState<'auto'|'fixed'>('auto');
   const [fixedHeight,setFixedHeight]=useState(height);
+
   const previewSource = `${src}?${new URLSearchParams({...params,sharing:"off"}).toString()}`;
   const code = embedCode({ src, params, width, height:resize==='fixed'?fixedHeight:height, resize, titel, attribution, siteUrl });
 
@@ -65,6 +67,10 @@ export default function EinbettenDialog({
       // geht weiterhin. Eine Fehlermeldung hülfe hier niemandem.
     }
   };
+
+  if (preview && src === "/embed/galerie/regional-annual-growth") return <Modal open={open} onClose={onClose} title={null} ariaLabel="Widget einbetten" maxWidth={1200}>
+    {open && <PartnerWidgetConfigurator widget={{id:'regional-annual-growth',src,params,title:titel}}/>}
+  </Modal>;
 
   return (
     <Modal open={open} onClose={onClose} title={titel} maxWidth={620}>

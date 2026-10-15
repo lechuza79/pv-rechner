@@ -126,7 +126,7 @@ export const BAUSTEINE: Baustein[] = [
   {datei: "components/SecondaryButton.tsx", name: "SecondaryButton", zweck: "Compatibility wrapper for the shared secondary ActionButton.", gruppe: "eingabe", ebene: "baustein", stand: "verbindlich", bestehtAus: ["ActionButton"]},
   {datei: "components/ControlPanel.tsx", name: "ControlPanel", zweck: "Configuration fields with shared toggle, label and reset behavior.", gruppe: "eingabe", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["Switch"]},
   {datei: "components/SectionFilter.tsx", name: "SectionFilter", zweck: "Filter navigation using the shared anchor navigation appearance.", gruppe: "struktur", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
-  {datei: "components/PartnerWidgetConfigurator.tsx", name: "PartnerWidgetConfigurator", keinBeispielWeil: "Real preview at /widgets/partner/nidda uses the published partner renderer.", zweck: "Partner embed preview with responsive width, header settings and copyable code.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["AutoHeightIframe", "ActionButton", "SelectField", "Logo", "OptionalDisclosure", "Icons"]},
+  {datei: "components/PartnerWidgetConfigurator.tsx", name: "PartnerWidgetConfigurator", keinBeispielWeil: "Real preview at /widgets/partner/nidda uses the published partner renderer.", zweck: "Partner embed preview with responsive width, header settings and copyable code.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: ["AutoHeightIframe", "ActionButton", "SelectField", "Logo", "OptionalDisclosure", "Icons", "Modal"]},
   {datei: "components/dashboard/WidgetBrandHeader.tsx", name: "WidgetBrandHeader", keinBeispielWeil: "Partner header modes are reviewed on their real public embed route.", zweck: "Trusted partner introduction with full, title-only and hidden modes.", gruppe: "widget", ebene: "baustein", stand: "im-aufbau", bestehtAus: []},
   {datei:"components/gemeinde/AtlasBreadcrumb.tsx",name:"AtlasBreadcrumb",zweck:"Gemeinsamer Breadcrumb-Renderer. framed enthält die abgenommene Kommunen-Linie mit 10 Prozent Deckkraft und 17px Innenabstand; auch auf Förderseiten.",gruppe:"struktur",ebene:"baustein",stand:"verbindlich",bestehtAus:["Icons"],keinBeispielWeil:"Das lebende Breadcrumb-Beispiel in dieser Galerie verwendet diesen Renderer einschließlich Linie und Abständen."},
   {datei: "components/SidebarPageLayout.tsx", name: "SidebarPageLayout", zweck: "Shared sidebar and page surface used by editorial and funding pages.", gruppe: "struktur", ebene: "baustein", stand: "verbindlich", bestehtAus: ["SidebarNavigation"], keinBeispielWeil: "Needs the complete page and scroll position; verified on the funding preview and annual energy pages."},
@@ -634,7 +634,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["ControlPanel", "SelectField", "Modal", "AutoHeightIframe", "ActionButton"],
+    bestehtAus: ["ControlPanel", "SelectField", "Modal", "AutoHeightIframe", "PartnerWidgetConfigurator", "ActionButton"],
   },
   {
     datei: "components/StorySlider.tsx",
