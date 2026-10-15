@@ -8,7 +8,7 @@ import {widgetShareUrl} from '../../lib/widget-share-url';
 import {useWidgetPresentation} from './WidgetPresentationContext';
 import {widgetActionPresentation} from '../../lib/widget-appearance';
 import {WidgetFrame} from './WidgetFrame';
-import {ExportIgnore, ExportOnly, SOURCE_EDGE_WIDTH, WidgetExportFooter, WidgetSourceEdge} from '../WidgetExport';
+import {ExportIgnore, ExportOnly, SOURCE_EDGE_WIDTH, WidgetExportFooter, WidgetSourceEdge, WidgetSourceFooter} from '../WidgetExport';
 import {ExportNotesProvider} from '../export-notes';
 import {useChartExport} from '../../lib/useChartExport';
 import {embedPath, widgetForPlace, type WidgetDef} from '../../lib/widget-registry';
@@ -56,7 +56,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
   sourceVisible?: boolean;
   /** Include the shared Solar Check credit in an external source rail. */
   sourceBranding?: boolean;
-  sourcePlacement?: 'frame' | 'plot';
+  sourcePlacement?: 'frame' | 'plot' | 'footer';
   directActions?: boolean;
   /** Registry entry: identity, sources, share text. */
   widget: WidgetDef;
@@ -326,7 +326,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
       data-chart-detail-open={detailOpen ? true : undefined}
       ref={chartExport.chartRef as unknown as Ref<HTMLElement>}
       className={`${foundation.foundation} sc-dashboard ${className}`}
-      {...{[EXPORT_BRIGHTEST_ATTR]: partner ? undefined : '', [EXPORT_CSS_ATTR]: partner || sourcePlacement === 'plot' ? 'position:relative;text-align:left;' : exportCss}}
+      {...{[EXPORT_BRIGHTEST_ATTR]: partner ? undefined : '', [EXPORT_CSS_ATTR]: partner || sourcePlacement !== 'frame' ? 'position:relative;text-align:left;' : exportCss}}
       settings={settings && <ExportIgnore inline>{settings}</ExportIgnore>}
       helpPlacement={effectiveActions === 'menu' && !directActions && !partner ? 'menu' : 'tools'}
       menu={effectiveActions === 'menu' && !directActions && !partner ? widgetActions : undefined}
@@ -356,9 +356,10 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
         {(effectiveActions === 'primary' || effectiveActions === 'menu' && (directActions || partner)) && <div className="sc-widget-actions" data-sc-export-ignore={partner ? "" : undefined}>{widgetActions}</div>}
         {/* Laid out (invisible) on the page so it can fit its type to the card height;
             the article is the containing block (container-type). Two sources → two columns. */}
-        {!partner && sourcePlacement !== 'plot' && <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
+        {!partner && sourcePlacement === 'frame' && <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
           <WidgetSourceEdge widget={def} stand={stand} visible={sourceVisible&&!host} spalten={edgeColumns} />
         </div>}
+        {!partner && sourcePlacement === 'footer' && <WidgetSourceFooter widget={def} stand={stand} visible={sourceVisible&&!host}/> }
         {einbetten && embeddable(def) && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={() => setEmbedOpen(false)} titel={def.title} src={embedPath(def)!} params={einbetten.params} preview={einbetten.preview}
           width={def.configuration?.presentations?.full.maxWidth??WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: einbetten.preview ? `${embedPath(def)}?${new URLSearchParams(einbetten.params).toString()}` : (()=>{const url=new URL(def.shareUrl,"https://solar-check.io");return `${url.pathname}${url.search}${url.hash}`;})(), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}
         {!partner && <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} branding={exportBranding} legend={exportLegend} includeHelpNotes={false} note={exportNote === null ? undefined : exportNote} /></ExportOnly>}

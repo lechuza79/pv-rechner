@@ -2,6 +2,7 @@
 export const WIDGET_DATA_SERVICES: Record<string, readonly string[]> = {
   '/api/energy/generation': ['country', 'hours', 'start', 'end', 'trim'],
   '/api/energy/nuclear-import': ['hours', 'start', 'end'],
+  '/api/strommix-regional': [],
   '/api/energy/physical-flows': [],
   '/api/energy/import-mix': [],
   '/api/energy/trade': ['period', 'year', 'month'],

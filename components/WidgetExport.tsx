@@ -496,6 +496,14 @@ export function WidgetSourceEdge({
   );
 }
 
+/** Horizontal attribution for shallow charts; never shrink below the micro token. */
+export function WidgetSourceFooter({widget,stand,visible=true}:{widget:WidgetDef;stand?:string;visible?:boolean}) {
+  const credit = <div data-sc-source-footer="" style={{padding:"0 var(--widget-padding) var(--widget-padding)",fontSize:fsPx("--font-size-micro"),lineHeight:1.4,color:"var(--widget-muted, var(--color-text-faint))",overflowWrap:"anywhere"}}>
+    {widget.sources.map(s=>sourceLabel(s,{kurz:true})).join(" · ")} · Stand: {chartDataDate(stand)}
+  </div>;
+  return visible ? credit : <ExportOnly>{credit}</ExportOnly>;
+}
+
 // ─── 4. The image-only footer ────────────────────────────────────────────────
 
 export interface ExportLegendEntry {

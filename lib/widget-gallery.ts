@@ -10,7 +10,6 @@ const singles = new Set(['regional-basic-stats','gemeinde-ranking','regional-cur
 const order = ['regional-map','gemeinde-ranking','regional-annual-growth','gemeinde-solar-monat','regional-race','regional-composition','gemeinde-anlagenraster','gemeinde-energie-jahr','regional-electricity-value','regional-feed-in-value','regional-current-power'];
 /** Gallery curation only: hidden entries remain registered and embeddable. */
 export const GALLERY_HIDDEN: Readonly<Record<string, string>> = {
-  'regional-hourly-mix': 'Editorial review variant; no standalone embed contract yet.',
   'simulation': 'Full application rather than a gallery chart.',
   'foerder-check': 'Interactive questionnaire rather than a gallery chart.',
 };

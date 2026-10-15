@@ -26,6 +26,7 @@ export function widgetDataDependencies(widgetId:string,query:Record<string,strin
  if(['pv-kostenrennen','heizkostenrennen','gruengas-heizkosten'].includes(widgetId))return ['/api/prices'];
  if(widgetId==='strommix-radar'||(widgetId==='strommix'&&query.darstellung==='radar'))return [radarDataEndpoint(query)];
  if(widgetId==='strommix')return ['/api/energy/generation?country=de&hours=168','/api/energy/nuclear-import?hours=168'];
+ if(widgetId==='regional-hourly-mix')return ['/api/strommix-regional'];
  if(widgetId==='pumpspeicher')return ['/api/energy/generation?country=de&hours=24'];
  if(widgetId==='physischer-stromhandel')return ['/api/energy/physical-flows','/api/energy/import-mix'];
  if(widgetId==='ee-ampel')return ['/api/energy/generation?country=de&hours=24'];
