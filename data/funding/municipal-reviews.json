@@ -98468,5 +98468,190 @@
         "evidenceUrl": "https://www.amt-itzstedt.de/wissenswert/foerderprogramme/"
       }
     ]
+  },
+  {
+    "regionId": "01060077",
+    "name": "Sievershütten",
+    "checkedAt": "2026-10-15T12:17:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sievershütten (Amt Kisdorf) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht der Gemeinde beim Amt Kisdorf führt sieben Vorschriften und acht weitere Satzungen, keine Förderrichtlinie; die Gemeindeseite verweist nur auf den KfW-Förderbrief „Jung kauft Alt“. Anders als die Nachbargemeinde Kisdorf hat Sievershütten kein Balkonkraftwerk-Programm. Stand 15.10.2026.",
+    "searches": [
+      "Ortsrecht der Gemeinde Sievershütten auf amt-kisdorf.de im echten Browser gelesen (7 Vorschriften, 8 weitere Dokumente)",
+      "Ortsrecht des Amtes Kisdorf gelesen (2 Vorschriften, 8 Dokumente)",
+      "Sitemap des Amtes Kisdorf (87 Seiten, 866 Meldungen) am 15.10.2026 ohne Förderthema (Lauf 10Z)",
+      "Websuchen: Sievershütten Förderung Balkonkraftwerk Photovoltaik Zuschuss; Amt Kisdorf Förderrichtlinie Balkonkraftwerk — nur Kisdorf (eigene Akte)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-kisdorf.de/gemeinden/gemeinde-sievershuetten",
+        "finding": "„Ortsrecht der Gemeinde Sievershütten“: Hauptsatzung, Zuständigkeitsordnung, Entschädigung, Hundesteuer, Feuerwehr-Sondervermögen, Hebesätze, Hausnummernschilder sowie Wasser-/Abwasser-, Straßen- und Vergnügungssteuersatzungen — keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.amt-kisdorf.de/amt-verwaltung/ortsrecht",
+        "finding": "Ortsrecht des Amtes: Entschädigungs- und Hauptsatzung, Gebühren-, Wasser- und Nutzungssatzungen — kein Förderprogramm."
+      },
+      {
+        "url": "https://sievershuetten.eu/foerderbrief_kfw-foerderprogrammg_jung_kauft_alt.pdf",
+        "finding": "Am 15.10.2026 gelesen: Weitergereichter Förderbrief zum KfW-Bundesprogramm „Jung kauft Alt“ (Wohneigentum), kein Programm der Gemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sievershuetten.eu/foerderbrief_kfw-foerderprogrammg_jung_kauft_alt.pdf",
+        "disposition": "reviewed",
+        "reason": "Weitergereichter Förderbrief zum KfW-Bundesprogramm „Jung kauft Alt“ (Wohneigentum), kein Programm der Gemeinde.",
+        "evidenceUrl": "https://sievershuetten.eu/foerderbrief_kfw-foerderprogrammg_jung_kauft_alt.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01060088",
+    "name": "Todesfelde",
+    "checkedAt": "2026-10-15T12:17:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Todesfelde (Amt Leezen) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Satzungsseite der Gemeinde führt nur Haupt-, Entschädigungs-, Hundesteuer- und Wassersatzungen; die Volltextsuche nach Förderung, Balkon, Photovoltaik, Zuschuss und Solar findet nur Sitzungseinladungen (Bauleitplanung für Freiflächen-Photovoltaik, Zuschüsse an Kirchengemeinde und Amtssporthalle) und ein 2017 gefördertes Klimaschutzprojekt der Gemeinde selbst. Stand 15.10.2026.",
+    "searches": [
+      "todesfelde.de Volltextsuche: Förderung, Balkon, Photovoltaik, Zuschuss, Solar — alle Treffer gesichtet",
+      "Satzungsseite todesfelde.de/satzungen gelesen",
+      "Sitzungseinladungen 29.11.2022, 21.09.2023, 17.10.2023, 04.07.2024 gelesen",
+      "Websuche: Todesfelde / Amt Leezen Förderung Balkonkraftwerk Photovoltaik Zuschuss — nichts"
+    ],
+    "evidence": [
+      {
+        "url": "https://todesfelde.de/satzungen/",
+        "finding": "Satzungen: Hauptsatzung vom 25.03.2026, Entschädigungs-, Hundesteuer-, Wasserversorgungs- und Gebührensatzungen — keine Förderrichtlinie."
+      },
+      {
+        "url": "https://todesfelde.de/2023/10/einladung-zur-sitzung-der-gemeindevertretung-todesfelde-am-17-10-2023-um-1930-uhr-im-gasthof-zur-eiche/",
+        "finding": "„Genehmigung / Zulassung von Photovoltaikgroßflächenanlagen“ und „Zuschussantrag der Kirchengemeinde“ — Bauleitplanung bzw. Vereinszuschuss, keine Förderung privater Anlagen."
+      },
+      {
+        "url": "https://todesfelde.de/download/nationale-klimaschutzinitiative-foerderkennzeichen-03k04440/",
+        "finding": "Am 15.10.2026 gelesen: Download vom 14.01.2017 zu einem Projekt der Nationalen Klimaschutzinitiative (Förderkennzeichen 03K04440) — Bundesförderung an die Gemeinde selbst, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://todesfelde.de/tag/nationale-klimaschutzinitiative-foerderkennzeichen-03k04440/",
+        "finding": "Am 15.10.2026 gelesen: Schlagwortseite zu demselben NKI-Projekt von 2017; kein Programm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "todesfelde.de/download/nationale-klimaschutzinitiative-foerderkennzeichen-03k04440",
+        "disposition": "reviewed",
+        "reason": "Download vom 14.01.2017 zu einem Projekt der Nationalen Klimaschutzinitiative (Förderkennzeichen 03K04440) — Bundesförderung an die Gemeinde selbst, kein Programm für Haushalte.",
+        "evidenceUrl": "https://todesfelde.de/download/nationale-klimaschutzinitiative-foerderkennzeichen-03k04440/"
+      },
+      {
+        "url": "todesfelde.de/tag/nationale-klimaschutzinitiative-foerderkennzeichen-03k04440",
+        "disposition": "reviewed",
+        "reason": "Schlagwortseite zu demselben NKI-Projekt von 2017; kein Programm für Haushalte.",
+        "evidenceUrl": "https://todesfelde.de/tag/nationale-klimaschutzinitiative-foerderkennzeichen-03k04440/"
+      }
+    ]
+  },
+  {
+    "regionId": "01060095",
+    "name": "Weddelbrook",
+    "checkedAt": "2026-10-15T12:17:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weddelbrook (Amt Bad Bramstedt-Land) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Suche der Gemeindeseite nach Förderung, Balkon, Solar, Photovoltaik, Zuschuss und Klima findet nur Bürgermeisterberichte (Informationsabend in Wrist zu Photovoltaik und Balkonkraftwerken 2024, Rückforderung von Feuerwehr-Fördergeldern, Fördersprechstunde der Investitionsbank für kommunale Projekte) und Sitzungen (Photovoltaik auf dem Sportlerheim, Investitionszuschuss Seeterrassen). Stand 15.10.2026.",
+    "searches": [
+      "weddelbrook.de Suche (WordPress-Suchschnittstelle): foerder, balkon, solar, photovoltaik, zuschuss, klima — alle Treffer gelesen",
+      "Websuchen: Weddelbrook / Amt Bad Bramstedt-Land Förderrichtlinie Balkonkraftwerk Photovoltaik — nichts"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.weddelbrook.de/22-05-2024-teilnahme-an-einer-informationsveranstaltung-in-wrist-zum-thema-photovoltaik-und-balkonkraftwerke/",
+        "finding": "Bürgermeisterbericht: Teilnahme an einer Informationsveranstaltung in Wrist zu Photovoltaik und Balkonkraftwerken — keine Förderung."
+      },
+      {
+        "url": "https://www.weddelbrook.de/sitzung-der-gemeindevertretung-am-13-12-2023/",
+        "finding": "Tagesordnung: Sanierung mit „Errichtung einer Photovoltaikanlage“ an einem Gemeindegebäude — eigene Liegenschaft, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.weddelbrook.de/04-07-2025-teilnahme-an-einer-informationsveranstaltung-der-investitionsbank-schleswig-holstein-zu-foerderung-und-finanzierung-von-kommunalen-projekten/",
+        "finding": "Am 15.10.2026 gelesen: Bürgermeisterbericht: Infoveranstaltung der Investitionsbank zu Förderung kommunaler Projekte — kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.weddelbrook.de/13-08-2025-abstimmungsgespraech-im-amt-bad-bad-bramstedt-land-zur-rueckzahlung-der-foerdergelder-bei-der-anschaffung-von-feuerwehrfahrzeugen/",
+        "finding": "Am 15.10.2026 gelesen: Rückzahlung von Fördergeldern für Feuerwehrfahrzeuge — fachfremd."
+      },
+      {
+        "url": "https://www.weddelbrook.de/16-12-2024-teilnahme-an-der-sondersitzung-im-amt-bad-bramstedt-land-zur-anstehenden-rueckforderung-von-foerdergeldern-durch-den-kreis/",
+        "finding": "Am 15.10.2026 gelesen: Rückforderung von Feuerwehr-Fördergeldern durch den Kreis — fachfremd."
+      }
+    ],
+    "sources": [
+      {
+        "url": "weddelbrook.de/04-07-2025-teilnahme-an-einer-informationsveranstaltung-der-investitionsbank-schleswig-holstein-zu-foerderung-und-finanzierung-von-kommunalen-projekten",
+        "disposition": "reviewed",
+        "reason": "Bürgermeisterbericht: Infoveranstaltung der Investitionsbank zu Förderung kommunaler Projekte — kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.weddelbrook.de/04-07-2025-teilnahme-an-einer-informationsveranstaltung-der-investitionsbank-schleswig-holstein-zu-foerderung-und-finanzierung-von-kommunalen-projekten/"
+      },
+      {
+        "url": "weddelbrook.de/13-08-2025-abstimmungsgespraech-im-amt-bad-bad-bramstedt-land-zur-rueckzahlung-der-foerdergelder-bei-der-anschaffung-von-feuerwehrfahrzeugen",
+        "disposition": "reviewed",
+        "reason": "Rückzahlung von Fördergeldern für Feuerwehrfahrzeuge — fachfremd.",
+        "evidenceUrl": "https://www.weddelbrook.de/13-08-2025-abstimmungsgespraech-im-amt-bad-bad-bramstedt-land-zur-rueckzahlung-der-foerdergelder-bei-der-anschaffung-von-feuerwehrfahrzeugen/"
+      },
+      {
+        "url": "weddelbrook.de/16-12-2024-teilnahme-an-der-sondersitzung-im-amt-bad-bramstedt-land-zur-anstehenden-rueckforderung-von-foerdergeldern-durch-den-kreis",
+        "disposition": "reviewed",
+        "reason": "Rückforderung von Feuerwehr-Fördergeldern durch den Kreis — fachfremd.",
+        "evidenceUrl": "https://www.weddelbrook.de/16-12-2024-teilnahme-an-der-sondersitzung-im-amt-bad-bramstedt-land-zur-anstehenden-rueckforderung-von-foerdergeldern-durch-den-kreis/"
+      }
+    ]
+  },
+  {
+    "regionId": "01060047",
+    "name": "Kisdorf",
+    "checkedAt": "2026-10-15T12:17:00Z",
+    "recheckAt": "2026-11-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Kisdorf hat ein eigenes Balkonkraftwerk-Programm beschlossen: Die Gemeindevertretung hat am 16.05.2024 (Nr. 5, TOP 16) die „Richtlinie der Gemeinde Kisdorf zur Förderung von Mini-Photovoltaik-Anlagen (Balkonkraftwerke)“ beschlossen — 100 € je Haushalt für Anlagen mit Wechselrichter 300–800 W, Gesamttopf 10.000 €, Antrag vor Auftrag, Bescheid, Auszahlung gegen Kaufbeleg und Foto. 2024 gingen 18 Anträge ein, 10 wurden ausgezahlt (Ausschuss 15.01.2025). Offen: Der Richtlinientext ist nicht veröffentlicht (nur das Antragsformular, auf keiner Seite mehr verlinkt), und kein Protokoll bis Juli 2026 sagt, ob das Programm weiterläuft oder beendet ist. Ohne Richtlinie und Status keine Aufnahme; Sachfrage vorgemerkt.",
+    "searches": [
+      "Alle 75 PDF-Uploads von kisdorf.de seit Mai 2024 (Protokolle aller Gremien bis Juli 2026) nach Balkonkraftwerk, Mini-Photovoltaik und Steckersolar durchsucht",
+      "Ortsrecht der Gemeinde Kisdorf beim Amt Kisdorf (6 Vorschriften, 5 Dokumente) und auf kisdorf.de gelesen — Richtlinie nicht enthalten",
+      "Downloadseite kisdorf.de gelesen — Formular nicht mehr verlinkt",
+      "Websuche Amt Kisdorf Förderrichtlinie Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://kisdorf.de/wp-content/uploads/2024/07/Prot-GV-Kisdorf-Nr.-5.pdf",
+        "finding": "TOP 16: „beschließt die Gemeindevertretung die in der Anlage vorliegende Richtlinie der Gemeinde Kisdorf zur Förderung von Mini-Photovoltaik-Anlagen (Balkonkraftwerke)“ (8:6:1)."
+      },
+      {
+        "url": "https://kisdorf.de/wp-content/uploads/2024/06/Protokoll-VerkUmw.-Nr.-6.pdf",
+        "finding": "TOP 5: Wechselrichter „minimal 300 Watt und maximal 800 Watt“, „Zuschuss von 100,-Euro pro Haushalt“, „Gesamtfördersumme von € 10.000,00“; Doppelförderung möglich."
+      },
+      {
+        "url": "https://kisdorf.de/wp-content/uploads/2025/03/Protokoll-VerkUmwA-Nr.-12-v.-15.01.2025.pdf",
+        "finding": "„zur Förderung von Balkonkraftwerken in der Gemeinde Kisdorf im Jahr 2024 18 Anträge eingegangen sind, von denen 10 auch ausgezahlt wurden“."
+      },
+      {
+        "url": "https://kisdorf.de/wp-content/uploads/2024/05/Formular.pdf",
+        "finding": "Antragsformular: Beginn erst nach Zuwendungsbescheid, Umsetzung binnen 12 Monaten, Betrieb mindestens 5 Jahre."
+      }
+    ],
+    "sources": [],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-16T08:00:00Z",
+      "detail": "Sachfrage an das Amt Kisdorf im bestehenden Versandlauf; Zustellbeleg prüfen, Antwort im Original lesen. Läuft das Programm: mit Richtlinie nach Gate aufnehmen (Balkonkraftwerk-Seite). Beendet: als beendetes Programm mit Zeitraum aufnehmen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
+    },
+    "enquiry": {
+      "id": "klaerung-01060047",
+      "recipient": "info@amt-kisdorf.de",
+      "recipientSource": "https://www.amt-kisdorf.de/impressum",
+      "website": "https://www.amt-kisdorf.de",
+      "question": "Die Gemeindevertretung Kisdorf hat am 16.05.2024 eine Richtlinie zur Förderung von Balkonkraftwerken beschlossen (100 € je Haushalt, Gesamtbetrag 10.000 €); 2024 wurden laut Ausschussprotokoll zehn Anträge ausgezahlt. Die Richtlinie selbst finde ich weder auf kisdorf.de noch im Ortsrecht beim Amt, und das Antragsformular ist nicht mehr verlinkt. Läuft die Förderung 2026 noch, und können Sie mir die geltende Richtlinie schicken oder sagen, wo sie veröffentlicht ist? Falls sie beendet ist, hilft mir auch das kurze Enddatum."
+    }
   }
 ]
