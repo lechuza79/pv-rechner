@@ -75,6 +75,12 @@ Without a partner header, its measured responsive height is subtracted from the 
 
 ## Annual-growth embedding dialog
 
+For correspondence, append `&dialog=embed` to the standalone gallery URL, e.g.
+`/embed/galerie/regional-annual-growth?ags=05370020&range=5&theme=light&dialog=embed`.
+This opens the existing configurator directly in a top-level tab. Closing removes
+only this flag, preserving the municipality, period and theme. The flag is never
+included in the preview URL or copied iframe code. Partner variants are unchanged.
+
 The unbranded annual-growth widget opens embedding from its existing options
 menu. It reuses the partner configurator inside the shared modal, without partner
 branding or header controls. The current municipality, range and theme are

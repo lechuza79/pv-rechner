@@ -103,6 +103,28 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
   // The monitor lives in an iframe on the municipality page; share the page that hosts it.
   const [liveUrl, setLiveUrl] = useState<string | undefined>();
   const [embedOpen, setEmbedOpen] = useState(false);
+  // A standalone annual-growth link can open the existing configurator directly.
+  // Never propagate this navigation flag into the preview or customer embed code.
+  const embedDialogPath = widget.id === 'regional-annual-growth' && einbetten && !partner && !host ? embedPath(widget) : undefined;
+  useEffect(() => {
+    if (!embedDialogPath || window.self !== window.top) return;
+    const sync = () => {
+      const url = new URL(window.location.href);
+      setEmbedOpen(url.pathname === embedDialogPath && url.searchParams.get('dialog') === 'embed');
+    };
+    sync();
+    window.addEventListener('popstate', sync);
+    return () => window.removeEventListener('popstate', sync);
+  }, [embedDialogPath]);
+  const closeEmbed = () => {
+    setEmbedOpen(false);
+    const url = new URL(window.location.href);
+    if (url.pathname === embedDialogPath && url.searchParams.get('dialog') === 'embed') {
+      url.searchParams.delete('dialog');
+      window.history.replaceState(window.history.state, '', url);
+    }
+  };
+
   const [videoPaused,setVideoPaused]=useState(false);
   const [videoProgress,setVideoProgress]=useState<number|null>(null);
   useEffect(()=>{
@@ -362,7 +384,7 @@ export function ExportableWidgetFrame({dataTable, widget, place, stand, exportSc
         {!partner && sourcePlacement !== 'plot' && <div style={{position: 'absolute', top: EDGE_INSET, bottom: EDGE_INSET, right: EDGE_GAP, width: SOURCE_EDGE_WIDTH * edgeColumns, pointerEvents: 'none'}}>
           <WidgetSourceEdge widget={def} stand={stand} visible={sourceVisible&&!host} spalten={edgeColumns} />
         </div>}
-        {einbetten && embeddable(def) && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={() => setEmbedOpen(false)} titel={def.title} src={embedPath(def)!} params={einbetten.params} preview={einbetten.preview}
+        {einbetten && embeddable(def) && <div data-sc-export-ignore=""><EinbettenDialog open={embedOpen} onClose={closeEmbed} titel={def.title} src={embedPath(def)!} params={einbetten.params} preview={einbetten.preview}
           width={def.configuration?.presentations?.full.maxWidth??WIDGET_MAX_WIDTH_COMPACT} height={einbetten.height} siteUrl="https://solar-check.io" attribution={{path: einbetten.preview ? `${embedPath(def)}?${new URLSearchParams(einbetten.params).toString()}` : (()=>{const url=new URL(def.shareUrl,"https://solar-check.io");return `${url.pathname}${url.search}${url.hash}`;})(), text: `Datenquelle: ${def.title} — Solar Check`}} /></div>}
         {!partner && <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} branding={exportBranding} legend={exportLegend} includeHelpNotes={false} note={exportNote === null ? undefined : exportNote} /></ExportOnly>}
       </>}
