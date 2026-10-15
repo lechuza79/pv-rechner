@@ -242,7 +242,7 @@ describe("Shared CI production runtime", () => {
 
   it.each(["smoke", "flows", "telefon", "kontrast"])("%s requires and validates the shared artifact", (name) => {
     const consumer = ci.find((job) => job.name === name)!;
-    expect(consumer.text).toMatch(/^    needs: build$/m);
+    expect(consumer.text).toMatch(/^    needs: (build|\[build, plan\])$/m);
     expect(consumer.text).toContain('E2E_PREBUILT: "1"');
     expect(consumer.text).toContain("actions/download-artifact@v4");
     expect(consumer.text).toContain("browser-build-${{ github.sha }}");
@@ -252,8 +252,9 @@ describe("Shared CI production runtime", () => {
 
   it("fails the protected gate when the build fails or is skipped", () => {
     const gate = ci.find((job) => job.name === "test")!;
-    expect(gate.text).toContain("needs: [unit, build, smoke]");
+    expect(gate.text).toContain("needs: [plan, unit, build, smoke, flows, telefon, kontrast]");
     expect(gate.text).toContain("if: always()");
-    expect(gate.text).toContain('[ "${{ needs.build.result }}" = "success" ] || fehler=1');
+    expect(gate.text).toContain('node scripts/ci-browser-plan.cjs gate');
+    expect(gate.text).toContain('CI_JOB_RESULTS: ${{ toJSON(needs) }}');
   });
 });
