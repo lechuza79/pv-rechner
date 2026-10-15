@@ -186,6 +186,16 @@ export interface FundingProgram {
    * Kreisschlüssel das richtige und vollständige Fördergebiet.
    */
   agsCodes?: string[];
+  /**
+   * Documented reason why the `agsCodes` span more than one county, e.g. a
+   * municipal funding association whose members straddle a county border
+   * (Elmshorn's Klimaschutzfonds, October 2026). The key check
+   * (`lib/funding-ags-urteil.ts`) otherwise reports such a spread as a typo
+   * suspicion. Set it only after resolving EVERY key individually against the
+   * register and naming the source of the member list; every key must still
+   * exist in the register.
+   */
+  kreisuebergreifend?: string;
   url: string;
   /** Human-readable as-of, e.g. "Juni 2026". */
   stand: string;
@@ -15930,13 +15940,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // 01061044, Kiebitzreihe 01061050, Klein Nordende 01056029, Klein
     // Offenseth-Sparrieshoop 01056030, Kölln-Reisiek 01056031, Raa-Besenbek
     // 01056042, Seester 01056033, Seestermühe 01056045, Seeth-Ekholt 01056046.
-    // Four members lie in Kreis Steinburg (01061), so no county prefix fits.
+    // Three members lie in Kreis Steinburg (01061), so no county prefix fits.
     // "Horst" is Horst (Holstein): the 29th accountability report lists it
     // with the Amt Horst-Herzhorn (Kreis Steinburg).
     agsCodes: [
       "01056015", "01061004", "01056008", "01061044", "01061050", "01056029",
       "01056030", "01056031", "01056042", "01056033", "01056045", "01056046",
     ],
+    kreisuebergreifend:
+      "Mitgliederliste der Richtlinie Nr. 1 und 4 des Klimaschutzfonds: Altenmoor, Horst (Holstein) und Kiebitzreihe liegen im Kreis Steinburg, die übrigen neun im Kreis Pinneberg; jeder Schlüssel am 14./15.10.2026 einzeln im Melderegister aufgelöst.",
     url: "https://www.elmshorn.de/Umwelt-Verkehr/Umweltschutz/Klimaschutz/F%C3%B6rderprogramme/Klimaschutzfonds-Elmshorn",
     stand: "Oktober 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
