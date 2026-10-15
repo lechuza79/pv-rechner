@@ -28,6 +28,7 @@ test('storage switch updates the actual set and merchant link',async({page})=>{
 });
 
 import { assertNoDocumentOverflow, assertResultGeometry, assertTextInsideCard } from './calculator-geometry';
+import { BEG_ANTRAG_STAND } from '../lib/beg-antrag';
 
 test('heat pump geometry counterprobe rejects the original constrained result and escaped numbers', async ({ page },testInfo) => {
  await page.setViewportSize({width:1440,height:1000});
@@ -86,6 +87,30 @@ for(const width of [375,768,1440,1920])test(`additional tool surfaces fit their 
  await assertTextInsideCard(funding);
  expect((await funding.boundingBox())!.width).toBeLessThanOrEqual(381);
  await assertNoDocumentOverflow(page);
+});
+
+// The server-rendered source edge starts at its full size, which on a short
+// card is longer than the card is high. Until the client has fitted it, it
+// must not paint: on a slow runner the check above measured exactly that
+// pre-hydration state and failed (main CI 15.10.2026). Without JavaScript the
+// page stays in that state, so this pins it deterministically.
+for(const width of [375,1920])test(`source edge stays unpainted until fitted ${width}`,async({browser,baseURL})=>{
+ const ctx=await browser.newContext({javaScriptEnabled:false,viewport:{width,height:1000}});
+ try{
+  const page=await ctx.newPage();
+  await page.goto(`${baseURL}/embed/foerder-check`,{waitUntil:'domcontentloaded',timeout:60000});
+  const funding=page.getByText('Wärmepumpen-Förderung berechnen',{exact:true}).locator('..');
+  await expect(page.locator('[data-sc-source-edge]')).toHaveCSS('opacity','0');
+  await assertTextInsideCard(funding);
+ }finally{await ctx.close();}
+});
+
+test('funding check source edge carries its check date, not a missing one',async({page})=>{
+ await page.goto('/embed/foerder-check',{waitUntil:'domcontentloaded',timeout:60000});
+ const edge=page.locator('[data-sc-source-edge]');
+ await expect(edge).toContainText(`Stand: ${BEG_ANTRAG_STAND.geprueftIso.split('-').reverse().join('.')}`);
+ await expect(edge).not.toContainText('nicht verfügbar');
+ await expect(edge).toHaveCSS('opacity','1');
 });
 
 for(const width of [375,1440])test(`PV pending actions hand over to inline controls and dialog footer stays local ${width}`,async({page},testInfo)=>{

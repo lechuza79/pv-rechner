@@ -7302,7 +7302,7 @@
   {
     "regionId": "01060020",
     "name": "Fahrenkrug",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-15T10:08:00Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -7343,6 +7343,14 @@
       {
         "url": "https://amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym",
         "finding": "Am 05.10.2026 gelesen: Richtlinie der Nachbargemeinde Wakendorf I (2023), gilt nur dort und ist beendet; für Fahrenkrug kein Programm."
+      },
+      {
+        "url": "https://amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj",
+        "finding": "Am 15.10.2026 gelesen: Antragsformular der Nachbargemeinde Bahrenhof („Das Förderprogramm endet am 31.12.2023“) — gilt nur dort und ist beendet; für Fahrenkrug kein Programm."
+      },
+      {
+        "url": "https://amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/flyer.pdf?cid=140j",
+        "finding": "Am 15.10.2026 gelesen: Flyer „Gemeinde Weede fördert Mini-Solaranlagen“ (Richtlinie ab 01.01.2023, Gemeindegebiet Weede) — gilt nur in der Nachbargemeinde Weede; für Fahrenkrug kein Programm."
       }
     ],
     "sources": [
@@ -7375,6 +7383,18 @@
         "disposition": "reviewed",
         "reason": "Am 05.10.2026 neu gelesen (keine-foerderung): Richtlinie der Nachbargemeinde Wakendorf I (2023), gilt nur dort und ist beendet; für Fahrenkrug kein Programm.",
         "evidenceUrl": "https://amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage/2023-01-18-foerderprogramm-wakendorf-i-pdf.pdf?cid=14ym"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Antragsformular der Nachbargemeinde Bahrenhof („Das Förderprogramm endet am 31.12.2023“) — gilt nur dort und ist beendet; für Fahrenkrug kein Programm.",
+        "evidenceUrl": "https://amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-15-foerderantrag-pdf.pdf?cid=16mj"
+      },
+      {
+        "url": "amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/flyer.pdf?cid=140j",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Flyer „Gemeinde Weede fördert Mini-Solaranlagen“ (Richtlinie ab 01.01.2023, Gemeindegebiet Weede) — gilt nur in der Nachbargemeinde Weede; für Fahrenkrug kein Programm.",
+        "evidenceUrl": "https://amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen/flyer.pdf?cid=140j"
       }
     ],
     "outcome": "keine-passende-foerderung",
@@ -27283,7 +27303,7 @@
   {
     "regionId": "07141129",
     "name": "Singhofen",
-    "checkedAt": "2026-09-23T12:10:00Z",
+    "checkedAt": "2026-10-15T10:08:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf der Seite der Verbandsgemeinde Bad Ems-Nassau, die für ihre Ortsgemeinden verwaltet.",
     "outcome": "keine-passende-foerderung",
@@ -27300,6 +27320,10 @@
       {
         "url": "https://www.vgben.de/energie-klima",
         "finding": "Der Bereich „Energie & Klima“ der Verbandsgemeinde Bad Ems-Nassau führt Klimaschutzkonzept, landesweites Solarkataster Rheinland-Pfalz, diese Steckersolar-Information und die kommunale Wärmeplanung. Auf der Seite steht kein Euro-Betrag und nicht ein einziges Mal das Wort „Zuschuss“."
+      },
+      {
+        "url": "https://vgben.de/energie-klima/news-infos/251212-energiebericht-2024.pdf?cid=1dsv",
+        "finding": "Am 15.10.2026 gelesen: Energiebericht 2024 der Verbandsgemeinde Bad Ems-Nassau (kommunales Energiemanagement, gefördert durch die ZUG) — Verbrauch der eigenen Liegenschaften und Hinweis auf die Bundesförderung BEG, kein Zuschussprogramm für private Haushalte."
       }
     ],
     "sources": [
@@ -27308,6 +27332,12 @@
         "disposition": "reviewed",
         "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
         "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      },
+      {
+        "url": "vgben.de/energie-klima/news-infos/251212-energiebericht-2024.pdf?cid=1dsv",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Energiebericht 2024 der Verbandsgemeinde Bad Ems-Nassau (kommunales Energiemanagement, gefördert durch die ZUG) — Verbrauch der eigenen Liegenschaften und Hinweis auf die Bundesförderung BEG, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://vgben.de/energie-klima/news-infos/251212-energiebericht-2024.pdf?cid=1dsv"
       }
     ]
   },
@@ -68341,7 +68371,7 @@
   {
     "regionId": "03359016",
     "name": "Estorf",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-15T10:08:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -68378,6 +68408,10 @@
       {
         "url": "https://oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte/?vs=1",
         "finding": "Am 05.10.2026 gelesen: Geförderte kommunale Bauprojekte (EFRE, Dorfentwicklung); kein Privatzuschuss."
+      },
+      {
+        "url": "https://oldendorf-himmelpforten.de/downloads/datei/MTJiNGI5NDJhZDNjMWE3OEVMTHJsbkE1aTBJaFhKL2QxYldqZHdFR0VNRGp3ODUxbHJ4dkIrSWNjcGNNVVNCSys0SGhuMnQ3bmZzZDk4UFUrYUVUaHM4L3VtUnpsaFNzNGJtWm42RklSb1RJRXNrZmdYRTVSa3N1bktDQTZSSzZ5aTVKY08xWCtYbnlIWTQ3REM5WkpxK2d4NjREbXNmMjRLbzhUT2JCemdqeDc5d0UzOW9naE5KaXAzNkpXYjFCT3Vma25hZ1lhM2l5dExWdQ",
+        "finding": "Am 15.10.2026 gelesen: Umweltbericht (Urschrift 21.03.2025) zur 4. Änderung des Flächennutzungsplans „Freiflächen-Photovoltaikanlagen“ der Samtgemeinde Oldendorf-Himmelpforten — Bauleitplanung für Solarparks, kein Zuschuss für private Haushalte."
       }
     ],
     "sources": [
@@ -68392,13 +68426,19 @@
         "disposition": "reviewed",
         "reason": "Am 05.10.2026 neu gelesen (keine-foerderung): Geförderte kommunale Bauprojekte (EFRE, Dorfentwicklung); kein Privatzuschuss.",
         "evidenceUrl": "https://oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte/?vs=1"
+      },
+      {
+        "url": "oldendorf-himmelpforten.de/downloads/datei/MTJiNGI5NDJhZDNjMWE3OEVMTHJsbkE1aTBJaFhKL2QxYldqZHdFR0VNRGp3ODUxbHJ4dkIrSWNjcGNNVVNCSys0SGhuMnQ3bmZzZDk4UFUrYUVUaHM4L3VtUnpsaFNzNGJtWm42RklSb1RJRXNrZmdYRTVSa3N1bktDQTZSSzZ5aTVKY08xWCtYbnlIWTQ3REM5WkpxK2d4NjREbXNmMjRLbzhUT2JCemdqeDc5d0UzOW9naE5KaXAzNkpXYjFCT3Vma25hZ1lhM2l5dExWdQ",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Umweltbericht (Urschrift 21.03.2025) zur 4. Änderung des Flächennutzungsplans „Freiflächen-Photovoltaikanlagen“ der Samtgemeinde Oldendorf-Himmelpforten — Bauleitplanung für Solarparks, kein Zuschuss für private Haushalte.",
+        "evidenceUrl": "https://oldendorf-himmelpforten.de/downloads/datei/MTJiNGI5NDJhZDNjMWE3OEVMTHJsbkE1aTBJaFhKL2QxYldqZHdFR0VNRGp3ODUxbHJ4dkIrSWNjcGNNVVNCSys0SGhuMnQ3bmZzZDk4UFUrYUVUaHM4L3VtUnpsaFNzNGJtWm42RklSb1RJRXNrZmdYRTVSa3N1bktDQTZSSzZ5aTVKY08xWCtYbnlIWTQ3REM5WkpxK2d4NjREbXNmMjRLbzhUT2JCemdqeDc5d0UzOW9naE5KaXAzNkpXYjFCT3Vma25hZ1lhM2l5dExWdQ"
       }
     ]
   },
   {
     "regionId": "03359024",
     "name": "Heinbockel",
-    "checkedAt": "2026-10-05T12:55:42Z",
+    "checkedAt": "2026-10-15T10:08:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -68435,6 +68475,10 @@
       {
         "url": "https://oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte/?vs=1",
         "finding": "Am 05.10.2026 gelesen: Geförderte kommunale Bauprojekte (EFRE, Dorfentwicklung); kein Privatzuschuss."
+      },
+      {
+        "url": "https://oldendorf-himmelpforten.de/downloads/datei/MTJiNGI5NDJhZDNjMWE3OEVMTHJsbkE1aTBJaFhKL2QxYldqZHdFR0VNRGp3ODUxbHJ4dkIrSWNjcGNNVVNCSys0SGhuMnQ3bmZzZDk4UFUrYUVUaHM4L3VtUnpsaFNzNGJtWm42RklSb1RJRXNrZmdYRTVSa3N1bktDQTZSSzZ5aTVKY08xWCtYbnlIWTQ3REM5WkpxK2d4NjREbXNmMjRLbzhUT2JCemdqeDc5d0UzOW9naE5KaXAzNkpXYjFCT3Vma25hZ1lhM2l5dExWdQ",
+        "finding": "Am 15.10.2026 gelesen: Umweltbericht (Urschrift 21.03.2025) zur 4. Änderung des Flächennutzungsplans „Freiflächen-Photovoltaikanlagen“ der Samtgemeinde Oldendorf-Himmelpforten — Bauleitplanung für Solarparks, kein Zuschuss für private Haushalte."
       }
     ],
     "sources": [
@@ -68449,6 +68493,12 @@
         "disposition": "reviewed",
         "reason": "Am 05.10.2026 neu gelesen (keine-foerderung): Geförderte kommunale Bauprojekte (EFRE, Dorfentwicklung); kein Privatzuschuss.",
         "evidenceUrl": "https://oldendorf-himmelpforten.de/die-samtgemeinde/samtgemeinde/foerderprojekte/?vs=1"
+      },
+      {
+        "url": "oldendorf-himmelpforten.de/downloads/datei/MTJiNGI5NDJhZDNjMWE3OEVMTHJsbkE1aTBJaFhKL2QxYldqZHdFR0VNRGp3ODUxbHJ4dkIrSWNjcGNNVVNCSys0SGhuMnQ3bmZzZDk4UFUrYUVUaHM4L3VtUnpsaFNzNGJtWm42RklSb1RJRXNrZmdYRTVSa3N1bktDQTZSSzZ5aTVKY08xWCtYbnlIWTQ3REM5WkpxK2d4NjREbXNmMjRLbzhUT2JCemdqeDc5d0UzOW9naE5KaXAzNkpXYjFCT3Vma25hZ1lhM2l5dExWdQ",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Umweltbericht (Urschrift 21.03.2025) zur 4. Änderung des Flächennutzungsplans „Freiflächen-Photovoltaikanlagen“ der Samtgemeinde Oldendorf-Himmelpforten — Bauleitplanung für Solarparks, kein Zuschuss für private Haushalte.",
+        "evidenceUrl": "https://oldendorf-himmelpforten.de/downloads/datei/MTJiNGI5NDJhZDNjMWE3OEVMTHJsbkE1aTBJaFhKL2QxYldqZHdFR0VNRGp3ODUxbHJ4dkIrSWNjcGNNVVNCSys0SGhuMnQ3bmZzZDk4UFUrYUVUaHM4L3VtUnpsaFNzNGJtWm42RklSb1RJRXNrZmdYRTVSa3N1bktDQTZSSzZ5aTVKY08xWCtYbnlIWTQ3REM5WkpxK2d4NjREbXNmMjRLbzhUT2JCemdqeDc5d0UzOW9naE5KaXAzNkpXYjFCT3Vma25hZ1lhM2l5dExWdQ"
       }
     ]
   },
@@ -73128,7 +73178,7 @@
   {
     "regionId": "07334015",
     "name": "Kuhardt",
-    "checkedAt": "2026-09-27T16:50:00Z",
+    "checkedAt": "2026-10-15T10:08:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -73155,6 +73205,10 @@
       {
         "url": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Umwelt-%20und%20Klimaschutzma%C3%9Fnahmen/Windenergie%20und%20Photovoltaik/",
         "finding": "Seite „Windenergie und Photovoltaik“: Windpark und schwimmende PV-Anlage am Baggersee (2020), keine Förderung privater Anlagen."
+      },
+      {
+        "url": "https://ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf",
+        "finding": "Am 15.10.2026 gelesen: Solarpapier der Verbandsgemeinde Rülzheim (Stand September 2022) — Information zu Solarnutzung, Eigenverbrauch, Mieterstrom und Freiflächen-PV; nennt nur EEG-Vergütung, kein Zuschussprogramm der Verbandsgemeinde oder von Kuhardt."
       }
     ],
     "sources": [
@@ -73169,6 +73223,12 @@
         "disposition": "reviewed",
         "reason": "Am 27.09.2026 gelesen: Liste externer Förderpartner für Gründer, kein kommunaler Zuschuss für Haushalte.",
         "evidenceUrl": "https://www.ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Wirtschaftsf%C3%B6rderung/Gr%C3%BCndungen%20&%20F%C3%B6rdermittel/"
+      },
+      {
+        "url": "ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Solarpapier der Verbandsgemeinde Rülzheim (Stand September 2022) — Information zu Solarnutzung, Eigenverbrauch, Mieterstrom und Freiflächen-PV; nennt nur EEG-Vergütung, kein Zuschussprogramm der Verbandsgemeinde oder von Kuhardt.",
+        "evidenceUrl": "https://ruelzheim.de/vg_ruelzheim/de/Bauen%20-%20Wirtschaft%20-%20Umwelt/Klima-%20und%20Hochwasserschutz/Solarpapier%20und%20Freifl%C3%A4chen-PV/2022-09_Solarnutzung%20in%20der%20Verbandsgemeinde%20R%C3%BClzheim.pdf"
       }
     ]
   },
@@ -77957,7 +78017,7 @@
   {
     "regionId": "03358005",
     "name": "Buchholz (Aller)",
-    "checkedAt": "2026-09-28T09:12:28Z",
+    "checkedAt": "2026-10-15T10:08:00Z",
     "recheckAt": "2027-03-28T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -77976,9 +78036,20 @@
       {
         "url": "https://www.schwarmstedt.de/joomla/index.php/component/search/?searchword=Balkonkraftwerk&searchphrase=all",
         "finding": "28.09.2026: Suche Balkonkraftwerk: einziger Treffer die Buchholzer Richtlinie von 2024; Suche Förderrichtlinie: sonst nur Jugendpflege-Richtlinien."
+      },
+      {
+        "url": "https://schwarmstedt.de/baugebiete/bebauungsplaene/es/bp11/Bebauungsplan-Nr-11-Buergersolarpark-Essel_Begruendung_Entwurf_2026-09-16.pdf",
+        "finding": "Am 15.10.2026 gelesen: Begründung zum Bebauungsplan Nr. 11 „Bürgersolarpark Essel“ der Nachbargemeinde Essel (Entwurf 16.09.2026) — Bauleitplanung für einen Solarpark, kein Zuschuss für private Haushalte in Buchholz (Aller)."
       }
     ],
-    "sources": []
+    "sources": [
+      {
+        "url": "schwarmstedt.de/baugebiete/bebauungsplaene/es/bp11/Bebauungsplan-Nr-11-Buergersolarpark-Essel_Begruendung_Entwurf_2026-09-16.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Begründung zum Bebauungsplan Nr. 11 „Bürgersolarpark Essel“ der Nachbargemeinde Essel (Entwurf 16.09.2026) — Bauleitplanung für einen Solarpark, kein Zuschuss für private Haushalte in Buchholz (Aller).",
+        "evidenceUrl": "https://schwarmstedt.de/baugebiete/bebauungsplaene/es/bp11/Bebauungsplan-Nr-11-Buergersolarpark-Essel_Begruendung_Entwurf_2026-09-16.pdf"
+      }
+    ]
   },
   {
     "regionId": "03358007",
@@ -93652,7 +93723,7 @@
   {
     "regionId": "01056010",
     "name": "Brande-Hörnerkirchen",
-    "checkedAt": "2026-10-14T08:20:00Z",
+    "checkedAt": "2026-10-15T10:08:00Z",
     "recheckAt": "2027-01-12T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -93674,6 +93745,10 @@
       {
         "url": "https://www.vg-barmstedt-hoernerkirchen.de/stadt-barmstedt/klimaschutz",
         "finding": "14.10.2026 gelesen: Klimaschutzkonzept und Quartierskonzepte Nord/Süd der Stadt Barmstedt, nur Bundesförderung der Konzepterstellung; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/Klimaschutz/EQK_Nord_144dpi_75_.pdf",
+        "finding": "Am 15.10.2026 gelesen: Energetisches Quartierskonzept Barmstedt Nord (gefördert über KfW 432) — betrifft ein Quartier der Stadt Barmstedt und nennt nur Bundes-/Landesprogramme, kein Zuschussprogramm von Brande-Hörnerkirchen."
       }
     ],
     "sources": [
@@ -93682,6 +93757,12 @@
         "disposition": "reviewed",
         "reason": "das Integrierte Klimaschutzkonzept der Stadt Barmstedt, kein Förderprogramm für Haushalte.",
         "evidenceUrl": "https://www.vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/FBIV/Integriertes_Klimaschutzkonzept_der_Stadt_Barmstedt.pdf"
+      },
+      {
+        "url": "vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/Klimaschutz/EQK_Nord_144dpi_75_.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Energetisches Quartierskonzept Barmstedt Nord (gefördert über KfW 432) — betrifft ein Quartier der Stadt Barmstedt und nennt nur Bundes-/Landesprogramme, kein Zuschussprogramm von Brande-Hörnerkirchen.",
+        "evidenceUrl": "https://vg-barmstedt-hoernerkirchen.de/fileadmin/bilder/Stadt_Barmstedt/Klimaschutz/EQK_Nord_144dpi_75_.pdf"
       }
     ]
   },
@@ -98275,6 +98356,116 @@
         "disposition": "reviewed",
         "reason": "Bundesprogramm für Unternehmen des Güterkraftverkehrs — andere Zielgruppe.",
         "evidenceUrl": "https://www.segeberg.de/index.php?ffmod=suche&such=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "01060063",
+    "name": "Norderstedt",
+    "checkedAt": "2026-10-15T10:40:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Norderstedt bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Das einzige städtische Förderprogramm für Wohngebäude ist „Wärmeschutz im Gebäudebestand“ (Dämmung der Gebäudehülle); eine gleichzeitig errichtete Solaranlage erhöht dort nur den Zuschuss für die Dachdämmung um 20 %, die Anlage selbst wird nicht gefördert. Die übrigen Treffer sind Bundes-/Landesleistungen im Bürgerservice-Katalog. Stand 15.10.2026.",
+    "searches": [
+      "norderstedt.de Volltextsuche (15.10.2026): Balkonkraftwerk (nur Seite Wärmeplanung), Photovoltaik, Solar, Stecker, Wärmepumpe, Batteriespeicher, Förderprogramm, Zuschuss — städtisch nur Wärmeschutz-Programm, sonst Bundes-/Landesleistungen (KfW, BAFA, Solarkataster)",
+      "Klimaschutzseite der Stabsstelle Nachhaltiges Norderstedt mit Förderrichtlinie und Antrag 2026 gelesen",
+      "Websuche: Norderstedt Förderung Balkonkraftwerk Photovoltaik Zuschuss Stadtwerke Norderstedt 2026 — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.norderstedt.de/Wirtschaft-und-Entwicklung/Nachhaltiges-Norderstedt-/Klimaschutz/",
+        "finding": "Klimaschutzseite der Stadt: einziges Förderangebot ist das „Norderstedter Förderprogramm Wärmeschutz im Gebäudebestand“ für selbst genutztes Wohneigentum bis vier Wohneinheiten; „Gefördert werden Sanierungsmaßnahmen an der Gebäudehülle“; Förderantrag 2026 verlinkt."
+      },
+      {
+        "url": "https://www.norderstedt.de/media/custom/1087_11415_1.PDF?1647871433",
+        "finding": "Förderprogramm „Wärmeschutz im Gebäudebestand“ (Richtlinie in Kraft seit 16.03.2022, Antrag 2026): fördert nur Dämmung der Gebäudehülle, Wärmeschutzfenster, Baubegleitung, Thermografie und Starterprämie; der Solar-Bezug ist allein ein Aufschlag von 20 % auf den Dachdämmungs-Zuschuss, wenn zugleich eine Solaranlage (PV ab 2 kW) errichtet wird — die Solaranlage selbst wird nicht bezuschusst."
+      },
+      {
+        "url": "https://www.norderstedt.de/?qs=Balkonkraftwerk",
+        "finding": "Volltextsuche der Stadt: „Balkonkraftwerk“ nur auf der Seite Wärmeplanung; Photovoltaik/Solar/Wärmepumpe/Speicher/Förderprogramm/Zuschuss liefern nur das Wärmeschutz-Programm und Bundes-/Landesleistungen des Bürgerservice-Katalogs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "norderstedt.de/Aktuelles-und-Service/Dienstleistungen-und-Service/B%C3%BCrgerservice-von-A-Z/F%C3%B6rderprogramm-W%C3%A4rmeschutz-Geb%C3%A4udebestand.php",
+        "disposition": "reviewed",
+        "reason": "Bürgerservice-Eintrag zum städtischen Wärmeschutz-Programm: „Gefördert werden Sanierungsmaßnahmen an der Gebäudehülle“ — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.norderstedt.de/media/custom/1087_11415_1.PDF?1647871433"
+      },
+      {
+        "url": "norderstedt.de/Quicknavigation/Attraktive-F%C3%B6rderung-durch-die-Stadt-Novelliertes-F%C3%B6rderprogramm-W%C3%A4rmeschutz-im-Geb%C3%A4udebestand-hilft-beim-Heizenergiesparen.php",
+        "disposition": "reviewed",
+        "reason": "Meldung zum novellierten Wärmeschutz-Programm; durch die gelesene Richtlinie erledigt: nur Gebäudehülle, Solar nur als Aufschlag auf die Dachdämmung.",
+        "evidenceUrl": "https://www.norderstedt.de/media/custom/1087_11415_1.PDF?1647871433"
+      },
+      {
+        "url": "norderstedt.de/Aktuelles-und-Service/Dienstleistungen-und-Service/B%C3%BCrgerservice-von-A-Z/F%C3%B6rderung-im-Rahmen-der-F%C3%B6rderrichtlinie-KMU-innovativ-Forschung-f%C3%BCr-die-zivile-Sicherheit-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesleistung im Bürgerservice-Katalog (Forschungsförderung für Unternehmen) — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.norderstedt.de/?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "norderstedt.de/Aktuelles-und-Service/Dienstleistungen-und-Service/B%C3%BCrgerservice-von-A-Z/Mittel-zu-einem-gef%C3%B6rderten-Vorhaben-aus-dem-F%C3%B6rderprogramm-%C3%9Cbergangshilfe-aus-dem-KWI-Titel-anfordern.php",
+        "disposition": "reviewed",
+        "reason": "Bundesleistung im Bürgerservice-Katalog (Übergangshilfe Kultur) — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.norderstedt.de/?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "norderstedt.de/Aktuelles-und-Service/Dienstleistungen-und-Service/B%C3%BCrgerservice-von-A-Z/Mittel-zu-einem-gef%C3%B6rderten-Vorhaben-aus-dem-F%C3%B6rderprogramm-Medien-und-Meinungsfreiheit-anfordern.php",
+        "disposition": "reviewed",
+        "reason": "Bundesleistung im Bürgerservice-Katalog (Medien und Meinungsfreiheit) — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.norderstedt.de/?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "norderstedt.de/Aktuelles-und-Service/Dienstleistungen-und-Service/B%C3%BCrgerservice-von-A-Z/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesleistung im Bürgerservice-Katalog (Güterkraftverkehr) — kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.norderstedt.de/?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "norderstedt.de/output/vt_stats.php?query=eyJzZWFyY2giOiJadlp5WkdWeWNISnZaM0poYlcwPSIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzMjIzLjImYW1wO01vZElEPTEwJmFtcDtGSUQ9MzIyNC41NTQxLjEiLCJNb2RJRCI6IjEwIiwiVlRMYSI6MX0%3D",
+        "disposition": "reviewed",
+        "reason": "Weiterleitung aus der Volltextsuche „Förderprogramm“ auf einen Bürgerservice-Eintrag; die Suche selbst wurde vollständig ausgewertet — nur Wärmeschutz-Programm und Bundes-/Landesleistungen.",
+        "evidenceUrl": "https://www.norderstedt.de/?qs=Balkonkraftwerk"
+      }
+    ]
+  },
+  {
+    "regionId": "01060043",
+    "name": "Itzstedt",
+    "checkedAt": "2026-10-15T10:40:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Itzstedt (Amt Itzstedt) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseite des Amtes stellt nur Programme von Bund, Land, Kreis und Aktivregion vor (Förder-Newsletter 2023–2024: Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, KfW 442), die Sitemap des Amtes (2.723 Adressen) enthält keine Förderrichtlinie der Gemeinde, nur Wärmeplanung und Klimaschutzkonzept. Stand 15.10.2026.",
+    "searches": [
+      "amt-itzstedt.de Sitemap (2.723 Adressen, 15.10.2026) nach klimaschutz/richtlinie/zuschuss/balkon/solar/photovolt/stecker/waermepumpe/speicher gefiltert — nur Wärmeplanung, Klimaschutzkonzept, Sozialstaffel- und Bauleitplan-Satzungen",
+      "Förder-Newsletter 1/23 bis 2/24 des Amtes gelesen",
+      "Websuche: Gemeinde Itzstedt Förderung Balkonkraftwerk Photovoltaik Zuschuss Richtlinie — nichts"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-itzstedt.de/wissenswert/foerderprogramme/",
+        "finding": "Förderseite des Amtes: „Die vorgestellten Förderprogramme von Bund, Land, Kreis, Aktivregion etc.“; Newsletter 1/23–2/24 nennen nur das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Balkonanlagen, Speicher, Heizsysteme) und KfW 442 — kein Programm der Gemeinde Itzstedt."
+      },
+      {
+        "url": "https://www.amt-itzstedt.de/sitemap.xml",
+        "finding": "Sitemap des Amtes (2.723 Adressen): keine Förderrichtlinie der Gemeinde Itzstedt für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; unter Klimaschutz nur Wärmeplanung, Klimaschutzkonzept und Vorträge."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-itzstedt.de/wissenswert/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite des Amtes mit Newslettern zu Bundes-, Landes- und Kreisprogrammen; kein Programm der Gemeinde Itzstedt.",
+        "evidenceUrl": "https://www.amt-itzstedt.de/wissenswert/foerderprogramme/"
+      },
+      {
+        "url": "amt-itzstedt.de/buergerservice-uebersicht/leistungen/SH:entry:288748-VLR/foerdermittelmanagement",
+        "disposition": "reviewed",
+        "reason": "Leistungsbeschreibung „Fördermittelmanagement“ aus dem Landeskatalog (Beratung zu Förderprogrammen) — kein eigenes Zuschussprogramm.",
+        "evidenceUrl": "https://www.amt-itzstedt.de/wissenswert/foerderprogramme/"
       }
     ]
   }
