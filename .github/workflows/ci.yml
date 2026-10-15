@@ -280,7 +280,7 @@ jobs:
 
       - name: E2E smoke tests (Playwright)
         timeout-minutes: 22
-        run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3 --repeat-each=4 --retries=0 --workers=4 --trace=retain-on-failure e2e/race-dashboard-layout.spec.ts e2e/landkreis-vorschau.spec.ts e2e/ranking-combination-behavior.spec.ts e2e/ranking-fixspalten.spec.ts e2e/landscape-navigation.spec.ts e2e/diag-alt/ --grep "race content stays|district sections reuse|mobile category navigation|Rangbewegung|Platzierungs-Box|keine Zahl läuft aus|landscape navigation" 2>&1 | tee e2e-diag.log; test ${PIPESTATUS[0]} -eq 0
+        run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3 --repeat-each=2 --retries=0 --trace=retain-on-failure 2>&1 | tee e2e-diag.log; test ${PIPESTATUS[0]} -eq 0
         env:
           E2E_BUILD: "1"
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —
