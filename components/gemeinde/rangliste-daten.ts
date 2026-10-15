@@ -1,4 +1,7 @@
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
+import { AWARD_CATEGORY_BY_KEY } from "../../lib/awards";
+import { GROESSENKLASSE_BY_SLUG } from "../../lib/gemeindegroesse";
+import { MIN_WERT_FUER_AUFHAENGER, selectHook, type Placement } from "../../lib/award-hook";
 import { klasseVon } from "../../lib/gemeindegroesse";
 import { STUFEN } from "../../lib/atlas-format";
 import { anzeigeOrtsname, istStadtstaat, ortPraeposition } from "../../lib/atlas-orte";
@@ -38,23 +41,43 @@ export function genitiv(name: string): string {
  * „Batteriespeicher". Zwei Platzierungen desselben Orts auf einer Seite, und
  * keine sagt, welche gilt.
  *
- * Die Regel selbst ist die des abgenommenen Entwurfs: der Platz nach der Zahl
- * der Solaranlagen unter den gleich großen Orten des Kreises, aber NUR aufs
- * Podest (Quitzdorf stand hier mit „Platz 25", während es im Kreis beim Zubau
- * je Einwohner Zweiter ist). Sonst die beste ausgezeichnete Platzierung, und
- * wo es keine gibt, keine.
+ * Since 15.10.2026 the head shows the placement the outreach letter leads with
+ * (see the comment in the function); the count among same-size towns of the
+ * district, podium only, is the fallback for towns without any award.
  */
 export type KopfPlatzierung = { art: "anzahl"; platz: number } | { art: "auszeichnung"; index: number };
 
 export function kopfPlatzierung(p: GemeindePaket): KopfPlatzierung | null {
+  // THE LETTER'S PLACEMENT FIRST (operator, 15.10.2026): Schönewalde's letter
+  // said "Platz 1 von 140 in Brandenburg", the head of its page "Platz 3 ·
+  // Anzahl der Solaranlagen" (count in the district). The head now runs the
+  // letter's own selection (selectHook) over the page's rankings: only
+  // per-capita citizen categories within a size class, largest level first.
+  // The minimum values apply here too; the spike and stock-count brakes need
+  // the group median and counts the package lacks, so rare towns may differ.
+  const placements: Placement[] = [];
+  const herkunft = new Map<string, number>();
+  p.rankings.forEach((r, i) => {
+    const [categoryKey, scope, klasseSlug] = r.key.split(":");
+    // Same pool as buildHookIndex: citizen categories, ratios only, within a size class.
+    const cat = AWARD_CATEGORY_BY_KEY[categoryKey];
+    if (!cat || cat.traeger !== "buerger" || cat.messart === "absolut" || !GROESSENKLASSE_BY_SLUG[klasseSlug]) return;
+    const level = scope === "de" ? "bund" : scope.length === 2 ? "land" : "kreis";
+    const mindest = MIN_WERT_FUER_AUFHAENGER[categoryKey];
+    const duenn = mindest != null && r.value < mindest;
+    placements.push({ categoryKey, level, scopeId: scope === "de" ? "de" : scope, klasseSlug, klasseLabel: "", rank: r.rank, total: r.size, value: r.value, spike: false, duenn, schlusslicht: false } as Placement);
+    herkunft.set(`${categoryKey}|${level}|${klasseSlug}`, i);
+  });
+  const hook = selectHook(placements);
+  const index = hook.kind === "neutral" ? -1 : herkunft.get(`${hook.categoryKey}|${hook.level}|${placements.find((x) => x.categoryKey === hook.categoryKey && x.level === hook.level && x.rank === hook.rank)?.klasseSlug}`) ?? -1;
+  if (index >= 0) return { art: "auszeichnung", index };
   const peers = p.district.peers as { region_id: string; sums: { alle: { count: number } } }[];
   const own = peers.find((r) => r.region_id === p.ags);
   if (peers.length >= 3 && own) {
     const platz = 1 + peers.filter((r) => r.sums.alle.count > own.sums.alle.count).length;
     if (platz <= 3) return { art: "anzahl", platz };
   }
-  const index = p.rankings.findIndex((x) => x.distinction);
-  return index >= 0 ? { art: "auszeichnung", index } : null;
+  return null;
 }
 
 export function ranglistenDaten(
