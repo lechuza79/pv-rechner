@@ -99262,5 +99262,268 @@
         "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte"
       }
     ]
+  },
+  {
+    "regionId": "01061055",
+    "name": "Krempe",
+    "checkedAt": "2026-10-15T22:05:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Krempe bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Ihre einzigen Förderseiten sind ein Hinweis auf das KfW-Kreditprogramm „Jung kauft Alt“ des Bundes und die Städtebauförderung für das Sanierungsgebiet Altstadt; die Seite des Amts Krempermarsch hat keine Klima- oder Förderrubrik. Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "krempe.de: Startseite und Schnellzugriff durchgesehen, KfW-Seite und Städtebauförderung im Volltext gelesen; Suchseite der Stadt ohne Klima-/Solartreffer",
+      "amt-krempermarsch.de: Startseite nach Klima-/Förderrubrik durchsucht",
+      "Websuche „Krempe OR Lägerdorf OR Krempdorf OR Sommerland OR Bokelrehm OR Warringholz Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 15.10.2026 — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.krempe.de/seite/728657/kfw-f%C3%B6rderprogramm-jung-kauft-alt.html",
+        "finding": "Am 15.10.2026 gelesen: Die Stadt Krempe „informiert über das neue KfW-Förderprogramm „Jung kauft Alt““ — zinsgünstige Bundeskredite für Familien beim Kauf sanierungsbedürftiger Bestandsimmobilien; kein städtischer Zuschuss."
+      },
+      {
+        "url": "https://www.krempe.de/seite/529433/st%C3%A4dtebauf%C3%B6rderung.html",
+        "finding": "Am 15.10.2026 gelesen: Städtebauförderprogramm „Kleinere Städte und Gemeinden“, Sanierungsgebiet Altstadt mit Modernisierungsvereinbarungen und erhöhter steuerlicher Absetzbarkeit; kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.krempe.de/",
+        "finding": "Am 15.10.2026 gelesen: Startseite und Schnellzugriff („Städtebau-Förderung“, „KfW-Förderung „Jung kauft Alt““) — keine Klima-, Energie- oder Solarförderseite."
+      },
+      {
+        "url": "https://www.amt-krempermarsch.de/",
+        "finding": "Am 15.10.2026 gelesen: Startseite ohne Klima-, Energie- oder Förderrubrik; einziger Förderlink ist der regionale Förderverein (LEADER)."
+      },
+      {
+        "url": "https://www.steinburg.de/politik/foerderstiftung.html",
+        "finding": "Am 15.10.2026 erneut gelesen: „Für die Jahre 2026 ff. stehen der Förderstiftung des Kreises Steinburg keine finanziellen Mittel zur Verfügung.“ Der Kreis ist in einem eigenen Eintrag ohne passende Förderung dokumentiert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "krempe.de/seite/728657/kfw-f%C3%B6rderprogramm-jung-kauft-alt.html",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Hinweis auf ein Bundes-Kreditprogramm zum Immobilienkauf, kein städtischer Zuschuss.",
+        "evidenceUrl": "https://www.krempe.de/seite/728657/kfw-f%C3%B6rderprogramm-jung-kauft-alt.html"
+      },
+      {
+        "url": "krempe.de/seite/728657/kfw-f%C3%B6rderprogramm-jung-kauft-alt.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben, am 15.10.2026 gelesenen Seite zum KfW-Programm „Jung kauft Alt“.",
+        "evidenceUrl": "https://www.krempe.de/seite/728657/kfw-f%C3%B6rderprogramm-jung-kauft-alt.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01061054",
+    "name": "Krempdorf",
+    "checkedAt": "2026-10-15T22:05:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Krempdorf (Amt Horst-Herzhorn) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Ihre Projektseite sagt „Derzeit werden keine Projekte der Gemeinde Krempdorf gefördert“, die Klimaschutzseiten des Amts betreffen nur das Amt selbst, und die beiden erfassten Fundstellen sind Projektlisten der Nachbargemeinden Herzhorn und Horst (Photovoltaik auf eigenen Gebäuden). Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "amt-horst-herzhorn.de: Klimaschutz (Energiemanagement, Maßnahmen zur Klimaneutralität), Förderungen und die Projektseiten aller Gemeinden gelesen",
+      "Websuche „Krempe OR Lägerdorf OR Krempdorf OR Sommerland OR Bokelrehm OR Warringholz Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 15.10.2026 — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/krempdorf/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: „Derzeit werden keine Projekte der Gemeinde Krempdorf gefördert.“"
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/leben-arbeiten/klimaschutz/energiemanagement",
+        "finding": "Am 15.10.2026 gelesen: Energiemanagement des Amts für eigene Liegenschaften und Energiespartipps; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/leben-arbeiten/klimaschutz/massnahmen-zur-klimaneutralitaet",
+        "finding": "Am 15.10.2026 gelesen: integriertes Klimaschutzkonzept des Amts, gefördert über die Kommunalrichtlinie der Nationalen Klimaschutzinitiative (Laufzeit bis 31.05.2025); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte des Amts selbst (Nationale Klimaschutzinitiative); keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Herzhorn für sich selbst (Photovoltaik auf Kindergarten und Dörpshuus über ELER/GAP)."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Horst für sich selbst (Photovoltaik Bauhof über ELER)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Herzhorn für sich selbst, betrifft keine Haushaltsförderung in Krempdorf.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Horst für sich selbst, betrifft keine Haushaltsförderung in Krempdorf.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/horst/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "01061101",
+    "name": "Sommerland",
+    "checkedAt": "2026-10-15T22:05:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Sommerland (Amt Horst-Herzhorn) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Ihre Projektseite listet nur den geförderten Neubau des eigenen Gemeindezentrums, die Klimaschutzseiten des Amts betreffen nur das Amt selbst, und die beiden erfassten Fundstellen sind Projektseiten der Nachbargemeinden Herzhorn und Engelbrechtsche Wildnis. Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "amt-horst-herzhorn.de: Klimaschutz (Energiemanagement, Maßnahmen zur Klimaneutralität), Förderungen und die Projektseiten aller Gemeinden gelesen",
+      "Websuche „Krempe OR Lägerdorf OR Krempdorf OR Sommerland OR Bokelrehm OR Warringholz Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 15.10.2026 — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/sommerland/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: geförderte Projekte der Gemeinde Sommerland selbst (Neubau Gemeindezentrum/Feuerwehr-Gemeindehaus, Bund und Land SH über GAK); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/leben-arbeiten/klimaschutz/energiemanagement",
+        "finding": "Am 15.10.2026 gelesen: Energiemanagement des Amts für eigene Liegenschaften und Energiespartipps; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/leben-arbeiten/klimaschutz/massnahmen-zur-klimaneutralitaet",
+        "finding": "Am 15.10.2026 gelesen: integriertes Klimaschutzkonzept des Amts, gefördert über die Kommunalrichtlinie der Nationalen Klimaschutzinitiative (Laufzeit bis 31.05.2025); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/das-amt/foerderungen/projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte des Amts selbst (Nationale Klimaschutzinitiative); keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 gelesen: Projekte der Gemeinde Herzhorn für sich selbst (Photovoltaik auf Kindergarten und Dörpshuus über ELER/GAP)."
+      },
+      {
+        "url": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "finding": "Am 15.10.2026 abgerufen: Seite der Nachbargemeinde Engelbrechtsche Wildnis ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Projekte der Nachbargemeinde Herzhorn für sich selbst, betrifft keine Haushaltsförderung in Sommerland.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/herzhorn/ortsentwicklung/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 abgerufen: Seite der Nachbargemeinde ohne Förderinhalt; die Haushaltsfrage klären die Amts- und Sommerland-Seiten.",
+        "evidenceUrl": "https://www.amt-horst-herzhorn.de/gemeinden/engelbrechtsche-wildnis/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "01061061",
+    "name": "Lägerdorf",
+    "checkedAt": "2026-10-15T22:05:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Lägerdorf (Amt Breitenburg) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die einzige erfasste Fundstelle ist die Begründung zum Bebauungsplan „Solarpark Lägerdorf“ (Freiflächenanlage), die Gemeindeseite hat keine Förderrubrik, und das Amt Breitenburg nennt unter Klimaschutz nur sein eigenes Klimaschutzkonzept. Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "laegerdorf.de: Startseite nach Klima-/Energie-/Förderrubrik durchsucht",
+      "amt-breitenburg.de: Klimaschutz und Ver- und Entsorgung › Energie im Volltext gelesen",
+      "Bebauungsplan-Begründung im Volltext auf Förder-/Zuschussbegriffe durchsucht",
+      "Websuche „Krempe OR Lägerdorf OR Krempdorf OR Sommerland OR Bokelrehm OR Warringholz Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 15.10.2026 — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.laegerdorf.de/fileadmin/Dateien/Gemeinde_Laegerdorf/Unsere_Gemeinde/Bauen___Wohnen/Bauleitplanung/BPlan_11_-_Begruendung_unterzeichnet.pdf",
+        "finding": "Am 15.10.2026 gelesen (Volltext, 21.547 Wörter): Begründung zum vorhabenbezogenen Bebauungsplan Nr. 11 „Solarpark Lägerdorf“ (15.03.2023); „Förderung“ nur als Artenschutz-/EEG-Zielbegriff, kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.laegerdorf.de/",
+        "finding": "Am 15.10.2026 gelesen: Startseite der Gemeinde ohne Klima-, Energie- oder Förderrubrik (Umweltthemen nur Kreideabbau/UVP)."
+      },
+      {
+        "url": "https://www.amt-breitenburg.de/buergerservice-politik/wissenswertes/klimaschutz",
+        "finding": "Am 15.10.2026 gelesen: Klimaschutzmanagement des Amts Breitenburg erstellt ein integriertes Klimaschutzkonzept (Nationale Klimaschutzinitiative, Laufzeit 01.01.2026–31.12.2027); keine Förderung privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-breitenburg.de/leben-im-amt/ver-und-entsorgung/energie",
+        "finding": "Am 15.10.2026 gelesen: Zuständige Netzbetreiber und Stadtwerke Itzehoe je Gemeinde (Lägerdorf: SH Netz Strom, Stadtwerke Itzehoe Gas); kein Förderangebot."
+      }
+    ],
+    "sources": [
+      {
+        "url": "laegerdorf.de/fileadmin/Dateien/Gemeinde_Laegerdorf/Unsere_Gemeinde/Bauen___Wohnen/Bauleitplanung/BPlan_11_-_Begruendung_unterzeichnet.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Bebauungsplan für einen Solarpark, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.laegerdorf.de/fileadmin/Dateien/Gemeinde_Laegerdorf/Unsere_Gemeinde/Bauen___Wohnen/Bauleitplanung/BPlan_11_-_Begruendung_unterzeichnet.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01061013",
+    "name": "Bokelrehm",
+    "checkedAt": "2026-10-15T22:05:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Bokelrehm (Amt Schenefeld) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die einzige erfasste Fundstelle ist der Bebauungsplan „Solarpark Kohlenbek“ (Freiflächenanlage), und die Amtsseite hat keine Klima-, Energie- oder Förderrubrik. Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "amt-schenefeld.de: gesamte Navigation nach Klima-/Energie-/Förderrubrik durchsucht, Strom und Gas gelesen",
+      "gemeinde-bokelrehm.de: Startseite ohne Klima-/Förderlink",
+      "Bebauungsplan im Volltext auf Förder-/Zuschussbegriffe durchsucht",
+      "Websuche „Krempe OR Lägerdorf OR Krempdorf OR Sommerland OR Bokelrehm OR Warringholz Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 15.10.2026 — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-bokelrehm.de/fileadmin/Amt/Dateien/Bauleitplanung/Bokelrehm/BBPL_Nr_4/B-Plan_4_Solarpark_Kohlenbek_komplett__m.U._.pdf",
+        "finding": "Am 15.10.2026 gelesen (Volltext, 57.169 Wörter): Satzung und Begründung zum Bebauungsplan Nr. 4 „Solarpark Kohlenbek“; Planverfahren für eine Freiflächenanlage, kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-schenefeld.de/leben-erleben/ver-und-entsorgung/strom-und-gas",
+        "finding": "Am 15.10.2026 gelesen: „Für die Strom- und Gasversorgung im Amt Schenefeld ist das Schleswig-Holstein Netz zuständig.“ Die Navigation des Amts hat keine Klima-, Energie- oder Förderrubrik."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-bokelrehm.de/fileadmin/Amt/Dateien/Bauleitplanung/Bokelrehm/BBPL_Nr_4/B-Plan_4_Solarpark_Kohlenbek_komplett__m.U._.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Bebauungsplan für einen Solarpark, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.gemeinde-bokelrehm.de/fileadmin/Amt/Dateien/Bauleitplanung/Bokelrehm/BBPL_Nr_4/B-Plan_4_Solarpark_Kohlenbek_komplett__m.U._.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01061108",
+    "name": "Warringholz",
+    "checkedAt": "2026-10-15T22:05:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Warringholz (Amt Schenefeld) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die einzige erfasste Fundstelle ist ihr Bebauungsplan Nr. 3 (Sondergebiet Photovoltaik), und die Amtsseite hat keine Klima-, Energie- oder Förderrubrik. Der Kreis Steinburg ist gesondert geprüft. Stand 15.10.2026.",
+    "searches": [
+      "amt-schenefeld.de: gesamte Navigation nach Klima-/Energie-/Förderrubrik durchsucht, Strom und Gas gelesen",
+      "gemeinde-warringholz.com: Startseite ohne Klima-/Förderlink",
+      "Bebauungsplan im Volltext auf Förder-/Zuschussbegriffe durchsucht",
+      "Websuche „Krempe OR Lägerdorf OR Krempdorf OR Sommerland OR Bokelrehm OR Warringholz Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde“ am 15.10.2026 — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-warringholz.com/fileadmin/Amt/Dateien/Bauleitplanung/Warringholz/B-Plan_Nr._3_komplett__m._U._.pdf",
+        "finding": "Am 15.10.2026 gelesen (Volltext, 25.024 Wörter): Bebauungsplan Nr. 3 der Gemeinde Warringholz, Sondergebiet Photovoltaikanlagen; „Förderung“ nur im Sinne von EEG/Stromeinspeisegesetz, kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-schenefeld.de/leben-erleben/ver-und-entsorgung/strom-und-gas",
+        "finding": "Am 15.10.2026 gelesen: „Für die Strom- und Gasversorgung im Amt Schenefeld ist das Schleswig-Holstein Netz zuständig.“ Die Navigation des Amts hat keine Klima-, Energie- oder Förderrubrik."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-warringholz.com/fileadmin/Amt/Dateien/Bauleitplanung/Warringholz/B-Plan_Nr._3_komplett__m._U._.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Bebauungsplan für ein Photovoltaik-Sondergebiet, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.gemeinde-warringholz.com/fileadmin/Amt/Dateien/Bauleitplanung/Warringholz/B-Plan_Nr._3_komplett__m._U._.pdf"
+      }
+    ]
   }
 ]
