@@ -42,11 +42,12 @@ for (const width of [1280, 375, 320]) {
     const source=frame.locator('[data-sc-source-edge]');
     await expect(source).toHaveCSS('font-size','10px');
     await expect.poll(()=>source.evaluate(el=>el.scrollWidth<=el.clientWidth+1 && el.scrollHeight<=el.clientHeight+1)).toBe(true);
-    const rail=await frame.locator('[data-plot-source-rail]').boundingBox();
-    const chart=await frame.locator('[data-widget-plot]').boundingBox();
-    const plot=await frame.locator('.sc-category-plot').boundingBox();
-    expect(Math.abs(rail!.y-chart!.y)).toBeLessThan(1);
-    expect(Math.abs(rail!.y+rail!.height-plot!.y-plot!.height)).toBeLessThan(1);
+    await expect.poll(()=>frame.locator('.sc-widget-body').evaluate(body=>{
+      const rail=body.querySelector('[data-plot-source-rail]')!.getBoundingClientRect();
+      const chart=body.querySelector('[data-widget-plot]')!.getBoundingClientRect();
+      const plot=body.querySelector('.sc-category-plot')!.getBoundingClientRect();
+      return Math.max(Math.abs(rail.top-chart.top),Math.abs(rail.bottom-plot.bottom));
+    })).toBeLessThan(1);
     const sourceBounds=await source.boundingBox();
     const plotBounds=await frame.locator('.sc-category-plot').boundingBox();
     expect(sourceBounds!.x).toBeGreaterThanOrEqual(plotBounds!.x+plotBounds!.width);
