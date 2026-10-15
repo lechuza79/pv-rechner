@@ -16,7 +16,9 @@ test("district sections reuse navigation and subscription without municipality g
   await expect(page.locator("dialog[data-abo]")).not.toBeVisible();
   for(const width of [375,320]) {
     await page.setViewportSize({width,height:850});
-    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    // Charts re-measure through ResizeObserver one frame after the resize; a
+    // single read races that re-layout. A real overflow persists and still fails.
+    await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth),{message:`page width at ${width}px`}).toBeLessThanOrEqual(width);
   }
 });
 
@@ -122,7 +124,7 @@ test("district race uses one widget with footer actions and monitor dates live i
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     if(width===451||width===1226)await page.screenshot({path:`scratch/landkreis/race-widget-${width}.png`});
   }
-  await expect(ranking.getByRole('button',{name:'Animation neu starten'})).toBeVisible();
+  await expect(ranking.getByRole('button',{name:/^(Abspielen|Pausieren|Erneut abspielen)$/})).toBeVisible();
   await ranking.getByRole('button',{name:'Herunterladen',exact:true}).click();
   await expect(ranking.getByRole('menuitem')).toHaveText(['Aktueller Stand als Bild','Endstand als Bild',/Video herunterladen.*Downloadlink per E-Mail/,/In Ihrem Design.*Anfragen/]);
   const originalUrl = page.url();
@@ -242,10 +244,16 @@ test('district chart proportions and source footer remain responsive',async({pag
   // One shared arc per composition (flat start, rounded end; components/charts/CompositionArc).
   await expect(composition.locator('[data-composition-arc]')).toHaveCount(3);
   const art=page.locator('#atlas-foerderung solar-illustration');
+  // Expired programmes move into the collapsed archive; open it before testing lazy artwork.
+  const archive=page.locator('#atlas-foerderung details').filter({has:page.locator('solar-illustration')});
+  if(await archive.count() && await archive.getAttribute('open') === null) {
+    await archive.locator('summary').click();
+  }
   await art.scrollIntoViewIfNeeded();
   await expect.poll(()=>art.evaluate(e=>!!e.shadowRoot?.querySelector('svg'))).toBe(true);
   const footer=page.locator('[data-page-footer]');
-  expect(await footer.evaluate(e=>Math.abs(e.getBoundingClientRect().top-document.querySelector('.solar-page')!.getBoundingClientRect().bottom))).toBeLessThan(1);
+  // Preserve the globally approved footer breathing room.
+  expect(await footer.evaluate(e=>Math.round(e.getBoundingClientRect().top-document.querySelector('.solar-page')!.getBoundingClientRect().bottom))).toBe(64);
   expect(await footer.locator('.sc-data-sources').evaluate(e=>e.previousElementSibling?.classList.contains('sc-trust'))).toBe(true);
   await expect(page.locator('[data-sc-fuss]:visible')).toHaveCount(1);
   await page.setViewportSize({width:451,height:793});

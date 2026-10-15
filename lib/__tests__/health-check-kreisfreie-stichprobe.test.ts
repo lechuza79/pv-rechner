@@ -15,7 +15,7 @@ const KREISE = new Map([
   // Echter Landkreis mit vielen Gemeinden.
   ["09679", { slug: "landkreis-wuerzburg", parent_region_id: "09" }],
 ]);
-const LAENDER = new Map([["09", { slug: "bayern", parent_region_id: null }]]);
+const LAENDER = new Map([["09", { slug: "bayern", parent_region_id: "de" }]]);
 
 describe("Kreisfreie Städte in der Atlas-Stichprobe", () => {
   it("nimmt die kreisfreie Stadt aus der Kreis-Probe, behält aber ihre Gemeindeseite", () => {
@@ -123,5 +123,45 @@ describe("Der Gesundheitscheck benutzt die Ableitung wirklich", () => {
     // Schleife — genau die Stelle, die die kreisfreien Städte mitnahm.
     const handgebaut = /kreisPfade\.add\(/;
     expect(quelle).not.toMatch(handgebaut);
+  });
+});
+
+/** Seit dem 07.10.2026 liegen die Schweizer Orte in denselben Tabellen. Ihre
+ *  Seiten sind bewusst nicht veröffentlicht (die Seite läuft von der Wurzel
+ *  "de" abwärts und antwortet für einen Kanton mit 404). Die Ziehung zog am
+ *  selben Morgen Tenniken (Basel-Landschaft) und meldete zwei 404-Vorfälle über
+ *  Seiten, die es nicht geben soll. */
+describe("Nur Orte unter der Atlas-Wurzel werden gezogen", () => {
+  const kreise = new Map([
+    ["chb1305", { slug: "bezirk-sissach", parent_region_id: "chk13" }],
+    ["09679", { slug: "landkreis-wuerzburg", parent_region_id: "09" }],
+  ]);
+  const laender = new Map([
+    ["chk13", { slug: "basel-landschaft", parent_region_id: "ch" }],
+    ["09", { slug: "bayern", parent_region_id: "de" }],
+  ]);
+
+  it("lässt einen Schweizer Ort weg, behält den deutschen", () => {
+    const { gemeinde, kreis } = atlasStichprobenPfade({
+      gemeinden: [
+        { slug: "tenniken", parent_region_id: "chb1305" },
+        { slug: "eisingen", parent_region_id: "09679" },
+      ],
+      kreisById: kreise,
+      landById: laender,
+      einzelkind: new Set(),
+    });
+    expect(gemeinde).toEqual(["/solar-atlas/bayern/landkreis-wuerzburg/eisingen"]);
+    expect(kreis).toEqual(["/solar-atlas/bayern/landkreis-wuerzburg"]);
+  });
+
+  it("zieht keinen Ort, dessen Land keine bekannte Elternregion hat", () => {
+    const { gemeinde } = atlasStichprobenPfade({
+      gemeinden: [{ slug: "eisingen", parent_region_id: "09679" }],
+      kreisById: kreise,
+      landById: new Map([["09", { slug: "bayern", parent_region_id: null }]]),
+      einzelkind: new Set(),
+    });
+    expect(gemeinde).toEqual([]);
   });
 });

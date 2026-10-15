@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { publishedCities, fundingForFrom } from "../atlas-cities";
+import { publishedCities, fundingListFrom } from "../atlas-cities";
 import { allFundingPrograms } from "../funding-programs";
 import { foerderStadtMeta } from "../foerder-stadt-meta";
 
@@ -151,7 +151,7 @@ describe("Wortklassen: Atlas und Förderseiten fassen sich nicht ins Revier", ()
     // check runs the real builder over every published city instead of reading
     // string literals from the page source.
     const programme = allFundingPrograms();
-    const titel = publishedCities().map((c) => foerderStadtMeta(c.name, fundingForFrom(programme, c), 2026).title);
+    const titel = publishedCities().map((c) => foerderStadtMeta(c.name, fundingListFrom(programme, c), 2026).title);
     expect(titel.length, "Förder-Stadtseite: keine Titel erzeugt").toBeGreaterThan(0);
     expect(readFileSync(join(ROOT, FOERDER_STADTSEITE), "utf8")).toContain("foerderStadtMeta(");
     for (const stelle of titel) {

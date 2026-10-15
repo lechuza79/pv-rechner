@@ -1,5 +1,6 @@
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import type { Metadata } from "next";
-import { verlaufJahre } from "../../../(site)/einspeiseverguetung-tabelle/VerlaufsChart";
+import { verlaufJahre } from "../../../../lib/feedin-timeline";
 import VerlaufEmbed from "./client";
 
 // Einbettbares Widget: Einspeisevergütung für kleine Dachanlagen seit 2000
@@ -19,5 +20,5 @@ export default function VerlaufEmbedPage() {
   // Serverseitig berechnet und als Prop gereicht (statt im Client neu):
   // so sind SSR-HTML und Hydration garantiert derselbe Datenstand.
   const jahre = verlaufJahre();
-  return <VerlaufEmbed jahre={jahre} />;
+  return <WidgetPresentation widgetId="einspeiseverguetung-verlauf"><VerlaufEmbed jahre={jahre} /></WidgetPresentation>;
 }

@@ -1,8 +1,10 @@
 "use client";
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import ZubauChart from "../atlas/ZubauChart";
 import {ExportableWidgetFrame} from "../dashboard/ExportableWidgetFrame";
+import {useWidgetHost} from '../dashboard/WidgetHost';
+import {useWidgetPresentation} from '../dashboard/WidgetPresentationContext';
 import {ExportOnly} from "../WidgetExport";
 import {WIDGETS} from "../../lib/widget-registry";
 import {WidgetSetting} from "../dashboard/WidgetSetting";
@@ -11,11 +13,25 @@ import "../gemeinde/municipal-data.css";
 import "../dashboard/dashboard.css";
 
 export function AnnualGrowth({ years, stand, name, regionId }: { name:string; regionId:string; years: { year: number; count: number }[]; stand: string }) {
+  const {partner,theme} = useWidgetPresentation();
+  const host = useWidgetHost();
+  // The existing gallery route currently loads municipalities, not parent regions.
+  const municipalEmbed = /^\d{8}$/.test(regionId);
+  const [external,setExternal] = useState(false);
   const [range, setRange] = useState("all");
+  useEffect(() => {
+    const query = host ? new URLSearchParams(host.query) : new URLSearchParams(window.location.search);
+    setExternal(!host && window.location.pathname.startsWith('/embed/') && query.get('onsite') !== '1');
+    const selected = query.get('range');
+    if (selected && ['all','10','5'].includes(selected)) setRange(selected);
+  }, [host?.query.range]);
   const end = Number(stand.slice(0, 4));
   return (
-    <ExportableWidgetFrame widget={WIDGETS.regionalAnnualGrowth} place={name} stand={dashboardDate(stand)} filename={`solar-check-growth-${regionId}`} data-story-scheme="dark" stateLabel={`${range === "all" ? 2014 : end - Number(range) + 1}–${end}`}
-      title="Zubau pro Jahr"
+    <ExportableWidgetFrame widget={municipalEmbed ? WIDGETS.regionalAnnualGrowth : {...WIDGETS.regionalAnnualGrowth,embeddable:false}} place={name} exportUnit="Anlagen" stand={dashboardDate(stand)} filename={`solar-check-growth-${regionId}`} data-story-scheme="dark" stateLabel={`${range === "all" ? 2014 : end - Number(range) + 1}–${end}`}
+      sourcePlacement="plot" sourceVisible={external} sourceBranding={external} actions={partner || !municipalEmbed ? "primary" : "menu"} directActions={!!partner || !municipalEmbed}
+      einbetten={partner || !municipalEmbed ? undefined : {params:{ags:regionId,range,theme:theme??"dark"},height:640,preview:true}}
+      shareParams={municipalEmbed ? {ags:regionId,range} : {range}}
+      title={external ? `Zubau pro Jahr · ${name}` : "Zubau pro Jahr"}
       kind="time-series"
       help={<p>Solaranlagen nach Inbetriebnahmejahr. Das laufende Jahr ist noch nicht vollständig. Registerstand: {dashboardDate(stand)}.</p>}
       settings={
@@ -35,9 +51,9 @@ export function AnnualGrowth({ years, stand, name, regionId }: { name:string; re
       <div className="monitor-native-chart">
         <ZubauChart years={years} from={range === "all" ? 2014 : end - Number(range) + 1} asOfYear={end} />
       </div>
-      <ExportOnly style={{padding:"0 var(--widget-padding)",fontSize:"var(--font-size-small)"}}>
+      {!partner && <ExportOnly style={{padding:"0 var(--widget-padding)",fontSize:"var(--font-size-small)"}}>
         <p>Anlagen nach Inbetriebnahmejahr: {years.filter(row=>row.year>=(range==="all"?2014:end-Number(range)+1)&&row.year<=end).map(row=>`${row.year}: ${row.count.toLocaleString("de-DE")}`).join(" · ")}</p>
-      </ExportOnly>
+      </ExportOnly>}
     </ExportableWidgetFrame>
   );
 }

@@ -1,5 +1,6 @@
 import "server-only";
 import { callVideoFn, videoBackend } from "./video-export-db";
+import { dispatchWorkflow } from "./github-dispatch";
 
 /** Start the existing queue worker, not a separate render per requester. */
 export async function wakeVideoWorker(): Promise<boolean> {
@@ -9,12 +10,7 @@ export async function wakeVideoWorker(): Promise<boolean> {
   try {
     const lease = await callVideoFn<{ dispatch: boolean }>("video_worker_wakeup", {});
     if (!lease.dispatch) return true;
-    const response = await fetch("https://api.github.com/repos/lechuza79/pv-rechner/actions/workflows/video-export.yml/dispatches", {
-      method: "POST", redirect: "error", signal: AbortSignal.timeout(8000),
-      headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json", "X-GitHub-Api-Version": "2022-11-28" },
-      body: JSON.stringify({ ref: "main" }),
-    });
-    if (response.status !== 204 && response.status !== 200) throw new Error(`HTTP ${response.status}`);
+    await dispatchWorkflow("video-export.yml", token);
     return true;
   } catch {
     // Never discard an accepted job. The scheduled worker can recover it.

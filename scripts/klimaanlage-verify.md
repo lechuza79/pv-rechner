@@ -186,7 +186,7 @@ Dann per Auge in `lib/aircon-config.ts`:
       Fraunhofer ISE macht nur Wärmepumpen.) Falls doch → großer Fund, Config neu
       herleiten.
 
-### 4.5 SCOP: Systematik umgestellt, Faktor noch übertragen (Frist 10/2026)
+### 4.5 SCOP: Systematik umgestellt, Beleglage abgeschlossen (15.10.2026)
 
 **Erledigt am 28.07.2026 (Entscheidung des Betreibers):** `scop` läuft jetzt über
 dieselbe Ableitung wie `seer` — `effectiveScop(labelScop) = labelScop ×
@@ -234,18 +234,23 @@ Vorschlag. Entschieden hat sie deshalb ein Mensch, nicht der Wächter.
    unsere Basis. Wer versehentlich die Warmer-Spalte zieht, überschätzt um ~20 %.
    Erkennbar an den 1400 Volllaststunden: `SCOP = Pdesign × 1400 h / Verbrauch`.
 
-**Schritte zum Auflösen (bis 10/2026):**
+**Schritte zum Auflösen (bis 01/2027):**
 - [x] `labelScop` + `effectiveScop` analog `effectiveSeer` eingeführt, beide
       Split-Typen gemeinsam umgestellt (28.07.2026).
 - [x] Wärmepreis-Invariante gegengeprüft: 3,4/3,6 ergibt 10,0 bzw. 9,4 ct/kWh
       gegen Gas 12,2 ct/kWh — hält, aber der Abstand ist geschrumpft.
 - [x] `/datenstand`-Zeilen mitgezogen (Typenschild + Herleitung + Vorbehalt).
-- [ ] Volltext der Studie beschaffen (ca. 30 € oder Bibliothek) → `docs/quellen/`.
+- [x] ~~Volltext der Studie beschaffen~~ — nicht gekauft (Entscheidung 15.10.2026), ersetzt durch die Spanne unten.
       Gate-Regel 6: erst beschaffen, dann streichen. Ein Abruf, der an der Paywall
       scheitert, ist kein Beleg für „gibt es nicht". Direktabruf über
       sciencedirect.com läuft in 403 (geprüft 28.07.2026); OpenAlex, Crossref und
       Semantic Scholar führen kein Abstract. Nächste Stufen: Bibliothekszugang,
       Autorenanfrage (Volkan Erginer / G. Aydoğdu), Fernleihe.
+      15.10.2026 erneut geprüft, alle freien Wege zu (Unpaywall/OpenAlex
+      „closed", ScienceDirect/ResearchGate/CORE 403, ORCID-Werkliste ohne
+      Preprint). Kauf bzw. Autorenanfrage dem Betreiber vorgelegt; Frist einmal
+      auf 01/2027 verlängert. Ohne Freigabe bis dahin: als „geprüft, Beleg nicht
+      beschaffbar" schließen, nicht erneut verlängern.
 - [ ] Trägt der Volltext einen **SCOP**-spezifischen Abschlag → `effectiveScop`
       bekommt einen eigenen Faktor statt `AC_REAL_FACTOR`.
 - [ ] Trägt er einen **SEER**-spezifischen Abschlag → `AC_REAL_FACTOR` selbst
@@ -255,9 +260,20 @@ Vorschlag. Entschieden hat sie deshalb ein Mensch, nicht der Wächter.
 - [ ] Trägt er keinen von beiden → bewusst so lassen und das hier als „geprüft,
       Beleg existiert nicht" abschließen, statt die Frist stumpf zu verlängern.
 
-Die Frist selbst hängt am Marker `OFFEN (bis 10/2026)` in `lib/aircon-config.ts`
-und wird von `lib/__tests__/offene-punkte-waechter.test.ts` erzwungen — läuft sie
-ab, schlägt der Pre-commit-Hook an.
+**Abgeschlossen am 15.10.2026 (Entscheidung des Betreibers): kein Kauf des
+Volltexts.** Statt eines abgelesenen Werts trägt der Faktor eine belegte Spanne
+aus zwei frei zugänglichen Messreihen, beide als Primärquelle in `docs/quellen/`:
+
+| Quelle | Was gemessen | Ergebnis | Einschränkung |
+|---|---|---|---|
+| RISE für die schwedische Energiebehörde, Nordsyn TemaNord 2020:544, S. 38–39 (nach Nakos et al., IEA Heat Pump Conference 2014) | 4 Luft-Luft-Wärmepumpen im Labor, eigene Regelung statt fester Verdichterfrequenzen | 3 von 4: SCOP bis ca. 10 % niedriger | nur Heizen, nur der Regelungs-Effekt |
+| DNV/University of Nebraska für NEEP, Rating Representativeness Phase 2 (2024), Tab. 7-2 | 5 Wärmepumpen in drei Testhäusern gemessen, gegen US-Rating (DOE M1) | mittlere Abweichung 22 % Kühlen / 36 % Heizen, meist überschätzt; 2 Splits 43 % / 64 % | US-Verfahren, kleine Stichprobe |
+| Erginer & Aydoğdu, Energy and Buildings 350/2026 (nur Abstract) | 4 Split-Inverter, EN 14825 gegen Nutzereinstellungen | „bis zu 50 %" für SEER und SCOP zusammen | Einzelwerte hinter Bezahlschranke |
+
+Die 15 % liegen über dem reinen Regelungs-Effekt und am unteren Rand der Feld-
+und Nutzerwerte — für Split-Geräte eher zu klein als zu groß. **Wieder öffnen
+nur bei einer neuen Messreihe nach EN 14825 mit getrennten Werten je Richtung**
+(dann Faktor neu herleiten, Sprunggrenze und Datenstand-Text mitziehen).
 
 ### 4.6 Plausibilität gegen die Sekundärquellen
 

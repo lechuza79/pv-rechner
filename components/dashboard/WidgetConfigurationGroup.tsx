@@ -4,6 +4,8 @@ import type {GalleryEntry} from '../../lib/widget-gallery';
 import type {WidgetTheme,WidgetSharing} from '../../lib/widget-appearance';
 import {ControlPanel,ControlField} from '../ControlPanel';
 import SelectField from '../SelectField';
+import WidgetGrid from './WidgetGrid';
+import {widgetPresentationContract} from '../../lib/widget-appearance';
 import WidgetPreviewCard from './WidgetPreviewCard';
 import foundation from '../social/atlas-foundations.module.css';
 import styles from './WidgetConfigurationGroup.module.css';
@@ -22,6 +24,6 @@ export default function WidgetConfigurationGroup({entries,title,id,description,s
         {sharing!=='off'&&<SelectField ariaLabel="Teilen-Darstellung für alle Widgets" value={sharing==='on'?'secondary':sharing} onChange={e=>setSharing(e.target.value as WidgetSharing)}><option value="secondary">Secondary · Optionsmenü</option><option value="primary">Primary</option></SelectField>}
       </ControlField>
     </ControlPanel></div>
-    <div className={styles.grid}>{entries.map(entry=><WidgetPreviewCard key={entry.id} entry={entry} defaults={{theme,background,sharing}}/>)}</div>
+    <WidgetGrid columns={entries.map(entry=>({id:entry.id,preferredWidth:widgetPresentationContract(entry.id)?.preferredWidth??320,children:<WidgetPreviewCard entry={entry} defaults={{theme,background,sharing}}/>}))}/>
   </section>;
 }

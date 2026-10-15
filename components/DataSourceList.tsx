@@ -14,7 +14,10 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   // NICHT "in Echtzeit" (Audit 18.08.2026): Energy-Charts liefert mit rund einer
   // Stunde Verzug, Solar mit etwa zwei — steht so in ErzeugungWidget.tsx. Zwei
   // Stunden sind keine Echtzeit, und die Seite weiß es an anderer Stelle.
+  smardTrade: "Kommerzieller Stromhandel und Day-Ahead-Börsenwert",
   energyCharts: "Strommix, Stromerzeugung und Grenzflüsse, stündlich aktualisiert",
+  co2map: "Modellierte stündliche Stromerzeugung in deutschen Regionen",
+  worldBankPopulation: "Einwohnerzahlen für den internationalen Stromvergleich",
   smard: "Ersatzquelle für Strommix und Stromerzeugung in Deutschland, wenn Energy-Charts ausfällt",
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",
   mastr: "Anlagenbestand in Deutschland (Energie-Atlas, Karten, Kennzahlen)",
@@ -37,14 +40,30 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   kfwFoerderreport: "Wie viele Haushalte die Heizungsförderung wirklich bekommen haben",
 };
 
-export default function DataSourceList() {
-  const eintraege = Object.entries(DATA_SOURCES) as [keyof typeof DATA_SOURCES, (typeof DATA_SOURCES)[keyof typeof DATA_SOURCES]][];
+type SourceKey = keyof typeof DATA_SOURCES;
+
+export default function DataSourceList({
+  only,
+  purposes,
+  tone = "page",
+}: {
+  /** Restrict to the sources a page actually uses, in this order. Default: all. */
+  only?: SourceKey[];
+  /** Page-specific purpose text — names and licences still come from the register. */
+  purposes?: Partial<Record<SourceKey, string>>;
+  /** "inherit" takes colour and size from the surrounding block (dark footer). */
+  tone?: "page" | "inherit";
+} = {}) {
+  const keys = only ?? (Object.keys(DATA_SOURCES) as SourceKey[]);
+  const itemStyle = tone === "inherit" ? S.itemInherit : S.item;
 
   return (
     <ul style={S.list}>
-      {eintraege.map(([schluessel, quelle]) => (
-        <li key={schluessel} id={`quelle-${schluessel}`} style={S.item}>
-          <DataSourceNote source={quelle} label={`${VERWENDUNG[schluessel]}:`} />
+      {keys.map((schluessel) => [schluessel, DATA_SOURCES[schluessel]] as const).map(([schluessel, quelle]) => (
+        // Anchor ids stay on the full register list only; a filtered copy on
+        // another page must not claim /lizenz's fragment targets.
+        <li key={schluessel} id={only ? undefined : `quelle-${schluessel}`} style={itemStyle}>
+          <DataSourceNote source={quelle} label={`${purposes?.[schluessel] ?? VERWENDUNG[schluessel]}:`} />
           {"hinweis" in quelle && quelle.hinweis ? <div style={{ marginTop: space.xs }}>{quelle.hinweis}</div> : null}
         </li>
       ))}
@@ -67,5 +86,10 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-muted"),
     paddingLeft: space.lg,
     borderLeft: `2px solid ${v("--color-border")}`,
+  },
+  itemInherit: {
+    fontSize: "inherit",
+    lineHeight: "inherit",
+    color: "inherit",
   },
 };

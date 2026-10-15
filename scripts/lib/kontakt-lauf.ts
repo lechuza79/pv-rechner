@@ -21,7 +21,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { contactCandidates, type ContactCandidate } from "../../lib/contact-evidence";
-import { contactLinks } from "../../lib/contact-discovery";
+import { contactLinks, type ContactDataset } from "../../lib/contact-discovery";
 import { contactRoleContext } from "../../lib/contact-role-context";
 import { vcardToHtml } from "../../lib/mail-deobfuscation";
 import {
@@ -49,6 +49,12 @@ export type Eintrag = {
   verbund: Verbund | null;
   /** Bereits vorhandene Seiten (aus früheren Erhebungen), ohne die selbst geholten. */
   gespeicherteSeiten: Seite[];
+  /**
+   * Further sites that ARE this organisation's website: the domain its start
+   * page redirects to, the domain its imprint lives on (ewe.dk → eurowindenergy.com,
+   * ulmer-schokoladen.de → ulmer-schokolade.de). Research may fetch there.
+   */
+  erlaubteSites?: string[];
   /** Weitere bekannte, aber ungelesene Adressen mit Priorität. */
   offeneLinks?: { url: string; priority: number }[];
   /** Fließt in den Eingabe-Fingerabdruck ein: ändert sich das, wird neu bewertet. */
@@ -67,12 +73,19 @@ export type Bestand = {
   extraction: string;
   rollenwerk: Rollenwerk;
   scope: ScopeRegeln;
-  /** Linkprofil für die Seitensuche ("kommunen" oder "betriebe"). */
-  linkProfil: string;
+  /** Linkprofil für die Seitensuche. Typed, so a profile that does not exist fails to compile. */
+  linkProfil: ContactDataset;
   /** Alle Einträge des Bestands. */
   eintraege(): Eintrag[];
   /** Ergebnis-Felder, die dieser Bestand zusätzlich führt (z. B. eigene Kanalnamen). */
-  ergebnisForm?(basis: Ergebnis, mailboxes: Mailbox[]): Record<string, unknown>;
+  ergebnisForm?(basis: Ergebnis, mailboxes: Mailbox[], evidence: Evidence[]): Record<string, unknown>;
+  /**
+   * Prepare a page's HTML before extraction (decoding a stock needs and the
+   * shared extraction does not do). Its `kennung` goes into the page cache key:
+   * the shared extraction files are hashed into the municipal rule version, and
+   * changing them would hold every municipal letter until re-judged.
+   */
+  htmlVorbereiten?: { kennung: string; f(html: string): string };
   /** Wie viele Kanäle ein Eintrag haben kann — erreicht er sie alle, wird nicht weiter gesucht. */
   fertigWenn?(ergebnis: Ergebnis): boolean;
   /**
@@ -109,12 +122,14 @@ type Parsed = { candidates: ContactCandidate[]; headings: Record<string, string[
 
 /** Die Extraktion je Seite ist der teure Teil; sie hängt am Fingerabdruck der Seite. */
 export function parsePage(b: Bestand, page: Seite, domain: string): Parsed {
-  const cachePath = resolve(b.out, "page-cache", b.extraction, page.digest.slice(0, 2), `${sha(page.digest + page.url + domain)}.json`);
+  const version = b.htmlVorbereiten ? `${b.extraction}-${b.htmlVorbereiten.kennung}` : b.extraction;
+  const cachePath = resolve(b.out, "page-cache", version, page.digest.slice(0, 2), `${sha(page.digest + page.url + domain)}.json`);
   if (existsSync(cachePath)) return readJson(cachePath);
-  const html = decode(readFileSync(page.path!));
+  const roh = decode(readFileSync(page.path!));
+  const html = b.htmlVorbereiten ? b.htmlVorbereiten.f(roh) : roh;
   const candidates = contactRoleContext(html, contactCandidates(html, page.url, domain)).candidates;
   const context = headingContext(html);
-  const parsed: Parsed = { candidates, headings: Object.fromEntries(context.headings), title: context.title, links: contactLinks(html, page.url, domain, b.linkProfil as "kommunen") };
+  const parsed: Parsed = { candidates, headings: Object.fromEntries(context.headings), title: context.title, links: contactLinks(html, page.url, domain, b.linkProfil) };
   writeJson(cachePath, parsed);
   return parsed;
 }
@@ -174,7 +189,7 @@ export function bewerten(b: Bestand, e: Eintrag): Ergebnis {
     openLinks: [...links].sort((a, b2) => b2[1] - a[1]).slice(0, 60).map(([url, priority]) => ({ url, priority })),
     ...(e.zusatz ?? {}),
   };
-  const result = { ...basis, ...(b.ergebnisForm?.(basis, mailboxes) ?? {}) } as Ergebnis;
+  const result = { ...basis, ...(b.ergebnisForm?.(basis, mailboxes, evidence) ?? {}) } as Ergebnis;
   writeJson(resultPath, result);
   return result;
 }
@@ -235,24 +250,31 @@ export async function fetchPage(b: Bestand, url: string, id: string) {
 }
 
 /** Holt gezielt weitere Seiten, solange das Budget reicht und noch etwas fehlt. */
-export async function recherchieren(b: Bestand, e: Eintrag, budget: number) {
+export async function recherchieren(b: Bestand, e: Eintrag, budget: number, opts: { vonHand?: boolean } = {}) {
   const logPath = resolve(b.out, "research", `${e.id}.json`);
   const log = existsSync(logPath) ? readJson(logPath) : { id: e.id, attempts: [] as any[] };
   const fertig = b.fertigWenn ?? ((r: Ergebnis) => r.outcome === "all-channels");
   let result = bewerten(b, e);
   if (fertig(result)) return { id: e.id, skipped: "complete" };
+  const own = siteOf(host(e.website ?? ""));
+  const allowed = new Set([own, ...(result.verbund?.sites ?? []), ...(e.erlaubteSites ?? [])].filter(Boolean));
+  const done = new Set<string>(eigeneSeiten(b, e.id).map(p => p.url));
+  for (const a of log.attempts) for (const f of a.fetched) done.add(f.url);
   const last = log.attempts.at(-1);
   if (last) {
     // Nur eine gescheiterte Verbindung rechtfertigt einen zweiten Anlauf; eine
-    // übersprungene Datei nicht.
+    // übersprungene Datei nicht. Oder eine NEUE Spur: eine Seite, die beim
+    // letzten Anlauf nicht bekannt war (z. B. das Impressum, das die
+    // Website-Prüfung inzwischen gefunden hat). Ohne sie blieben Websites, deren
+    // Startseite per Skript entsteht, nach einer gelesenen Seite für immer
+    // "final" (wind operators, 06.10.2026).
     const unreachable = last.fetched.length > 0 && last.fetched.every((f: any) => f.error);
-    if (log.attempts.length >= MAX_ATTEMPTS || !unreachable || !e.website) return { id: e.id, skipped: "final" };
-    if (Date.now() - Date.parse(last.at) < RETRY_AFTER_MS) return { id: e.id, skipped: "retry-later" };
+    const neueSpur = result.openLinks.some(l => !done.has(l.url) && allowed.has(siteOf(host(l.url))));
+    // A page a person pointed to is always read: the attempt limit guards the
+    // machine against itself, not the manual pass.
+    if ((log.attempts.length >= MAX_ATTEMPTS && !(opts.vonHand && neueSpur)) || (!unreachable && !neueSpur) || !e.website) return { id: e.id, skipped: "final" };
+    if (unreachable && !neueSpur && Date.now() - Date.parse(last.at) < RETRY_AFTER_MS) return { id: e.id, skipped: "retry-later" };
   }
-  const own = siteOf(host(e.website ?? ""));
-  const allowed = new Set([own, ...(result.verbund?.sites ?? [])].filter(Boolean));
-  const done = new Set<string>(eigeneSeiten(b, e.id).map(p => p.url));
-  for (const a of log.attempts) for (const f of a.fetched) done.add(f.url);
   const queue = new Map<string, number>(result.openLinks.map(l => [l.url, l.priority]));
   if (result.pages.read === 0 && e.website) queue.set(e.website, 999);
   const fetched: any[] = [];
@@ -298,17 +320,27 @@ export async function nachpruefen(b: Bestand, e: Eintrag, email: string) {
 }
 
 /** Ein einzelner Abruf ohne Ablage — für die Nachprüfung vor einer Verwendung. */
-export async function fetchLive(url: string): Promise<{ html: string } | { error: string }> {
+export async function fetchLive(url: string, opts: { auchServerfehler?: boolean } = {}): Promise<{ html: string; url?: string } | { error: string }> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     const controller = new AbortController();
     timer = setTimeout(() => controller.abort(new DOMException("timeout", "TimeoutError")), 20000);
     const res = await fetch(url, { redirect: "follow", signal: controller.signal, headers: { "user-agent": UA, accept: "text/html,text/vcard;q=0.9" } });
-    if (!res.ok) return { error: `Seite antwortet mit HTTP ${res.status}` };
+    // Some sites answer EVERY page with 500 and still deliver the full page
+    // (solarparc.de, manual pass 06.10.2026). Who asks for it gets the body
+    // when it is a real page; an error page is short.
+    if (!res.ok && !(opts.auchServerfehler && res.status >= 500)) return { error: `Seite antwortet mit HTTP ${res.status}` };
+    if (!res.ok) {
+      const body = Buffer.from(await res.arrayBuffer());
+      const html = decode(body);
+      if (html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").length < 2000) return { error: `Seite antwortet mit HTTP ${res.status}` };
+      return { html };
+    }
     const bytes = Buffer.from(await res.arrayBuffer());
     const type = res.headers.get("content-type") ?? "";
     if (/vcard/i.test(type) || /\.vcf(?:$|\?)/i.test(url)) return { html: vcardToHtml(bytes.toString("utf8")) ?? "" };
-    return { html: decode(bytes) };
+    // The address after redirects: links on the page resolve against it.
+    return { html: decode(bytes), url: res.url || url };
   } catch (e: any) {
     return { error: e?.name === "TimeoutError" ? "Seite antwortet nicht" : `Abruf fehlgeschlagen (${String(e?.cause?.code ?? e?.message ?? e)})` };
   } finally {

@@ -1,3 +1,4 @@
+import {generationContributions} from "./import-attribution";
 import { fetchCrossBorderFlows, fetchPublicPower } from "./energy-api";
 
 // Countries with active nuclear power plants that border / feed into Germany.
@@ -19,6 +20,8 @@ export interface NuclearDataPoint {
 }
 
 export interface NuclearImportResponse {
+  stale?: boolean;
+  fetchedAt?: string;
   data: NuclearDataPoint[];
   avg_gw: number;
   avg_share_pct: number;
@@ -28,7 +31,7 @@ export interface NuclearImportResponse {
 
 /** Thrown when upstream data is missing — callers decide whether to serve stale or fail. */
 export class NuclearImportDataError extends Error {
-  constructor(public reason: "no-cbpf" | "no-neighbour-mix") {
+  constructor(public reason: "no-cbpf" | "no-neighbour-mix" | "no-observations") {
     super(reason);
     this.name = "NuclearImportDataError";
   }
@@ -70,6 +73,7 @@ export async function computeNuclearImport(
   startStr: string,
   endStr: string,
   rangeHours: number,
+  options: { preserveResolution?: boolean } = {},
 ): Promise<NuclearImportResponse> {
   // Yearly chunking for multi-year ranges (Energy-Charts caps a single query).
   const fetchChunked = async <T,>(
@@ -109,18 +113,7 @@ export async function computeNuclearImport(
     const tsMap = new Map<string, { nuclear: number; total: number }>();
     for (const row of rows) {
       const nuclear = (row.data.nuclear as number) ?? 0;
-      let total = 0;
-      for (const [key, val] of Object.entries(row.data)) {
-        if (
-          typeof val === "number" && val > 0 &&
-          !key.includes("load") &&
-          !key.includes("share") &&
-          !key.includes("cross_border") &&
-          !key.includes("consumption")
-        ) {
-          total += val;
-        }
-      }
+      const total = generationContributions(row.data).reduce((sum, [, value]) => sum + value, 0);
       tsMap.set(row.ts, { nuclear, total });
     }
     countryGenRows.set(code, tsMap);
@@ -177,13 +170,13 @@ export async function computeNuclearImport(
   data.sort((a, b) => a.ts.localeCompare(b.ts));
 
   // Downsample for longer ranges to keep payloads small.
-  if (rangeHours > 17520) {
+  if (!options.preserveResolution && rangeHours > 17520) {
     data = downsample(data, 96); // >2 years: daily
-  } else if (rangeHours > 2160) {
+  } else if (!options.preserveResolution && rangeHours > 2160) {
     data = downsample(data, 24);
-  } else if (rangeHours > 720) {
+  } else if (!options.preserveResolution && rangeHours > 720) {
     data = downsample(data, 12);
-  } else if (rangeHours > 168) {
+  } else if (!options.preserveResolution && rangeHours > 168) {
     data = downsample(data, 4);
   }
 

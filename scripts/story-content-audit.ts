@@ -1,5 +1,5 @@
 import valueSnapshots from '../lib/story-month-value-data.json';
-import {readFile,writeFile} from 'node:fs/promises';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {radialDataForCity} from '../lib/story-radial-data';
 const root='scripts/.cache/story-discovery';
 async function main(){
@@ -25,6 +25,7 @@ async function main(){
   }});
  }
  const totals=Object.fromEntries(Object.keys(results[0].slots).map(key=>[key,results.filter(r=>r.slots[key]).length]));
+ await mkdir('scripts/.cache/story-templates',{recursive:true});
  await writeFile('scripts/.cache/story-templates/content-audit.json',JSON.stringify({cities:results.length,totals,notes:['Ranking snapshots can additionally load on request.','Funding availability counts source-backed cached entries, not current eligibility.'],results},null,2));
  console.log(JSON.stringify({cities:results.length,totals},null,2));
 }

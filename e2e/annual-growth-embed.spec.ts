@@ -1,0 +1,89 @@
+import {test, expect} from '@playwright/test';
+import {klickBisWirkung} from './klick';
+
+for (const width of [1280, 375, 320]) {
+  test(`annual growth embedding keeps selection and allocation at ${width}px`, async ({page}) => {
+    await page.setViewportSize({width,height:900});
+    await page.goto('/embed/galerie/regional-annual-growth?ags=05370020&range=5&theme=light');
+    const options=page.getByRole('button',{name:'Optionen für Zubau pro Jahr · Hückelhoven',exact:true});
+    const embed=page.getByRole('menuitem',{name:'Einbetten',exact:true});
+    await klickBisWirkung(options,embed,'Open widget options');
+    const dialog=page.getByRole('dialog');
+    await klickBisWirkung(embed,dialog,'Open embedding settings');
+    await expect(dialog.getByRole('heading',{name:'Widget einbetten',exact:true})).toHaveCount(0);
+    await expect(dialog.locator('.sc-collapse')).toHaveCSS('opacity','0');
+    await expect(dialog.getByLabel('Kopfbereich',{exact:true})).toHaveCount(0);
+    await dialog.getByLabel('Maximale Breite',{exact:true}).selectOption('480');
+    await dialog.getByLabel('Widget-Höhe',{exact:true}).selectOption('400');
+    await dialog.getByRole('button',{name:'Einbettungscode anzeigen',exact:true}).click();
+    await expect(dialog.locator('.sc-collapse')).toHaveCSS('opacity','1');
+    await expect(dialog.getByLabel('Einbettungscode',{exact:true})).toHaveCSS('font-size','14px');
+    await dialog.getByRole('button',{name:'Einbettungscode anzeigen',exact:true}).click();
+    await expect(dialog.locator('.sc-collapse')).toHaveCSS('opacity','0');
+    await expect(dialog.locator('.sc-collapse')).toHaveCSS('height','0px');
+    await dialog.getByRole('button',{name:'Einbettungscode anzeigen',exact:true}).click();
+    const code=await dialog.getByLabel('Einbettungscode',{exact:true}).inputValue();
+    expect(code).toContain('ags=05370020&amp;range=5&amp;theme=light&amp;presentation=compact&amp;layout=allocated');
+    expect(code).toContain('height="400"');
+    expect(code).toContain('max-width:480px');
+    expect(code).not.toContain('/partner/');
+    const preview=dialog.locator('iframe');
+    const frame=page.frameLocator('iframe');
+    await expect(frame.locator('h4').filter({hasText:'Zubau pro Jahr · Hückelhoven'})).toBeVisible();
+    await expect(frame.getByLabel('Zeitraum des Zubaus')).toHaveValue('5');
+    await frame.getByLabel('Zeitraum des Zubaus').selectOption('10');
+    await expect(frame.getByLabel('Zeitraum des Zubaus')).toHaveValue('10');
+    await frame.getByLabel('Zeitraum des Zubaus').selectOption('5');
+    await expect(frame.locator('.sc-widget')).toContainText('Bundesnetzagentur');
+    await expect(frame.locator('.sc-widget')).toContainText('solar-check.io');
+    await expect(preview).toHaveCSS('height','400px');
+    await expect(frame.locator('[data-widget-variant]')).toHaveAttribute('data-widget-variant','compact');
+    await expect.poll(()=>frame.locator('body').evaluate(el=>el.scrollHeight<=400)).toBe(true);
+    const source=frame.locator('[data-sc-source-edge]');
+    await expect(source).toHaveCSS('font-size','10px');
+    await expect.poll(()=>source.evaluate(el=>el.scrollWidth<=el.clientWidth+1 && el.scrollHeight<=el.clientHeight+1)).toBe(true);
+    await expect.poll(()=>frame.locator('.sc-widget-body').evaluate(body=>{
+      const rail=body.querySelector('[data-plot-source-rail]')!.getBoundingClientRect();
+      const chart=body.querySelector('[data-widget-plot]')!.getBoundingClientRect();
+      const plot=body.querySelector('.sc-category-plot')!.getBoundingClientRect();
+      return Math.max(Math.abs(rail.top-chart.top),Math.abs(rail.bottom-plot.bottom));
+    })).toBeLessThan(1);
+    const sourceBounds=await source.boundingBox();
+    const plotBounds=await frame.locator('.sc-category-plot').boundingBox();
+    expect(sourceBounds!.x).toBeGreaterThanOrEqual(plotBounds!.x+plotBounds!.width);
+    const small=await frame.locator('.sc-category-plot').boundingBox();
+    await dialog.getByLabel('Widget-Höhe',{exact:true}).selectOption('840');
+    await expect(preview).toHaveCSS('height','840px');
+    await expect(frame.locator('[data-widget-variant]')).toHaveAttribute('data-widget-variant','full');
+    await expect.poll(async()=> (await frame.locator('.sc-category-plot').boundingBox())!.height).toBeGreaterThan(small!.height+150);
+    await expect(source).toHaveCSS('font-size','10px');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await expect.poll(()=>frame.locator('body').evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+    await expect(page.getByLabel('Zeitraum des Zubaus')).toHaveValue('5');
+  });
+}
+
+for (const width of [1280, 375]) {
+  test(`annual growth embed deep link opens only the outer dialog at ${width}px`, async ({page}) => {
+    await page.setViewportSize({width,height:900});
+    const url='/embed/galerie/regional-annual-growth?ags=05370020&range=5&theme=light&dialog=embed';
+    await page.goto(url);
+    const dialog=page.getByRole('dialog',{name:'Widget einbetten'});
+    await expect(dialog).toBeVisible();
+    const preview=page.frameLocator('iframe');
+    await expect(preview.getByLabel('Zeitraum des Zubaus')).toHaveValue('5');
+    await expect(preview.getByRole('dialog')).toHaveCount(0);
+    await dialog.getByRole('button',{name:'Einbettungscode anzeigen',exact:true}).click();
+    const code=await dialog.getByLabel('Einbettungscode',{exact:true}).inputValue();
+    expect(code).toContain('ags=05370020');
+    expect(code).not.toContain('dialog=');
+    await dialog.getByRole('button',{name:'Schließen',exact:true}).click();
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(url.replace('&dialog=embed',''));
+    await page.reload();
+    await expect(page.getByLabel('Zeitraum des Zubaus')).toHaveValue('5');
+    await expect(dialog).not.toBeVisible();
+  });
+}

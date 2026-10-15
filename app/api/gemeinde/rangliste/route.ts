@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "../../../../lib/rate-limit";
-import { loadAwardStats, loadElternSlugs } from "../../../../lib/awards-server";
+import { loadAwardStats, loadAwardStatsImGebiet, loadElternSlugs } from "../../../../lib/awards-server";
 import { rankingKategorien, rankingRows } from "../../../../lib/atlas-ranking";
 import { anzeigeOrtsname } from "../../../../lib/atlas-orte";
 import { RANKING_FELDER } from "../../../../lib/ranking-felder";
@@ -28,7 +28,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Rangliste unbekannt" }, { status: 400 });
   }
   try {
-    const [stats, elternSlugs] = await Promise.all([loadAwardStats(), loadElternSlugs()]);
+    // A Kreis or Land list reads only its own towns. The full load (~11,000
+    // rows) is held per instance; every fresh instance — after each deploy,
+    // and several at once when an outreach batch lands — paid it on the
+    // visitor's first ranking (3.6 s measured 07.10.2026). Only the national
+    // list needs all towns, and it is the same for every visitor.
+    const [stats, elternSlugs] = await Promise.all([
+      scope === "de" ? loadAwardStats() : loadAwardStatsImGebiet(scope),
+      loadElternSlugs(),
+    ]);
     // Jede Zeile führt auf ihre eigene Ortsseite — die Liste ist sonst eine
     // Sackgasse aus zehn bis hundert Ortsnamen, die man nur lesen kann.
     // Dieselbe Bauweise wie in lib/atlas-nachbarn.ts: Land- und Kreis-Slug aus

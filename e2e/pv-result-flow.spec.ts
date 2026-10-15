@@ -13,7 +13,7 @@ for(const width of [375,1280]) test(`PV draft editing, sharing and layout at ${w
   await page.addInitScript(()=>{Object.defineProperty(navigator,"clipboard",{value:{writeText:async(text:string)=>{document.documentElement.dataset.copiedLink=text;}}});});
   await page.goto(`${result}&flow=emp`);
   const hero=page.locator(".wp-result-hero");
-  await expect(hero).toContainText("Einsparungen über 25 Jahre");
+  await expect(hero).toContainText("Gewinn nach 25 Jahren");
   await expect(hero.locator(".wp-result-count-space")).not.toHaveText("0");
   const recommendation = page.locator(".pv-result-recommendation");
   await expect(recommendation).toContainText("Unsere Empfehlung für dein Zuhause");

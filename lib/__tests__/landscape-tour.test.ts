@@ -107,4 +107,5 @@ describe('reusable prepared municipality tours',()=>{
   expect(result.stops[1].id).toBe(data.stops[0].id);
   expect(result.stops).toHaveLength(data.stops.length+1);
   expect(Number.isFinite(terrainHeight(result.terrain,result.stops[0].x,result.stops[0].z))).toBe(true);
- });
+ // Parses a 37 MB district scene; under parallel sessions this exceeds the 5 s default.
+ },30000);

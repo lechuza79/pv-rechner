@@ -141,7 +141,11 @@ export function recommendBalkon(
       .filter(o => o.setId === best.setId && o.storageId !== "none")
       .sort((a, b) => b.result.lifetimeSaving - a.result.lifetimeSaving)[0];
     if (withStorage && withStorage.result.storageAddedKwh > 0 && isFinite(withStorage.result.storagePayback)) {
-      storageReason = `Ein Speicher würde sich bei dir erst nach rund ${fmtYears(withStorage.result.storagePayback)} Jahren rechnen — ohne bleibt unterm Strich mehr übrig.`;
+      // A finite storage payback always lies within the storage lifetime (the loop
+      // stops crediting it afterwards), so the profit WITH storage is then higher.
+      // What excludes it is the recommendation threshold, and the sentence must say
+      // so — "ohne bleibt mehr übrig" was false in every case (Council 13.10.2026).
+      storageReason = `Ein Speicher würde sich bei dir erst nach rund ${fmtYears(withStorage.result.storagePayback)} Jahren rechnen. Mehr Gewinn bringt er dann zwar, wir empfehlen ihn aber erst, wenn er sich in höchstens ${cfg.storageRecommendMaxPayback} Jahren bezahlt macht.`;
     } else {
       storageReason = "Dein Set erzeugt zu wenig Überschuss, als dass sich ein Speicher lohnen würde.";
     }

@@ -9,7 +9,7 @@ import { pageMetadata } from "../../../../../lib/seo";
 import { atlasRobots } from "../../../../../lib/atlas-index";
 import { resolveSlugPath, getRegionById, getChildren, type AtlasRegion } from "../../../../../lib/atlas";
 import { ortPhrase } from "../../../../../lib/atlas-orte";
-import { loadAwardStats, loadElternSlugs, loadKreisNames } from "../../../../../lib/awards-server";
+import { loadAwardStats, loadAwardStatsImGebiet, loadElternSlugs, loadKreisNames } from "../../../../../lib/awards-server";
 import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
 import { formatAwardValue, spaltenKopfVon } from "../../../../../lib/awards";
 import { regionDisplayName } from "../../../../../lib/atlas-format";
@@ -23,6 +23,7 @@ import {
   rankingTitel,
   traegtRangliste,
   RANGLISTE_ANKER,
+  RANGLISTE_PRO_SEITE,
 } from "../../../../../lib/atlas-ranking";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 import { GROESSENKLASSEN_WARUM } from "../../../../../lib/gemeindegroesse";
@@ -70,7 +71,7 @@ const nf = (n: number) => n.toLocaleString("de-DE");
 /** Zeilen je Seite. Deutschland hat über 10.000 Kommunen — alle auf einmal
  *  wären rund sechs Megabyte Markup. Statt sie abzuschneiden wird geblättert:
  *  Jede Kommune ist erreichbar, nur nicht alle gleichzeitig. */
-const PRO_SEITE = 200;
+const PRO_SEITE = RANGLISTE_PRO_SEITE;
 
 type Params = { pfad?: string[] };
 
@@ -164,7 +165,10 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
   const scopeId = region.level === "de" ? null : region.region_id;
 
   const [stats, elternSlugs, kreisNamen, kinder] = await Promise.all([
-    loadAwardStats(),
+    // A Land or Kreis list reads only its own towns: every use below filters
+    // by the same prefix (rows, group count, towns per district). The full
+    // load is per instance and cost the first visitor 1.7 s (07.10.2026).
+    scopeId ? loadAwardStatsImGebiet(scopeId) : loadAwardStats(),
     loadElternSlugs(),
     loadKreisNames(),
     // Eine Ebene tiefer weiterblättern — von Deutschland in die Länder, vom

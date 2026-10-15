@@ -332,3 +332,72 @@ separate, unchanged chart issue, not a calculation or button regression.
 Layout checks retain strict bounds and measure chart text at the final timeline
 position; the initial-position defect remains explicitly recorded in the browser
 suite. Do not broaden this acceptance to hero values, controls, or later positions.
+
+## Text-led funding cards (8 October 2026)
+
+GemeindeFoerderung uses the shared `sc-feature-card--compact` variant: 160 px
+illustrations on wide sections, 120 px on narrower sections, existing hidden
+mobile illustrations unchanged. Its `solar-illustration thumbnail` option routes
+local raster layers through the existing image optimizer before DOM insertion;
+full-size illustration consumers retain their original sources. The funding
+cards prepare 1200 px ahead. The thumbnail test protects both paths.
+
+## Component lookup before UI edits (9 October 2026)
+
+The single library is `lib/bausteine-registry.ts`, with real rendered examples at
+`/admin/komponenten`. Before editing a named control, look up that component and
+its example. Import it with the documented option; do not recreate its CSS.
+
+- Breadcrumb: `Breadcrumb variant="page"`. The municipality renderer
+  `AtlasBreadcrumb framed` owns the 1px current-color rule at 10% opacity,
+  17px vertical padding, separators and responsive typography. The page owns
+  placement and outer width only. On narrow screens the shared renderer keeps
+  the first destination and current page visible; intermediate links open from
+  the ellipsis in the existing account-menu surface. Outside pointer/focus and
+  Escape dismiss the flyout, with a 44px trigger target. Legacy `default` and `compact` remain for
+  gradual migration; they are not the starting point for new pages.
+- Dropdown/menu: `Auswahl`, `pfeile={false}`. Form-value selection: `SelectField`.
+- Location autocomplete: `LocationSearch appearance="default"`; simulation hero:
+  `appearance="simulation"`. Both delegate to `OnsiteSearch`.
+
+A missing option belongs in the existing component, with an example and consumer
+check. Do not add a second catalog or a local lookalike. Match the whole reference
+(including its frame), not only its inner text. Migrate legacy consumers in
+reviewable batches, keeping approved municipal appearance unchanged.
+
+## Shared municipal funding presentation (12 October 2026)
+
+Published municipal funding routes use FundingPageShell and FundingProgramDetails
+by default, with each programme's own rates, eligibility, verification date and
+calculator assumptions. Never sum independent programme caps. Unsupported grants
+remain explicitly unmodelled. The three Heidelberg examples are programme-specific;
+other municipalities derive eligible examples from their own data.
+
+The municipal layout owns the scene, compact share/subscription bar and full-width
+dark story section. National, state, balcony and heat-pump overview redesigns remain
+preview work until their separate visual review. Funding subscription confirmation
+returns to the municipal funding page and retains its receipt without sharing the
+confirmation query parameter. Browser coverage: e2e/gemeinde-abo.spec.ts.
+
+## Shared units across comparable chart values
+
+Follow “Shared chart units — operator rule, 2 October 2026” in
+`docs/zentrale-visuals-konzept.md` for every comparable chart and data layer.
+Choose units for the whole comparison, never independently per item. The same
+unit decision and precision must reach the page, image export and backend video.
+## Strommix live release (13 October 2026)
+
+The canonical Strommix page uses the reviewed radar hero. Its page and metadata
+share one server observation through the protected generation handler, including
+its five-minute cache and durable outage fallback. No HTTP self-request and no
+additional upstream pipeline are used. The OG image URL includes the observation
+values and timestamp, so a new observation produces a distinct image address.
+The radar share link also carries the newest available observation timestamp,
+independently of the currently animated historical frame. The image title stays date-neutral; its smaller label names the actual measurement
+time. Existing social-platform caches of already shared URLs remain external.
+
+The new composition uses `StrommixRadarWidget`, `ChartTimePlayback`,
+`ViewportStage` and the shared export menu. Preserve the current shared
+`WidgetData` refresh and palette mechanisms. On narrow displays the navigation
+follows its content unless contextual controls require more room. Page-owned
+source footers retain the shared 64px separation.

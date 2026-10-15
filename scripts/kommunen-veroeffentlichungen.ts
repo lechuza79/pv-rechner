@@ -13,6 +13,10 @@
  * Websuche allein ist kein Beleg (siehe lib/kommunen-hinweise.ts). Das
  * Eintragen setzt den Status der Gemeinde auf „veröffentlicht" und schreibt die
  * Adresse in ihre Notiz — damit meldet der Hinweis-Lauf sie nicht noch einmal.
+ *
+ * Ein Ort OHNE Brief, den eine Aussendung an die Presse genannt hat (Moers aus
+ * der Pressemitteilung über den Kreis Wesel), landet in einer eigenen Tabelle:
+ * Er zählt als Ergebnis der Aussendung, nicht in die Quote der Gemeindebriefe.
  */
 import { envLaden } from "./env-laden";
 envLaden();
@@ -23,7 +27,9 @@ import {
   bilanz,
   KANAELE,
   KANAL_TEXT,
+  liegtImBezug,
   ordneKanal,
+  PRESSE_VEROEFFENTLICHUNG_DDL,
   quoteText,
   VEROEFFENTLICHUNG_DDL,
   type Kanal,
@@ -42,7 +48,7 @@ async function main() {
   });
 
   if (args.includes("--setup")) {
-    const { error } = await db.rpc("exec_sql", { sql: VEROEFFENTLICHUNG_DDL });
+    const { error } = await db.rpc("exec_sql", { sql: VEROEFFENTLICHUNG_DDL + PRESSE_VEROEFFENTLICHUNG_DDL });
     if (error) throw new Error(`Anlegen fehlgeschlagen: ${error.message}`);
     console.log("✓ Tabelle steht");
     return;
@@ -59,9 +65,27 @@ async function main() {
       .from("kommunen_kontakt")
       .select("website, notes, outreach_status, contacted_at")
       .eq("region_id", regionId)
-      .single();
-    if (error || !g) throw new Error(`Gemeinde ${regionId} nicht in der Kontaktliste`);
-    if (!g.contacted_at) throw new Error(`Gemeinde ${regionId} wurde nie angeschrieben`);
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!g?.contacted_at) {
+      // Kein Brief — vielleicht aber eine Pressemitteilung, die den Ort nannte.
+      const { data: aus, error: ae } = await db.from("aussendungen").select("bezug").not("bezug", "is", null);
+      if (ae) throw new Error(ae.message);
+      const genannt = (aus ?? []).some((a: { bezug: string[] | null }) => liegtImBezug(regionId, a.bezug ?? []));
+      if (!genannt) throw new Error(`Ort ${regionId} wurde weder angeschrieben noch in einer Aussendung genannt`);
+      const zeile = {
+        url,
+        domain: url.replace(/^https?:\/\//i, "").split(/[/?#]/)[0].replace(/^www\./i, "").toLowerCase(),
+        region_id: regionId,
+        mit_link: !args.includes("--ohne-link"),
+        gesehen_ab: wert("--gesehen") ?? heuteInBerlin(),
+        noch_online: !args.includes("--nicht-mehr-online"),
+      };
+      const { error: e } = await db.from("aussendung_veroeffentlichung").upsert(zeile, { onConflict: "url" });
+      if (e) throw new Error(e.message);
+      console.log(`✓ eingetragen als Ergebnis einer Aussendung (kein Brief an ${regionId}) · ${zeile.mit_link ? "mit Link" : "ohne Link"}`);
+      return;
+    }
     const kanalArg = wert("--kanal") as Kanal | undefined;
     if (kanalArg && !KANAELE.includes(kanalArg)) throw new Error(`Kanal muss einer sein von: ${KANAELE.join(", ")}`);
     const kanal = kanalArg ?? ordneKanal(url, g.website);

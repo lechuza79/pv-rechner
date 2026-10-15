@@ -1,0 +1,13 @@
+/* Shared by the live simulation and React scene hosts. */
+[data-sc-hero-presentation] [data-hero-tone=dark]{--sc-region-ink:#122c3b}
+[data-sc-hero-presentation] [data-hero-tone=strong-dark]{--sc-region-ink:#000}
+[data-sc-hero-presentation] [data-hero-tone=light]{--sc-region-ink:#fff}
+[data-sc-hero-presentation] [data-hero-tone]{color:var(--sc-region-ink)!important;transition:none}
+[data-sc-hero-presentation] .site-header[data-hero-tone] .brand svg{--color-accent:var(--sc-region-ink);--color-text-faint:var(--sc-region-ink)}
+[data-sc-hero-presentation] .site-header[data-hero-tone] .brand svg>path{fill:var(--sc-region-ink)}
+
+/* Result entrance uses the simulation card motion, shared across scene hosts. */
+.sc-hero-results > * { animation:sc-result-rise .85s cubic-bezier(.2,.7,.2,1) both; }
+.sc-hero-results > :nth-child(2){animation-delay:.08s}.sc-hero-results > :nth-child(3){animation-delay:.16s}
+@keyframes sc-result-rise { from{opacity:0;transform:translateY(55px)}to{opacity:1;transform:none} }
+@media(prefers-reduced-motion:reduce){.sc-hero-results > *{animation:none}}

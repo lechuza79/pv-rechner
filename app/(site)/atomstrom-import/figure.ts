@@ -1,23 +1,6 @@
-// Shared nuclear-import figure + formatters for the atomstrom-import pages.
-//
-// Both the overview page and the extracted /methodik page read the SAME live
-// computeNuclearImport() the dashboard and API route use, so the number can
-// never drift.
-//
-// The shared result is cached explicitly via unstable_cache, NOT via fetch
-// defaults. One call fans out to seven Energy-Charts requests (cross-border
-// flows + six neighbours), and Energy-Charts rate-limits us — without this the
-// two pages would fetch fourteen times per regeneration. Next 14 papered over
-// that with its implicit fetch cache; Next 15 no longer caches fetch by
-// default, so the caching has to be stated here to survive that change and the
-// next one. Same TTL as both pages' ISR window.
-//
-// Caching `asOf` together with the data is deliberate: the "Stand" line must
-// name when the numbers were actually fetched. Reading a fresh clock next to
-// cached data would date the page younger than its own figures.
-
+// Shared cached observations for the Atomstrom page, hero and method explanation.
 import { unstable_cache } from "next/cache";
-import { computeNuclearImport } from "../../../lib/nuclear-import";
+import { nuclearEnergyPreviewData } from "../../../lib/nuclear-preview-server";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
@@ -34,23 +17,28 @@ const CACHE_TTL_SECONDS = 3600; // matches `export const revalidate` on both pag
 const loadNuclearImport = unstable_cache(
   async () => {
     const now = new Date();
-    const start = new Date(now.getTime() - WINDOW_HOURS * 60 * 60 * 1000);
-    const startStr = start.toISOString().slice(0, 19) + "+01:00";
-    const endStr = now.toISOString().slice(0, 19) + "+01:00";
-    const result = await computeNuclearImport(startStr, endStr, WINDOW_HOURS);
-    return { result, asOfIso: now.toISOString() };
+    // Extra calendar coverage supports seven complete Berlin days, including DST.
+    // Retain raw intervals for energy integration; the FAQ keeps its rolling window.
+    const chartResult = await nuclearEnergyPreviewData(now);
+    if (!chartResult) throw new Error("Nuclear import observations unavailable");
+    const rollingStart = now.getTime() - WINDOW_HOURS * 60 * 60 * 1000;
+    const data = chartResult.data.filter(p => Date.parse(p.ts) >= rollingStart && Date.parse(p.ts) < now.getTime());
+    if (!data.length) throw new Error("No observations in the rolling import window");
+    const avg = data.reduce((sum, p) => sum + p.nuclear_gw, 0) / data.length;
+    const result = { ...chartResult, data, avg_gw: Math.round(avg * 100) / 100, avg_share_pct: Math.round(avg / 45 * 1000) / 10 };
+    return { result, chartResult, asOfIso: now.toISOString() };
   },
-  ["atomstrom-import-figure-v1"],
+  ["atomstrom-import-figure-v4-shared-recovery"],
   { revalidate: CACHE_TTL_SECONDS }
 );
 
 export async function getNuclearImport() {
   try {
-    const { result, asOfIso } = await loadNuclearImport();
-    return { result, asOf: new Date(asOfIso) };
+    const { result, chartResult, asOfIso } = await loadNuclearImport();
+    return { result, chartResult, asOf: new Date(asOfIso) };
   } catch {
     // Same shape as before: callers render the "no figure available" branch.
-    return { result: null, asOf: new Date() };
+    return { result: null, chartResult: null, asOf: new Date() };
   }
 }
 

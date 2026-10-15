@@ -206,7 +206,10 @@ describe("Der Rahmen einer Seite zählt nicht mit (Fassung 5)", () => {
     for (const w of ["scripts/funding-watch.ts", "scripts/funding-seiten-watch.ts", "scripts/funding-coverage-watch.ts"]) {
       const quelle = readFileSync(resolve(process.cwd(), w), "utf8");
       const pruefung = quelle.search(/vergleichbar\([^)]*\)/);
-      const aenderung = quelle.search(/seite_geaendert_am: jetzt|page_changed_at/);
+      // The programme watcher also reads application evidence before the main-page check.
+      const aenderung = w === "scripts/funding-watch.ts"
+        ? quelle.lastIndexOf("page_changed_at:")
+        : quelle.search(/seite_geaendert_am: jetzt|page_changed_at/);
       expect(pruefung, `${w}: keine Vergleichbarkeitsprüfung`).toBeGreaterThan(-1);
       expect(pruefung, `${w}: Änderung wird vor der Vergleichbarkeitsprüfung geschrieben`).toBeLessThan(aenderung);
     }

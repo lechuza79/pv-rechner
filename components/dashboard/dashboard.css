@@ -2,6 +2,7 @@
 .sc-dashboard {
  --widget-surface:var(--atlas-card,#163338);--widget-ink:var(--atlas-text,#e8eee9);
  --widget-muted:var(--atlas-secondary,#a7bcbb);--widget-accent:var(--atlas-action,#d4ff24);
+ --widget-meta-size:12px;--widget-meta-leading:1.5;--widget-meta-font:var(--font-text,sans-serif);
  --widget-radius:16px;--widget-gap:20px;--widget-padding:24px;--widget-title-size:20px;
  --chart-bar-radius:6px;--chart-bar-width:72%;--chart-bar-gap:8px;--chart-plot-height:220px;
  color:var(--widget-ink);container-type:inline-size;
@@ -15,6 +16,8 @@
 .sc-widget-subtitle {display:block;margin-top:8px;color:var(--widget-muted);font-size:14px;font-weight:400;line-height:1.5;}
 .sc-widget-context {padding:0 var(--widget-padding);margin-block:12px;color:var(--widget-muted);font-size:12px;line-height:1.5;}
 .sc-widget-body {min-width:0;}
+/* Shared content inset for data adapters rendered inside WidgetFrame. */
+.sc-widget-inset { padding: var(--space-md,16px) var(--widget-padding,24px) var(--widget-padding,24px); min-width:0; }
 .sc-widget-help {position:relative;}
 .sc-widget-help summary {list-style:none;border:1px solid currentColor;border-radius:50%;width:24px;height:24px;text-align:center;cursor:pointer;}
 .sc-widget-help summary::-webkit-details-marker{display:none;}
@@ -80,11 +83,11 @@
 .sc-widget-head{flex-wrap:wrap;position:relative;z-index:3;}
 .sc-widget-head h4{flex:1 1 150px;}
 .sc-widget-tools{margin-left:auto;}
-.sc-kpi-overview{background:var(--widget-surface);border-radius:var(--widget-radius);padding:24px;}
+.sc-kpi-overview{background:var(--widget-surface);border-radius:var(--widget-radius);padding:var(--widget-padding);}
 .sc-kpi-head{padding:0;margin-bottom:24px;}
 .sc-kpi-head h3{margin:0;font-size:20px;}
 .sc-kpi-overview .sc-kpi{background:color-mix(in srgb,var(--widget-ink) 5%,var(--widget-surface));}
-@container(max-width:540px){.sc-kpi-overview{padding:16px;}.sc-kpi-value{gap:8px;}.sc-kpi strong{font-size:28px;}.sc-kpi-delta{font-size:12px;}}
+@container(max-width:540px){.sc-kpi-value{gap:8px;}.sc-kpi strong{font-size:28px;}.sc-kpi-delta{font-size:12px;}}
 .sc-widget-settings-row{display:flex;justify-content:flex-start;padding:16px var(--widget-padding) 0;}
 .sc-widget-settings-row .sc-widget-setting{width:auto;min-width:156px;}
 .sc-widget-settings-row select{font-size:14px!important;line-height:20px;}
@@ -172,9 +175,65 @@
 @keyframes sc-video-state-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.sc-video-state{animation:none}}
 
+/* Topic monitors share section geometry, while adapters supply charts and text. */
+.sc-monitor-topic {scroll-margin-top:88px;}
+.sc-monitor-topic-copy > h2 {margin:0 0 16px;color:var(--widget-ink);}
+.sc-monitor-topic-description {max-width:var(--content-max-width);margin-bottom:24px;font-size:var(--font-size-body);line-height:1.7;color:var(--widget-muted);}
+.sc-monitor-topic-widgets {display:grid;gap:var(--widget-gap);min-width:0;}
+.sc-monitor-topic-widgets > * {min-width:0;}
+.municipal-data > .sc-monitor-topic + .sc-monitor-topic {margin-top:64px;}
+
+@container (min-width:760px) { .sc-monitor-topic-widgets[data-layout="pair"] { grid-template-columns:repeat(2,minmax(0,1fr));align-items:start; } }
+
+/* Editorial composition keeps chart placement explicit and stacks copy first on mobile. */
+@container (min-width: 900px) {
+  .sc-monitor-topic[data-chart-side] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 48px; align-items: center; }
+  .sc-monitor-topic[data-chart-side="left"] { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+  .sc-monitor-topic[data-chart-side="left"] > .sc-monitor-topic-widgets { grid-column: 1; grid-row: 1; }
+  .sc-monitor-topic[data-chart-side="left"] > .sc-monitor-topic-copy { grid-column: 2; grid-row: 1; }
+  .sc-monitor-topic[data-chart-side] .sc-monitor-topic-description { margin-bottom: 0; }
+}
+
+/* Product sections share a divider and a restrained visual overlap. */
+.sc-dashboard[data-section-style="product"] > .sc-monitor-topic { border-top:1px solid var(--widget-border, var(--color-border)); padding-block:48px; }
+.sc-dashboard[data-section-style="product"] > .sc-monitor-topic + .sc-monitor-topic { margin-top:48px; }
+@container (min-width:760px) {
+ .sc-dashboard[data-section-style="product"] > .sc-monitor-topic { padding-top:0; }
+ .sc-dashboard[data-section-style="product"] .sc-monitor-topic-copy { padding-top:48px; }
+ .sc-dashboard[data-section-style="product"] .sc-monitor-topic-widgets { margin-top:-24px; }
+}
 /* Shared widget controls; the hero stage retains its separate scale. */
 .sc-widget-setting[data-variant=widget] .sc-setting-stepper>button svg{width:16px;height:16px;}
 .sc-widget-setting[data-variant=widget] .sc-setting-stepper{box-shadow:none;}
 .sc-widget-setting[data-variant=widget][data-size=sm] .sc-setting-stepper select{height:36px;}
 
 .sc-widget-actions{position:relative;z-index:1;}
+
+/* The annual chart reserves a source lane beside its plot, never beside its footer. */
+.sc-widget[data-source-placement=plot] .sc-widget-body{position:relative;padding-right:calc(var(--plot-source-width,28px) + 12px);}
+@container(max-width:420px){
+ .sc-widget[data-source-placement=plot] .sc-widget-head{flex-direction:column;gap:12px;}
+ .sc-widget[data-source-placement=plot] .sc-widget-head h4{flex:none;}
+ .sc-widget[data-source-placement=plot] .sc-widget-tools{margin-left:0;justify-content:flex-start;}
+}
+/* Immersive widgets retain the same title, help and export actions. */
+.sc-widget[data-heading-placement=overlay] > .sc-widget-head{position:absolute;inset:0 0 auto;z-index:8;border-radius:var(--widget-radius,16px) var(--widget-radius,16px) 0 0;padding-bottom:24px;background:linear-gradient(var(--widget-bg,var(--color-bg)) 0%,transparent 100%);pointer-events:none;}
+.sc-widget[data-heading-placement=overlay] > .sc-widget-head .sc-widget-tools{pointer-events:auto;}
+.sc-widget[data-heading-placement=overlay] > .sc-widget-body{margin-top:0;}
+
+/* Plain charts inherit the surrounding stage while retaining shared chrome. */
+.sc-widget[data-surface="plain"]{background:transparent;--widget-surface:var(--atlas-surface);border-radius:0;}
+.sc-widget[data-surface="plain"]>.sc-widget-head,.sc-widget[data-surface="plain"]>.sc-widget-body{padding-inline:0;}
+
+.sc-monitor-hero-composition{display:grid;grid-template-columns:minmax(0,2fr) minmax(250px,1fr);gap:32px;align-items:center;}
+.sc-monitor-hero-composition>div,.sc-monitor-hero-composition>aside{min-width:0;}
+.sc-monitor-hero-composition>aside{display:grid;gap:24px;border-inline-start:1px solid var(--widget-muted);padding-inline-start:24px;}
+.sc-monitor-hero-composition .sc-flow-note{font-size:13px;line-height:1.5;color:var(--widget-muted);margin:12px 0 0;}
+@container(max-width:740px){.sc-monitor-hero-composition{grid-template-columns:1fr;}.sc-monitor-hero-composition>aside{border-inline-start:0;border-top:1px solid var(--widget-muted);padding:20px 0 0;grid-template-columns:repeat(2,minmax(0,1fr));}}
+@container(max-width:500px){.sc-monitor-hero-composition>aside{grid-template-columns:1fr;}}
+
+.sc-monitor-hero-footer{grid-column:1/-1;border-top:1px solid var(--widget-muted);padding-top:24px}
+
+.sc-widget-update{display:block;font-family:var(--widget-font-family,var(--font-dm-sans,sans-serif));font-weight:400;margin-top:8px;margin-bottom:12px;}
+
+.sc-widget-floating-menu{position:absolute;top:0;right:0;z-index:2}

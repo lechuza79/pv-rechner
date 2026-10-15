@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { getCssVariables, getThemeOverrides, globalStyles, v, space, pad, SITE_THEME_STAGE } from "../../lib/theme";
 import Logo from "../../components/Logo";
 import { getOverrideCss } from "../../lib/theme-overrides";
@@ -32,8 +32,8 @@ import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
-const dmSans = DM_Sans({ subsets: ["latin"], display: "swap", variable: "--font-dm-sans" });
-const jetBrainsMono = JetBrains_Mono({ subsets: ["latin"], display: "swap", variable: "--font-jetbrains-mono" });
+const dmSans = localFont({src:"../../public/fonts/dm-sans-variable.woff2",weight:"100 900", display: "swap", variable: "--font-dm-sans" });
+const jetBrainsMono = localFont({src:"../../public/fonts/jetbrains-mono-variable.woff2",weight:"100 800", display: "swap", variable: "--font-jetbrains-mono" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

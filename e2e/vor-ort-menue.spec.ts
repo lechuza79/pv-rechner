@@ -39,6 +39,13 @@ for (const [label, width, mobile] of [["desktop", 1440, false], ["phone", 375, t
     test("the menu looks the same on the homepage as on every other page", async ({ page }) => {
       // Two full page loads, the homepage with its scene among them.
       test.setTimeout(90_000);
+      // The test compares STYLES, not the scene. Without a GPU the animated
+      // homepage scene can keep the main thread busy enough that a plain
+      // getComputedStyle call waits out the whole 90 s (seen on CI,
+      // 06.10.2026: element resolved, evaluate never ran). With reduced motion
+      // the scene draws once and stops; the menu's look is unaffected, and
+      // both pages are measured under the same setting.
+      await page.emulateMedia({ reducedMotion: "reduce" });
       const TEILE = [".sc-nav-column > .sc-hd", ".sc-local-label", ".sc-nav-column > a", "button.sc-local-card", "label.sc-local-card", "label.sc-local-card input", ".sc-local-field input"];
       const aufnahme = async (pfad: string) => {
         const panel = await openLocal(page, mobile, pfad);

@@ -14,6 +14,7 @@ import { askVariante, refToken } from "../../../../../lib/kommunen-ask";
 import { postfachBefund } from "../../../../../lib/outreach-mail";
 import { empfaengerFuerBrief } from "../../../../../lib/kommunen-presse";
 import { windgemeinde } from "../../../../../lib/windgemeinden";
+import { hatSzene } from "../../../../../lib/kommunen-seite";
 import { istAdminOderCron } from "../../../../../lib/admin-guard";
 
 // Versandliste zusammenstellen und FESTSCHREIBEN (kampagne + charge je Gemeinde).
@@ -63,6 +64,7 @@ export async function POST(req: NextRequest) {
     verwaltung_domain: string | null;
     outreach_status: string;
     kampagne: string | null;
+    charge: number | null;
     ask_variante: string | null;
     variante_manuell: boolean | null;
     ref_token: string | null;
@@ -77,7 +79,7 @@ export async function POST(req: NextRequest) {
       const { data, error } = await serviceDb
         .from("kommunen_kontakt")
         .select(
-          "region_id, website, kontakt_url, rollen_email, rollen_email_quelle, presse_email, klima_email, presse_kontakt_email, contacted_at, verwaltung_domain, outreach_status, kampagne, ask_variante, variante_manuell, ref_token, verantwortlich_operativ, mastr_regions!inner(name, population, slug)",
+          "region_id, website, kontakt_url, rollen_email, rollen_email_quelle, presse_email, klima_email, presse_kontakt_email, contacted_at, verwaltung_domain, outreach_status, kampagne, charge, ask_variante, variante_manuell, ref_token, verantwortlich_operativ, mastr_regions!inner(name, population, slug)",
         )
         .like("region_id", `${prefix}%`)
         .order("region_id")
@@ -103,12 +105,18 @@ export async function POST(req: NextRequest) {
     if (schub.kreise && !schub.kreise.includes(z.region_id.slice(0, 5))) continue;
     if (z.region_id.length !== 8) continue; // district administrations get their own letter
     if (schub.ohneWindgemeinden && windgemeinde(z.region_id)) continue;
+    // Whole-district letters link the town's 3D stage, and the send run refuses
+    // a letter without one. A town whose stage is not published yet stays open
+    // and is drawn once it is, instead of blocking a charge it was put in.
+    if (schub.kreise && !hatSzene(z.region_id)) continue;
     const hook = hookByRegion.get(z.region_id) ?? null;
     // Whole districts take every town with a hook — win, podium or top tenth,
     // the largest level first (DE > BL > district); the older batches only took
-    // first places. Towns without any hook get no letter.
-    if (!hook || hook.kind === "neutral") continue;
-    if (!schub.kreise && hook.kind !== "sieger") continue;
+    // first places. Towns without any hook get the short info letter, but only
+    // in a batch that declares it (`briefarten`).
+    const ohnePlatzierung = !hook || hook.kind === "neutral";
+    if (ohnePlatzierung && !(schub.briefarten ?? ["platzierung"]).includes("info")) continue;
+    if (!schub.kreise && hook?.kind !== "sieger") continue;
     const reg = Array.isArray(z.mastr_regions) ? z.mastr_regions[0] : z.mastr_regions;
     kandidaten.push({
       regionId: z.region_id,
@@ -143,6 +151,10 @@ export async function POST(req: NextRequest) {
       // district goes out in one day, as decided on 05.10.2026.
       waehleGanzeKreise(kandidaten, schub.regeln.chargeGroesse, (k) => k.regionId)
     : waehleTestballon(kandidaten, schub.regeln);
+  // A second draw into the same campaign continues after its last charge:
+  // reusing charge 1 would mix new towns into a day that has already gone out.
+  const letzteCharge = Math.max(0, ...zeilen.filter((z) => z.kampagne === KAMPAGNE).map((z) => z.charge ?? 0));
+  for (const g of auswahl.gewaehlt) g.charge += letzteCharge;
 
   // Bereits vergebene Weiterleitungs-Token, damit ein zweiter Lauf keine
   // Dubletten erzeugt und bestehende Links gültig bleiben.

@@ -68,3 +68,34 @@ export function preparedLandscapeTour(data:PreparedLandscapeTour):LandscapeTourD
  }
  return {...projected,municipality:data.municipality,name:data.name,weatherMunicipality:data.weatherMunicipality,stops};
 }
+
+import {combineTerrain} from "./terrain-patches";
+import niddaSolarRegister from "../public/geo/nidda-preview/solar-register.json";
+
+/** The prepared Nidda scene and its standalone cards use the same destinations. */
+export function projectNiddaLandscape(data:BuildingPreview,overview:Pick<BuildingPreview,"terrain"|"turbines">,solar:BuildingPreview,contours=true){
+    const [w,n,e,s]=overview.terrain.groundBounds;
+    const scale=700/Math.max(e-w,s-n), centre:[number,number]=[(w+e)/2,(n+s)/2];
+    const buildings=Array.from(new Map([...data.buildings,...solar.buildings].map(b=>[b.id,b])).values());
+    const result=projectBuildingPreview({...data,...overview,buildings,solar:solar.solar,locations:solar.locations},scale,centre);
+    // Keep the detailed local surfaces in the same world throughout every flight.
+    const patches=[data,solar].map(d=>projectBuildingPreview(d,scale,centre).terrain);
+    result.terrain=combineTerrain(result.terrain,patches);
+    if(contours)result.terrain.display='contours';
+    const destination=(d:BuildingPreview)=>{const [w,n,e,s]=d.terrain.groundBounds;return {x:((w+e)/2-centre[0])*scale,z:((n+s)/2-centre[1])*scale,zoom:12};};
+    const park=result.turbines.filter(t=>t.hub!==null);
+    const turbine={x:park.reduce((sum,t)=>sum+t.x,0)/park.length,z:park.reduce((sum,t)=>sum+t.z,0)/park.length};
+    const town=destination(data);
+    result.locations=[...(result.locations??[]),{id:'nidda-market',name:'Nidda',x:town.x,z:town.z},{id:'nidda-windpark',name:'Windpark Fauerbach',...turbine}];
+    if(!result.locations.some(p=>p.id==='nidda-sewage'))result.locations.push({id:'nidda-sewage',name:'Kläranlage Nidda',...destination(solar)});
+    return {...result,destinations:{town:destination(data),solar:destination(solar),park:{x:turbine.x,z:turbine.z,zoom:8,throughPark:true}}};
+}
+
+export function niddaLandscapeTour(data:BuildingPreview,overview:Pick<BuildingPreview,"terrain"|"turbines">,solar:BuildingPreview):LandscapeTourData{
+ const projected=projectNiddaLandscape(data,overview,solar);
+ return {...projected,municipality:"06440016",name:"Nidda",stops:[
+    {id:'nidda-market',name:'Nidda',kind:'town',...projected.destinations.town},
+    {id:'nidda-windpark',name:'Windpark Fauerbach',kind:'wind',capacityKw:projected.turbines.every(t=>t.ratedKw!=null)?projected.turbines.reduce((sum,t)=>sum+(t.ratedKw??0),0):null,...projected.destinations.park},
+    {id:'nidda-sewage',name:niddaSolarRegister.label,kind:'solar',capacityKw:niddaSolarRegister.capacityKw,...projected.destinations.solar}
+  ]};
+}

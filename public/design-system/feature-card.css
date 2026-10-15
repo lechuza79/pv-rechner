@@ -35,3 +35,14 @@
 }
 
 @container sc-features (max-width:28rem){.gemeinde-foerder-liste .sc-feature-card>solar-illustration.sc-feature-visual{display:none;}}
+
+/* Text-led cards reserve a bounded illustration column at every desktop width. */
+.sc-feature-card.sc-feature-card--compact{grid-template-columns:160px minmax(0,1fr)}
+.sc-feature-card.sc-feature-card--compact>solar-illustration.sc-feature-visual{width:100%;max-width:160px;margin:0}
+@container sc-features (max-width:42rem){
+ .sc-feature-card.sc-feature-card--compact{grid-template-columns:120px minmax(0,1fr)}
+ .sc-feature-card.sc-feature-card--compact>solar-illustration.sc-feature-visual{max-width:120px}
+}
+@container sc-features (max-width:28rem){
+ .sc-feature-card.sc-feature-card--compact{grid-template-columns:minmax(0,1fr)}
+}

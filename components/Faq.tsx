@@ -57,8 +57,13 @@ export default function Faq({
   title = "Häufige Fragen",
   currentPath,
   theme = "light",
+  jsonLd: emitJsonLd = true,
 }: {
   items: FaqEntry[];
+  /** Emit this block's own FAQPage JSON-LD. A page that shows several FAQ
+   *  groups sets this to false and publishes ONE FAQPage over all groups —
+   *  several FAQPage blocks on one page are duplicates for search engines. */
+  jsonLd?: boolean;
   theme?: "light" | "dark";
   title?: string;
   /** Path of the page this FAQ renders on. Links/CTAs pointing here are
@@ -80,10 +85,12 @@ export default function Faq({
     // Akkordeon der Atomstrom-Seite, sonst driften die beiden FAQ-Bausteine.
     <section className="sc-faq" data-theme={theme} data-layout={theme === "light" ? "inline" : undefined} style={{ marginTop: faqContentGap, marginBottom: 24 }}>
       <style dangerouslySetInnerHTML={{ __html: FAQ_CSS }} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
-      />
+      {emitJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
+        />
+      )}
       <h2>{title}</h2>
       <div className="sc-faq-wrap">
         {items.map((item) => {
@@ -97,15 +104,23 @@ export default function Faq({
             !links.some((l) => l.href === item.cta!.href)
               ? item.cta
               : undefined;
+          // A blank line in `a` starts a new paragraph. Each link still fires
+          // only once: in the first paragraph that contains its phrase.
+          let remaining = links;
+          const paragraphs = item.a.split(/\n\s*\n/).map((text) => {
+            const own = remaining.filter((l) => text.includes(l.phrase));
+            remaining = remaining.filter((l) => !own.includes(l));
+            return linkify(text, own);
+          });
           return (
             <details key={item.q} className="faq-item">
               <summary className="faq-summary">
                 <span>{item.q}</span>
               </summary>
               <div className="sc-faq-answer">
-                <p>
-                  {linkify(item.a, links)}
-                </p>
+                {paragraphs.map((nodes, i) => (
+                  <p key={i}>{nodes}</p>
+                ))}
                 {cta && (
                   <Link
                     href={cta.href}

@@ -115,6 +115,17 @@ describe("generation route on an upstream outage", () => {
     expect(res.status).toBe(502);
   });
 
+  it("queries the rolling window through the current instant without relabelling UTC", async () => {
+    fetchPublicPower.mockResolvedValueOnce(rows);
+    const before = Date.now();
+    const route = await import("../../app/api/energy/generation/route");
+    await route.GET(req("/api/energy/generation?hours=24&trim=0"));
+    const [, start, end] = fetchPublicPower.mock.calls[0];
+    expect(Date.parse(end)).toBeGreaterThanOrEqual(before);
+    expect(Date.parse(end)).toBeLessThanOrEqual(Date.now());
+    expect(Date.parse(end) - Date.parse(start)).toBe(24 * 3600000);
+  });
+
   it("does not mark a fresh response stale", async () => {
     fetchPublicPower.mockResolvedValueOnce(rows);
     const r = await import("../../app/api/energy/generation/route");
@@ -187,6 +198,20 @@ describe("nuclear-import route on an upstream outage", () => {
     expect(res.status).toBe(200);
     expect((await res.json()).stale).toBe(true);
   });
+});
+
+it('shares the API durable week with server-rendered nuclear widgets during an outage', async () => {
+  const data = [{ts: '2026-10-12T09:00:00.000Z', nuclear_gw: 1.2}];
+  computeNuclearImport.mockResolvedValueOnce({data, avg_gw: 1.2, avg_share_pct: 2, source: 'x', license: 'CC BY 4.0'});
+  const route = await import('../../app/api/energy/nuclear-import/route');
+  const saved = await (await route.GET(req('/api/energy/nuclear-import?hours=168'))).json();
+  vi.resetModules();
+  computeNuclearImport.mockRejectedValue(new Error('HTTP 503'));
+  const {nuclearEnergyPreviewData} = await import('../nuclear-preview-server');
+  const result = await nuclearEnergyPreviewData(new Date('2026-10-13T12:00:00Z'));
+  expect(result?.data).toEqual(data);
+  expect(result?.stale).toBe(true);
+  expect(result?.fetchedAt).toBe(saved.fetchedAt);
 });
 
 describe("outage note", () => {

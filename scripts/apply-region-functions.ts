@@ -85,6 +85,23 @@ const PROBES: Probe[] = [
     args: { p_prefix: "09679", p_child_len: 8, p_traeger: SOLAR_SPEICHER, p_year_recent: 2025, p_year_max: 2024 },
     order: CHILD_ORDER,
   },
+  // Die kreisfreie Stadt, die in einem Landkreis liegt: Die Gemeindeseite zieht
+  // sie zusaetzlich herein (ENCLOSED_CITIES), also wird nach den Gemeinden eines
+  // FUENFSTELLIGEN Schluessels gefragt, der selbst im Rollup steht. Genau die
+  // Form, die bei einer Umstellung der Hierarchie am ehesten kippt.
+  {
+    label: "children/Wuerzburg Stadt->Gem",
+    fn: "mastr_children",
+    args: { p_prefix: "09663", p_child_len: 8, p_traeger: SOLAR_SPEICHER, p_year_recent: 2025, p_year_max: null },
+    order: CHILD_ORDER,
+  },
+  // Stadtstaat: ein Bundesland mit genau einem Kreis unter sich.
+  {
+    label: "children/Hamburg->Kreise",
+    fn: "mastr_children",
+    args: { p_prefix: "02", p_child_len: 5, p_traeger: SOLAR_SPEICHER, p_year_recent: 2025, p_year_max: null },
+    order: CHILD_ORDER,
+  },
   {
     label: "byYear/DE->Laender",
     fn: "mastr_children_by_year",
@@ -107,6 +124,12 @@ const PROBES: Probe[] = [
     label: "byYear/Kreis->Gem (ab 2020)",
     fn: "mastr_children_by_year",
     args: { p_prefix: "09679", p_child_len: 8, p_traeger: SOLAR_SPEICHER, p_year_min: 2020 },
+    order: BYYEAR_ORDER,
+  },
+  {
+    label: "byYear/Wuerzburg Stadt->Gem",
+    fn: "mastr_children_by_year",
+    args: { p_prefix: "09663", p_child_len: 8, p_traeger: SOLAR_SPEICHER, p_year_min: null },
     order: BYYEAR_ORDER,
   },
   {

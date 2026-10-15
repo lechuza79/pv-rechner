@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   faelligeAnfragen,
+  bisZurHoechstzahl,
   ohneAntwort,
   offenSeitTagen,
   ordneAnfrageZu,
@@ -222,5 +223,39 @@ describe("Eine Antwort der richtigen Anfrage zuordnen", () => {
     ]);
     const mail = { von: "info@stadt.de", betreff: "AW: Aktueller Stand des Förderprogramms X", roh: "" };
     expect(ordneAnfrageZu(mail, zwei, gleich)).toBeNull();
+  });
+});
+
+describe("one municipality, one question", () => {
+  const k = (id: string, region: string) => ({ programId: id, eskaliert: true, empfaenger: `info@${region}.de`, region });
+
+  it("does not write twice to a region already asked under another case id", () => {
+    const { senden, uebersprungen } = faelligeAnfragen([k("gerbrunn-stecker-solar", "09679136")], new Set(), MAX_JE_LAUF, new Set(["09679136"]));
+    expect(senden).toEqual([]);
+    expect(uebersprungen[0].grund).toContain("dieselbe Gemeinde");
+  });
+
+  it("does not pick two cases for the same region in one run", () => {
+    const { senden } = faelligeAnfragen([k("klaerung-09679136", "09679136"), k("gerbrunn-stecker-solar", "09679136"), k("x", "1")], new Set());
+    expect(senden).toEqual(["klaerung-09679136", "x"]);
+  });
+});
+
+describe("a rejected case takes no slot", () => {
+  class Abgewiesen extends Error {}
+  const bauen = async (id: string) => {
+    if (id.startsWith("bad")) throw new Abgewiesen(id);
+    return id;
+  };
+
+  it("fills the cap with the next buildable cases", async () => {
+    const r = await bisZurHoechstzahl(["bad1", "a", "bad2", "b", "c", "d"], bauen, e => e instanceof Abgewiesen);
+    expect(r.fertige).toEqual(["a", "b", "c"]);
+    expect(r.abgewiesen.map(a => a.id)).toEqual(["bad1", "bad2"]);
+    expect(r.uebrig).toEqual(["d"]);
+  });
+
+  it("still fails loudly on an unexpected error", async () => {
+    await expect(bisZurHoechstzahl(["a"], async () => { throw new TypeError("boom"); }, e => e instanceof Abgewiesen)).rejects.toThrow("boom");
   });
 });

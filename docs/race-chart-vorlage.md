@@ -126,3 +126,42 @@ wide section, including resize after mount. Preserve export legibility.
 The static homepage uses the same source via `npm run homepage:race`. Commit
 its generated race-dist entry and chunks together with source changes. The
 entry and shims now belong to the project; do not rebuild from the old package.
+
+## Shared heading standard (5 October 2026)
+
+All line races show the current year prominently, never a start–current range.
+The common renderer owns the 18px heading, 8px heading-to-year gap and 32–40px
+year typography. This does not depend on daily versus annual observations.
+Titleless and mini hosts render the same year component inside the chart body.
+Series names in the heading are bold with short rounded color marks; the rest
+is regular. When the heading identifies the series, omit the separate legend.
+Consumers supply data and series names, not separate heading styles.
+
+### Country electricity mix (5 October 2026)
+
+`CountryElectricityMixRaceWidget` supplies an explicit stacked mode to the existing
+municipal horizontal race engine. It shares its activity-aware clock and rank
+transitions. Each track is 100% of domestic generation, never scaled to the leader.
+The fixed ten-country cohort stays visible; ranks refer only to this cohort.
+Renewables include hydro, bioenergy and other renewables alongside wind and solar.
+Ember's observed nuclear zero is retained; absent observations fail the sync.
+Rebuild the snapshot with `python3 scripts/ember-country-mix-sync.py <Ember CSV>`.
+The existing gallery racing filter contains the widget; no separate overview.
+
+The per-capita variant uses the same renderer with `metric="per-capita"` and a
+fixed total-generation scale shared across countries and years. Each segment is
+Ember TWh × 1e9 / World Bank annual population (SP.POP.TOTL), matched by ISO country
+and year. Missing population blocks the sync; no carry-forward or zero fallback.
+Generate both snapshots by supplying the World Bank JSON as the second input to
+`ember-country-mix-sync.py`. The gallery previews both data variants of the same widget. The shared metric selector below the title uses descriptive labels without units. Units sit directly beside the row values.
+
+### Shared horizontal race presentation
+
+All horizontal race consumers use `BarRaceHeading` and `useBarRacePlayback`:
+the current year and play/pause/replay form one header row. There is no year
+slider below the plot. Municipal and country races use the same component.
+`RaceChart.module.css` owns the short rounded series marks, positioned relative
+to the text so wrapped mobile headings retain the same underline distance.
+The shared race engine renders stacked-series numbers as separate spans;
+`district-race.css` gives them fixed, tabular columns and their series colors.
+The residual electricity category is labelled “Sonstige”.

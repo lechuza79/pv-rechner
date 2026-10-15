@@ -11,9 +11,9 @@ import type { SceneTerrain } from "../../lib/wind-terrain";
 import type {WindConditions} from "../../lib/wind-animation";
 import {useWidgetPresentation} from "../dashboard/WidgetPresentationContext";
 import styles from "./landkreis.module.css";
-export type SceneControls=Pick<ReturnType<typeof createRegionScene>,'flyTo'|'zoom'|'focus'|'reset'|'previewReference'|'leaveReferencePark'|'showReferencePath'>;
+export type SceneControls=Pick<ReturnType<typeof createRegionScene>,'flyTo'|'highlightCarriers'|'focusRegion'|'zoom'|'focus'|'reset'|'previewReference'|'leaveReferencePark'|'showReferencePath'>;
 
-type Props = { standalone?:boolean; framingScale?:number; cardBottomSpace?:number; locationCard?:{id:string;content:ReactNode;visible?:boolean}; hiddenLocation?:string; onFlight?:(moving:boolean,arrived?:boolean)=>void; locations?:SceneLocation[]; solar?:SolarFootprint[]; buildings?:SceneBuilding[]; windConditions?:WindConditions|null; terrain?:SceneTerrain; windScale?:number; turbines?: SceneTurbine[]; onControls?: (controls:SceneControls)=>void; heightEnvelope: Record<string, number>; shapes: ProjectedRegion[]; values: MapValue[]; selected: string; hovered: string|null; season?: Season;
+type Props = {carrierColors?:Record<string,string>;onRegionReady?:(id:string)=>void;highlightedBars?:string[];onBarHover?:(label:string|null)=>void; sceneContext?:import("../../lib/wind-context").SceneContext; standalone?:boolean; framingScale?:number; cardBottomSpace?:number; locationCard?:{id:string;content:ReactNode;visible?:boolean}; hiddenLocation?:string; onFlight?:(moving:boolean,arrived?:boolean)=>void; locations?:SceneLocation[]; solar?:SolarFootprint[]; buildings?:SceneBuilding[]; windConditions?:WindConditions|null; terrain?:SceneTerrain; windScale?:number; turbines?: SceneTurbine[]; onControls?: (controls:SceneControls)=>void; heightEnvelope: Record<string, number>; shapes: ProjectedRegion[]; values: MapValue[]; selected: string; hovered: string|null; season?: Season;
   onHover: (id:string|null)=>void; onSelect: (id:string,touch?:boolean)=>void; onReady: (ready:boolean)=>void };
 export default function RegionScene(props:Props) {
   const presentation=useWidgetPresentation();
@@ -60,7 +60,7 @@ export default function RegionScene(props:Props) {
     import("./region-scene").then(({createRegionScene})=>{
       if(disposed||!host.current)return;
       const instance=createRegionScene(host.current,current.current.shapes,{
-        hover:id=>current.current.onHover(id),select:(id,touch)=>current.current.onSelect(id,touch),pin:setPin,
+        regionReady:id=>current.current.onRegionReady?.(id),barHover:label=>current.current.onBarHover?.(label),hover:id=>current.current.onHover(id),select:(id,touch)=>current.current.onSelect(id,touch),pin:setPin,
         locationFocus:()=>current.current.locationCard?.id,
         locationClearance:()=>copyBounds.current?(copyBounds.current.bottom+12):0,
         locationSize:()=>{
@@ -98,16 +98,18 @@ export default function RegionScene(props:Props) {
           }
         },flight:(moving,arrived)=>current.current.onFlight?.(moving,arrived),
         failed:()=>{setFailed(true);current.current.onReady(false);},
-      }, current.current.heightEnvelope,current.current.turbines,current.current.terrain,current.current.windScale,current.current.windConditions,current.current.buildings,current.current.solar,current.current.locations,current.current.framingScale);
+      }, current.current.heightEnvelope,current.current.turbines,current.current.terrain,current.current.windScale,current.current.windConditions,current.current.buildings,current.current.solar,current.current.locations,current.current.framingScale,current.current.standalone,current.current.sceneContext);
       current.current.onControls?.(instance);
       scene.current=instance;
       instance.autoplay(presentationRef.current.autoplay??true);
       instance.update(current.current.values,current.current.selected,current.current.hovered);
       void instance.season(current.current.season??"summer");
       current.current.onReady(true);
-    }).catch(()=>{if(!disposed){setFailed(true);current.current.onReady(false);}});
+    }).catch(error=>{console.error("Region scene initialization failed",error);if(!disposed){setFailed(true);current.current.onReady(false);}});
     return()=>{disposed=true;scene.current?.dispose();scene.current=null;};
   },[props.shapes]);
+  useEffect(()=>{scene.current?.setCarrierColors(props.carrierColors??{});},[props.carrierColors]);
+  useEffect(()=>{scene.current?.highlightCarriers(props.highlightedBars??[]);},[props.highlightedBars]);
   useEffect(()=>{scene.current?.autoplay(presentation.autoplay??true);},[presentation.autoplay]);
   useEffect(()=>{scene.current?.palette();},[presentation.theme]);
   useEffect(()=>{scene.current?.setWind(props.windConditions??null);},[props.windConditions]);

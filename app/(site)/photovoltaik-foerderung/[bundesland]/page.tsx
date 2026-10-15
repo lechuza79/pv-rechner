@@ -10,10 +10,12 @@ import RelatedLinks from "../../../../components/RelatedLinks";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { foerderBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify, fundingForFrom } from "../../../../lib/atlas-cities";
+import { foerderBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify, fundingListFrom } from "../../../../lib/atlas-cities";
+import { leitProgramm } from "../../../../lib/foerder-stadt-meta";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { fundingAmount, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../lib/funding-programs";
-import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
+import { FundingStatusBadge } from "../../../../components/FundingProgramParts";
+import FundingOverviewCard from "../../../../components/FundingOverviewCard";
 import ScenarioCards from "../../../../components/ScenarioCards";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
 import RegionSolarLive from "../../../../components/RegionSolarLive";
@@ -129,31 +131,9 @@ const S = {
 };
 
 function LandProgramBox({ p }: { p: FundingProgram }) {
-  const a = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 });
-  return (
-    <div style={{ ...S.card, borderColor: p.status === "aktiv" ? v("--color-positive") : v("--color-border"), background: v("--color-bg-muted") }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
-        <span style={{ fontSize: v("--font-size-lead"), fontWeight: 700 }}>{p.name}</span>
-        <FundingStatusBadge status={p.status} />
-      </div>
-      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 8 }}>{p.traeger}</div>
-      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 8 }}>
-        Förderfähig: <span style={{ color: v("--color-text-primary") }}>{p.coveredCosts}</span>
-      </div>
-      <div style={{ marginBottom: 10 }}>
-        <FundingRates rates={p.rates} />
-      </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: v("--font-size-small") }}>
-        <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
-        {a.computable && a.active && (
-          <Link href={`/photovoltaik-rechner?foe=${p.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={iconSizes.xs} /></span>
-          </Link>
-        )}
-        <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(p)}</span>
-      </div>
-    </div>
-  );
+  return <FundingOverviewCard selected={{programm: p, standLabel: fundingStandLabel(p), zaehlt: fundingZaehlt(p),
+    geltungsbereich: p.level === "bund" ? "Bundesweit" : p.region || p.bundesland || p.traeger}}
+    ort={p.region || p.bundesland || "Deutschland"} />;
 }
 
 export default async function BundeslandPage(props: { params: Promise<{ bundesland: string }> }) {
@@ -198,13 +178,14 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
 
   // Active municipal programs that currently pay out a computable grant — named
   // in the intro so the page leads with the concrete benefit.
-  const activeCityNames = cities
-    .map((c) => fundingForFrom(programs, c))
+  const activeCityNames = [...new Set(cities
+    // Every programme of the place, not only the leading one (06.10.2026).
+    .flatMap((c) => fundingListFrom(programs, c))
     // fundingZaehlt statt des rohen Status: Diese Liste nennt Städte, für die
     // wir eine konkrete Förderung vorrechnen — was nicht mehr belegt ist, darf
     // dort nicht als Beispiel auftauchen.
-    .filter((p): p is FundingProgram => Boolean(p) && fundingZaehlt(p!) && fundingAmount(p!, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).computable)
-    .map((p) => p.region);
+    .filter((p) => fundingZaehlt(p) && fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).computable)
+    .map((p) => p.region))];
 
   return (
     <div style={S.page}>
@@ -248,7 +229,8 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
         )}
 
         {cities.map((c) => {
-          const f: FundingProgram | undefined = fundingForFrom(programs, c);
+          const liste = fundingListFrom(programs, c);
+          const f: FundingProgram | undefined = leitProgramm(liste);
           return (
             <Link key={c.slug} href={cityPath(c)} style={S.card}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
@@ -258,6 +240,7 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
                   {f ? f.name : "Anlagenbestand und Beispielrechnungen"}
+                  {liste.length > 1 ? ` und ${liste.length - 1} ${liste.length === 2 ? "weiteres Programm" : "weitere Programme"}` : ""}
                 </span>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-accent"), whiteSpace: "nowrap" }}>
                   Ansehen <IconArrowRight size={iconSizes.sm} />

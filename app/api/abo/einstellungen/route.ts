@@ -6,7 +6,7 @@ import {
   aboEinstellungenSetzen,
   techniken,
 } from "../../../../lib/gemeinde-abo";
-import { getRegionById, atlasPathForRegionId } from "../../../../lib/atlas";
+import { aboRegion, aboRegionPath } from "../../../../lib/abo-region";
 import { ATLAS_CITIES, cityPath, isCityPublished } from "../../../../lib/atlas-cities";
 
 // ─── Was habe ich abonniert, und wie ändere ich es? ──────────────────────────
@@ -88,12 +88,12 @@ async function mitOrt(a: {
   technikenGewaehlt: string[];
   ausVerwaltung: boolean;
 }) {
-  const region = await getRegionById(a.regionId).catch(() => null);
+  const region = await aboRegion(a.regionId).catch(() => null);
   const stadt = ATLAS_CITIES.find((c) => c.ags === a.regionId);
   const pfad =
     a.quelle === "foerderung" && stadt && isCityPublished(stadt)
       ? cityPath(stadt)
-      : await atlasPathForRegionId(a.regionId).catch(() => null);
+      : await aboRegionPath(a.regionId).catch(() => null);
   return {
     id: a.id,
     ortName: region?.name ?? null,

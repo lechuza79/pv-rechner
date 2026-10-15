@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse, after } from "next/server";
+import {livePreviewResponse} from "../../../../lib/preview-data";
 import { createCache, fetchPublicPower, clampAbsoluteRange, safeCountry } from "../../../../lib/energy-api";
 import { rateLimit } from "../../../../lib/rate-limit";
 import { supabase } from "../../../../lib/supabase-server";
@@ -28,6 +29,7 @@ interface GenerationResponse {
    * keep their own timestamps; the flag lets the page say why they are old.
    */
   stale?: boolean;
+  retrievedAt?: string;
   /**
    * Set when Energy-Charts failed and the series comes from SMARD instead.
    * Travels with a stored copy too, so the credit always names who supplied
@@ -167,6 +169,8 @@ function trimIncompleteTrailingWeeks(data: GenerationDataPoint[]): GenerationDat
 // ─── GET Handler ──────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
+  const live = await livePreviewResponse(req);
+  if (live) return live;
   const limited = rateLimit(req, "energy-generation");
   if (limited) return limited;
 
@@ -214,8 +218,8 @@ export async function GET(req: NextRequest) {
     } else {
       const now = new Date();
       const start = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
-      startStr = start.toISOString().replace("Z", "+01:00").slice(0, 19) + "+01:00";
-      endStr = now.toISOString().replace("Z", "+01:00").slice(0, 19) + "+01:00";
+      startStr = start.toISOString();
+      endStr = now.toISOString();
     }
 
     // For ranges spanning roughly a year or more, try the pre-aggregated
@@ -260,8 +264,7 @@ export async function GET(req: NextRequest) {
     let fallback: GenerationResponse["fallback"];
     if (data.length === 0 && country === "de" && rangeHours <= SMARD_MAX_HOURS) {
       try {
-        // Rolling windows from the clock, not from startStr: that string labels
-        // a UTC time "+01:00" and would shift the SMARD window by an hour.
+        // Both sources receive the same rolling window in UTC.
         const endMs = isAbsolute ? Date.parse(endStr) : Date.now();
         const startMs = isAbsolute ? Date.parse(startStr) : endMs - hoursBack * 3600000;
         data = await fetchSmardGeneration(startMs, endMs, "quarterhour");
@@ -304,6 +307,7 @@ export async function GET(req: NextRequest) {
       ? { data, source: DATA_SOURCES.smard.name, license: DATA_SOURCES.smard.license, country, resolution, fallback }
       : { data, source: "Fraunhofer ISE / Energy-Charts", license: "CC BY 4.0", country, resolution };
 
+    response.retrievedAt = new Date().toISOString();
     store.set(cacheKey, response);
     // After the response: the copy is for the next outage, not for this visitor.
     if (data.length > 0) after(() => speichereLetztenStand("generation", cacheKey, response));

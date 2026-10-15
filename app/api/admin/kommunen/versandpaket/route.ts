@@ -11,6 +11,8 @@ import { postfachBefund, MAX_JE_LAUF } from "../../../../../lib/outreach-mail";
 import { heuteInBerlin } from "../../../../../lib/zeit";
 import { darfOutreachEmpfangen } from "../../../../../lib/kommunen-ebene";
 import { darfInDenVersand } from "../../../../../lib/outreach-wiedervorlage";
+import { renderSammelDraft } from "../../../../../lib/kommunen-outreach-draft";
+import { hatSzene, kommunenSeiteUrl } from "../../../../../lib/kommunen-seite";
 
 // Das fertige Versandpaket einer Charge: je Gemeinde Empfänger, Betreff und
 // Brieftext — gebaut aus DERSELBEN Funktion wie der Entwurf im Cockpit
@@ -52,14 +54,19 @@ export async function GET(req: NextRequest) {
   // Ferientag hätte die Sperre in diesem Fenster nicht gegriffen. Dieselbe
   // Falle wie bei der Balkon-Monatsfrist.
   const heute = (sp.get("heute") ?? heuteInBerlin()).slice(0, 10);
+  // Proof of ONE town's letter, whatever its batch (operator, 07.10.2026: the
+  // short letter could not be proofed because no town without a placement
+  // sits in a charge). Only the dispatch script's --test path uses it, and
+  // that path refuses any town mailbox as recipient.
+  const probe = sp.get("probe");
+  if (probe && !/^\d{8}$/.test(probe)) return NextResponse.json({ error: "probe braucht einen Gemeindeschlüssel" }, { status: 400 });
 
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
     .select(
       "region_id, rollen_email, rollen_email_quelle, presse_email, presse_email_quelle, kontakt_url, outreach_status, contacted_at, notes, charge, ask_variante, verwaltung_domain, klima_email, klima_beleg_url, presse_kontakt_email, presse_kontakt_beleg_url, fachkontakte, mastr_regions!inner(name)",
     )
-    .eq("kampagne", schub.kampagne)
-    .eq("charge", charge)
+    .match(probe ? { region_id: probe } : { kampagne: schub.kampagne, charge })
     .order("region_id");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
@@ -94,9 +101,12 @@ export async function GET(req: NextRequest) {
     body: string;
     body_html: string;
     variante: string;
+    briefart: "platzierung" | "info" | "sammel";
     verwaltung_domain: string | null;
     seite_url: string | null;
     rangliste_url: string | null;
+    /** A shared-mailbox letter covers several towns; all of them count as sent. */
+    region_ids?: string[];
     stand: string;
   }[] = [];
 
@@ -175,6 +185,7 @@ export async function GET(req: NextRequest) {
     ) as Adressherkunft | null;
     const gebaut = await briefFuerGemeinde(z.region_id, ziel.email, {
       anPresse: ziel.anPresse,
+      anKlima: ziel.rolle === "klima",
       herkunft: herkunft ?? undefined,
     });
     if (istBriefFehler(gebaut)) {
@@ -185,8 +196,12 @@ export async function GET(req: NextRequest) {
     // Bestand, Schlusslicht auf der eigenen Seite, Datenfehler-Verdacht), baut
     // die Vorlage eine reine Bestandsmeldung. Die ist für diesen Schub kein
     // Angebot, sondern nur eine Mail.
-    if (!gebaut.draft.meldung.includes("Platz ")) {
-      skip("kein Aufhänger mehr — die Gemeinde trägt keine Platzierung");
+    if (!probe && !(schub.briefarten ?? ["platzierung"]).includes(gebaut.briefart)) {
+      skip(
+        gebaut.briefart === "info"
+          ? "keine Platzierung, und der Kurzbrief ist für diesen Schub nicht vorgesehen"
+          : `Briefart ${gebaut.briefart} ist für diesen Schub nicht vorgesehen`,
+      );
       continue;
     }
     paket.push({
@@ -199,10 +214,51 @@ export async function GET(req: NextRequest) {
       body: gebaut.draft.body,
       body_html: gebaut.draft.bodyHtml,
       variante: gebaut.variante,
+      briefart: gebaut.briefart,
       verwaltung_domain: verwaltungDomain,
       seite_url: gebaut.seiteUrl,
       rangliste_url: gebaut.ranglisteUrl,
       stand: gebaut.stand,
+    });
+  }
+
+  // ONE LETTER PER SHARED MAILBOX (operator, 14.10.2026). An Amt that runs six
+  // member towns got six near-identical mails on one day; it now gets one that
+  // lists every town with its page and placement.
+  const jePostfach = new Map<string, typeof paket>();
+  for (const b of paket) {
+    const k = b.empfaenger.trim().toLowerCase();
+    jePostfach.set(k, [...(jePostfach.get(k) ?? []), b]);
+  }
+  const gebuendelt: typeof paket = [];
+  for (const gruppe of jePostfach.values()) {
+    if (gruppe.length === 1) {
+      gebuendelt.push(gruppe[0]);
+      continue;
+    }
+    const erster = gruppe[0];
+    const mitSzene = gruppe.find((b) => hatSzene(b.region_id)) ?? null;
+    const draft = renderSammelDraft({
+      orte: gruppe.map((b) => ({
+        name: b.name,
+        pageUrl: b.seite_url ?? "",
+        platzierung: b.briefart === "platzierung" ? b.subject : null,
+      })),
+      anPresse: erster.an_presse,
+      anKlima: erster.empfaenger_rolle === "klima",
+      empfaenger: erster.empfaenger,
+      kommunenUrl: kommunenSeiteUrl("https://solar-check.io", (mitSzene ?? erster).region_id),
+      szeneOrt: mitSzene?.name ?? null,
+    });
+    gebuendelt.push({
+      ...erster,
+      name: gruppe.map((b) => b.name).join(" · "),
+      region_ids: gruppe.map((b) => b.region_id),
+      subject: draft.subject,
+      body: draft.body,
+      body_html: draft.bodyHtml,
+      briefart: "sammel",
+      rangliste_url: null,
     });
   }
 
@@ -212,7 +268,7 @@ export async function GET(req: NextRequest) {
     charge,
     heute,
     inCharge: zeilen.length,
-    paket,
+    paket: gebuendelt,
     uebersprungen,
   });
 }

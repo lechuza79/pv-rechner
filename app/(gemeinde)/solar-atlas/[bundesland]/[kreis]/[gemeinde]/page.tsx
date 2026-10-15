@@ -1,5 +1,8 @@
+import {associationBreadcrumb} from '../../../../../../lib/verband-reference-server';
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { after } from "next/server";
+import { aufbauBericht, messe, neueUhr } from "../../../../../../lib/aufbau-uhr";
 import { resolveSlugPath, getRegionById } from "../../../../../../lib/atlas";
 import { anzeigeOrtsname, istKreisfrei, istStadtstaat, ortsseitenPfad } from "../../../../../../lib/atlas-orte";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
@@ -32,23 +35,38 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
 
 export default async function GemeindePage(props: { params: Promise<Params> }) {
   const params = await props.params;
-  const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
+  // Stopwatch per read (lib/aufbau-uhr.ts): a slow first build of a town page
+  // logs where its time went under [atlas-aufbau], like the district page.
+  const uhr = neueUhr(Date.now());
+  // The funding catalogue is read by GemeindeSeite; started first, before even
+  // the address, because it depends on nothing (getFundingPrograms joins a
+  // running read). Guarded by lib/__tests__/atlas-seite-parallel.test.ts.
+  const foerderung = getFundingPrograms();
+  void foerderung.catch(() => {});
+  messe(uhr, "foerderkatalog", foerderung);
+  const adresse = resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
+  messe(uhr, "adresse", adresse);
+  const region = await adresse;
   if (!region || region.level !== "gemeinde") notFound();
 
-  // The funding catalogue is read by GemeindeSeite; started here so it runs
-  // alongside the package instead of after it (getFundingPrograms joins a
-  // running read). Guarded by lib/__tests__/atlas-seite-parallel.test.ts.
-  void getFundingPrograms().catch(() => {});
-  const [paket, kreis, geo] = await Promise.all([
-    ladeGemeindePaket(region.region_id),
-    region.parent_region_id ? getRegionById(region.parent_region_id) : Promise.resolve(null),
-    gemeindeGeo(region.region_id),
-  ]);
+  const reads = {
+    paket: ladeGemeindePaket(region.region_id),
+    kreis: region.parent_region_id ? getRegionById(region.parent_region_id) : Promise.resolve(null),
+    geo: gemeindeGeo(region.region_id),
+  };
+  for (const [name, p] of Object.entries(reads)) messe(uhr, name, p);
+  const seite = `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`;
+  after(() => {
+    const bericht = aufbauBericht(uhr, seite, Date.now());
+    if (bericht) console.warn(bericht);
+  });
+  const [paket, kreis, geo] = await Promise.all([reads.paket, reads.kreis, reads.geo]);
   if (!paket) notFound();
 
   const bl = bundeslandByAgs(region.region_id.slice(0, 2));
   const kreisfrei = istKreisfrei(region.region_id, kreis, region.name);
   const stadtstaat = istStadtstaat(region.region_id);
+  const association=await associationBreadcrumb(region.region_id,`/solar-atlas/${params.bundesland}/${params.kreis}`);
   const pfad = [
     { name: "Solar-Atlas", href: "/solar-atlas" },
     // Berlin and Hamburg would otherwise name themselves three times, a
@@ -56,6 +74,8 @@ export default async function GemeindePage(props: { params: Promise<Params> }) {
     ...(stadtstaat ? [] : [{ name: bl?.name ?? params.bundesland, href: `/solar-atlas/${params.bundesland}` }]),
     ...(kreisfrei || stadtstaat ? [] : [{ name: kreis?.name ?? params.kreis, href: `/solar-atlas/${params.bundesland}/${params.kreis}` }]),
   ];
+
+  if(association)pfad.push(association);
 
   return (
     <GemeindeSeite

@@ -529,11 +529,11 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           Im UBA-Basismodell (+{(prices.electricityIncrease * 100).toLocaleString("de-DE", { maximumFractionDigits: 2 })} %/Jahr)
           zeigt sich der Speicher-Effekt deutlich:{" "}
           <strong className={editorial.strong}>ohne Speicher</strong> amortisiert sich die Anlage
-          {ohneRealAmort != null ? ` erst in ~${ohneRealAmort} Jahren` : " kaum im Zeitraum"}
-          {" "}({eur(ohneRealGewinn)} Gewinn über {YEARS} Jahre), weil der Mittagsüberschuss
+          {ohneRealAmort != null ? ` erst in ~${ohneRealAmort} Jahren` : ` nicht innerhalb von ${YEARS} Jahren`}
+          {" "}({ohneRealGewinn >= 0 ? `${eur(ohneRealGewinn)} Gewinn` : `${eur(-ohneRealGewinn)} Verlust`} über {YEARS} Jahre), weil der Mittagsüberschuss
           unvergütet ins Netz verpufft. <strong className={editorial.strong}>Mit 10 kWh Speicher</strong>{" "}
           {mitRealAmort != null ? `sinkt sie auf ~${mitRealAmort} Jahre` : "bleibt sie im Zeitraum"}
-          {" "}und der Gewinn steigt auf {eur(mitRealGewinn)} — genau das ist der Kern der
+          {" "}und {mitRealGewinn >= 0 ? <>der Gewinn steigt auf {eur(mitRealGewinn)}</> : <>der Verlust sinkt auf {eur(-mitRealGewinn)}</>} — genau das ist der Kern der
           Debatte: Fällt die Vergütung, wird der Speicher vom Nice-to-have zum tragenden
           Baustein.
         </p>

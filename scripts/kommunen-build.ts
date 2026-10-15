@@ -37,7 +37,7 @@ async function main() {
   const runtime = { 'process.env': '{}', 'process.env.NODE_ENV': '"production"' };
   await build({
     entryPoints: [resolve(source, 'shared.tsx')], bundle: true, platform: 'node', format: 'cjs',
-    packages: 'external', jsx: 'automatic', loader: { '.css': 'local-css' }, external: ['/fonts/*'],
+    packages: 'external', jsx: 'automatic', loader: { '.css': 'local-css' }, external: ['/fonts/*', '/brands/*'],
     plugins: [{ name: 'server-runtime', setup(b) {
       // This bundle is executed only by this Node build process, never in the browser.
       b.onResolve({ filter: /^server-only$/ }, () => ({ path: 'server-only', namespace: 'server-runtime' }));
@@ -47,7 +47,7 @@ async function main() {
   await build({
     entryPoints: [resolve(source, 'client.tsx')], bundle: true, platform: 'browser', format: 'esm',
     jsx: 'automatic', minifySyntax: true, minifyWhitespace: true, minifyIdentifiers: false,
-    external: ['/design/*', '/shared-nav/*', '/homepage-study/*', '/fonts/*', '/brand/*'],
+    external: ['/design/*', '/shared-nav/*', '/homepage-study/*', '/fonts/*', '/brand/*', '/brands/*'],
     define: runtime, outfile: resolve(assets, 'municipal-client.js'),
   });
   await build({
@@ -75,7 +75,7 @@ async function main() {
         return {contents: transformed, loader: 'js'};
       });
     }}],
-    external: ['/fonts/*', '/design/*'], define: runtime, outfile: resolve(assets, 'landscape-client.js'),
+    external: ['/fonts/*', '/brands/*', '/design/*'], define: runtime, outfile: resolve(assets, 'landscape-client.js'),
   });
   const shared = createRequire(import.meta.url)(resolve(temporary, 'shared.cjs'));
   const template = await readFile(resolve(source, 'kommunen.html'), 'utf8');

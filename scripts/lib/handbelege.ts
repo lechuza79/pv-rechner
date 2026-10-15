@@ -39,7 +39,12 @@ export async function handbelegNachpruefen(id: string, b: Handbeleg) {
   }
   const host = new URL(b.url).hostname.replace(/^www\./, "");
   // '<span class="at"></span>' stands for "@" on several municipal sites (Rheine).
-  const roh = live.html.replace(/<span[^>]*class=["']at["'][^>]*>\s*<\/span>/gi, "@");
+  // Two more cloaks seen 13.10.2026: "info[@]vgem-dzf.de" and Amt Kleine Elster's
+  // "info<span class=unicorn><span>_at_</span></span>amt-kleine-elster.de".
+  const roh = live.html
+    .replace(/<span[^>]*class=["']at["'][^>]*>\s*<\/span>/gi, "@")
+    .replace(/<span[^>]*class=["']?unicorn["']?[^>]*>\s*<span>\s*_at_\s*<\/span>\s*<\/span>/gi, "@")
+    .replace(/([A-Za-z0-9._%+-])\[@\]([A-Za-z0-9-])/g, "$1@$2");
   const html = entschleiere(decodeEntities(deobfuscatePublishedMail(wsmnAufloesen(roh))));
   out.ok =
     contactCandidates(html, b.url, host).some((c) => c.email.toLowerCase() === email) ||

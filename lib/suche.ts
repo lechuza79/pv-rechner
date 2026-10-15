@@ -119,7 +119,7 @@ async function kontextVon(hit: RegionHit): Promise<string> {
   const land = bundeslandByAgs(hit.region_id.slice(0, 2))?.name ?? "";
   if (hit.region_id.length === 2) return "";
   // A kreisfreie Stadt is its own Kreis — naming it twice says nothing.
-  if (hit.region_id.length === 8 && hit.label !== "Kreisfreie Stadt" && hit.parent_region_id?.length === 5) {
+  if ((hit.region_id.length === 8 || hit.region_id.length === 9) && hit.label !== "Kreisfreie Stadt" && hit.parent_region_id?.length === 5) {
     const kreis = await getRegionById(hit.parent_region_id).catch(() => null);
     return [kreis?.name, land].filter(Boolean).join(" · ");
   }

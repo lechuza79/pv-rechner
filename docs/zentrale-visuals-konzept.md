@@ -1,4 +1,226 @@
-# Central visual system and regional pages — plan
+# Central visual system and regional pages
+
+## Current implementation status — 12 October 2026
+
+The curated catalog contains 42 widget identities. Existing variants use the
+same registry, presentation contracts, dashboard renderer and data bootstrap.
+The inventory mounts at most eight views per page; all variants remain reachable.
+The two full applications (`simulation`, `rechner`) and the funding questionnaire
+remain applications/tools, not artificially reduced chart cards.
+
+### Migration audit
+
+| Existing family | Shared implementation / retained variants |
+| --- | --- |
+| PV and heating cost races | `RaceChart`, `KostenrennenWidget`, `HeizkostenrennenWidget`; existing full and PV mini presentations, same calculations and event controls. The already existing PV mini is now a registered hero presentation. |
+| Heating comparison | `GruengasWidget`; complete composition, bars and lines remain explicit variants. |
+| National generation and trade | `GenerationMixWidget`, `ErzeugungWidget`, `NuclearShareWidget`, `NuclearDailyWidget`, `ElectricityTradeWidget`; existing full, compact, teaser, radial, bars and totals retain their supported combinations. Totals do not acquire a fictitious compact/hero view. |
+| Country/world comparisons | Country mix race, per-capita race, capacity race, electricity race and static renewable growth use their existing shared chart owners. Capacity and electricity export units are GW and TWh, not the cost-race default euro. |
+| Historic tariffs and solar growth | `FeedInTimelineWidget`, `ZubauWidget`; article, dashboard and embed use the same components. Tariff year preparation lives in `lib/feedin-timeline.ts`. Old import paths re-export these owners. |
+| Registry summaries and national map | Existing map, plant composition, metric tile and solar trend components retain their data and actions. `MastrMetricWidget` and `EeAmpelWidget` no longer live in embed routes. |
+| Municipality/district/state | Existing regional map/race, top three, current power, annual growth, composition, KPI group, monthly solar, annual energy, solar value and tariff value use the shared monitor/chart families. State and older municipality addresses remain adapters. |
+| Topographic landscape and small weather views | `LandscapeWidget`, shared landscape cards, `WeatherMicroTile`, solar and wind profiles retain their scene/data owners and declared geometry. No new scene or layout variant was introduced. |
+| Ten active municipal story templates | `MunicipalWidgetVisual` dispatches monthly additions, electricity value, feed-in value, plant composition, columns, share donut, yield, annual energy, monthly solar and ranking. Reader, standalone widget, reduced preview and editorial ideas use this same dispatch. |
+| Older editorial design examples | `EditorialStoryVisual` preserves facts, column sequences, shares, project, timeline, rank example, donut fallback and bars. The common body exposes these only with an explicit editorial-draft option; they do not become published stories or fabricated live data. |
+| Existing social poster formats | `SocialKarte` remains the shared poster renderer for feed, placement modal, story card and template gallery; `ApprovedStoryVisual` reuses its parts. Poster framing is an output format, not another live widget identity. |
+| Funding questionnaire | `FundingCheckWidget` uses the existing calculation engine and common source/action components; its embed address remains unchanged. |
+
+`MunicipalChart` is a compatibility adapter. The ten active story templates are
+covered by actual existing report data in full and reduced rendering tests.
+Drafts retain their original markup and cannot silently enter the live story
+selection. Historic source identities stay attached to their snapshots.
+
+Presentation support belongs to the parent in `widget-registry.ts`. Gallery links,
+dashboard configuration and source conversion use that same contract. The retired
+`atomstrom-anteil-hero` catalog identity is gone; its accepted graphic remains the
+registered preview of `strommix-anteil`. The static homepage story entry also builds from `GemeindeInsights` and therefore
+`MunicipalWidgetVisual`, via `npm run homepage:stories`. Its 33 approved snapshots,
+labels and six-card selection order are retained. The old script address is a
+compatibility export; package takeovers cannot overwrite this shared build.
+The route-implementation debt list is now
+empty, with compatibility exports for existing consumers. No CSS, plot geometry,
+button style or full-view control was redesigned in this migration.
+
+### Local acceptance server
+
+Use the existing managed preview in built mode for a complete-gallery acceptance
+run: `WIDGET_PREVIEW_DATA=live npm run build`, then install the local supervisor
+with `python3 scripts/local-preview/install.py --mode built`. It stays bound to
+127.0.0.1:4319 and starts only on explicit request. Rebuild after code changes;
+this mode does not hot-reload. Development mode remains available for small edits.
+The explicit local live-data mode shares the same disk cache and read-only proxy
+as development; Vercel deployments ignore it to prevent self-proxying.
+
+### Acceptance evidence — 12 October 2026
+
+- Production build passed with the explicit local live-data setting. The managed
+  built preview serves the reference, inventory and story routes on port 4319.
+- Browser: cost full → hero → full updates the mounted frame correctly and leaves
+  the adjacent heating variant unchanged. All five energy inventory pages loaded.
+- Browser: layout reference checked at 375 and 1440 px without document overflow;
+  current solar power and the topographic scene rendered with actual data.
+  This initial check missed an internal race-chart overflow: a host-level flex
+  rule overrode the renderer's wide grid, collapsing the plot and moving playback
+  below the card. Internal arrangement now belongs to `RaceChart`; allocation
+  styles no longer compete with its container query. The dedicated
+  `e2e/race-dashboard-layout.spec.ts` checks plot, explanation and player bounds,
+  rather than treating a correctly sized outer card as sufficient evidence.
+  Narrow races also report the measured header, wrapped explanation, timeline
+  and player height plus a readable plot minimum to the composition. Nested
+  groups propagate this content minimum and move following siblings accordingly;
+  widening releases it again. The feedback excludes allocated plot/card height,
+  so it does not recursively grow the grid or change another presentation.
+  Follow-up browser checks passed for both races at 390 and 1440 px, including
+  narrow-to-wide resizing, event navigation and the generated dashboard embed.
+  The PNG download retains the data, unit and source; its annual caption is
+  metric-neutral so capacity is not incorrectly labelled electricity generation.
+- Browser: Storyview opens the shared reader; PNG download includes data, unit,
+  sources and date. The homepage's preserved cards open the same reader and export
+  successfully at 375 px. A CSS-name collision in the static bundle was fixed by
+  retaining scoped module names; the narrow view was then rechecked.
+- Browser: tariff milestone navigation and PNG download work; the funding
+  questionnaire advances through its existing questions.
+- One hydration recovery was logged during the initial inventory pass. Direct
+  reload and the same page transition were repeated without errors. This is not
+  evidence of exhaustive browser coverage of every possible configuration.
+- Automated coverage renders all ten active story templates and all 33 preserved
+  homepage snapshots in full and reduced form, plus compatibility and source
+  conversion checks. Local supervisor tests pass (12 tests).
+
+Release gates remain separate: authenticated admin save/reopen,
+hosted dashboard storage setup and production acceptance are not implied by this
+local renderer migration. Historical sections below describe intermediate states
+and do not override this audit.
+
+## Verbindliche Systemregel — 8. Oktober 2026
+
+Ein Chart hat eine gemeinsame fachliche und visuelle Grundlage. Onsite-Vollansicht,
+Whitelabel-Embed, kompakter Hero-Teaser und Storyvisual sind deklarierte Ausprägungen
+mit unterschiedlichen Aufgaben. Datenebene (z. B. Anteil oder je Einwohner),
+Darstellungsumfang (kompakt oder vollständig), Einsatzort und Exportformat sind
+unterschiedliche Einstellungen; eine Änderung der Darstellung darf die Kennzahl
+oder den Zeitraum nicht stillschweigend ändern.
+
+Vor jeder Umsetzung entscheiden und kurz begründen:
+1. Gilt die Änderung für den gemeinsamen Baustein und damit seine Verbraucher?
+2. Braucht es eine wiederverwendbare Ausprägung mit klar definierten Auslassungen?
+3. Ist es eine begründete Einstellung nur dieser Instanz?
+
+Gemeinsam bleiben Berechnung, Datenherkunft und Aktualitätssemantik, Einheiten,
+Farb- und Schriftregeln sowie Quellen-/Exportkonventionen. Ausprägungen dürfen
+Details reduzieren und das Layout ändern, aber keine zweite fachliche Wahrheit
+erzeugen. Hostseiten ordnen an und verlinken zum Elternchart. Nicht jedes Chart
+braucht einen Teaser oder jede andere Anwendung. Bestehende Kataloge erweitern;
+keine parallele Registry und keine erzwungene Universal-Komponente.
+
+Die Galerie sammelt alle aktuellen Charts und zeigt jeweils verfügbare Varianten.
+Experimente dürfen separat entstehen; vor Abschluss werden sie integriert und
+ersetzte Sonderlösungen entfernt. Nötige Altadressen bleiben als dokumentierte
+Adapter auf denselben Baustein erhalten. „Aus der Galerie ausgeblendet“ reicht
+nicht als Bereinigung. Prüfungen richten sich nach den betroffenen Familien und
+Anwendungen; keine Vollständigkeitsbehauptung ohne entsprechenden Nachweis.
+
+### Widget sizing contract
+
+Standalone embeds retain content-driven height and their normal width limits.
+Allocated layouts explicitly use `layout=allocated`: the host sets the iframe
+rectangle and the shared presentation fills it. The registry's optional
+`supportsAllocation` flag gates adoption; unsupported widgets retain natural
+height. Do not infer allocation support from chart name or appearance.
+
+Cards and plots have different dimensions. Measured headings, controls and
+padding consume part of the card; the remaining plot area is flexible for cost
+curves and trade bars, while trade radial plots fit a square into both available
+dimensions. Two stacked cards plus their gap equal the adjacent full card.
+Internal scrollbars and diagnostic overflow notices are not layout solutions.
+
+The first allocated consumers were the shared cost-race renderer and electricity
+trade (full/compact, radial/bars). Allocation now follows each registered presentation
+contract; content-driven families retain their natural height.
+The reference composition remains a CSS Grid prototype, not a GridStack install
+or a general constraint solver. Its explicit responsive layouts must leave enough
+space for readable controls; arbitrary user resizing is not yet supported.
+
+Use `WidgetGrid` for equal columns or a feature column with explicit side stacks.
+Container width determines collapse; DOM order stays the reading order. The
+isolated `/widget-galerie/layout-referenz` page demonstrates both arrangements
+inside the gallery content frame. It uses the shared bare embed preview; gallery
+labels and configuration controls belong to exploration, not dashboard examples.
+No dashboard framework is required for these static compositions. Reassess that
+choice if users need to drag, resize and persist arbitrary dashboard layouts.
+
+New widgets must declare only real supported variants, reuse shared controls,
+themes, metadata, export and source handling, and supply their plot renderer.
+Check narrow and wide containers, long values, empty/loading states, and both
+onsite and external embeds before claiming the variant ready.
+
+Generated external embed code includes `/widgets/resize.js` for automatic height.
+It accepts height messages only from the embedded frame and its source origin.
+CMS environments that prohibit scripts can choose iframe-only fixed height;
+that fallback cannot automatically adapt its height and may need scrolling.
+This is a bounded implementation, not a completed all-chart layout audit.
+
+Gallery previews seed the selected appearance in the initial embed request.
+Subsequent appearance changes use the shared message channel without navigating
+the iframe. The initial URL must stay stable until data or variant changes.
+
+### Dashboard loading and partner compositions — agreed direction, 11 October 2026
+
+Implemented: onsite dashboards render registered widget components directly with
+shared initial data and background refresh. Widget options, sharing, downloads,
+source attribution, data configuration and appearance remain on the shared frame.
+The layout reference uses direct renderers; variant exploration and external
+embedding retain their iframe boundary.
+
+Partner embedding must support both a single widget and a configured composition
+of registered widgets. A composition uses the same nested layout definition and
+widget renderers as onsite dashboards; its external embed wraps the composition
+once. The implemented `/embed/dashboard` host uses this same composition. Saved
+versions are immutable; their hosted storage rollout remains a separate release gate.
+
+The compact trade radial now draws the daily net balance as a connected line;
+full views retain daily spokes. Missing observations break the line. Both plots
+and balance annotations use one direction rule: export minus import, negative
+in the theme accent inward/downward, positive neutral outward/upward.
+
+### Widget gallery entry and exploration
+
+The widget landing view introduces embedding using the revised copy from the
+previous energy-widget page. It demonstrates the existing three-chart regional
+combination, followed by editorial application examples that reference existing
+catalog entries. Topic views retain the full exploration controls and optional
+compact variants. Navigation persists the selected place and topic in the URL;
+browser back restores the previous view. Examples never define separate chart
+renderers or data. Contact and source attribution remain shared page components.
+
+### Begrenzte Bestandsprüfung vom 8. Oktober 2026
+
+Geprüft: lokale Widget- und Galeriekataloge, Atom-Teaser/Elterncharts, gemeinsamer
+Exportzugang sowie der bisherige Konzeptvertrag. Kein vollständiger visueller
+Durchlauf aller Charts; keine Aussage zur vollständigen Veröffentlichung.
+
+- Atom-Hero verwendet inzwischen die Elternkomponenten NuclearShareWidget,
+  NuclearDailyWidget und ElectricityTradeWidget statt eigener KPI-/Plot-Kombination.
+  Galerie unterstützt optionale kompakte Varianten am Elternchart.
+- Restschuld: `nuclearShareHero` / `atomstrom-anteil-hero` steht weiterhin als
+  eigene Identität im Widget-/Abschnittskatalog, obwohl in der Galerie verborgen.
+  Verbraucher/Altadressen vor Entfernung prüfen und auf den Elternchart abbilden.
+- Restschuld: Variantenfähigkeit steht teilweise im Galeriekatalog
+  (`compactParams`), die Reduktionsbeschreibung separat in AtomHeroPreviews.
+  Fähigkeit und Vertrag sollten am bestehenden Chartkatalog zusammengeführt
+  werden, damit weitere Hosts dieselbe Definition verwenden können.
+- Export hat zwei begründete Wege: komponierte SVGs für eingebettete Einzelplots
+  und DOM-Erfassung vollständiger Karten. Nicht blind vereinheitlichen, sondern
+  denselben Metadaten-/Theme-/Quellenvertrag über beide Wege absichern.
+- Der ältere Konzeptabschnitt empfahl eine weitere Registry und eine helle
+  Exportpalette. Diese Vorschläge sind durch die Betreiberentscheidungen zur
+  Wiederverwendung bestehender Kataloge und zum sichtbaren Export-Theme überholt.
+
+Kleinster nächster Integrationsschritt: Atom-Variantenvertrag am bestehenden
+Katalog bündeln, alte Hero-Identität nur noch kompatibel darauf abbilden und
+Galerie/Hero/Embed gemeinsam prüfen. Keine pauschalen Änderungen an Datenabruf,
+Aktualisierungstakt oder bereits akzeptierten Chartgestaltungen.
+
 
 ## Region map trackpad zoom — 28 September 2026 (local, not released)
 
@@ -236,9 +458,9 @@ embeds/media library. Live chrome (frame, selectors, footer actions) wraps it.
 
 ## 2. Contract: one definition per visual
 
-Extend what exists instead of a third registry: `STORY_VISUAL_TEMPLATES` becomes the id
-list, and each id gets a definition next to it (new file `lib/visuals/registry.ts`,
-importing `DATA_SOURCES` and reusing `WidgetDef` fields/`brandLabel`/`widgetForPlace`).
+Historical proposal, superseded by the binding system rule above: extend the
+existing widget/chart catalogs. Do not create `lib/visuals/registry.ts` as a parallel
+registry. The type below illustrates responsibilities, not a new registry mandate.
 
 ```ts
 type VisualDef<Input> = {
@@ -258,7 +480,7 @@ type VisualDef<Input> = {
 
 Rules:
 - **Render is pure** (no fetch, no selector). Selectors live in the wrapper (`WidgetFrame` + `WidgetSetting`). Surface only switches density/compact, never identity.
-- **Export uses the existing pipeline**, not a copy: markers (`ExportIgnore`/`ExportOnly`), `WidgetExportFooter` + `WidgetSourceEdge` fed from the definition, `applyBrightestStage` (unless dark scheme is the defined identity — decision needed, see 5), `captureNodeToBlob`. The story reader's own `story-export-credit` is replaced by the same footer. No UI controls in the image; required notes, source/licence, brand always.
+- **Export uses the existing pipeline**, not a copy: markers (`ExportIgnore`/`ExportOnly`), `WidgetExportFooter` + `WidgetSourceEdge` fed from the definition, the current visible theme (supersedes the earlier brightest-stage proposal), `captureNodeToBlob`. The story reader's own `story-export-credit` is replaced by the same footer. No UI controls in the image; required notes, source/licence, brand always.
 - **Branding** is decided where the image/embed is generated (server or signed config), never only a client toggle; white-label can drop brand, never source/licence.
 - Stable config = `{visualId, regionId, period, aspect, variant}` → one URL shape for share/embed/media library (future; no billing now).
 - Missing data: `input()` returns an explicit unavailable state with reason; renderer shows it; never zeros.
@@ -438,3 +660,398 @@ Accepted-component reuse is required by the frontend instructions. Architecture 
 Safari verification (native macOS Safari, 26 September 2026): actual options-menu downloads completed for racing and monthly radial. This installed Safari selects supported VP9/WebM. Both files decode without errors and contain all 60 sampled frames; inspected first/last frames show 2000→2026 and 1 August→month total respectively, with light palette, place, date and source attribution. Recording is slower than Chromium; iPhone Safari was not separately exercised. Files: `solar-check-race-Landkreis Würzburg-2.webm` (1200×1195), `solar-check-radial-09679-2.webm` (480×903).
 
 Release checks: 59 focused architecture, tooltip, widget convention, export palette, composition, district content/monitor/energy and registry tests pass. TypeScript passes. These checks do not themselves prove deployment.
+
+
+### Shared chart units — operator rule, 2 October 2026
+
+- Comparable values within one chart use one shared unit. Never select units independently per bar, municipality, row, or data series of the same quantity.
+- Select the unit once from the common comparison range for the current frame, then apply it atomically to every value and unit label. For solar-capacity racing: kWp below a frame maximum of 1,000 kWp; MWp from that threshold onward. A rank crossing alone must not change the unit.
+- Use the appropriate unit family for each quantity (for example kWh/MWh/GWh for energy). Different physical quantities or explicitly separate axes retain their own unit families; never conflate power and energy.
+- Switching dataset, region, metric or period recalculates the common unit. Animation, static view, tooltip, image and backend video export must consume the same decision and numeric formatter.
+- Keep small positive values distinguishable from zero after switching: 21 kWp becomes 0.021 MWp (displayed as 0,021 in German). Use sufficient precision or an explicit lower-than label for values below display precision. Ranking always uses unrounded source values.
+- Tests must cover values on both sides of the switching threshold, identical units for all peers, positive values remaining visibly positive, and export parity.
+
+Implementation status: the regional racing chart implements this rule locally in `lib/race-value-format.ts` and its shared animation engine. This rule applies to all comparable charts and data layers; the existing chart inventory has not yet been fully audited or migrated. Do not describe the rule as a completed site-wide migration.
+
+### Round infographic controls — operator rule, 3 October 2026
+
+- Period selection stays above the graphic: it establishes the data context.
+- Day navigation, play/pause and reset form one adjacent playback group. Do not spread them across the card.
+- When both groups fit, they share the top row. When card width is insufficient (including narrow desktop grid cards), only playback moves below the graphic.
+- The graphic occupies the remaining space, capped in size and with explicit gutters. Page wrappers must not override its geometry.
+- `RadialChartLayout` implements this layout; the monthly solar chart consumes it. Apply this shared layout when migrating other round infographic controls. This does not claim all charts have been migrated.
+
+
+### Quantity headings and exports (7 October 2026)
+
+Use `chartQuantityLabel` from `lib/chart-labels.ts` for standalone quantity
+headings: “Anzahl Anlagen”, “Anzahl Anlagen je 1.000 Einwohner”, “in MW”.
+Do not apply it to value suffixes: “1.494 Anlagen” and “12 MW” stay unchanged.
+Already descriptive labels are preserved. The shared widget frame, legacy SVG
+export, municipality shell and story quantity headings consume this rule.
+Export metadata uses the supplied data vintage, comparison scope and quantity;
+interactive selectors must be replaced with their selected descriptive label.
+Keep source credits readable in both DOM and composed exports.
+
+The complete export-entry inventory and date/quantity contract are documented in
+`docs/chart-export-audit.md`. `chartMetadataLabel` is the common formatter; missing
+data vintages must never fall back to today. Numeric unit suffixes remain unchanged.
+
+### PNG downloads: designed export, current appearance (7 October 2026)
+
+Downloads use the shared export markers and metadata/footer, not a raw screen
+snapshot. Preserve the current palette and live canvas perspective. Replace
+controls with selected context in plain text; include the actual data vintage
+and descriptive units. Mention the comparison area once. Include Solar Check
+branding and license, with restrained source attribution inset from the edge.
+General interactive help is not appended automatically; necessary assumptions
+and data-gap notes must be supplied explicitly. The plot keeps its camera and
+crop; the export shell accommodates metadata and branding. Ranking can select
+an explicit aspect ratio, reflowing the layout without switching its palette.
+
+### Optional compact chart presentations (8 October 2026)
+
+A compact preview belongs to its parent chart, not a separate widget identity.
+The parent owns both renderings and the same data, period, units and gap semantics.
+Gallery entries opt in per data variant with compactParams and expose Kompakt /
+Vollständig. No compact mode is implied for unsupported charts. Host hero/story
+layouts only arrange equal-sized tiles and link them to the host's full chart;
+they do not recalculate values or compose a second independent KPI/plot.
+The nuclear share preview omits category cards and legend; the daily preview
+uses its existing SparklineMetric; trade omits day labels, hover and breakdown
+while retaining its central net quantity. Controls are omitted in teasers.
+
+Allocated variants may declare `minAllocatedHeight` where measured title/control
+space requires a lower bound. A square card placement is a host preference, not
+permission to violate that bound. Keep the plot square within the resulting card.
+The reference's `frame` setting controls placement independently of data variants.
+
+### Reusable compositions and delivery (8 October 2026, afternoon)
+
+`WidgetComposition` renders declarative area/row plans with native CSS Grid.
+Plans use their container width, not the browser width. The same component can
+be nested: a full chart and two compact variants form one outer grid area.
+Use explicit empty areas for genuine spare space, never internal scrolling to
+make a plot fit. The shared grid units are 48 px with 24 px gaps; content tracks
+may grow, and allocated charts consume the rectangle their host provides.
+This is a placement layer, not an automatic packing solver or an editor framework.
+
+An embed must acknowledge measurement even when the host listener attached late.
+Trade requests reuse successful periods and coalesce across same-origin frames;
+failed requests remain retryable. Single regional widgets use the existing chart
+renderers through a small adapter rather than mounting a complete monitor.
+A grouped KPI view owns one period control; its single-KPI presentation is a
+compact variant of that same registered widget.
+
+Image clones inherit layout tokens rather than freezing inherited values on
+every descendant. Refit DOM plots after swapping controls for metadata. Podium
+screen and export share `fitPodiumPlot`; formats remain explicit user choices.
+
+### GridStack slot pilot — 8 October 2026, evening
+
+The local layout reference now uses `WidgetSlotGrid` with GridStack 14; the
+earlier CSS Grid prototype remains for its existing consumers. This supersedes
+the earlier statement that the reference does not install a grid engine.
+React owns card content, GridStack owns only slot geometry. Explicit responsive
+plans allocate whole rows and columns; nested groups obey the same allocation.
+The visible height is span * (48 + 24) - 24 px. Examples and real chart sizing
+are developed together; an unsupported size requires another approved variant
+or a different slot, never clipping or internal chart scrolling.
+Grouped KPI widgets still use content height below the allocated examples until
+they support allocation. This is an explicit incomplete integration.
+The fixed reference place is metadata; actual chart data still loads in embeds.
+Removing its unnecessary database lookup lets the host render independently.
+Twelve focused tests passed; visual acceptance remains outstanding because
+the browser tool rejected the reload under its URL policy. No deployment.
+
+
+### Grid formats and independent teasers (electricity trade pilot, 2026-10-09)
+
+- `WIDGET_GRID_SIZES` in `lib/widget-composition.ts` defines the first shared formats:
+  small 4 columns / 5 rows (336 px high), medium 6 / 7 (480 px), wide 12 / 7 (480 px).
+  Columns refer to the immediate 12-column host, not pixels or the complete page.
+- Each presentation opts into supported formats through `gridSizes` in the existing registry.
+  Electricity trade maps small to compact and medium to full; wide was removed after review. These are pilot formats,
+  not a claim that every existing widget supports them.
+- The existing preview/detail component uses the same GridStack adapter as compositions.
+  Below the variant's minimum width, the slot spans all columns. The plot still obeys its
+  own geometry: circular plots stay square; bars use the remaining allocated height.
+- Hero/story is an independent `hero` presentation, without grid allocation. It keeps the
+  centered balance and omits axes, trade share and controls. It uses the same data and renderer.
+  The Atom hero continues to consume this presentation. No independent story renderer is added.
+- Grid and hero share period, chart configuration and theme while switching. Existing full-view
+  exports retain the central export frame; teaser presentations do not gain an export menu.
+- Nested composition coordinates remain host-owned. A group's internal column spans need not
+  match the outer host's column count; shared format heights and chart minima still apply.
+
+
+### System-wide adoption (2026-10-09, supersedes pilot-only coverage)
+
+The shared catalog now exposes the slot formats independently of chart variants. The eight
+starting geometries are strip (12/3), small (4/5), medium (6/7), portrait (4/9), tall (6/9),
+list (6/11), wide (12/7), stage (12/9). These are reusable starting points, not an exhaustive
+list of mathematically possible grid rectangles. Strip and wide currently have no opted-in
+chart in this migration; do not create variants just to occupy every format.
+
+The existing registry is the source of compatibility. `widgetGridOptions` rejects slots below
+renderer minimum height and `selectWidgetGridOption` falls back to a supported choice.
+A full renderer can fill several sizes without being duplicated. Hero/story availability is
+independent of both grid and compact support. Gallery source metadata excludes trade totals
+from the radial/bar slot contract; no chart-specific URL parsing lives in the selector.
+
+Current allocation families (12): cost races PV/heating; worldwide capacity/electricity races;
+ranking podium; trade; current solar power; regional map; monthly solar profile; country mix,
+country per-capita and regional horizontal races. The latter three share measured row pitch
+with a 44px minimum and a 768px list card. Normal embeds keep their existing row rhythm.
+
+Three hero/story families reuse existing renderers: trade, nuclear share and nuclear daily.
+The latter two continue using their existing `variant=teaser` URLs. No new teaser was built.
+
+All 33 curated families remain in the shared gallery catalog. The extra inventory section on the
+layout reference was removed after user review: that page demonstrates compositions, not a second
+catalog. Use the existing shared collapsible components wherever expandable UI is needed.
+The KPI group remains whole with content-driven height. Twenty other families still lack a
+fixed-height renderer contract and retain their previous rendering; they are not marked migrated.
+Migrate those by shared renderer family, preserving exports and data semantics. Do not add
+fictitious grid support through metadata alone.
+
+
+## Chart acceptance before further migration — 9 October 2026
+
+A passing catalog/unit test is not visual acceptance. The layout reference is the
+integration fixture for registered variants, not a place for separate renderers.
+
+For every chart family, record supported slots and presentations in the existing
+registry. Reuse the appropriate layout: flexible Cartesian plot, square radial
+plot with independent annotation area, or a composed group with shared controls.
+Do not offer a size until its smallest usable container has been checked.
+
+Acceptance covers actual iframe containers at narrow, intermediate and desktop
+widths, both themes, long labels and large values, missing data, and selected or
+animated states. Check outer width AND height, plot geometry, text collisions,
+controls and loading completion. Review the rendered result visually as well.
+Affected image/video exports additionally retain theme, units, date, sources and
+branding; on-screen geometry alone does not certify downloads.
+
+Current corrective example: full centered trade charts keep the metric inside the
+circle and the explanatory caption outside it. Compact centered charts instead
+expose that explanation through the shared InfoTooltip on the metric (hover,
+keyboard focus and tap), reserving no caption row. Landscape compact cards retain
+the side-by-side layout. Small bar annotations overlay the plot without reducing
+its height. Allocated cards override natural maximum widths in the shared frame.
+The allocated browser suite now checks caption separation, annotation size and
+full plot height, in addition to the outer rectangle. New browser assertions must
+be run in the normal browser test pipeline; manually inspected examples do not
+constitute approval of the entire catalog.
+
+Next migration order: finish and approve one example of each layout family,
+retain it as a regression reference, then migrate additional registered charts
+in small batches. New chart code supplies data and chart-specific drawing;
+frame, controls, caption regions, embeds and export behavior stay shared.
+
+### Responsive composition — implemented local pilot, 10 October 2026
+
+The earlier nine-format placeholder experiment was rejected. Its universal card
+ratios and `WidgetFormatGrid` have been removed; they are not the sizing contract.
+Legacy `WIDGET_GRID_SIZES` and existing GridStack consumers remain unchanged.
+
+`CompositionItem` and `resolveComposition` in `lib/widget-composition.ts` extend
+the existing composition model with chart leaves and nested row/column groups.
+A leaf takes its supported minimum width, allocation support and minimum height
+from the central presentation contract. Narrow height rules cover extra wrapped
+heading/control space. Preferred height can use a bounded share of a stable host
+height budget; iframe content reports must never feed back into that budget.
+
+A row needs the sum of its children's intended widths plus the shared 24px gaps.
+It stacks when that width is unavailable. Columns derive their width from the
+widest child. Group heights follow their children: maximum in a row, sum plus gaps
+in a column. Allocated siblings share the resulting height and distribute surplus
+by their declared growth weight. A natural-height descendant keeps its enclosing
+group intrinsic, so a long KPI group never stretches adjacent charts. Widths below
+the recursively derived supported minimum are rejected by the resolver; hosts
+must provide that minimum or choose another supported presentation.
+
+`ResponsiveWidgetComposition` renders this allocation in the existing composition
+layer using CSS Grid. This bounded example needs responsive flow, not drag/drop or
+user resizing, so it adds no dependency and does not replace the installed
+GridStack adapter. Existing explicit `CompositionPlan` consumers remain supported.
+The same registry, `WidgetEmbedPreview`, renderer, appearance messages, settings
+and export pipeline serve the pilot; no chart is reimplemented for this host.
+
+The reference at `/widget-galerie/grid-demo` now contains real PV cost curves,
+a compact yearly trade radial, a compact seven-day trade bar chart, and the full
+regional KPI group for Nidda. The two trade cards form a nested stack beside the
+cost chart. The KPI block retains its own shared period control and natural height.
+The host exposes shared theme/playback controls and the established source footer.
+At a 320px viewport the host supplies the full 320px required by the cost/KPI
+contracts. The cost card reserves 640px below 400px width; compact trade reserves
+336px to keep wrapped chrome, plot and metric annotation usable.
+
+The plot remains independent of the card: Cartesian plots use the remaining body,
+radial plots fit a square inside it. Hero/story and standalone content-height
+embeds retain their separate contracts. No whole-catalog migration or publication
+is implied. Current evidence and remaining gates are recorded in
+`docs/widget-layout-verification.md`.
+
+### Landscape widgets and wide race explanations — 12 October 2026
+
+The shared WidgetFrame supports an overlay heading for immersive stages. The
+landscape widget uses it for its title and actions; instructions and credits stay
+in help. Destination navigation lives at the stage bottom and uses shared
+WidgetIconButton (canonical 16px icons) and Auswahl (transparent trigger, upward menu). Product-page
+hero navigation is unchanged.
+
+Standalone landscape cards reuse LocationMicroCard and WeatherMicroTile with a
+widget layout: no fixed scene-sign width, no nested surface, no repeated place
+caption. The place label uses WidgetFrame subtitle typography. Place is read
+from widget/dashboard configuration, with no settings icon in the public widget.
+Registry data settings supply the place selector in the existing configurator;
+embeds receive the same configured place. Scene destination navigation remains
+public. Unavailable wind sites do not silently switch to solar data.
+
+RaceChart moves the event explanation beside the plot when its container reaches
+640px. The explanation surface spans the entire right column, with top-aligned 16px
+body text, 32px inner padding and event arrows inside its bottom edge. The plot
+has a 40px gap to the panel; its timeline and playback remain below it. Narrower cards
+stack and image exports retain their full plot width. Browser checks covered
+375px and 1440px, scene flights, help, place settings and a solar-card PNG download.
+
+The default landscape composition spans the full grid, with standalone cards in
+the following row. The same scene also fits an explicitly narrower grid slot.
+Micro radial curves use one non-scaling pixel in the shared solar/wind renderer.
+Compact trade summaries beside the radial plot now constrain its diameter by
+both allocated width and height, preventing overflow into adjacent widgets.
+
+### Story hosts and individual story widgets — 12 October 2026
+
+`GemeindeInsights` already supplies the shared story strip and modal reader, used
+by `StoryWidget` and `/embed/gemeinde-meldung`. `/widget-galerie/storyview` now
+exposes this existing view beside individually placeable story visuals in the
+same `WidgetDashboard` used by the layout reference and partner embeds.
+
+The active story catalog has ten templates. Installation composition, annual
+energy and monthly solar already had explicit monitor identities. Monthly
+additions, electricity value, feed-in value, columns, category share, yield
+comparison and monthly ranking now also have selectable single-story sources
+under the existing municipality-story identity. They reuse `MunicipalChart`;
+there is no new drawing implementation or change to existing story variants.
+
+`view=single&template=…` selects a published story of that template. Sharing adds
+the exact story ID; missing snapshots produce an explicit unavailable state,
+never a replacement story. Sources come from that story's own metadata, not
+from a modern provider guessed from the template. The shared exportable frame
+provides the existing help, sharing, image download and embedding actions.
+
+`umriss` remains an old catalog entry without an active renderer-selection branch;
+it is intentionally not offered as a migrated story widget. A template without
+a published example for the selected municipality is reported as unavailable.
+Content-driven story heights remain intrinsic under the existing story contract;
+no forced allocation or new compact geometry was added. The initial adapter pass left the reader export fallback separate. The follow-up below replaces that boundary.
+
+
+### Shared municipal content and saved dashboard versions (12 October 2026)
+
+`MunicipalWidgetVisual` owns the content selection for municipal dashboard cards,
+story readers and reduced previews. `MunicipalChart` remains a compatibility adapter.
+Detail (`full` or `reduced`), controls and autoplay are independent choices; a host
+never owns another drawing implementation. The existing compact drawing is reused
+for previews. A distinct hero composition is not introduced without an approved need.
+The single-story route supports `detail=reduced` and `switchable=0`; the same choices
+are exposed in its existing gallery configurator. Existing callers keep their defaults.
+
+`storyWidgetDefinition` resolves source metadata for both the common frame and the
+reader download. Proven registry providers are reused; historical snapshots retain
+their own providers. Every reader export now uses shared metadata, source edge and
+brand footer. Reader-only centering offsets are removed on the capture clone.
+
+Dashboard configuration includes global appearance, per-instance appearance,
+registered grid size, representation, data source and nested arrangement. Applying
+an edit validates the complete plan and prepares only the changed instance. New
+observations seed the existing shared store; siblings keep their observations.
+
+Saving creates an immutable version through an admin-session-protected endpoint.
+The saved viewer and dashboard embed use the same configuration parser and renderer.
+Public saved viewers have no editing controls. Local development writes versions to
+`scripts/.cache/widget-dashboards`; hosted deployments use the `widget_dashboards`
+Supabase table. Apply `scripts/sql/widget-dashboards.sql` before hosted rollout.
+There is no production fallback to ephemeral local files. A database failure is a
+visible failed save, never a success notification. Versions are not a dashboard
+management UI: naming, listing, deleting and updating a stable published dashboard
+are future management features.
+
+
+### Registered story previews and snapshot-preserving switching (12 October 2026)
+
+Individual municipality stories now register the existing reduced body as their
+`hero` presentation. The presentation is available only for `view=single`, not
+for the complete story reader. Its contract fixes reduced detail and hidden
+controls; the configurator does not expose settings that contradict those
+omissions. Full story settings and all drawing implementations remain unchanged.
+
+`widgetPresentationSource` switches registered representation parameters while
+preserving the selected story snapshot, municipality and period. The story
+reference pins each published snapshot and uses the regular variant dialog and
+per-instance dashboard update. Shared links retain the presentation. Gallery
+contract tests cover every registered hero source, including existing widgets.
+
+Browser acceptance: reduced monthly-solar selection and application succeeded;
+its actual PNG contains the title, municipality, period, data date, sources and
+shared export footer. The first reverse-switch attempt was interrupted by a
+local preview-server restart; it is not counted as passing. Admin save/reopen
+and hosted database migration remain separate rollout gates.
+
+
+## Verbindlicher Abschlussnachweis — 12. Oktober 2026
+
+Der tatsächliche Bestand und die getrennten Nachweise für Umsetzung, Browserprüfung und Veröffentlichung stehen in [widget-system-completion.md](widget-system-completion.md). Frühere Teilprüfungen in diesem Dokument sind kein vollständiger Abnahmenachweis. Der Bestand wird aus dem bestehenden Katalog abgeleitet; es gibt keine zusätzliche Widget-Registry.
+## Strommix radar composition (13 October 2026)
+
+`charts/RadarChart` is a shared numeric renderer with fixed category order, an
+explicit common maximum and the existing donut accent/neutral palette.
+`strommix-radar` adapts the latest generation snapshot into seven stable axes;
+wind and coal subtypes are combined, while every generation value except pumped-storage discharge enters the
+denominator exactly once. Pumped-storage charging/discharging and physical border
+flows are separate plain widgets in the shared EnergyMonitor hero composition.
+Each shows its own measurement timestamp; missing battery data stays unavailable.
+Border totals require all eleven connections at one common timestamp. The `spiderhero` review variant consumes the renderer
+inside the existing WidgetFrame and presentation provider. The map remains below
+the live hero. The canonical page uses the split radar hero. The shared playback interpolates
+values on a fixed scale and autoplays when visible; standalone radar embeds use
+the same renderer and export menu.
+
+The preview now uses shared `SegmentedPowerBars` for charge/discharge, with a
+labelled common GW scale (not capacity), a gently pulsing last lit segment and
+reduced-motion support. `import-attribution` supplies the generation denominator
+to both the existing nuclear calculation and the complete import-mix adapter.
+The latter uses the latest complete border timestamp and exact simultaneous
+supplier observations; missing supplier mixes remain unassigned, never zero.
+Imported storage discharge stays explicit. Import attribution is modelled,
+not flow tracing through third countries. The import chart uses the central
+CategoryBarChart compact layout and preserves nonzero values below display precision.
+
+Import/export review now uses shared `DivergingBarChart`: category rows, import
+left and export right of zero, with one symmetric GW scale. Categories are
+renewables, fossil, nuclear, other and storage discharge. Export attribution uses
+the simultaneous pool of domestic generation plus gross imports; domestic MW are
+converted to GW before weighting. Unknown imports remain in the denominator and
+produce an explicit unassigned export share. Missing domestic observations leave
+export composition unassigned. This is a proportional estimate, not flow tracing.
+
+### District racing comparison — 14 October 2026 (local preview)
+
+County pages now compose the existing race renderer with two data selections:
+counties within their state (excluding independent cities), and municipalities
+within the county. `district-race-config.ts` owns the initial preset, optional
+public toggle and shared metric/plant category with explicit per-view overrides.
+Kaiserslautern retains its private-roof per-capita county comparison; other county
+pages retain their municipality/count default. State, national, association and
+municipal page races retain their existing single-view integration.
+
+The same `RaceDataControls` editor is used by the gallery and dashboard settings.
+The existing dashboard source URL persists the configuration; no second storage
+or public settings action is introduced. `comparison=district` enables the
+composition on `/embed/regional-race/[county]`; `toggle=off` fixes its configured
+view. Only county context offers this composition. The county determines its
+state, the selected metric determines title/unit, and the active selection is
+used by share links and the existing video request. Only one chart animation is
+mounted at a time; switching between the preloaded views needs no new request.

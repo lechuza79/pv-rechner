@@ -16,7 +16,12 @@
  * never a silent "nothing new":
  *   - Postfach (IMAP, 30 Tage; trägt Rückläufer nach)
  *   - Besucherherkunft über die ganze Website (Vercel Web Analytics)
- *   - danach die Übersicht (Stand, Bilanz, Abos, Versandampel)
+ *   - Fundstellen: jede verlinkende Seite aus dem Backlink-Index und die
+ *     Websites aller Empfänger, gelesen nach einer Erwähnung (07.10.2026 — ohne
+ *     diese Quelle fehlten an einem Tag sechs Veröffentlichungen, darunter drei,
+ *     die der Index längst kannte und nur als Domainname ausgab)
+ *   - danach die Übersicht: zuerst die Tabelle je Aussendung (feste Fenster
+ *     nach dem Versandtag), dann Stand, Bilanz, Abos, Versandampel
  *
  * The paid web searches (kommunen:presse, kommunen:verweise) are NOT part of
  * this run any more (decision 28.09.2026): the search service is meant for
@@ -33,6 +38,8 @@ type Quelle = { name: string; args: string[]; limitMin: number };
 const QUELLEN: Quelle[] = [
   { name: "Postfach", args: ["run", "kommunen:ruecklauf", "--", "--tage=30", "--schreiben"], limitMin: 10 },
   { name: "Besucherherkunft", args: ["run", "kommunen:klicks"], limitMin: 15 },
+  // Exit code 2 = open findings, not a failure: the source came through.
+  { name: "Fundstellen", args: ["run", "outreach:fundstellen"], limitMin: 45 },
 ];
 
 type Ergebnis = { name: string; code: number | null; sekunden: number; ausgabe: string; abgebrochen: boolean };
@@ -73,7 +80,7 @@ async function main() {
   console.log("QUELLEN");
   let kaputt = 0;
   for (const e of ergebnisse) {
-    const ok = e.code === 0 && !e.abgebrochen;
+    const ok = (e.code === 0 || (e.name === "Fundstellen" && e.code === 2)) && !e.abgebrochen;
     if (!ok) kaputt++;
     const grund = e.abgebrochen ? "ZEITLIMIT — Ergebnis unvollständig" : e.code === 0 ? "ok" : `FEHLGESCHLAGEN (Code ${e.code})`;
     console.log(`  ${ok ? "✓" : "✗"} ${e.name.padEnd(18)} ${grund} · ${e.sekunden} s`);
@@ -85,9 +92,36 @@ async function main() {
   }
 
   // The overview last: it reads what the sources above have just written.
-  const stand = await lauf({ name: "Übersicht", args: ["run", "kommunen:stand"], limitMin: 10 });
-  console.log(`\n\n══════ Übersicht ══════\n${bereinigt(stand.ausgabe)}`);
-  process.exitCode = kaputt || stand.code ? 1 : 0;
+  // The per-sending table comes first: fair windows after each send day, so a
+  // two-day-old sending can be compared with a month-old one.
+  const [kennzahlen, stand] = await Promise.all([
+    lauf({ name: "Je Aussendung", args: ["run", "outreach:kennzahlen"], limitMin: 10 }),
+    lauf({ name: "Übersicht", args: ["run", "kommunen:stand"], limitMin: 10 }),
+  ]);
+  const kennzahlenText = kennzahlen.code === 0 && !kennzahlen.abgebrochen
+    ? bereinigt(kennzahlen.ausgabe)
+    : `! Tabelle je Aussendung nicht verfügbar (${kennzahlen.abgebrochen ? "Zeitlimit" : `Code ${kennzahlen.code}`}):\n${bereinigt(kennzahlen.ausgabe)}`;
+  console.log(`\n\n══════ Übersicht ══════\n${kennzahlenText}\n\n${bereinigt(stand.ausgabe)}`);
+
+  // The verdict. "Vollständig" only when every source came through and nothing
+  // found is left unsorted — never because a summary looks plausible.
+  const fund = ergebnisse.find((e) => e.name === "Fundstellen");
+  const nichtLesbar = Number(/NICHT_LESBAR=(\d+)/.exec(fund?.ausgabe ?? "")?.[1] ?? 0);
+  const offen = fund?.code === 2 && /offene Fundstellen —/.test(fund.ausgabe);
+  const ungelesen = fund?.code === 2 && (nichtLesbar > 0 || /Backlink-Index: NICHT gelesen/.test(fund.ausgabe));
+  console.log("\n\n══════ Urteil ══════");
+  if (!kaputt && !offen && !ungelesen) {
+    console.log("✓ VOLLSTÄNDIG für alles, was sich prüfen lässt.");
+  } else {
+    console.log("✗ NICHT VOLLSTÄNDIG:");
+    if (kaputt) console.log(`  - ${kaputt} Quelle(n) nicht durchgekommen (siehe oben)`);
+    if (offen) console.log("  - offene Fundstellen — erst lesen und eintragen oder verwerfen, dann berichten");
+    if (nichtLesbar) console.log(`  - ${nichtLesbar} Websites nicht lesbar — dort kann eine Veröffentlichung stehen, die niemand gesehen hat`);
+    if (/Backlink-Index: NICHT gelesen/.test(fund?.ausgabe ?? "")) console.log("  - Backlink-Index nicht gelesen");
+  }
+  console.log("  Grundsätzlich nicht sichtbar: Beiträge in sozialen Netzen ohne Klick zu uns, Druckausgaben,");
+  console.log("  Seiten hinter Anmeldung oder Bezahlschranke, Websites, die oben als „nicht lesbar\" stehen.");
+  process.exitCode = kaputt || stand.code || kennzahlen.code || offen || ungelesen ? 1 : 0;
 }
 
 main().catch((e) => {

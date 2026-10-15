@@ -28,6 +28,9 @@ const ohneUmlaute = (s: string) => s.toLowerCase().replace(/ä/g, "ae").replace(
 
 export type Tauglichkeit = { ok: true } | { ok: false; grund: string };
 
+/** Services whose addresses appear in page code (error tracking, site builders, tag managers). */
+const TECHNIK_DOMAIN = /(?:^|\.)(?:sentry\.io|sentry-next\.wixpress\.com|wixpress\.com|sentry\.wixpress\.com|ingest\.sentry\.io)$/;
+
 export function postfachTauglich(email: string): Tauglichkeit {
   const adresse = email.trim().toLowerCase();
   const [lokal, domain] = adresse.split("@");
@@ -35,5 +38,9 @@ export function postfachTauglich(email: string): Tauglichkeit {
   const erstes = ohneUmlaute(lokal).split(/[.\-_]+/).filter(Boolean)[0] ?? "";
   if (POSTFACH_UNGEEIGNET.includes(erstes)) return { ok: false, grund: `${erstes}@ ist kein Postfach für Anschreiben` };
   if (PLATZHALTER_LOKAL.test(ohneUmlaute(lokal)) || PLATZHALTER_DOMAIN.test(domain)) return { ok: false, grund: `Platzhalter aus einer Vorlage: ${adresse}` };
+  // Addresses from page code, not from the page: an error tracker's key in a
+  // Wix site (605a7bae…@sentry-next.wixpress.com was taken as the general
+  // mailbox of a garage, contact pass 07.10.2026). A long hex key is nobody's mailbox.
+  if (TECHNIK_DOMAIN.test(domain) || /^[0-9a-f]{20,}$/.test(lokal)) return { ok: false, grund: `technische Kennung aus dem Seitencode: ${adresse}` };
   return { ok: true };
 }

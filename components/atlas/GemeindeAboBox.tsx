@@ -1,5 +1,7 @@
 "use client";
 
+import ActionButton from "../ActionButton";
+import { useAboConfirmation } from "../../lib/use-abo-confirmation";
 import { useEffect, useRef, useState } from "react";
 import { v, space } from "../../lib/theme";
 import { trackEvent } from "../../lib/analytics";
@@ -7,7 +9,7 @@ import InfoTooltip from "../InfoTooltip";
 import Modal, { ModalSticky } from "../Modal";
 import { IconGlocke } from "../Icons";
 import { ABO_BESTAETIGT_PARAM } from "../../lib/abo-bestaetigt";
-import { AKTUELLE_EINWILLIGUNG } from "../../lib/abo-einwilligung";
+import { AKTUELLE_EINWILLIGUNG, FOERDER_ABO_EINWILLIGUNG } from "../../lib/abo-einwilligung";
 import { ABO_TECHNIKEN, ABO_TECHNIK_LABEL, type AboTechnik } from "../../lib/abo-technik";
 import { HERKUNFT_PARAM, HERKUNFT_WERT } from "../../lib/brief-herkunft";
 
@@ -119,13 +121,17 @@ export default function GemeindeAboBox({
   name,
   ags,
   quelle = "gemeinde",
+  dialogOnly = false,
+  onDialogClose,
 }: {
   name: string;
   ags: string;
+  dialogOnly?: boolean;
+  onDialogClose?: () => void;
   /** Auf welcher Seitengattung steht der Knopf. Steuert nur die Auswertung. */
   quelle?: "gemeinde" | "foerderung";
 }) {
-  const [offen, setOffen] = useState(false);
+  const [offen, setOffen] = useState(dialogOnly);
   const [email, setEmail] = useState("");
   const [falle, setFalle] = useState("");
   const [zustand, setZustand] = useState<Zustand>("bereit");
@@ -187,12 +193,15 @@ export default function GemeindeAboBox({
 
   // Die klebende Leiste am unteren Rand ruft dasselbe Fenster auf.
   useEffect(() => {
+    if (dialogOnly) return;
     const auf = () => setOffen(true);
     window.addEventListener(ABO_OEFFNEN, auf);
     return () => window.removeEventListener(ABO_OEFFNEN, auf);
   }, []);
 
-  const texte = TEXTE[quelle];
+  const scoped = ags.startsWith("funding:");
+  const consent = scoped ? FOERDER_ABO_EINWILLIGUNG : AKTUELLE_EINWILLIGUNG;
+  const texte = { ...TEXTE[quelle], intro: scoped ? consent.foerderung : TEXTE[quelle].intro };
   const sendet = zustand === "sendet";
   const fehler = typeof zustand === "object" ? zustand.fehler : null;
   const fehlerAmFeld = typeof zustand === "object" && zustand.amFeld;
@@ -228,7 +237,7 @@ export default function GemeindeAboBox({
           ausVerwaltung: quelle === "gemeinde" ? ausVerwaltung : false,
           // Wozu genau eingewilligt wurde. Der Server prüft die Angabe gegen
           // das Archiv und übernimmt sie nicht ungeprüft.
-          einwilligung: AKTUELLE_EINWILLIGUNG.version,
+          einwilligung: scoped ? FOERDER_ABO_EINWILLIGUNG.version : AKTUELLE_EINWILLIGUNG.version,
         }),
       });
       if (!antwort.ok) {
@@ -255,7 +264,7 @@ export default function GemeindeAboBox({
     <>
       {/* Knopf oben, Erklärtext darunter — beides rechtsbündig, damit der
           Block neben der Überschrift als eine Einheit liest. */}
-      <div className="gemeinde-abo">
+      {!dialogOnly && <div className="gemeinde-abo">
         {/* DER ORTSNAME STEHT IM KNOPF, obwohl die Überschrift daneben ihn
             schon trägt (Betreiber, 31.08.2026). Der doppelte Name ist der
             kleinere Preis: In der klebenden Leiste am Seitenende ist die
@@ -286,10 +295,10 @@ export default function GemeindeAboBox({
           </div>
         ) : (
           <>
-            <button type="button" onClick={() => setOffen(true)} className="sc-glocke" style={S.knopfPrimaer}>
+            <ActionButton variant="primary" onClick={() => setOffen(true)} className="sc-glocke">
               <IconGlocke size={16} />
               <span className="gemeinde-abo-ort">{name}</span> abonnieren
-            </button>
+            </ActionButton>
             <p style={S.ctaText}>
               {texte.teaser}{" "}
               <InfoTooltip title={`Meldungen zu ${name}`} ariaLabel="Was das Abo bedeutet" exportNote={false}>
@@ -298,11 +307,11 @@ export default function GemeindeAboBox({
             </p>
           </>
         )}
-      </div>
+      </div>}
 
       <Modal
         open={offen}
-        onClose={() => setOffen(false)}
+        onClose={() => { setOffen(false); onDialogClose?.(); }}
         title={`Meldungen zu ${name}`}
         intro={zustand === "fertig" ? undefined : texte.intro}
         maxWidth={440}
@@ -365,7 +374,7 @@ export default function GemeindeAboBox({
               </p>
             )}
 
-            {quelle === "foerderung" && (
+            {quelle === "foerderung" && !ags.startsWith("funding:program:") && (
               <fieldset style={S.feld_gruppe}>
                 <legend style={S.legende}>Wofür interessierst du dich?</legend>
                 <div style={S.haken_reihe}>
@@ -447,9 +456,9 @@ export default function GemeindeAboBox({
             </p>
 
             <ModalSticky>
-              <button type="submit" disabled={sendet || !email} style={S.knopf}>
+              <ActionButton variant="primary" type="submit" disabled={sendet || !email}>
                 {sendet ? "Moment …" : "Abonnieren"}
-              </button>
+              </ActionButton>
             </ModalSticky>
           </form>
         )}
@@ -614,3 +623,19 @@ const S: Record<string, React.CSSProperties> = {
     margin: 0,
   },
 };
+
+/** Reuses confirmation, consent archive and unsubscribe flow for a precise funding scope. */
+export function FundingAboButton({ name, scope, label = "Förderupdates abonnieren", listenForPageAction = false, variant = "secondary" }: { name: string; scope: string; label?: string; listenForPageAction?: boolean; variant?: "secondary" | "text" }) {
+  const [open, setOpen] = useState(false);
+  const confirmed = useAboConfirmation();
+  useEffect(() => {
+    if (!listenForPageAction) return;
+    const show = () => setOpen(true);
+    window.addEventListener(ABO_OEFFNEN, show);
+    return () => window.removeEventListener(ABO_OEFFNEN, show);
+  }, [listenForPageAction]);
+  if (confirmed) return <div role="status" style={S.quittung}><span style={S.quittungTitel}><IconGlocke size={16} />Angemeldet für {name}</span><span style={S.quittungText}>Wir schreiben dir, sobald es hier etwas zu berichten gibt.</span></div>;
+  return <><ActionButton className="sc-glocke" variant={variant} style={{ maxWidth: "100%", whiteSpace: "normal", textAlign: "center" }} onClick={() => setOpen(true)}><IconGlocke size={18} />{label}</ActionButton>
+    {open && <GemeindeAboBox name={name} ags={scope} quelle="foerderung" dialogOnly onDialogClose={() => setOpen(false)} />}
+  </>;
+}

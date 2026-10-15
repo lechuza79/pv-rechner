@@ -65,6 +65,8 @@ export function validateMunicipalReviews(input: unknown): MunicipalReview[] {
     if (r.outcome === "klaerung") {
       if (!r.nextAction || !["manual", "enquiry"].includes(r.nextAction.kind) || !date(r.nextAction.dueAt) || !nonempty(r.nextAction.detail)) throw new Error(`Unresolved review needs a dated next action: ${r.regionId}`);
       if (r.nextAction.kind === "enquiry") {
+        // The sender only sends while dueAt <= now < recheckAt; an empty window never sends.
+        if (Date.parse(r.recheckAt) <= Date.parse(r.nextAction.dueAt)) throw new Error(`Enquiry review expires before it is due: ${r.regionId}`);
         const q = r.enquiry;
         if (!q || !/^klaerung-\d{5}(\d{3})?$/.test(q.id) || q.id !== `klaerung-${r.regionId}` || ids.has(q.id)
           || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(q.recipient) || !url(q.recipientSource) || !url(q.website) || !nonempty(q.question)) throw new Error(`Enquiry needs verified contact and question: ${r.regionId}`);

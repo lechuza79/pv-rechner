@@ -34,6 +34,7 @@
  */
 
 import { entities, sichtbarerText, hostVon } from "./fachbetrieb-extrakt";
+import { anbieterBlock } from "./impressum-anbieter";
 import { entwirreAdressen, istPersonenAdresse, istPlausiblerName } from "./personen-fund";
 
 // ─── Seiten, die ein Medium führt ────────────────────────────────────────────
@@ -305,7 +306,7 @@ const ROLLE_QUAL = "(?:\\s*[,–—-]\\s*[A-ZÄÖÜ][\\p{L}]+(?:\\s+[A-ZÄÖÜ][
  *  den Rang deutlich, statt den Eintrag zu verwerfen — die Person ist echt, sie
  *  ist nur die falsche für diesen Verteiler. */
 const FREMDES_LAND =
-  /\b(?:France|Australia|Brasil|Brazil|Italia|Italy|España|Spain|India|China|Japan|Mexico|Chile|Argentina|USA|U\.S\.|America|UK|Ireland|Poland|Polska|Nederland|Netherlands|Türkiye|Turkey|Frankreich|Australien|Brasilien|Italien|Spanien|Indien|Polen|Niederlande|Türkei)\b/i;
+  /\b(?:France|Australia|Brasil|Brazil|Italia|Italy|España|Spain|India|China|Japan|Mexico|Chile|Argentina|USA|U\.S\.|America|UK|Ireland|Poland|Polska|Nederland|Netherlands|Türkiye|Turkey|Frankreich|Australien|Brasilien|Italien|Spanien|Indien|Polen|Niederlande|Türkei)(?!\w)/i;
 
 /** Wortlaut → Rang. Bewusst NACH dem Treffer ausgewertet und nicht als
  *  Musterliste: Ein Rollenname setzt sich aus Vorsatz, Kern und Zusatz zusammen,
@@ -669,11 +670,116 @@ export const MEDIENTYP: { name: string; muster: RegExp }[] = [
   { name: "Podcast", muster: /\bpodcast\b|spotify\.com\/show|podcasts\.apple\.com/i },
   { name: "Video", muster: /youtube\.com\/(?:channel|c\/|@)|\bvideoformat\b|\bwebtv\b/i },
   { name: "Fachdienst", muster: /\b(?:fachdienst|branchendienst|informationsdienst|briefing)\b/i },
-  { name: "Verband", muster: /\b(?:verband|bundesverband|e\.\s?V\.|interessenvertretung|mitgliederzeitschrift)\b/i },
 ];
 
-export function medientypAus(text: string): string[] {
-  return MEDIENTYP.filter((t) => t.muster.test(text)).map((t) => t.name);
+// ─── Run by an association? ──────────────────────────────────────────────────
+
+/**
+ * "Verband" is a statement about WHO publishes, so it is read where the site
+ * says who it is — the provider block of the imprint, the page title — never
+ * at a word anywhere on the page.
+ *
+ * Measured 06.10.2026 on 3,108 re-read media: the old whole-page pattern
+ * marked 216, and with its "e.V." repaired (a \b after a period never matched
+ * before a space) it would have marked 924 — every publisher whose site
+ * mentions a club, a "Mitgliederzeitschrift" of someone else, or a member-
+ * ship in a publishers' association. 147 of the 216 had no association
+ * anywhere in their imprint (VDE VERLAG GMBH, Thieme, a district office).
+ */
+// Case-sensitive on purpose: "Städte-Verlag E. v. Wagner & J. Mitterhuber
+// GmbH" is a person's initials (staedte-verlag.de, measured). "e.V" without
+// the final period stands in imprints too ("Neuer Zeitungsverein e.V
+// Gemeinschaft …", regionalia.de).
+const VERBAND_NAME =
+  /\b[eE]\.\s?V(?:\.|(?!\w))|\b[Ee]ingetragener\s+Verein\b|(?<![\wäöüßÄÖÜ-])[\wäöüßÄÖÜ-]*(?:[Vv]erband|VERBAND)(?![\wäöüß])/;
+// A special-purpose association is a public body, not an association medium.
+const ZWECKVERBAND = /zweckverband/i;
+// The register only with its own number type (same rule as the installer
+// classification: "Vereinsregister: HRB …" is a company's typo).
+const VEREINSREGISTER = /\bVereinsregister\s*(?:[-:–]|Nr\.?|nummer)?\s*(?:VR\s*)?\d|\bVR\s?\d{2,}/;
+// A provider block naming a company: the register number further down the
+// imprint belongs to someone else. Six NRW local radios name "audio media
+// service Produktionsgesellschaft mbH & Co. KG" and carry the VR number of
+// their broadcasting association below (radiolippe.de, measured).
+const FIRMENFORM = /\b(?:GmbH|mbH|KG|AG|UG|OHG|GbR)\b|Unternehmergesellschaft|Gesellschaft\s+mit\s+beschr/;
+// NRW's local radios are broadcast by a "Veranstaltergemeinschaft … e.V." —
+// a legal form their media law prescribes for every local station, not an
+// association publishing for its members. 37 radio domains (radiomk.de,
+// welleniederrhein.de …) were otherwise anchored hits, measured.
+const LOKALFUNK = /Veranstaltergemeinschaft/i;
+
+export interface VerbandFund {
+  wo: "Anbieter im Impressum" | "Selbstbeschreibung" | "Vereinsregister im Impressum";
+  treffer: string;
+}
+
+// A membership names someone else: "V.i.S.d.P. Stefan Bösl Mitglied Deutscher
+// Fachjournalisten-Verband" (kbumm.de, measured) is a person's site.
+const MITGLIED_VOR = /\bMitglied(?:er)?(?:\s+(?:im|in|des|der|bei))?\s+(?:[\wäöüßÄÖÜ-]+\s+){0,3}$/;
+
+function verbandsName(text: string): string | null {
+  for (const m of text.matchAll(new RegExp(VERBAND_NAME.source, "g"))) {
+    if (ZWECKVERBAND.test(m[0])) continue;
+    if (MITGLIED_VOR.test(text.slice(Math.max(0, m.index! - 80), m.index!))) continue;
+    return m[0].trim();
+  }
+  return null;
+}
+
+/**
+ * Is the site run by an association? `impText` is the visible imprint text,
+ * `selbst` the page's title and description. An empty imprint gives no
+ * finding — "not read", never "no association".
+ */
+export function verbandAus(impText: string, selbst: string): VerbandFund | null {
+  if (LOKALFUNK.test(impText)) return null;
+  const block = anbieterBlock(impText);
+  const imBlock = verbandsName(block);
+  if (imBlock) return { wo: "Anbieter im Impressum", treffer: imBlock };
+  const imTitel = verbandsName(selbst);
+  if (imTitel) return { wo: "Selbstbeschreibung", treffer: imTitel };
+  if (block && !FIRMENFORM.test(block)) {
+    const vr = impText.match(VEREINSREGISTER);
+    if (vr) return { wo: "Vereinsregister im Impressum", treffer: vr[0] };
+  }
+  return null;
+}
+
+/** How evidence of the old whole-page rule reads. It proves nothing. */
+export const FUNDSTELLE_SEITENTEXT = "Merkmal im Seitentext";
+
+export interface VerbandUrteil {
+  verband: boolean;
+  fund: VerbandFund | null;
+  /** false: neither imprint nor title could be judged, the prior flag stands */
+  gelesen: boolean;
+}
+
+/**
+ * The decision a run writes. An imprint without a readable provider block is
+ * "not read", never "no association": then the prior flag stands — but only
+ * if its own evidence came from the imprint or the title. A flag of the old
+ * whole-page rule (FUNDSTELLE_SEITENTEXT) is refuted and does not carry over.
+ */
+export function verbandUrteil(impText: string, selbst: string, vorherBelegt: boolean): VerbandUrteil {
+  const fund = verbandAus(impText, selbst);
+  if (fund) return { verband: true, fund, gelesen: true };
+  const gelesen = !!anbieterBlock(impText) || LOKALFUNK.test(impText);
+  return gelesen ? { verband: false, fund: null, gelesen } : { verband: vorherBelegt, fund: null, gelesen };
+}
+
+/** Is a stored "Verband" evidence one of the imprint rule (not the old one)? */
+export function verbandBelegTraegt(fundstelle: string | null): boolean {
+  return !!fundstelle && fundstelle !== FUNDSTELLE_SEITENTEXT;
+}
+
+/**
+ * Medium types: formats from the whole page, "Verband" from the imprint and
+ * the title (see verbandUrteil).
+ */
+export function medientypAus(text: string, verband = false): string[] {
+  const typen = MEDIENTYP.filter((t) => t.muster.test(text)).map((t) => t.name);
+  return verband ? [...typen, "Verband"] : typen;
 }
 
 /**

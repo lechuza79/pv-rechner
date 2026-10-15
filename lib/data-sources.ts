@@ -62,6 +62,13 @@ export interface DataSource {
 const BKG_DATENBEZUG_JAHR = 2026;
 
 export const DATA_SOURCES = {
+  co2map: {name:'CO2Map.de',url:'https://co2map.de',license:'CC BY 4.0',licenseUrl:'https://creativecommons.org/licenses/by/4.0/',note:'modellierte regionale Stromerzeugung, aggregiert'},
+  smardTrade: {
+    name: "Bundesnetzagentur | SMARD.de", shortName: "Bundesnetzagentur | SMARD.de",
+    url: "https://www.smard.de/home/downloadcenter", license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    note: "Kommerzielle Handelsmengen, aggregiert",
+  },
   /**
    * Live electricity mix, generation, cross-border flows.
    *
@@ -123,6 +130,13 @@ export const DATA_SOURCES = {
    * (CC-BY-4.0)". Das Logo ist ausdrücklich NICHT mitlizenziert — wir benutzen
    * es nicht und sollten das so lassen.
    */
+  worldBankPopulation: {
+    name: "Weltbank – Bevölkerung",
+    url: "https://data.worldbank.org/indicator/SP.POP.TOTL",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    note: "Jährliche Einwohnerzahlen; Pro-Kopf-Werte berechnet",
+  },
   ember: {
     name: "Ember",
     license: "CC BY 4.0",

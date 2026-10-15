@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { v } from "../lib/theme";
+import { IconClose } from "./Icons";
+import locationStyles from "./StandortField.module.css";
 import styles from "./onsite-search.module.css";
 
 // Lupe — inline, weil Icons.tsx keine Such-Glyphe hat.
@@ -19,7 +21,8 @@ type SearchHit = OnsiteSearchItem;
 
 /** Shared local filtering or asynchronous suggestions; domain adapters own data and navigation. */
 export default function OnsiteSearch({
-  onPick,
+  onPick, selectedLabel, onClear, appearance = "default", onLocate, minQueryLength = 2,
+  alwaysOpen = false, persistent: persistentField = false, suggestions = true, selectedItem,
   loadItems,
   ariaLabel = "Suchen",
   align = "right",
@@ -27,6 +30,16 @@ export default function OnsiteSearch({
   onQueryChange,
   placeholder = "Suchen …",
 }: {
+  /** Persistent field with the same floating suggestions for asynchronous searches. */
+  appearance?: "default" | "simulation";
+  onLocate?: () => void;
+  minQueryLength?: number;
+  selectedLabel?: string;
+  onClear?: () => void;
+  alwaysOpen?: boolean;
+  persistent?: boolean;
+  suggestions?: boolean;
+  selectedItem?: OnsiteSearchItem | null;
   /** Already loaded regions: persistent field, local suggestions, no request. */
   items?: SearchHit[];
   onQueryChange?: (query: string) => void;
@@ -37,18 +50,22 @@ export default function OnsiteSearch({
   /** Auf welcher Seite das Vorschlags-Panel andockt. */
   align?: "left" | "right";
 }) {
+  const persistent = alwaysOpen || persistentField || !!items;
+  const selected = persistent && !!selectedLabel && !!onClear;
   const listId = useId();
   const [open, setOpen] = useState(false);
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(selectedLabel ?? "");
+  useEffect(() => { if (selectedLabel !== undefined) { setQ(selectedLabel); setOpen(false); } }, [selectedLabel]);
   const [hits, setHits] = useState<SearchHit[]>([]);
   const [active, setActive] = useState(-1);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const close = () => {
     setOpen(false);
-    if (!items) { setQ(""); setHits([]); }
+    if (!persistent) { setQ(""); setHits([]); }
     setActive(-1);
   };
 
@@ -70,6 +87,7 @@ export default function OnsiteSearch({
 
   // Entprellte Suche.
   useEffect(() => {
+    if (!suggestions) return;
     const term = q.trim();
     if (items) {
       const fold = (value: string) => value.toLocaleLowerCase("de").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss");
@@ -78,11 +96,12 @@ export default function OnsiteSearch({
       setLoading(false);
       return;
     }
-    if (term.length < 2) {
+    if (term.length < minQueryLength) {
       setHits([]);
       setLoading(false);
       return;
     }
+    setError("");
     setLoading(true);
     const controller = new AbortController();
     const t = setTimeout(async () => {
@@ -92,21 +111,22 @@ export default function OnsiteSearch({
         setHits(result ?? []);
         setActive(-1);
       } catch {
-        if (!controller.signal.aborted) setHits([]);
+        if (!controller.signal.aborted) { setHits([]); setError("Die Ortssuche ist gerade nicht erreichbar. Bitte erneut versuchen."); }
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
     }, 200);
     return () => { clearTimeout(t); controller.abort(); };
-  }, [q, items, loadItems]);
+  }, [q, items, loadItems, minQueryLength, suggestions]);
 
   const pick = (h: SearchHit) => {
     close();
-    if (items) { setQ(h.label); onQueryChange?.(h.label); }
+    if (persistent) { setQ(h.label); onQueryChange?.(h.label); }
     onPick?.(h);
   };
 
   const onKey = (e: React.KeyboardEvent) => {
+    if (!suggestions) return;
     if (e.key === "Escape") return close();
     if (e.key === "ArrowDown") {
       setOpen(true);
@@ -116,47 +136,54 @@ export default function OnsiteSearch({
       e.preventDefault();
       setActive((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter" && hits.length) {
+      e.preventDefault();
       const h = hits[active >= 0 ? active : 0];
       if (h) pick(h);
     }
   };
 
   return (
-    <div ref={wrapRef} className={items ? styles.local : undefined} style={{ position: "relative", flexShrink: 0 }}>
-      <div className={items ? styles.field : undefined} style={{ ...S.field, ...((open || items) ? S.fieldOpen : null), ...(items ? { minHeight: 46, padding: "3px 12px", width: "100%", boxSizing: "border-box" } : null) }}>
-        <button
-          className={items ? styles.icon : undefined}
-          tabIndex={items ? -1 : undefined}
-          aria-hidden={items ? true : undefined}
+    <div ref={wrapRef} className={persistent ? styles.local : undefined} data-location-appearance={appearance} data-location-selected={selected || undefined} style={{ position: "relative", flexShrink: 0 }}>
+      <div className={persistent ? styles.field : undefined} style={{ ...S.field, position: "relative", ...((open || persistent) ? S.fieldOpen : null), ...(persistent ? { minHeight: 46, padding: "3px 12px", width: "100%", boxSizing: "border-box" } : null) }}>
+        {appearance !== "simulation" && !selected && <button
+          className={persistent ? styles.icon : undefined}
+          tabIndex={persistent ? -1 : undefined}
+          aria-hidden={persistent ? true : undefined}
           type="button"
-          onClick={() => { if (items) { setOpen(true); inputRef.current?.focus(); } else { open ? close() : setOpen(true); } }}
+          onClick={() => { if (persistent) { setOpen(true); inputRef.current?.focus(); } else { open ? close() : setOpen(true); } }}
           style={S.iconBtn}
           aria-label={open ? "Suche schließen" : ariaLabel}
           title={ariaLabel}
         >
           <SearchGlyph />
-        </button>
+        </button>}
+        {selectedItem && !open ? <span className={styles.selection}><strong>{selectedItem.label}</strong><button type="button" aria-label={`${selectedItem.label}: Auswahl entfernen`} onClick={() => { onClear?.(); setQ(""); setHits([]); setOpen(true); inputRef.current?.focus(); }}><IconClose size={16}/></button></span> : <div className={selected && appearance === "default" ? styles.selectedPlace : styles.inputContents}>
         <input
           ref={inputRef}
           value={q}
-          onChange={(e) => { setQ(e.target.value); onQueryChange?.(e.target.value); setOpen(true); }}
-          onFocus={() => { if (items) setOpen(true); }}
-          onClick={() => { if (items) setOpen(true); }}
-          role="combobox"
-          aria-expanded={open}
-          aria-controls={listId}
-          aria-autocomplete="list"
+          readOnly={selected}
+          autoComplete="off"
+          onChange={(e) => { setQ(e.target.value); onQueryChange?.(e.target.value); if (suggestions) setOpen(true); }}
+          onFocus={() => { if (persistent && !selected && suggestions) setOpen(true); }}
+          onClick={() => { if (persistent && !selected && suggestions) setOpen(true); }}
+          role={suggestions ? "combobox" : "searchbox"}
+          aria-expanded={suggestions ? open : undefined}
+          aria-controls={suggestions ? listId : undefined}
+          aria-autocomplete={suggestions ? "list" : undefined}
           aria-activedescendant={open && active >= 0 ? `${listId}-${active}` : undefined}
           onKeyDown={onKey}
           placeholder={placeholder}
           aria-label={ariaLabel}
-          style={{ ...S.input, ...((open || items) ? S.inputOpen : null), ...(items ? { width: "100%", minWidth: 0, fontSize: "var(--font-size-base)" } : null) }}
-          tabIndex={open || items ? 0 : -1}
+          style={{ ...S.input, ...((open || persistent) ? S.inputOpen : null), ...(persistent ? { width: "100%", minWidth: 0, paddingRight: onClear ? 40 : undefined, fontSize: "var(--font-size-base)" } : null) }}
+          tabIndex={open || persistent ? 0 : -1}
         />
+        {persistent && q && onClear && <button className={appearance === "simulation" ? styles.simulationAction : locationStyles.clear} type="button" aria-label="Standort löschen" onClick={() => { setQ(""); setHits([]); setOpen(false); onClear(); inputRef.current?.focus(); }}><IconClose size={18} /></button>}
+        {appearance === "simulation" && !q && onLocate && <button type="button" className={styles.simulationAction} aria-label="Meinen Standort verwenden" onClick={onLocate}><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 1v4m0 14v4M1 12h4m14 0h4"/></svg></button>}
+        </div>}
       </div>
 
-      {(items || (open && q.trim().length >= 2)) && (
-        <div className={items ? styles.dropdown : undefined} data-open={open ? "true" : "false"} aria-hidden={!open} style={{ ...S.dropdown, ...(align === "left" ? { left: 0, right: "auto" } : null), ...(items ? { left: 0, right: 0, width: "100%", minWidth: 0, maxWidth: "none", boxSizing: "border-box" } : null) }} role="listbox" id={listId} aria-label={ariaLabel}>
+      {suggestions && !selected && (persistent || (open && q.trim().length >= 2)) && (
+        <div className={persistent ? styles.dropdown : undefined} data-open={open ? "true" : "false"} aria-hidden={!open} style={{ ...S.dropdown, ...(align === "left" ? { left: 0, right: "auto" } : null), ...(persistent ? { left: 0, right: 0, width: "100%", minWidth: 0, maxWidth: "none", boxSizing: "border-box" } : null) }} role="listbox" id={listId} aria-label={ariaLabel}>
           {loading && !hits.length ? (
             <div style={S.empty}>Suche …</div>
           ) : hits.length ? (
@@ -176,7 +203,7 @@ export default function OnsiteSearch({
               </button>
             ))
           ) : (
-            <div style={S.empty}>Nichts gefunden</div>
+            <div style={S.empty} role="status">{error || "Nichts gefunden"}</div>
           )}
         </div>
       )}

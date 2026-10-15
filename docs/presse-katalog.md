@@ -12,6 +12,45 @@ ausdrücklich **nicht**.
   Journalisten)
 - Ausgabe: `docs/presse/*.csv`
 
+## Drei Listen in einer Tabelle: Presse · Fachverbände · Archiv (07.10.2026)
+
+Die Kreissuche nach Regionalzeitungen hat Feuerwehr-, Rotkreuz-, Heimat- und
+Gewerbevereine mitgebracht. Auf Wunsch des Betreibers stehen sie jetzt im
+**Archiv** (143) statt gelöscht: Die Zeile bleibt, damit die nächste Suche die
+Domain nicht neu aufnimmt, aber kein Pressevorgang fasst sie mehr an (kein
+Profil-Lauf, keine Eignung, keine Kontaktsuche, keine Freigabe). Die
+**Fachverbände** (32: Energie, Verbraucher, Wohnen, kommunale Spitzenverbände)
+sind eine eigene Liste mit eigener Ansprache — Material für die Mitglieder statt
+einer Meldung; Kontaktsuche und Freigabe nehmen sie mit, die Presse-Eignung nicht.
+
+- Entschieden wird **von Hand und nach Namen** in `lib/presse-listen.ts`, nicht
+  über Wortregeln: ein Bürgerradio als e.V. ist Presse, ein Gewerbeverein mit
+  Nachrichtenrubrik nicht. Vereine, die bewusst Presse bleiben (Verband der
+  Gratiszeitungen, Journalistenverein), stehen dort ebenfalls.
+- Übernommen wird mit `npm run presse -- --listen --schreiben`; ohne Ansage zeigt
+  der Lauf nur, was sich ändern würde, und listet Vereine ohne Entscheidung.
+- **`--setup` nicht nebenbei laufen lassen:** Es verwirft das Protokoll der
+  Kreissuche (`DROP TABLE presse_kreissuche`), und die nächste Kreissuche zahlt
+  dann alles noch einmal. Neue Spalten einzeln anlegen.
+
+## Medientyp „Verband": nur am Impressum (06.10.2026)
+
+Wer ein Medium herausgibt, steht im Anbieterblock des Impressums, nicht in einem
+Wort irgendwo auf der Seite. Die alte Erkennung über den ganzen Seitentext lag
+bei 196 von 268 Markierungen daneben (Verlage, Landratsämter, Tageszeitungen).
+Seit dem 06.10.2026 neu bewertet: 231 Medien, jede mit einem Beleg aus Impressum
+oder Seitentitel; Stichproben 10/10 neu richtig, 6/6 entfernt richtig.
+
+- Ist das Impressum nicht lesbar, bleibt eine frühere Markierung stehen — aber
+  nur, wenn ihr Beleg selbst aus dem Impressum stammt. Belege der alten Regel
+  („Merkmal im Seitentext") tragen nichts mehr.
+- Ein Erhebungslauf ersetzt die Verband-Belege eines Mediums; vorher blieben
+  alte Belege neben neuen stehen, weil sie eine andere Quell-Adresse hatten.
+- Nach einer Regeländerung ohne Vollauf neu bewerten:
+  `npm run presse -- --verband --protokoll <datei>` misst nur, Protokoll
+  gegenlesen, dann `--verband --aus <datei>` schreibt.
+- Tests: `lib/__tests__/presse-verband.test.ts`.
+
 ## Warum die Trefferquote hier höher ist als bei den drei vorigen
 
 Bei Gemeinden, Versorgern und Fachbetrieben ist der Ansprechpartner eine

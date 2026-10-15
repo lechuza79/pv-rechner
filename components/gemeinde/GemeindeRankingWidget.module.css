@@ -3,7 +3,7 @@
 .widget :global(.sc-widget-head){position:relative;z-index:2;align-items:flex-start}
 .visual{position:relative;isolation:isolate;flex:1;min-height:0;display:flex;flex-direction:column}
 /* Same layered monochrome treatment as the race and monthly solar widgets. */
-.artwork{position:absolute;inset:-80px -24px -24px;z-index:-1;pointer-events:none;opacity:.16;overflow:visible;mask-image:linear-gradient(transparent,#000 22%,#000 65%,transparent)}
+.artwork{position:absolute;inset:-80px -24px -24px;z-index:-1;pointer-events:none;opacity:.16;overflow:hidden;mask-image:linear-gradient(transparent,#000 22%,#000 65%,transparent)}
 .backdrop{position:absolute;inset:-10%;width:120%;height:120%;max-width:none;object-fit:cover;object-position:center;filter:grayscale(1)}
 .splash{position:absolute;inset:0;background:url('/brand/feed-in-v4-splashes.svg') center/100% auto no-repeat;filter:grayscale(1) brightness(.3)}
 .badge{position:absolute;width:96px;max-width:none;height:96px;object-fit:contain;left:50%;top:100%;transform:translate(calc(-50% + var(--badge-x,0px)),calc(-50% + var(--badge-offset,0px)));filter:drop-shadow(0 3px 4px rgb(24 50 62 / .18))}
@@ -31,7 +31,7 @@
 .widget[data-export-sized] .visual{flex:1;min-height:0}
 .widget[data-export-sized] .podium{min-height:0;padding-top:20px}
 
-.widget[data-export-sized] .bar{height:calc(var(--bar-fraction) * clamp(140px,calc(var(--chart-export-height) - 360px),420px))}
+.widget[data-export-sized] .bar{height:calc(var(--bar-fraction) * var(--ranking-plot-height,160px))}
 
 .contender[data-own=true] .rank{visibility:hidden}
 .podium{padding-bottom:22px}
@@ -63,3 +63,12 @@
 
 /* Keep values clear of the overlapping badge, even for very short own bars. */
 .contender[data-own=true] .label{margin-bottom:max(12px,calc(60px - var(--bar-fraction) * var(--ranking-plot-height,160px)))}
+
+/* The optional list action leaves the existing podium and image exports intact. */
+.widget :global(.sc-widget-body){flex-direction:column;}
+.listAction{padding-top:16px;}
+.listAction button{white-space:normal;text-align:center;width:100%;}
+.ownRow{background:color-mix(in srgb,var(--color-cta,#d4ff24) 16%,transparent);}
+.placeCell.placeCell{min-width:160px;text-align:left;white-space:normal;overflow-wrap:normal;}
+.ownLabel{display:block;font-size:12px;font-weight:400;}
+.listSource{font-size:13px;line-height:1.5;color:var(--color-text-secondary);}

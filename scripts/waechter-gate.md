@@ -225,6 +225,13 @@ Ein Auto-Fix passiert nur, wenn **alle** erfüllt sind:
 4. **Sprunggrenze:** höchstens 30 % Änderung je Feld gegenüber dem hinterlegten
    Wert. Darüber nur Vorschlag — ein größerer Sprung ist eher ein Lesefehler als
    ein Marktereignis.
+   **Ausnahme Balkon-Set-Preise (15.10.2026):** Liegt der Referenzpreis aus dem
+   Partnerkatalog innerhalb einer unabhängig recherchierten Marktspanne, gilt
+   die Grenze nicht — zwei übereinstimmende Quellen schließen den Lesefehler
+   aus, den sie abfangen soll. Regel und Ablauf: `scripts/balkon-verify.md`,
+   „Set-Preise: Abgleich mit dem Partnerkatalog". Anlass: Ein echter Preisfall
+   von 30–40 % stand eine Nacht lang als Entscheidungs-Mail beim Betreiber,
+   obwohl der Partnerkatalog unter dem Ergebnis die neuen Preise schon zeigte.
 5. **`npx tsc --noEmit` und `npx vitest run` grün**, inklusive der
    Realitäts-Anker aus Regel 7.
 
@@ -336,7 +343,7 @@ es eine — und dann gehört sie in **einen** Satz plus Empfehlung.
 | CO₂-Preispfad (jährlich + monatlicher Scan) | Preispfad-Stützstellen | Wechsel des Preismechanismus |
 | Strommix-Langzeitreihen (monatlicher Scan) | CO₂-Reihen einer neuen UBA-Ausgabe — Council prüft die **Spaltenüberschrift**, nicht die Plausibilität (die Nachbarspalten sind rechnerisch nicht unterscheidbar) | Erzeugungsreihe, geänderte Tabellenstruktur, Wechsel der gelesenen Spalte |
 | Wärmepumpe (quartalsweise) | Investition (Basis, Steigung, Heizkörpertausch) | BEG-Sätze, WP-Tarif, Gaspreis |
-| Geräte-Config (quartalsweise) | Set-/Gerätepreise, Effizienzen **nach der Systematik** | neue Gerätekategorie, neue Effizienz-Systematik |
+| Geräte-Config (quartalsweise) | Set-/Gerätepreise, Effizienzen **nach der Systematik**; Balkon-Set-Preise auch über 30 %, wenn Partnerkatalog und Markt übereinstimmen | neue Gerätekategorie, neue Effizienz-Systematik |
 | Freiflächen-Zuschlagswerte (3× jährlich) | veröffentlichte Ausschreibungsrunde ins gleitende Fenster, **vollständiges** Ausschreibungsjahr in die Jahresreihe | Fenstergröße, Gewichtungsregel, Versatz-Regel (§ 37e), unvollständiges Jahr |
 | Förderprogramme (täglich + quartalsweise) | Programm abschalten, Sätze senken, Programm einschalten nach Träger-Beleg, **Programm neu aufnehmen** (Bedingungen unten) | Aufnahme allein aus einer Sekundärquelle |
 | Grüngas / GModG | Verkündungs-Flag, Stufenwerte nach Gesetzestext | Quotengesetz nach § 42a, neue Stufen |

@@ -17,6 +17,7 @@ import { createHash } from "node:crypto";
 import type { Browser } from "playwright";
 import type { Bestand, Eintrag } from "./kontakt-lauf";
 import { host, siteOf } from "../../lib/kontakt-suche";
+import { webKomponentenAusklappen } from "../../lib/web-komponenten";
 
 const sha = (b: Buffer | string) => createHash("sha256").update(b).digest("hex");
 
@@ -57,11 +58,31 @@ export function startAdressen(website: string): string[] {
 }
 
 /** The page's HTML; a page that is still redirecting is given time to settle. */
+/**
+ * The content of every shadow root, which page.content() leaves out: E.DIS
+ * builds its imprint and contact page inside web components, and the rendered
+ * page came back as 313 characters of shell (wind operators, 06.10.2026).
+ */
+const SCHATTEN = `(() => {
+  const teile = [];
+  const gehen = (wurzel) => {
+    for (const el of wurzel.querySelectorAll("*")) {
+      if (el.shadowRoot) { teile.push(el.shadowRoot.innerHTML); gehen(el.shadowRoot); }
+    }
+  };
+  gehen(document);
+  return teile.join("\n");
+})()`;
+
 async function inhalt(page: import("playwright").Page): Promise<string | null> {
   for (let versuch = 0; versuch < 3; versuch++) {
     // page.content() carries no deadline of its own and can hang for good.
-    const html = await mitFrist(page.content(), 15000, null);
-    if (html !== null) return html;
+    let html = await mitFrist(page.content(), 15000, null);
+    if (html !== null) {
+      const schatten = await mitFrist(page.evaluate(SCHATTEN) as Promise<string>, 10000, "");
+      if (schatten) html = html.replace(/<\/body>/i, `<div data-schatten-dom>${schatten}</div></body>`);
+    }
+    if (html !== null) return webKomponentenAusklappen(html);
     await mitFrist(page.waitForLoadState("load", { timeout: 10000 }), 12000, undefined as void);
   }
   return null;

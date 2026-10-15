@@ -1,9 +1,10 @@
-import {defaultRaceSettings,type RaceSettings} from "./race-settings";
+import {defaultRaceSettings,raceSegments,type RaceSettings} from "./race-settings";
 import { foldSiblings, type AtlasChild, type RankingRegion, type ChildYearRow } from "./atlas";
 
 /** One timeline for the page and server export. */
 export function regionalRaceData(towns: AtlasChild[], ranking: {regions: RankingRegion[]; cells: ChildYearRow[]}, stand: string, basePath = "",settings:RaceSettings=defaultRaceSettings) {
-  const cells=settings.segment==='private-roofs'?ranking.cells.filter(cell=>cell.segment==='privat_dach'):ranking.cells;
+  const source=raceSegments.find(item=>item.value===settings.segment)?.source;
+  const cells=source?ranking.cells.filter(cell=>cell.segment===source):ranking.cells;
   const sumRows=(selected:ChildYearRow[])=>new Map(foldSiblings(ranking.regions,selected).map(row=>[row.region_id,settings.metric==='count'?row.sums.alle.count:settings.metric==='kwp'?row.sums.alle.kwp:row.population&&row.population>0?row.sums.alle.kwp*1000/row.population:null]));
   const sums=sumRows(cells);
   const eligible=towns.filter(town=>settings.metric!=='per-capita'||sums.get(town.region_id)!=null);

@@ -41,6 +41,7 @@
  * Regel für die nächsten Briefe nachziehen. Nichts davon geht, wenn es
  * niemandem auffällt.
  */
+import { RANGLISTE_PRO_SEITE } from "../lib/atlas-ranking";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
@@ -195,7 +196,10 @@ async function main(): Promise<void> {
         const namen = [...text.matchAll(/class="atlas-rank-ziel"[^>]*>(?:<span[^>]*>[^<]*<\/span>)?([^<]+)</g)].map((m) =>
           m[1].trim(),
         );
-        const pos = namen.findIndex((n) => n === b.name) + 1;
+        // A link to a later page ("…/seite-2") lists ranks 201–400.
+        const seite = Number(/\/seite-(\d+)/.exec(b.rangliste_url)?.[1] ?? 1);
+        const idx = namen.findIndex((n) => n === b.name);
+        const pos = idx < 0 ? 0 : idx + 1 + (seite - 1) * RANGLISTE_PRO_SEITE;
         const behauptet = Number(platz[1]);
         const gruppe = Number(platz[2].replace(/\./g, ""));
         if (!pos) mängel.push(`steht nicht auf der eigenen Rangliste`);
@@ -206,7 +210,7 @@ async function main(): Promise<void> {
         // beanstandet. Geprüft wird die Größe deshalb nur, wo die Liste
         // vollständig ist; die Platzierung selbst bleibt in beiden Fällen
         // prüfbar, weil unsere Briefe ausnahmslos vordere Plätze behaupten.
-        const abgeschnitten = namen.length >= 200;
+        const abgeschnitten = namen.length >= RANGLISTE_PRO_SEITE || seite > 1;
         if (namen.length && !abgeschnitten && namen.length !== gruppe) {
           mängel.push(`Brief sagt „von ${gruppe}", Rangliste hat ${namen.length} Einträge`);
         }

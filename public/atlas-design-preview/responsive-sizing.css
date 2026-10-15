@@ -200,7 +200,7 @@
 .v3-section-nav .atlas-page-actions button[data-page-subscribe]{display:flex;gap:8px;width:auto;padding:0 14px;background:var(--theme-action,#d4ff24);border-color:transparent;color:var(--theme-action-ink,#132527);font:inherit;font-weight:600;}
 .v3-section-nav .atlas-page-actions svg{width:16px!important;height:16px!important;margin:0;}
 .solar-page #atlas-stories .atlas-insights-head{padding-top:0;padding-bottom:24px;}
-.solar-page #atlas-stories .atlas-insights-head h2{font-size:var(--sc-type-section-size);line-height:1.25;letter-spacing:normal;margin:0;}
+.solar-page #atlas-stories .atlas-insights-head h2{font-size:var(--sc-type-title-size)!important;line-height:1.25;letter-spacing:normal;margin:0;}
 @media(max-width:600px){
  .solar-page .v3-section-nav{gap:4px;padding:6px;max-width:calc(100% - 24px);font-size:12px;flex-wrap:wrap;border-radius:26px;width:350px;}
  .solar-page .v3-section-nav a{padding:9px 8px;}

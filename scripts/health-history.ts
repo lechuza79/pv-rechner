@@ -5,11 +5,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { emptyState, readState } from '../lib/health-incidents';
 
-// GitHub artifacts are durable across runners; cache eviction is not a ledger.
-type Artifact = { id: number; created_at: string; expired: boolean; workflow_run?: { id: number; head_branch: string; repository_id: number; head_repository_id: number } };
-export function selectHistory(artifacts: Artifact[]) {
-  return artifacts.filter(a => !a.expired && a.workflow_run?.head_branch === 'main' && typeof a.workflow_run.repository_id === 'number' && a.workflow_run.head_repository_id === a.workflow_run.repository_id).sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at) || b.id - a.id)[0];
-}
+import { latestArtifactJson, selectHistory } from './lib/actions-artifact';
+export { selectHistory };
+
 function main() {
   const repo = process.env.GITHUB_REPOSITORY;
   if (!repo) throw new Error('GITHUB_REPOSITORY missing');
@@ -30,6 +28,14 @@ function main() {
       writeFileSync('.health/previous.json', JSON.stringify(state));
       console.log(`Incident history restored from run ${artifact.workflow_run?.id}`);
     } finally { rmSync(dir, { recursive: true, force: true }); }
+  }
+  // The repair ledger: absent is fine (no repair run yet), a failed read is not —
+  // the health check then reports it as unreadable instead of "nothing silent".
+  try {
+    const ledger = latestArtifactJson(repo, 'autofix-ledger', 'ledger.json');
+    if (ledger) writeFileSync('.health/autofix-ledger.json', JSON.stringify(ledger.json));
+  } catch (e) {
+    writeFileSync('.health/autofix-ledger.json', JSON.stringify({ version: 0, fehler: String(e) }));
   }
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();

@@ -1,5 +1,9 @@
+import { ATOMSTROM_RELEASE_READY, ATOMSTROM_ARCHIVE_YEARS } from '../lib/atomstrom-release';
+import { getPageContentModifiedAt } from '../lib/page-content-state';
+import { getAnnualVariant } from './(site)/atomstrom-import/annual-variant';
+import { fundingContentDate } from "../lib/funding-page-dates";
 import { MetadataRoute } from "next";
-import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingForFrom, cityIndexFreigegeben } from "../lib/atlas-cities";
+import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingListFrom, cityIndexFreigegeben, type AtlasCity } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
@@ -20,19 +24,26 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 //     (dieselbe Quelle, aus der die Seiten ihr "Stand …" rendern),
 //   - alles andere lässt lastmod weg und überlässt es dem Crawler.
 // Ein fehlendes Datum ist ehrlicher als ein falsches.
+// Keep persisted content changes discoverable between deployments.
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const strommixModifiedAt = await getPageContentModifiedAt('/strommix-deutschland');
+  const atomstromModifiedAt = ATOMSTROM_RELEASE_READY ? await getPageContentModifiedAt('/atomstrom-import') : undefined;
   const programs = await getFundingPrograms();
+  const {releasedAssociations,associationPath}=await import('../lib/verband-reference');
+  const {atlasPathForRegionId}=await import('../lib/atlas');
+  const associationPages=await Promise.all(releasedAssociations().map(async association=>{
+    const parent=await atlasPathForRegionId(association.districtId);
+    if(!parent)throw new Error('Released association district path missing');
+    return {url:BASE_URL+associationPath(parent,association.slug)};
+  }));
   const toDate = (iso?: string): Date | undefined => {
     if (!iso) return undefined;
     const d = new Date(iso);
     return isNaN(d.getTime()) ? undefined : d;
   };
-  const fundingDates = programs.map((p) => toDate(p.lastVerified)).filter((d): d is Date => !!d);
-  // Kein Prüfdatum in den Programmen (z. B. Datenbank aus) → gar kein lastmod,
-  // nicht die Build-Zeit.
-  const maxFundingDate = fundingDates.length
-    ? new Date(Math.max(...fundingDates.map((d) => d.getTime())))
-    : undefined;
+  const maxFundingDate = fundingContentDate(programs);
 
   // Datenstand des Marktstammdatenregisters — er datiert alles, was aus MaStR
   // gerechnet ist (Atlas + Zubau-Story). Der Read ist ein Einzeiler auf
@@ -49,11 +60,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Nur freigegebene Seiten: Eine gebaute, aber noch gesperrte Seite gehört
   // nicht in die Sitemap — sonst laden wir Google genau zu der Seite ein, die
   // wir ihm per noindex gerade verweigern.
+  // Only actual revisions of programmes on this page can supply its date.
+  const geprueftAm = (c: AtlasCity): Date | undefined => fundingContentDate(fundingListFrom(programs, c));
   const cityPages: MetadataRoute.Sitemap = liveCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
-    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
-      lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
+      lastModified: geprueftAm(c),
       changeFrequency: "weekly",
       priority: 0.7,
     };
@@ -61,10 +73,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Archive pages (program exhausted/paused/discontinued): still indexable for
   // SEO, but lower priority and less churn than the live ones.
   const archivedCityPages: MetadataRoute.Sitemap = archivedCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
-    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
-      lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
+      lastModified: geprueftAm(c),
       changeFrequency: "monthly",
       priority: 0.5,
     };
@@ -72,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blSlugs = new Set([...publishedBundeslaender(), ...landProgramBundeslaender()].map((b) => b.slug));
   const bundeslandPages: MetadataRoute.Sitemap = Array.from(blSlugs).map((slug) => ({
     url: `${BASE_URL}/photovoltaik-foerderung/${slug}`,
-    lastModified: maxFundingDate,
+    lastModified: fundingContentDate(programs.filter(p => p.bundesland && slugify(p.bundesland) === slug)),
     changeFrequency: "weekly",
     priority: 0.7,
   }));
@@ -207,6 +218,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const rechnerStand = (pfad: string) => toDate(standLastModIso(pfad));
 
   return [
+    ...associationPages,
     { url: BASE_URL, changeFrequency: "monthly", priority: 1 },
     { url: `${BASE_URL}/photovoltaik-rechner`, lastModified: rechnerStand("/photovoltaik-rechner"), changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/waermepumpe-rechner`, lastModified: rechnerStand("/waermepumpe-rechner"), changeFrequency: "monthly", priority: 0.9 },
@@ -242,8 +254,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Datenstand liegt in der Zeitreihe (Energy-Charts), nicht hier — und die
     // Build-Zeit wäre das Deploy-Datum, nicht das Änderungsdatum. Deshalb ohne
     // lastmod: changeFrequency="daily" sagt dem Crawler dasselbe, ohne zu lügen.
-    { url: `${BASE_URL}/strommix-deutschland`, changeFrequency: "daily", priority: 0.8 },
-    { url: `${BASE_URL}/atomstrom-import`, changeFrequency: "daily", priority: 0.7 },
+    { url: `${BASE_URL}/strommix-deutschland`, ...(strommixModifiedAt ? {lastModified:strommixModifiedAt} : {}), changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE_URL}/atomstrom-import`, ...(atomstromModifiedAt ? { lastModified: atomstromModifiedAt } : {}), changeFrequency: "daily", priority: 0.7 },
+    ...(ATOMSTROM_RELEASE_READY ? ATOMSTROM_ARCHIVE_YEARS.map(year => ({url: `${BASE_URL}/atomstrom-import/${year}`, lastModified: getAnnualVariant(year).annual.modifiedAt, changeFrequency: "yearly" as const, priority: 0.6})) : []),
     { url: `${BASE_URL}/atomstrom-import/methodik`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/fuer-organisationen/kommunen`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/energie-widgets`, changeFrequency: "monthly", priority: 0.6 },

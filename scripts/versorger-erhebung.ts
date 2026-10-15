@@ -113,7 +113,7 @@ async function kandidaten(db: SupabaseLike, nurStichprobe: boolean, seit: Date |
 
   const zuordnung: { utility_id: string; commune_id: string }[] = [];
   for (let from = 0; ; from += 1000) {
-    const { data, error } = await db.from("utility_communes").select("utility_id,commune_id").range(from, from + 999);
+    const { data, error } = await db.from("utility_communes").select("utility_id,commune_id").order("utility_id").order("commune_id").range(from, from + 999);
     if (error) throw new Error(error.message);
     zuordnung.push(...(data ?? []));
     if (!data || data.length < 1000) break;
@@ -121,7 +121,7 @@ async function kandidaten(db: SupabaseLike, nurStichprobe: boolean, seit: Date |
 
   const einwohnerJeGemeinde = new Map<string, number>();
   for (let from = 0; ; from += 1000) {
-    const { data, error } = await db.from("mastr_regions").select("region_id,population").range(from, from + 999);
+    const { data, error } = await db.from("mastr_regions").select("region_id,population").order("region_id").range(from, from + 999);
     if (error) throw new Error(error.message);
     for (const r of data ?? []) einwohnerJeGemeinde.set(r.region_id, Number(r.population) || 0);
     if (!data || data.length < 1000) break;

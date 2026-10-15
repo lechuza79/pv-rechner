@@ -1,3 +1,5 @@
+import { REVIEW_BASELINE_SOURCE, baselineMatches, readReviewSources, type ReviewBaseline } from "../lib/funding-review-baseline";
+import { heuteInBerlin } from "../lib/zeit";
 import { FundingSourceReader } from "./lib/funding-source-reader";
 /**
  * Seiten-Wächter für die Förderprogramme — der deterministische Teil der Prüfung.
@@ -32,6 +34,8 @@ import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { fingerprintOf, markiert, unterschiedsGrund, vergleichbar, wegVon } from "../lib/funding-fingerprint";
+import { validFundingApplication } from "../lib/funding-application";
+import { persistFundingWrite } from "./lib/funding-source-reader";
 import type { FundingProgram } from "../lib/funding-programs";
 
 function loadEnvFile(): void {
@@ -60,29 +64,99 @@ const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
 
 
-type Zeile = { id: string; data: FundingProgram; page_fingerprint: string | null };
+type Zeile = { id: string; data: FundingProgram; page_fingerprint: string | null; last_verified: string | null };
 
 async function main(): Promise<void> {
   await sources.ready();
   const { data, error } = await sb
     .from("funding_programs")
-    .select("id, data, page_fingerprint, archived");
+    .select("id, data, page_fingerprint, last_verified, archived");
   if (error) {
     console.error(`Programme nicht lesbar: ${error.message}`);
     process.exit(1);
   }
 
-  const zeilen = (data ?? []).filter((r: any) => !r.archived) as (Zeile & { archived: boolean })[];
+  const onlyId = process.argv.includes("--id") ? process.argv[process.argv.indexOf("--id") + 1] : undefined;
+  if (process.argv.includes("--id") && !onlyId) throw new Error("--id requires a programme ID");
+  const zeilen = (data ?? []).filter((r: any) => !r.archived && (!onlyId || r.id === onlyId)) as (Zeile & { archived: boolean })[];
   const geaendert: string[] = [];
   const unerreichbar: string[] = [];
   const ueberArchiv: string[] = [];
   const ueberProduktion: string[] = [];
   const nichtVergleichbar: string[] = [];
   let unveraendert = 0;
+  let renewedReviews = 0;
 
   for (const z of zeilen) {
     const p = z.data;
     if (!p?.url) continue;
+
+    // The immutable reviewed baseline, not yesterday's observation, authorizes renewal.
+    const { data: reviews, error: reviewError } = await sb.from("funding_checks").select("found").eq("program_id", z.id).eq("source", REVIEW_BASELINE_SOURCE).order("checked_at", { ascending: false }).limit(1);
+    if (reviewError) throw new Error(reviewError.message);
+    const baseline = reviews?.[0]?.found as ReviewBaseline | undefined;
+    if (baseline?.version === 1 && z.last_verified) {
+      try {
+        const current = await readReviewSources(Object.keys(baseline.sources));
+        if (baselineMatches(baseline, p, current)) {
+          if (!dry) {
+            const { data: renewed, error: renewalError } = await sb.from("funding_programs").update({ last_verified: heuteInBerlin() }).eq("id", z.id).eq("last_verified", z.last_verified).eq("data", JSON.stringify(z.data)).select("id");
+            if (renewalError) { process.exitCode = 1; throw new Error(renewalError.message); }
+            if (!renewed?.length) throw new Error("Programme changed concurrently; date not renewed");
+            await persistFundingWrite(() => sb.from("funding_checks").insert({ program_id: z.id, verdict: "MATCH", source: "reviewed-sources-unchanged", note: "All reviewed live sources and programme content unchanged.", found: { reviewedAt: baseline.reviewedAt, sources: current } }), { operation: "review-renewal-evidence", url: p.url });
+          }
+          renewedReviews++;
+          console.log(`${p.name}: reviewed source set unchanged${dry ? " (dry run)" : ""}.`);
+        } else {
+          geaendert.push(`${p.name}: reviewed source set or programme content changed`);
+          if (!dry) await persistFundingWrite(() => sb.from("funding_checks").insert({ program_id: z.id, verdict: "CHANGED", source: "seite-geaendert", note: "Reviewed source baseline differs; verification date not renewed." }), { operation: "review-baseline-change", url: p.url });
+        }
+      } catch (error) {
+        unerreichbar.push(`${p.name}: review renewal failed — ${error instanceof Error ? error.message : "unknown error"}`);
+        // Keep failures in the existing review queue even when the main page still loads.
+        if (!dry) await persistFundingWrite(() => sb.from("funding_checks").insert({ program_id: z.id, verdict: "UNREACHABLE", source: "seite-unerreichbar", note: `Reviewed source confirmation failed; date not renewed: ${error instanceof Error ? error.message : "unknown error"}` }), { operation: "review-baseline-unreachable", url: p.url });
+      }
+    }
+
+
+    if (process.argv.includes("--review-only")) continue;
+
+    // Monitor the reviewed supporting documents independently of the main page.
+    // Snapshots are observations, never a new verification date or a funding decision.
+    if (validFundingApplication(p.application)) {
+      const urls = [...new Set(p.application.sources.map(source => source.url))].filter(url => url !== p.url);
+      if (urls.length) {
+        const { data: previous, error: snapshotError } = await sb.from("funding_checks")
+          .select("found").eq("program_id", z.id).eq("source", "antrag-quellen")
+          .order("checked_at", { ascending: false }).limit(1);
+        if (snapshotError) throw new Error(snapshotError.message);
+        const before = (previous?.[0]?.found?.fingerprints ?? {}) as Record<string, string>;
+        const fingerprints = { ...before };
+        const changed: string[] = [];
+        for (const sourceUrl of urls) {
+          try {
+            const response = await sources.fetch(sourceUrl, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(30_000) });
+            const fingerprint = fingerprintOf(await response.text());
+            if (!response.ok || !fingerprint) throw new Error("No readable source");
+            if (before[sourceUrl] && before[sourceUrl] !== fingerprint) changed.push(sourceUrl);
+            fingerprints[sourceUrl] = fingerprint;
+          } catch {
+            unerreichbar.push(`${p.name}: ${sourceUrl}`);
+            if (!dry) await persistFundingWrite(() => sb.from("funding_checks").insert({ program_id: z.id, verdict: "UNREACHABLE", source: "seite-unerreichbar", note: `Application source could not be read: ${sourceUrl}` }), { operation: "application-source-check", url: sourceUrl });
+          }
+        }
+        if (changed.length) {
+          geaendert.push(`${p.name}: application documents`);
+          if (!dry) {
+            await persistFundingWrite(() => sb.from("funding_programs").update({ page_changed_at: new Date().toISOString() }).eq("id", z.id), { operation: "application-invalidation", url: p.url });
+            await persistFundingWrite(() => sb.from("funding_checks").insert({ program_id: z.id, verdict: "CHANGED", source: "seite-geaendert", note: `Application sources changed; re-review required: ${changed.join(", ")}` }), { operation: "application-review-queue", url: p.url });
+          }
+        }
+        if (!dry && JSON.stringify(before) !== JSON.stringify(fingerprints)) {
+          await persistFundingWrite(() => sb.from("funding_checks").insert({ program_id: z.id, verdict: "OBSERVED", source: "antrag-quellen", found: { fingerprints } }), { operation: "application-source-snapshot", url: p.url });
+        }
+      }
+    }
 
     // Mehrere Anläufe mit wachsender Geduld — BLOCKER für die Verlässlichkeit.
     // Der erste Cloud-Lauf meldete Freiburg, Heidelberg und Karlsruhe als
@@ -342,6 +416,7 @@ async function main(): Promise<void> {
   }
 
   console.log(`Seiten-Wächter: ${zeilen.length} Programme abgerufen.`);
+  console.log(`  confirmed reviews${dry ? " (dry)" : ""}: ${renewedReviews}`);
   console.log(`  unverändert:  ${unveraendert}`);
   console.log(`  geändert:     ${geaendert.length}`);
   for (const g of geaendert) console.log(`     → ${g}`);

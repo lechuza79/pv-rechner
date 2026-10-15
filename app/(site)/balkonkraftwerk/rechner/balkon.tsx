@@ -47,6 +47,7 @@ import { DATA_SOURCES } from "../../../../lib/data-sources";
 import StatCard from "../../../../components/calculator/ResultStatCard";
 import StandNoteView from "../../../../components/StandNoteView";
 import type { StandSeite } from "../../../../lib/stand-format";
+import { setKlasse } from "../../../../lib/balkon-partner-referenz";
 
 const STEPS = ["Haushalt & Standort", "Ausrichtung"];
 // One word each for the step indicator; the current one is the step heading.
@@ -330,7 +331,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
   const fundingChanged = pendingPlace !== null || (appliedFunding !== null && JSON.stringify(appliedFunding) !== JSON.stringify(previewFundingContext));
 
   const ratedOffers = useMemo(() => besteAngebote(katalog.daten?.angebote ?? [], angebotBasis, CFG, fundingContext), [katalog.daten, angebotBasis, fundingContext]);
-  const offerSetId = (offer: Pick<ShopAngebot, "moduleWp">): BalkonSetId => offer.moduleWp <= 600 ? "single" : offer.moduleWp <= 1200 ? "duo" : "max";
+  const offerSetId = (offer: Pick<ShopAngebot, "moduleWp">): BalkonSetId => setKlasse(offer.moduleWp);
   const explicitOffer = useMemo(() => {
     const found = katalog.daten?.angebote.find(entry => entry.id === offerId && entry.lieferbar);
     return found ? bewerteAngebot(found, angebotBasis, CFG, fundingContext) : undefined;
@@ -811,7 +812,7 @@ export default function Balkon({ stand }: { stand?: StandSeite }) {
                   </div>
                   <div style={{ fontSize: "var(--result-type-ui)", color: v('--color-text-muted'), marginTop: 8 }}>
                     {paysOff ? (
-                      <>Der Speicher allein rechnet sich nach rund <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong> — innerhalb seiner Lebensdauer. Deshalb ist er bei deinem Verbrauch drin.</>
+                      <>Der Speicher allein rechnet sich nach rund <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong> — innerhalb seiner Lebensdauer.{r.storagePayback > CFG.storageRecommendMaxPayback && <> Das ist knapp: Wir empfehlen einen Speicher erst, wenn er sich in höchstens {CFG.storageRecommendMaxPayback} Jahren bezahlt macht.</>}</>
                     ) : (
                       <>Der Speicher allein amortisiert sich {isFinite(r.storagePayback) ? <>erst nach <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong></> : "in dieser Konstellation praktisch nicht"} — meist länger, als ein Balkonspeicher typischerweise hält. Ehrlich: <strong style={{ color: v('--color-text-secondary') }}>hier lohnt er sich nicht.</strong></>
                     )}

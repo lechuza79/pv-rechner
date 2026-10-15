@@ -1,4 +1,5 @@
 "use client";
+import {ENERGY_CHART_COLORS as ENERGY_COLORS_HEX, ENERGY_CHART_CATEGORIES as CATEGORY_COLORS} from "../../lib/energy-widget-palette";
 
 import { useMemo, useCallback, useRef, useState, useLayoutEffect } from "react";
 import { fsPx } from "../../lib/theme";
@@ -7,19 +8,17 @@ import { scaleTime, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { GridRows } from "@visx/grid";
 import { Group } from "@visx/group";
-import { ParentSize } from "@visx/responsive";
+import {ChartViewport} from "./ChartViewport";
 import { LinearGradient } from "@visx/gradient";
 import { curveMonotoneX } from "d3-shape";
 import { bisector } from "d3-array";
 import {
-  ENERGY_COLORS_HEX,
   ENERGY_LABELS,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
   FOSSIL_KEYS,
   NUCLEAR_KEYS,
   SONSTIGE_KEYS,
-  CATEGORY_COLORS,
   formatMWIn,
   powerUnit,
   formatTime,
@@ -27,6 +26,7 @@ import {
   CHART_HEIGHT,
   anteilZahl,
 } from "../../lib/chart-utils";
+
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -299,6 +299,12 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
 
   // Tooltip state (simple useState instead of visx useTooltip for reliable positioning)
   const [tooltip, setTooltip] = useState<{ data: DataPoint; left: number } | null>(null);
+  const selectPoint=(index:number)=>{
+    const row=data[Math.max(0,Math.min(data.length-1,index))];
+    if(row)setTooltip({data:row,left:xScale(getDate(row)) + margin.left});
+  };
+  const selectedIndex=tooltip ? data.findIndex(row=>row.ts===tooltip.data.ts) : data.length-1;
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleTooltip = useCallback(
@@ -355,7 +361,16 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
-      <svg width={width} height={height}>
+      <svg width={width} height={height} tabIndex={0} role="slider" aria-label="Zeitpunkt im Strommix auswählen"
+        aria-valuemin={0} aria-valuemax={Math.max(0,data.length-1)} aria-valuenow={Math.max(0,selectedIndex)}
+        aria-valuetext={(()=>{const row=data[Math.max(0,selectedIndex)];return row ? `${row.ts}: ${activeKeys.reduce((sum,key)=>sum+(typeof row[key]==='number'?Number(row[key]):0),0).toLocaleString('de-DE',{maximumFractionDigits:0})} MW` : 'Keine Daten';})()}
+        onFocus={()=>selectPoint(data.length-1)} onBlur={()=>setTooltip(null)}
+        onKeyDown={event=>{
+          if(event.key==='Escape'){setTooltip(null);return;}
+          if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+          event.preventDefault();
+          selectPoint(event.key==='Home'?0:event.key==='End'?data.length-1:selectedIndex+(event.key==='ArrowRight'?1:-1));
+        }}>
         {/* Gradients for each energy type */}
         {activeKeys.map((key) => (
           <LinearGradient
@@ -501,7 +516,6 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
             fill="transparent"
             onTouchStart={handleTooltip}
             onTouchMove={handleTooltip}
-            onTouchEnd={() => setTooltip(null)}
             onMouseMove={handleTooltip}
             onMouseLeave={() => setTooltip(null)}
           />
@@ -530,14 +544,12 @@ export default function StackedAreaChart({ data, keys, height, xFormat, nuclearO
 
   const h = height || CHART_HEIGHT;
   return (
-    <div style={{ width: "100%", height: h }}>
-      <ParentSize>
-        {({ width }) =>
+    <ChartViewport height={h}>
+        {({ width, height: plotHeight }) =>
           width > 0 ? (
-            <StackedAreaInner data={data} keys={keys} height={h} width={width} xFormat={xFormat} nuclearOverlay={nuclearOverlay} compact={compact} />
+            <StackedAreaInner data={data} keys={keys} height={plotHeight} width={width} xFormat={xFormat} nuclearOverlay={nuclearOverlay} compact={compact} />
           ) : null
         }
-      </ParentSize>
-    </div>
+      </ChartViewport>
   );
 }

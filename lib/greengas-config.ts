@@ -628,7 +628,28 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // 06.10.2026: § 43 GModG im Volltext (gesetze-im-internet.de) gelesen —
   //   Stufen 10/15/30/60 % ab 2029/2030/2035/2040 unverändert; kein
   //   Quotengesetz nach § 42a. Bioheizöl-Suche: keine Trägerquelle mit Preisreihe.
-  geprueftRechtIso: "2026-10-06",
+  // 07.10.2026: §§ 42a und 43 GModG auf gesetze-im-internet.de im Wortlaut
+  //   gelesen — § 42a weiter nur Ankündigung bis 01.12.2026, § 43 Stufen
+  //   10/15/30/60 % unverändert; Bundestag 7.–9.10. ohne Heizungsgesetz.
+  //   Bioheizöl-Suche: nur HVO-Marktnotierungen, keine Endkunden-Preisreihe.
+  // 08.10.2026: gesetze-im-internet.de §§ 42a/43 GEG erneut gelesen, Text
+  //   identisch zum 07.10.; Bundestag 8./9.10. ohne Heizungs-/Quotengesetz.
+  //   Bioheizöl: weiter keine Endkunden-Preisreihe einer Trägerquelle.
+  // 09.10.2026: §§ 42a/43 auf gesetze-im-internet.de/geg/ erneut gelesen —
+  //   Stufen 10/15/30/60 % unverändert, § 42a weiter nur Ankündigung; kein
+  //   Quotengesetz-Entwurf gefunden. (Die Adresse lautet geg/, nicht gmodg/.)
+  // 10.10.2026: §§ 42a/43 auf gesetze-im-internet.de/geg/ erneut gelesen —
+  //   Text unverändert (Stufen 10/15/30/60 %, § 42a nur Ankündigung); weder
+  //   Quotengesetz-Entwurf noch Bioheizöl-Preisreihe einer Trägerquelle gefunden.
+  // 14.10.2026: §§ 42a/43 auf gesetze-im-internet.de/geg/ erneut gelesen —
+  //   Text unverändert (Stufen 10/15/30/60 %, § 42a nur Ankündigung bis
+  //   01.12.2026); kein Quotengesetz-Entwurf, keine Bioheizöl-Preisreihe einer
+  //   Trägerquelle gefunden.
+  // 15.10.2026: §§ 42a/43 auf gesetze-im-internet.de/geg/ erneut gelesen —
+  //   Text unverändert (Stufen 10/15/30/60 %, § 42a nur Ankündigung bis
+  //   01.12.2026); Bundestag 14.–16.10. (Tagesordnung komplett) ohne
+  //   Heizungs- oder Quotengesetz; keine Bioheizöl-Preisreihe einer Trägerquelle.
+  geprueftRechtIso: "2026-10-15",
   reviewBy: "2027-07-25",
 };
 

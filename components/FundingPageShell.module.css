@@ -1,0 +1,62 @@
+.shell { --stage-height:520px;position:relative;isolation:isolate; }
+.hero { position:relative; height:370px; isolation:isolate; }
+.scene { position:absolute;inset:0 0 auto;height:var(--stage-height);overflow:clip;z-index:-1;background:var(--color-bg-muted); }
+.scene iframe { display:block;border:0;width:100%;height:820px;pointer-events:none; }
+.header { padding:28px var(--header-frame-pad) 0; }
+.copy { width:min(760px,calc(100% - 40px));margin:auto;padding-top:var(--space-xl);text-align:center; }
+.copy h1 { font-family:var(--font-heading);font-size:var(--font-size-h1);line-height:var(--leading-heading);min-height:2.24em;margin:0 0 var(--space-xl);text-wrap:balance; }
+.copy p { margin:0 0 var(--space-xl); }
+.heroSearch { width:min(360px,100%);margin-inline:auto;text-align:left;position:relative;z-index:20;background:var(--color-bg);border-radius:999px; }
+.sidebarSearch { margin-top:calc(var(--space-xl) / 2);padding-top:calc(var(--space-xl) / 2);border-top:1px solid var(--color-border); }
+@media(max-width:1050px){
+ .sidebarSearch{flex:1;min-width:0;max-width:none;margin:0;padding:0;border:0}
+}
+@media(max-width:640px){.copy{padding-top:var(--space-xxl)}}
+
+.breadcrumb { width:90%;margin:24px auto 0;color:var(--color-text-primary); }
+@media(max-width:1050px){.hero{height:310px}.sidebarSearch{flex:1;min-width:0;margin:0;padding:0;border:0}}
+
+
+
+.routeLink { min-height:44px; margin-top:8px; }
+
+@media(max-width:440px){
+ .shell{--stage-height:610px}
+ .hero{height:400px}
+ .copy h1{min-height:3.36em}
+}
+
+/* Local pages share the scene while using the editorial content width. */
+.localHero{display:flex;align-items:center;background:linear-gradient(to bottom,transparent 60%,var(--funding-transition-bg,var(--color-bg)))}
+.localCopy{width:min(720px,calc(100% - 40px));margin:0 auto;padding:var(--space-xxl) 0;display:grid;grid-template-columns:44px minmax(0,1fr);gap:var(--space-xl);align-items:start;text-align:left}
+.localText h1{font-size:var(--font-size-h2);line-height:var(--leading-heading);margin:0 0 var(--space-xl)}
+.localText p{margin:0}
+@media(max-width:440px){.localCopy{gap:var(--space-md)}}
+.shell[data-local-page]{--stage-height:460px}
+
+.shell[data-local-page] .scene::after{content:"";position:absolute;inset:auto 0 0;height:160px;background:linear-gradient(to bottom,transparent,var(--funding-transition-bg,var(--color-bg)));pointer-events:none}
+
+.localText > [data-action-button] { margin-top: var(--space-xl); }
+
+.programSection > div { min-height: 0; padding-bottom: var(--space-xxl); }
+
+.localCopy[data-compact] { grid-template-columns:32px minmax(0,1fr); align-items:center; gap:var(--space-xl); }
+.localCopy[data-compact] .localText { display:contents; }
+.localCopy[data-compact] h1 { grid-column:2; margin:0; }
+.localIntro { grid-column:2; }
+
+.localIntro:empty { display:none; }
+
+/* Let the shared scene continue behind the compact programme card. */
+.shell[data-local-page]:has(.localCopy[data-compact]) { --stage-height:620px; }
+.shell:has(.localCopy[data-compact]) .localHero { background:transparent; }
+.shell:has(.localCopy[data-compact]) .programSection > div { background:transparent; }
+.shell[data-local-page]:has(.localCopy[data-compact]) .scene::after { height:240px; }
+
+.shell:has(.localCopy[data-compact]) .programSection > div { padding-bottom:var(--sc-space-section,72px); }
+.shell:has(.localCopy[data-compact]) .programSection [data-page-content] > div { margin-bottom:0!important; }
+
+.localCopy[data-compact] h1 { font-size:var(--font-size-h1); }
+
+.localCopy[data-compact] { align-items:start; }
+.shell:has(.localCopy[data-compact]) :global(.sc-faq) { margin-bottom:64px; }

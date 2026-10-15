@@ -57,10 +57,10 @@ async function alle(c: any, tabelle: string, spalten: string, sortierung: string
   }
 }
 
-/** Media of the catalogue without any usable address. */
+/** Media and topic associations of the catalogue without any usable address (never the archive). */
 async function luecken(): Promise<Eintrag[]> {
   const c = await db();
-  const medien = await alle(c, "presse_medien", "domain, titel, saat_name, start_url, impressum_url", "domain", q => q.eq("ist_medium", "medium"));
+  const medien = await alle(c, "presse_medien", "domain, titel, saat_name, start_url, impressum_url", "domain", q => q.or("ist_medium.eq.medium,liste.eq.verbaende").or("liste.is.null,liste.neq.archiv"));
   const mitAdresse = new Set((await alle(c, "presse_kontakte", "domain", "domain", q => q.not("mail", "is", null).neq("mail_art", "werblich"))).map(k => k.domain));
   return medien.filter(m => !mitAdresse.has(m.domain)).map(m => ({
     id: m.domain, name: m.titel ?? m.saat_name ?? m.domain,

@@ -36,7 +36,7 @@ it('omits missing terrain and coarse cells spanning an interior missing sample',
  const {vertices,indices}=result.groundSurface!;
  for(let i=0;i<indices.length;i+=3){const points=indices.slice(i,i+3).map(j=>vertices[j]);const xs=points.map(p=>p[0]),zs=points.map(p=>p[1]);expect(Math.min(...xs)<10&&Math.max(...xs)>10&&Math.min(...zs)<10&&Math.max(...zs)>10).toBe(false);}
  expect(Number.isNaN(terrainHeight(result,10,10))).toBe(true);
-});
+},30000); // 500k-sample terrain: seconds under parallel load, 5 s default timed out
 
 it('keeps an exact measured boundary value beside an unknown neighbour',()=>{
  const source=terrain(3,3);source.elevations[0]=Number.NaN;

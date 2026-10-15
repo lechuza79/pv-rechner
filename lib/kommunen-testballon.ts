@@ -1,3 +1,4 @@
+import type { Briefart } from "./kommunen-outreach-draft";
 // Auswahl der Versandliste („Testballon") — reine Funktionen, damit die Regeln
 // testbar sind und nicht in einer API-Route verschwinden.
 //
@@ -111,6 +112,13 @@ export type Schub = {
    * across days; days are packed up to `regeln.chargeGroesse`.
    */
   kreise?: string[];
+  /**
+   * Which letters this batch sends. Default: only the press letter, i.e. only
+   * towns with a placement. With "info", towns without one get the short info
+   * letter instead of being dropped — a decision per batch, written here and
+   * not kept in a conversation (it was lost that way once, 05./06.10.2026).
+   */
+  briefarten?: Briefart[];
   /**
    * Ab wann dieser Schub versendet werden soll (ISO-Tag).
    *
@@ -261,12 +269,67 @@ export const SCHUEBE: Record<string, Schub> = {
     bl: ["05", "12", "15"],
     kanal: "brief-empfaenger",
     regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 100 },
+    // Short info letter for towns without a placement (operator, 07.10.2026).
+    briefarten: ["platzierung", "info"],
     kreise: ["05166", "05334", "05366", "05382", "05554", "05566", "05754", "12060", "12061", "12063", "12064", "12069", "12071", "15081", "15083", "15085", "15087", "15088", "15089", "15090"],
     abIso: "2026-10-06",
     grund:
       "Ganze Kreise statt Einzelgemeinden (Betreiber, 05.10.2026): die 20 Kreise des ersten Lückenschubs " +
       "in NRW, Brandenburg und Sachsen-Anhalt, jede offene Gemeinde mit ihrem größten Aufhänger. " +
       "Ferien dort erst ab 17.10. (NRW) bzw. 19.10.2026.",
+  },
+  /**
+   * Second whole-district batch (operator, 13.10.2026: "wir schicken auf jeden
+   * Fall heute was"): every kreisfreie Stadt of NRW plus seven untouched
+   * districts. Scenes are built the same morning, so the draw runs several
+   * times; it only takes towns whose stage is already published.
+   */
+  "nrw-2026-10": {
+    kampagne: "nrw-2026-10",
+    bl: ["05"],
+    kanal: "brief-empfaenger",
+    regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 100 },
+    briefarten: ["platzierung", "info"],
+    kreise: ["05112", "05113", "05114", "05116", "05117", "05119", "05120", "05122", "05124", "05314", "05315", "05316", "05512", "05513", "05515", "05711", "05911", "05913", "05914", "05915", "05916", "05358", "05362", "05370", "05562", "05966", "05970", "05978"],
+    abIso: "2026-10-13",
+    grund:
+      "Letztes Fenster in NRW vor den Herbstferien ab 17.10.2026: alle kreisfreien Städte und sieben noch " +
+      "unberührte Kreise (Düren, Rhein-Erft, Heinsberg, Recklinghausen, Olpe, Siegen-Wittgenstein, Unna).",
+  },
+  /**
+   * The rest of NRW before the autumn holidays (17.10.2026): every open town in
+   * the 17 districts already written to, scenes built overnight 13./14.10.
+   * One charge: the daily cap (MAX_JE_LAUF, 250) takes these and the nine
+   * letters held back from nrw-2026-10 on the same day.
+   * Mülheim an der Ruhr is out: the state terrain tiles miss ~9 % of its heights.
+   */
+  "nrw-2026-10b": {
+    kampagne: "nrw-2026-10b",
+    bl: ["05"],
+    kanal: "brief-empfaenger",
+    regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 240 },
+    briefarten: ["platzierung", "info"],
+    kreise: ["05154", "05158", "05162", "05170", "05374", "05378", "05558", "05570", "05758", "05762", "05766", "05770", "05774", "05954", "05958", "05962", "05974"],
+    abIso: "2026-10-14",
+    grund:
+      "Rest von NRW vor den Herbstferien ab 17.10.2026: die offenen Orte der 17 bereits angeschriebenen Kreise, " +
+      "alle an einem Tag.",
+  },
+  /**
+   * Brandenburg and Saxony-Anhalt before their autumn holidays (19.10.2026):
+   * every open town of every district, scenes built ahead on 14.10.
+   */
+  "ost-2026-10": {
+    kampagne: "ost-2026-10",
+    bl: ["12", "15"],
+    kanal: "brief-empfaenger",
+    regeln: { ...TESTBALLON_REGELN, ziel: 1000, chargeGroesse: 250 },
+    briefarten: ["platzierung", "info"],
+    kreise: ["12051", "12052", "12053", "12054", "12061", "12062", "12065", "12066", "12067", "12068", "12070", "12072", "12073", "15001", "15002", "15003", "15082", "15084", "15086", "15087", "15088", "15091"],
+    abIso: "2026-10-15",
+    grund:
+      "Brandenburg und Sachsen-Anhalt vor den Herbstferien ab 19.10.2026: alle offenen Orte, ganze Kreise, " +
+      "Szenen am 14.10. vorab gebaut.",
   },
   "mail-luecken-okt": {
     kampagne: "mail-luecken-okt",

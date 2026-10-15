@@ -136,10 +136,11 @@ describe("Das geteilte Bild bleibt hell", () => {
 // Text erklärt, muss deshalb an der Zahl selbst stehen.
 describe("Was das Bild allein tragen muss", () => {
   it("nennt den Datenstand des Datensatzes, nicht den heutigen Tag", () => {
-    const client = lies("app/(embed)/embed/zubau-erneuerbare-atom/client.tsx");
+    const client = lies("components/energy/RenewablesGrowthWidget.tsx");
     // Ohne Angabe stempelt der Quellenvermerk das Abrufdatum — bei Live-Daten
     // richtig, neben einer Reihe, die 2024 endet, eine falsche Aussage.
-    expect(client).toContain("COUNTRY_COMPARE_META.dataAsOf");
+    expect(client).toContain('reference?.capacity.source ?? COUNTRY_COMPARE_META');
+    expect(client).toContain('stand={source.dataAsOf}');
   });
 
   it("nennt auch bei den beiden anderen festen Reihen den echten Stand", () => {
@@ -150,7 +151,7 @@ describe("Was das Bild allein tragen muss", () => {
       "formatDataAsOf(series.data_as_of)",
     );
     expect(lies("components/charts/GruengasWidget.tsx")).toContain(
-      "formatDataAsOf(MUSTER_STAND_ISO)",
+      "stand={MUSTER_STAND_ISO}",
     );
   });
 
@@ -174,11 +175,11 @@ describe("Was das Bild allein tragen muss", () => {
   });
 
   it("sagt an der Kernenergie-Zahl, dass der Import darin steckt", () => {
-    const client = lies("app/(embed)/embed/strommix/client.tsx");
+    const client = lies("components/StrommixWidget.tsx");
     // Die Zahl summiert heimische Erzeugung und rechnerischen Import; seit
     // April 2023 ist sie ausschließlich Import. „Kernenergie" allein liest sich
     // im weitergereichten Bild als deutsche Erzeugung.
-    expect(client).toMatch(/label="Kernenergie \(inkl\. Import\)"/);
+    expect(client).toContain("Kernenergie (inkl. Import)");
   });
 });
 

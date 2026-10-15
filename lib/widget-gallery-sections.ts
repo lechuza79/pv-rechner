@@ -5,6 +5,8 @@ export interface WidgetVariant {
   height: number;
   /** If set, the iframe renders at this fixed width; otherwise the width selector applies. */
   fixedWidth?: number;
+  /** Whether this data variant supports allocated grid slots. */
+  supportsGrid?: boolean;
   /** Fixed query params for this variant (e.g. metric=leistung), merged into both
    * the live-preview src and the copy-paste embed URL. */
   params?: Record<string, string>;
@@ -29,6 +31,8 @@ export interface WidgetSection {
 }
 
 export const SECTIONS: WidgetSection[] = [
+  {id:'atomstrom-jahr',label:'Atomstrom im Jahresverlauf',intro:'Der vorhandene Jahresrückblick mit Monatsmengen, Herkunftsländern und deutscher Stromerzeugung.',attribution:{path:'/atomstrom-import/2025',text:'Atomstrom-Jahresrückblick — Solar Check'},showFrameWidth:true,
+   variants:[{id:'atomstrom-jahr-months',label:'Monatsmengen',src:'/embed/atomstrom-jahr',params:{year:'2025',view:'months'},height:480},{id:'atomstrom-jahr-countries',label:'Herkunftsländer',src:'/embed/atomstrom-jahr',params:{year:'2025',view:'countries'},height:520},{id:'atomstrom-jahr-generation',label:'Stromerzeugung',src:'/embed/atomstrom-jahr',params:{year:'2025',view:'generation'},height:400}]},
   {
     id: "erzeugung",
     label: "Stromerzeugung (live)",
@@ -42,7 +46,7 @@ export const SECTIONS: WidgetSection[] = [
     showAutoswitch: true,
     variants: [
       { id: "standard", label: "Standard", src: "/embed/erzeugung", height: 412, fixedWidth: 380 },
-      { id: "mini", label: "Kompakt", src: "/embed/erzeugung-mini", height: 285, fixedWidth: 260 },
+      { id: "mini", label: "Kompakt", src: "/embed/erzeugung-mini", params: {presentation:"compact"}, height: 285, fixedWidth: 260 },
     ],
   },
   {
@@ -133,6 +137,48 @@ export const SECTIONS: WidgetSection[] = [
     },
     showFrameWidth: true,
     variants: [{ id: "strommix-anteil", label: "Kernenergie-Anteil", src: "/embed/strommix-anteil", height: 400 }],
+  },
+  {
+    id: "atomstrom-tage",
+    label: "Atomstrom-Import · Hero",
+    intro: "Kompaktes Tagesdiagramm der Atomseite, mit gemeinsamem Renderer.",
+    attribution: {path: "/atomstrom-import", text: "Atomstrom-Import nach Tagen — Solar Check"},
+    showFrameWidth: true,
+    variants: [
+      {id: "atomstrom-tage-full", label: "Detail", src: "/embed/atomstrom-tage", params: {variant: "full", metric:"energy"}, height: 480},
+    ],
+  },
+  {
+    id:"stromhandel",label:"Stromimport und Stromexport",
+    intro:"Kommerzielle Handelsmengen: Zukauf, Verkauf und die Differenz in GWh oder TWh.",
+    attribution:{path:"/strommix-deutschland",text:"Stromhandel — Solar Check"},showFrameWidth:true,
+    variants:[{id:"stromhandel",label:"Automatisch",src:"/embed/stromhandel",height:780},{id:"stromhandel-radial",label:"Radiale Balken",src:"/embed/stromhandel",params:{variant:"radial"},height:780},{id:"stromhandel-balken",label:"Balken",src:"/embed/stromhandel",params:{variant:"bars"},height:600},{id:"stromhandel-summen",supportsGrid:false,label:"Gesamtsummen",src:"/embed/stromhandel",params:{variant:"totals"},height:260}],
+  },
+  {
+    id:"laender-strommixrennen",label:"Strommix im Ländervergleich · Racing",
+    intro:"Strommix im Vergleich: Anteil oder Stromerzeugung je Einwohner.",
+    attribution:{path:"/atomstrom-import",text:"Strommix im Ländervergleich — Solar Check"},showFrameWidth:true,
+    variants:[{id:"laender-strommixrennen",label:"Ländervergleich",src:"/embed/laender-strommixrennen",height:700}],
+  },
+  {
+    id:"laender-strommix-pro-kopf",label:"Stromerzeugung pro Kopf · Racing",
+    intro:"Derselbe Ländervergleich mit Stromerzeugung je Einwohner.",
+    attribution:{path:"/atomstrom-import",text:"Stromerzeugung pro Kopf — Solar Check"},showFrameWidth:true,
+    variants:[{id:"laender-strommix-pro-kopf",label:"Je Einwohner",src:"/embed/laender-strommix-pro-kopf",height:700}],
+  },
+  {
+    id:"welt-zubaurennen",label:"Zubau weltweit · Racing",
+    intro:"Jährlicher Nettozubau in GW mit Meilensteinen, inklusive Rückbau.",
+    attribution:{path:"/atomstrom-import",text:"Weltweiter Zubau — Solar Check"},showFrameWidth:true,
+    variants:[{id:"welt-zubaurennen",label:"Weltweiter Zubau",src:"/embed/welt-zubaurennen",height:700}],
+  },
+  {
+    id: "welt-stromrennen",
+    label: "Wind + Solar vs. Atomkraft weltweit",
+    intro: "Jährliche Stromerzeugung in TWh seit 2000, animiert mit Meilensteinen.",
+    attribution: {path: "/atomstrom-import", text: "Weltweite Stromerzeugung — Solar Check"},
+    showFrameWidth: true,
+    variants: [{id: "welt-stromrennen", label: "Weltweite Stromerzeugung", src: "/embed/welt-stromrennen", height: 700}],
   },
   {
     id: "zubau-erneuerbare-atom",

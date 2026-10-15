@@ -23,7 +23,7 @@
 //    bearbeitet hat —, ist das kein Schönheitsfehler, sondern eine
 //    Informationspflicht, die verletzt wird.
 
-import { istPressePostfach } from "./kommunen-presse";
+import { FACHFREMDE_POSTFAECHER, istPressePostfach } from "./kommunen-presse";
 
 /** Anbieter, über die niemals ein Anschreiben hinausgeht. */
 /** Wer laut SPF-Eintrag der Domain überhaupt für uns senden darf. */
@@ -137,6 +137,7 @@ export const ROLLEN_WORTE = [
   "info",
   "rathaus",
   "poststelle",
+  "posteingang",
   "post",
   "gemeinde",
   "gemeindeverwaltung",
@@ -182,6 +183,13 @@ export const ROLLEN_WORTE = [
   "og",
   "mail",
   "email",
+  // Hildesheim publishes anfrage@stadt-hildesheim.de in its imprint as the
+  // office's contact; the send check took it for a surname and aborted the
+  // whole scheduled enquiry run (3 red runs on 12.10.2026).
+  "anfrage",
+  // Lübeck publishes klimafonds@luebeck.de as the contact of its climate fund
+  // (luebeck.de, Klimafonds page); rejected as a surname on 14.10.2026.
+  "klimafonds",
 ];
 
 /**
@@ -281,6 +289,9 @@ export function postfachBefund(
     // Brief am 03.09.2026 aus dem Versand. Wer die Presse-Wortliste erweitert,
     // muss nicht daran denken, hier nachzuziehen.
     istPressePostfach(`${t}@example.org`) ||
+    // A department mailbox (tourism, building authority) is an office, not a
+    // person; the recipient choice uses it only as the last resort.
+    FACHFREMDE_POSTFAECHER.includes(t) ||
     // The office's own name as mailbox: "vgzell@vg-zell.de", "simmern@simmern.de",
     // "amtschwaan@…" — role prefix plus a word of the domain, or the domain word itself.
     (t.length >= 4 && domainWorte.includes(t)) ||
@@ -338,6 +349,29 @@ export const PFLICHTANGABEN: { was: string; pruefe: (text: string) => boolean }[
 
 export function fehlendePflichtangaben(body: string): string[] {
   return PFLICHTANGABEN.filter((p) => !p.pruefe(body)).map((p) => p.was);
+}
+
+/**
+ * Template holes that leaked into a letter: a missing value rendered as text.
+ *
+ * Measured 06.10.2026: 31 of 95 letters of a charge said "Kontaktdaten
+ * (undefined von …)" — a lookup table did not know a stored value. Nothing
+ * failed, the text just carried the hole. Each finding holds the letter back.
+ * "null" counts only as a standalone lowercase word; the letters write numbers
+ * as digits, so the German word does not occur there.
+ */
+const PLATZHALTER_LOECHER: { was: string; muster: RegExp }[] = [
+  { was: "undefined", muster: /\bundefined\b/ },
+  { was: "null", muster: /(^|[^\p{L}\d-])null([^\p{L}\d-]|$)/u },
+  { was: "NaN", muster: /\bNaN\b/ },
+  { was: "Infinity", muster: /\bInfinity\b/ },
+  { was: "[object Object]", muster: /\[object Object\]/ },
+  { was: "Vorlagen-Klammer", muster: /\$\{|\{\{/ },
+];
+
+export function platzhalterLoecher(...texte: string[]): string[] {
+  const gesamt = texte.join("\n");
+  return PLATZHALTER_LOECHER.filter((p) => p.muster.test(gesamt)).map((p) => p.was);
 }
 
 /**
@@ -417,7 +451,11 @@ export const PAUSE_MS = 60_000;
  * Bounces zeigen sich erst, wenn es längst zu spät ist, die Einsortierung in den
  * Spam-Ordner dagegen sofort.
  */
-export const MAX_JE_LAUF = 100;
+export const MAX_JE_LAUF = 250;
+// 250 statt 100 am 08.10.2026 (Betreiber, „heute alle rausschicken“): die 242
+// Gemeinden der 20 Kreise mit fertiger Szene an einem Tag. Getragen von 178
+// Briefen am 06./07.10. mit 3 Unzustellbarkeiten und keiner Spam-Meldung; der
+// Versand legt eine Minute zwischen zwei Mails, 242 Briefe dauern rund vier Stunden.
 // 100 statt 65 am 05.10.2026 (Betreiber): ganze Kreise an einem Tag, Kreisverwaltung
 // und alle ihre Gemeinden. Getragen von 96 Pressemails an einem Tag am 30.09.2026
 // ohne einen Zustellfehler.

@@ -337,6 +337,8 @@ export function vergleichsBasisPfad(
  * Leser landet einfach am Seitenanfang.
  */
 export const RANGLISTE_ANKER = "rangliste";
+/** Rows per page of a public ranking; read by the page and by every link to a rank. */
+export const RANGLISTE_PRO_SEITE = 200;
 
 export function ranglisteUrl(
   katSlug: string | undefined,
@@ -346,9 +348,14 @@ export function ranglisteUrl(
    *  konkrete Platzierung belegen sollen (Outreach-Brief) — nicht für die
    *  Navigation, wo der Leser die Umschalter oben sehen soll. */
   mitAnker = false,
+  /** The rank the link has to show: past the first page, the link opens the
+   *  page that carries it (Sassenberg, rank 217, landed on page 1 and was not
+   *  on it — 14.10.2026). */
+  rang?: number | null,
 ): string | null {
   if (!katSlug) return null;
   const teile = gebiet.filter((x): x is string => !!x);
-  const pfad = ["/solar-atlas/ranking", katSlug, ...(klasseSlug ? [klasseSlug] : []), ...teile].join("/");
+  const seite = rang && rang > RANGLISTE_PRO_SEITE ? Math.ceil(rang / RANGLISTE_PRO_SEITE) : 1;
+  const pfad = ["/solar-atlas/ranking", katSlug, ...(klasseSlug ? [klasseSlug] : []), ...teile, ...(seite > 1 ? [`seite-${seite}`] : [])].join("/");
   return mitAnker ? `${pfad}#${RANGLISTE_ANKER}` : pfad;
 }

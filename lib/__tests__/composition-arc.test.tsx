@@ -96,4 +96,18 @@ describe('CompositionChart layouts', () => {
   it('renders nothing on the monitor without a comparison', () => {
     expect(renderToStaticMarkup(<MonitorCompositionChart story={{values: [{value: 1}, {value: 2}]}} />)).toBe('');
   });
+
+  it('applies a host cell budget while preserving the default monitor and story grids', () => {
+    const counts = {total:4031, selected:343, label:'Balkonkraftwerke'};
+    const story = {countComparison:counts, values:[{value:8.5}, {value:0.4}]};
+    const compact = renderToStaticMarkup(<MonitorCompositionChart story={story} maxCells={100} />);
+    const standard = renderToStaticMarkup(<MonitorCompositionChart story={story} />);
+    const editorial = renderToStaticMarkup(<CompositionChart counts={counts} powerShare={0.4} layout="story" />);
+    expect(compact).toContain('343 von 4031 Anlagen. Ein Rechteck steht für 100 Anlagen.');
+    for (const markup of [standard, editorial]) {
+      expect(markup).toContain('343 von 4031 Anlagen. Ein Rechteck steht für 10 Anlagen.');
+    }
+    expect(grid(standard)).toEqual(grid(editorial));
+    expect(grid(compact).length).toBeLessThan(grid(standard).length);
+  });
 });

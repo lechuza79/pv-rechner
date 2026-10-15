@@ -8,6 +8,7 @@ import { useExportNotes } from "./export-notes";
 import { PoweredBy } from "./PoweredBy";
 import ChartActionBar from "./ChartActionBar";
 import CiteModal from "./CiteModal";
+import {chartDataDate} from "../lib/chart-labels";
 import { sourceLabel } from "../lib/data-sources";
 import { OWN_WORK_LICENSE } from "../lib/license";
 import { brandLabel, type WidgetDef } from "../lib/widget-registry";
@@ -147,6 +148,63 @@ export function useShareOnlyActions(
  * The source itself is NOT here: it sits vertically along the card's right edge
  * (widget convention) and, in the image, in {@link WidgetExportFooter}.
  */
+/** Keep the next step identical in legacy footers and shared widget frames. */
+function useWidgetNextStep(widget: WidgetDef, showCta: boolean) {
+  // Ein nächster Schritt, der auf die Seite zeigt, die man gerade liest, ist
+  // Lärm. Das galt schon als Regel (showCta), musste aber von Hand gesetzt
+  // werden — und wurde beim Einbetten des Erzeugungs-Widgets in die
+  // Strommix-Seite prompt vergessen. Jetzt merkt es der Baustein selbst.
+  //
+  // Im iframe ist `usePathname()` die Adresse des Widgets (`/embed/…`), nicht
+  // die der Seite — dort trägt die Seite ihren Pfad als `hp` bei. Ohne ihn stand
+  // auf `/atomstrom-import` ein Knopf, der genau diese Seite noch einmal
+  // aufgerufen hat, und zwar innerhalb des iframes.
+  const pathname = usePathname();
+  const [rahmen, setRahmen] = useState<{ imIframe: boolean; hostPfad: string | null }>({
+    imIframe: false,
+    hostPfad: null,
+  });
+  useEffect(() => {
+    setRahmen({
+      imIframe: window.self !== window.top,
+      hostPfad: parseHostPfad(window.location.search),
+    });
+  }, []);
+  const seitenPfad = rahmen.hostPfad ?? pathname;
+  const zeigtHierhin = !!seitenPfad && seitenPfad === widget.cta?.href;
+  const cta = showCta && !zeigtHierhin ? widget.cta : undefined;
+  // Ein Link im iframe navigiert sonst NUR das iframe: der Artikel erschien im
+  // Chart-Rahmen. Auf einer eigenen Seite öffnet `_top` ihn im ganzen Fenster,
+  // auf einer fremden ein neuer Tab — deren Seite bleibt stehen. Außerhalb eines
+  // iframes bleibt es der ganz normale Klick.
+  const ctaZiel = !rahmen.imIframe ? undefined : rahmen.hostPfad ? "_top" : "_blank";
+
+  return {cta, ctaZiel};
+}
+
+export function WidgetNextStep({widget, showCta=true}: {widget:WidgetDef;showCta?:boolean}) {
+  const {cta, ctaZiel} = useWidgetNextStep(widget, showCta);
+  if (!cta) return null;
+  return <a
+            href={cta.href}
+            target={ctaZiel}
+            rel={ctaZiel === "_blank" ? "noopener" : undefined}
+            style={{
+              flexShrink: 0,
+              textAlign: "center",
+              padding: "9px 16px",
+              borderRadius: v("--radius-pill"),
+              background: v("--color-cta"),
+              color: v("--color-text-on-accent"),
+              fontSize: 13,
+              fontWeight: 700,
+              textDecoration: "none",
+            }}
+          >
+            {cta.label} →
+          </a>;
+}
+
 export function WidgetFooter({
   widget,
   chartExport,
@@ -207,39 +265,12 @@ export function WidgetFooter({
   surface?: string;
 }) {
   const [citeOpen, setCiteOpen] = useState(false);
+  const {cta} = useWidgetNextStep(widget, showCta);
   const copy =
     onCopyLink ??
     (() => {
       navigator.clipboard?.writeText(`${widget.shareText}\n${widget.shareUrl}`).catch(() => {});
     });
-  // Ein nächster Schritt, der auf die Seite zeigt, die man gerade liest, ist
-  // Lärm. Das galt schon als Regel (showCta), musste aber von Hand gesetzt
-  // werden — und wurde beim Einbetten des Erzeugungs-Widgets in die
-  // Strommix-Seite prompt vergessen. Jetzt merkt es der Baustein selbst.
-  //
-  // Im iframe ist `usePathname()` die Adresse des Widgets (`/embed/…`), nicht
-  // die der Seite — dort trägt die Seite ihren Pfad als `hp` bei. Ohne ihn stand
-  // auf `/atomstrom-import` ein Knopf, der genau diese Seite noch einmal
-  // aufgerufen hat, und zwar innerhalb des iframes.
-  const pathname = usePathname();
-  const [rahmen, setRahmen] = useState<{ imIframe: boolean; hostPfad: string | null }>({
-    imIframe: false,
-    hostPfad: null,
-  });
-  useEffect(() => {
-    setRahmen({
-      imIframe: window.self !== window.top,
-      hostPfad: parseHostPfad(window.location.search),
-    });
-  }, []);
-  const seitenPfad = rahmen.hostPfad ?? pathname;
-  const zeigtHierhin = !!seitenPfad && seitenPfad === widget.cta?.href;
-  const cta = showCta && !zeigtHierhin ? widget.cta : undefined;
-  // Ein Link im iframe navigiert sonst NUR das iframe: der Artikel erschien im
-  // Chart-Rahmen. Auf einer eigenen Seite öffnet `_top` ihn im ganzen Fenster,
-  // auf einer fremden ein neuer Tab — deren Seite bleibt stehen. Außerhalb eines
-  // iframes bleibt es der ganz normale Klick.
-  const ctaZiel = !rahmen.imIframe ? undefined : rahmen.hostPfad ? "_top" : "_blank";
 
   return (
     <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: 14, ...(surface ? { background: surface, padding: "12px 16px", borderRadius: v("--radius-md") } : {}) }}>
@@ -260,26 +291,7 @@ export function WidgetFooter({
           gap: 10,
         }}
       >
-        {cta && (
-          <a
-            href={cta.href}
-            target={ctaZiel}
-            rel={ctaZiel === "_blank" ? "noopener" : undefined}
-            style={{
-              flexShrink: 0,
-              textAlign: "center",
-              padding: "9px 16px",
-              borderRadius: v("--radius-pill"),
-              background: v("--color-cta"),
-              color: v("--color-text-on-accent"),
-              fontSize: 13,
-              fontWeight: 700,
-              textDecoration: "none",
-            }}
-          >
-            {cta.label} →
-          </a>
-        )}
+        <WidgetNextStep widget={widget} showCta={showCta}/>
         {share && (
           <div style={{ display: "flex", justifyContent: narrow ? "center" : "flex-end" }}>
             <ChartActionBar
@@ -344,8 +356,12 @@ export function WidgetSourceEdge({
   visible = true,
   stand,
   spalten = 1,
+  ownCredit = false,
+  minFontSize,
 }: {
   widget: WidgetDef;
+  ownCredit?: boolean;
+  minFontSize?: number;
   visible?: boolean;
   /** Zahl der senkrechten Textspalten. Ein Chart mit ZWEI Quellen bekommt an
    *  einer Kante von Chart-Höhe den Vermerk sonst nur in 6 px unter — zwei
@@ -354,23 +370,21 @@ export function WidgetSourceEdge({
   spalten?: 1 | 2;
   /** Datenstand, hinten angehängt. Ein weitergereichtes Bild ohne Datum lässt
    *  nicht erkennen, ob die Zahlen von heute oder von vorletztem Jahr sind.
-   *  Ohne Angabe steht das Abrufdatum da — die ehrlichere Aussage bei
-   *  Live-Daten, die sich stündlich ändern. */
+   *  Missing dates stay explicit rather than implying a fresh data vintage. */
   stand?: string;
 }) {
-  // Abrufdatum erst nach dem Mounten: Server- und Client-Render dürfen nicht
-  // auseinanderlaufen, wenn der Tag zwischen beiden wechselt.
-  const [heute, setHeute] = useState("");
-  useEffect(() => {
-    setHeute(new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }));
-  }, []);
   // Auf einer sehr flachen Karte (Einzel-Kennzahl, Ampel) passt selbst bei
   // kleinster Schrift nicht alles an die Kante. Dann fällt ZUERST das Datum —
   // es ist der einzige Teil, den keine Lizenz verlangt. Der Bereitsteller, das
   // Lizenzkürzel und der Änderungshinweis bleiben in jedem Fall stehen; lieber
   // ein Vermerk ohne Datum als ein abgeschnittener.
   const [ohneDatum, setOhneDatum] = useState(false);
-  const datum = ohneDatum ? "" : (stand ?? heute);
+  // Hidden until the first fit has run. The server renders the edge at the
+  // starting size, which on a short card is longer than the card is high; until
+  // hydration that label stood clipped at both ends and painted outside its
+  // card (CI 15.10.2026, funding check at 1920 px on a slow runner).
+  const [eingepasst, setEingepasst] = useState(false);
+  const datum = ohneDatum ? "" : chartDataDate(stand);
 
   // Der VOLLE Quellenvermerk, nicht eine Kurzform davon. Bis 08/2026 warf die
   // Kante jeden Klammer-Zusatz aus dem Namen — das traf nicht nur Beiwerk wie
@@ -381,7 +395,7 @@ export function WidgetSourceEdge({
   const label =
     widget.sources
       .map((s) => sourceLabel(s, { kurz: true }))
-      .join(" · ") + (datum ? ` · Stand: ${datum}` : "");
+      .join(" · ") + (ownCredit ? ` · ${OWN_WORK_LICENSE.attributionName}, ${OWN_WORK_LICENSE.code}` : "") + (datum ? ` · Stand: ${datum}` : "");
 
   // Der Vermerk passt sich der Kartenhöhe an, statt abgeschnitten zu werden.
   //
@@ -401,6 +415,19 @@ export function WidgetSourceEdge({
     const el = wrapRef.current;
     if (!el) return;
     const passeAn = () => {
+      if (minFontSize) {
+        el.style.fontSize = minFontSize + 'px';
+        el.style.width = Math.ceil(minFontSize * 1.4 * spalten) + 'px';
+        el.style.display = 'block';
+        el.style.overflowWrap = 'anywhere';
+        let width = el.clientWidth;
+        while (el.scrollWidth > el.clientWidth + 1 && width < 240) {
+          width += Math.ceil(minFontSize * 1.4);
+          el.style.width = width + 'px';
+        }
+        el.closest<HTMLElement>('.sc-widget')?.style.setProperty('--plot-source-width', width + 'px');
+        return;
+      }
       // Immer von der Ausgangsgröße aus messen, sonst schaukelt sich die
       // Anpassung über mehrere Läufe nach unten.
       let groesse = SOURCE_EDGE_FONT;
@@ -421,6 +448,7 @@ export function WidgetSourceEdge({
       if (zuLang()) setOhneDatum(true);
     };
     passeAn();
+    setEingepasst(true);
     // Noch einmal, sobald die echte Schrift da ist: Beim ersten Lauf misst der
     // Browser mit der Ersatzschrift, und die ist breiter — der Vermerk landete
     // dadurch dauerhaft kleiner als nötig (6,4 statt 7,8 px). Die
@@ -429,12 +457,14 @@ export function WidgetSourceEdge({
     const ro = new ResizeObserver(passeAn);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [label, spalten]);
+  }, [label, spalten, minFontSize]);
 
   return (
     <div
       ref={wrapRef}
       data-sc-source-edge=""
+      data-sc-source-export-label={widget.sources.map(s => sourceLabel(s, {kurz:true})).join(" · ") + (ownCredit ? ` · ${OWN_WORK_LICENSE.attributionName}, ${OWN_WORK_LICENSE.code}` : "") + ` · Stand: ${chartDataDate(stand)}`}
+      data-sc-source-export-size={fsPx("--font-size-caption")}
       // Im Bild immer sichtbar: Auf eigenen Seiten blendet die Kante erst beim
       // Überfahren ein — ein PNG hat kein Überfahren, und die Lizenz verlangt
       // den Vermerk gerade dort, wo das Bild ohne die Seite weiterwandert.
@@ -458,12 +488,12 @@ export function WidgetSourceEdge({
         transform: "rotate(180deg)",
         whiteSpace: spalten > 1 ? "normal" : "nowrap",
         overflow: "hidden",
-        fontSize: SOURCE_EDGE_FONT,
+        fontSize: minFontSize ?? SOURCE_EDGE_FONT,
         lineHeight: 1.4,
         letterSpacing: 0.2,
         color: "var(--widget-muted, var(--color-text-faint))",
         pointerEvents: "none",
-        opacity: visible ? 1 : 0,
+        opacity: visible && eingepasst ? 1 : 0,
         transition: "opacity .18s ease-out",
       }}
     >
@@ -491,6 +521,7 @@ export function WidgetExportFooter({
   legend,
   branding = true,
   note,
+  includeHelpNotes = true,
 }: {
   /** Registry entry — carries sources and decides the brand wording. It keeps
    * image, page footer and gallery in sync. */
@@ -500,8 +531,10 @@ export function WidgetExportFooter({
   branding?: boolean;
   /** Extra line (assumptions, reference year) that only the image needs. */
   note?: string;
+  includeHelpNotes?: boolean;
 }) {
-  const notes = useExportNotes();
+  const collectedNotes = useExportNotes();
+  const notes = includeHelpNotes ? collectedNotes : [];
   // Quellenvermerk und Datenstand trägt seit 08/2026 die senkrechte Kante
   // (WidgetSourceEdge) — auch im Bild. Deshalb nimmt dieser Fuß kein
   // `dataAsOf` mehr entgegen: zwei Stellen für dieselbe Angabe waren der
@@ -574,7 +607,7 @@ export function WidgetExportFooter({
           <span style={{ whiteSpace: "nowrap" }}>
             {branding ? (
               <>
-                <PoweredBy light label={brandLabel(widget?.kind ?? "chart")} />
+                <PoweredBy inheritColor label={brandLabel(widget?.kind ?? "chart")} />
                 <span> · {OWN_WORK_LICENSE.code}</span>
               </>
             ) : (

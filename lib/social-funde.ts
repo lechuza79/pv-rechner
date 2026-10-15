@@ -22,6 +22,7 @@
 // Funde gegen einen festen Datenstand prüfen kann.
 
 import type { AwardCategory, GemeindeStats } from "./awards";
+import { fmtPvLeistung } from "./atlas-format";
 
 /** Ein Fund: ein Satz, seine Zahlen und woran er hängt. */
 export type Fund = {
@@ -706,7 +707,7 @@ export function findeFlaechenmix(
         { name: `${oben.name}, Freifläche`, wert: Math.round(oben.freiAnteil), einheit: "prozent" },
         { name: `${unten.name}, Freifläche`, wert: Math.round(unten.freiAnteil), einheit: "prozent" },
       ],
-      grundlage: `Verglichen wird innerhalb EINES Bundeslands — zwischen Ländern ist ein Unterschied im Flächenmix erwartbar. ${liste.length} Regionen mit mindestens ${(mindestKwp / 1000).toLocaleString("de-DE")} MW. Der Satz enthält bewusst keine Wertung: Flächenverbrauch ist kommunalpolitisch heiß.`,
+      grundlage: `Verglichen wird innerhalb EINES Bundeslands — zwischen Ländern ist ein Unterschied im Flächenmix erwartbar. ${liste.length} Regionen mit mindestens ${fmtPvLeistung(mindestKwp)}. Der Satz enthält bewusst keine Wertung: Flächenverbrauch ist kommunalpolitisch heiß.`,
     });
   }
   return funde;

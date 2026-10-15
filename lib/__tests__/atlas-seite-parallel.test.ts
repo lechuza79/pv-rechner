@@ -193,7 +193,7 @@ describe("Atlas region page (Kreis, Land, Deutschland)", () => {
 
   it("the shell starts the reads before it waits for the redirect check", () => {
     const shell = body(page, "export default async function AtlasPage(");
-    const start = shell.indexOf("startAtlasReads(region)");
+    const start = shell.indexOf("startAtlasReads(region, uhr)");
     const kinder = shell.indexOf("reads.kinder");
     expect(start).toBeGreaterThan(-1);
     expect(kinder).toBeGreaterThan(start);

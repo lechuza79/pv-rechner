@@ -1,12 +1,15 @@
 'use client';
-import windStops from '../../public/geo/landscape-wind-stops.json';
+import {createPortal} from 'react-dom';
+import {useLandscapeWeather} from '../../lib/use-landscape-weather';
 import {useMemo,useRef,useState} from 'react';
 import {safeWindSignAnchor} from './location-sign';
 import RegionScene,{type SceneControls} from './RegionScene';
 import GemeindeHeroStage from '../gemeinde/GemeindeHeroStage';
 import LocationMicroCard from './LocationMicroCard';
-import {IconArrowRight} from '../Icons';
-import {useMicrocharts} from '../../lib/use-microcharts';
+import {IconArrowLeft,IconArrowRight,IconChevronLeft,IconChevronRight} from '../Icons';
+import {WidgetIconButton} from '../dashboard/WidgetControls';
+import ActionButton from '../ActionButton';
+import {Auswahl} from '../Auswahl';
 import type {ProjectedRegion} from '../../lib/region-perspektive';
 import type {SceneTerrain} from '../../lib/wind-terrain';
 import type {SceneBuilding} from '../../lib/building-scene';
@@ -18,33 +21,51 @@ export type LandscapeTourData={municipality:string;name:string;weatherMunicipali
 const values:never[]=[];
 const envelope={};
 /** One hero, camera and flight controller for every prepared municipality. */
-export default function HeroLandscapeTour({data,sceneOnly=false,onReady}:{data:LandscapeTourData;sceneOnly?:boolean;onReady?:(ready:boolean)=>void}){
- const controls=useRef<SceneControls|null>(null),pending=useRef(0),departed=useRef(false);
- const [current,setCurrent]=useState(0),[flying,setFlying]=useState(false),[ready,setReady]=useState(false),[failed,setFailed]=useState(false),[guide,setGuide]=useState(false);
+export default function HeroLandscapeTour({data,sceneOnly=false,onReady,initialStop,onStopChange,destinationTarget,navigation="widget"}:{data:LandscapeTourData;sceneOnly?:boolean;onReady?:(ready:boolean)=>void;initialStop?:string;onStopChange?:(stop:string)=>void;destinationTarget?:HTMLElement|null;navigation?:'product'|'widget'}){
+ const start=Math.max(0,data.stops.findIndex(stop=>stop.id===initialStop));
+ const controls=useRef<SceneControls|null>(null),pending=useRef(start),departed=useRef(false);
+ const [current,setCurrent]=useState(start),[flying,setFlying]=useState(false),[ready,setReady]=useState(false),[failed,setFailed]=useState(false),[guide,setGuide]=useState(false);
  const locations=useMemo(()=>data.stops.map(stop=>{
   if(stop.kind!=='wind')return stop;
   const anchor=safeWindSignAnchor(stop,data.turbines,250,data.terrain.unitsPerMetre);
   return {...stop,labelX:anchor.x,labelZ:anchor.z};
  }),[data]);
- const weatherId=data.weatherMunicipality??data.municipality;
- const hasParkWeather=Boolean((windStops as Record<string,Record<string,unknown>>)[data.municipality]?.[data.stops[current].id]);
- const {data:microcharts,weather}=useMicrocharts(weatherId,data.stops[current].overview?data.municipality:undefined,hasParkWeather?data.municipality:undefined,hasParkWeather?data.stops[current].id:undefined);
+ // Disambiguate equal destination names only in the widget navigation.
+ const destinations=useMemo(()=>data.stops.map((item,index)=>({
+  schluessel:item.id,
+  name:data.stops.filter(other=>other.name===item.name).length>1
+   ?`${item.name} · ${data.stops.slice(0,index+1).filter(other=>other.name===item.name).length}`:item.name,
+ })),[data.stops]);
  const stop=data.stops[current],next=stop.overview?Math.max(1,data.stops.findIndex(p=>p.kind!=='town')):(current+1)%data.stops.length;
+ const {data:microcharts,weather,loading:weatherLoading,municipality:weatherId}=useLandscapeWeather(data,stop);
  const fly=(index:number)=>{
-  if(flying||index===current)return;
+  if(flying||index<0||index>=data.stops.length||index===current)return;
   pending.current=index;
   if(!departed.current&&current===0)controls.current?.leaveReferencePark(stop,data.stops[index]);
   else controls.current?.leaveReferencePark(stop,data.stops[index]);
   departed.current=true;
  };
+ const destinationPicker=<Auswahl titel={flying?`Unterwegs: ${destinations[pending.current].name}`:destinations[current].name} eintraege={destinations} aktiv={stop.id} onWahl={id=>fly(data.stops.findIndex(item=>item.id===id))} breite={0} pfeile={false} transparent menuPlacement={destinationTarget?"bottom":"top"} menuAlign={destinationTarget?"start":"center"} disabled={flying}/>;
  const scene=
-   <div data-map-hero-stage className={styles.municipalScene} data-flying={flying} data-building-map data-ready={ready}>
-    <RegionScene {...data} locations={locations} locationCard={{id:stop.id,visible:true,content:<LocationMicroCard name={stop.name} municipality={weatherId} placeName={stop.kind==='town'?stop.name:data.name} kind={stop.kind} weather={weather} microcharts={microcharts} capacityKw={stop.capacityKw}/>}}
+   <div data-map-hero-stage className={styles.municipalScene} data-navigation={navigation} data-flying={flying} data-building-map data-ready={ready}>
+    <RegionScene {...data} locations={locations} locationCard={{id:stop.id,visible:true,content:<LocationMicroCard name={stop.name} municipality={weatherId} placeName={stop.kind==='town'?stop.name:data.name} kind={stop.kind} weather={weather} microcharts={microcharts} loading={weatherLoading} capacityKw={stop.capacityKw}/>}}
      values={values} heightEnvelope={envelope} selected="" hovered={null} windScale={1} windConditions={weather}
      onHover={()=>{}} onSelect={id=>{const i=data.stops.findIndex(p=>p.id===id);if(i>=0)fly(i);}}
-     onFlight={(moving,arrived)=>{setFlying(moving);if(arrived)setCurrent(pending.current);}}
-     onControls={api=>{controls.current=api;}} onReady={ok=>{setReady(ok);setFailed(!ok);onReady?.(ok);if(ok){controls.current?.flyTo({...data.stops[0],zoom:20},false);};}}/>
-    {ready&&<div className={`${styles.tour} ${styles.heroTour}`} data-tour>
+     onFlight={(moving,arrived)=>{setFlying(moving);if(arrived){setCurrent(pending.current);onStopChange?.(data.stops[pending.current].id);}}}
+     onControls={api=>{controls.current=api;}} onReady={ok=>{setReady(ok);setFailed(!ok);onReady?.(ok);if(ok){controls.current?.flyTo({...data.stops[start],zoom:data.stops[start].kind==='town'?20:data.stops[start].zoom},false);};}}/>
+    {ready&&sceneOnly&&navigation==='widget'&&destinationTarget&&createPortal(destinationPicker,destinationTarget)}
+    {ready&&sceneOnly&&navigation==='product'&&<div className={styles.productTourControls} data-tour data-sc-export-ignore role="group" aria-label="Navigation in der Landschaft" aria-busy={flying}>
+     <ActionButton variant="secondary" iconOnly aria-label="Vorheriges Ziel" disabled={flying||data.stops.length<2} onClick={()=>fly((current-1+data.stops.length)%data.stops.length)}><IconArrowLeft size={16}/></ActionButton>
+     <ActionButton variant="primary" aria-label="Nächstes Ziel" disabled={flying||data.stops.length<2} onClick={()=>fly(next)}>{flying?'Unterwegs':(data.stops[next].cta??(data.stops[next].kind==='wind'?'Zum Windpark':data.stops[next].kind==='solar'?'Zum Solarpark':`Nach ${data.stops[next].name}`))}<IconArrowRight size={16}/></ActionButton>
+     <span className={styles.tourStatus} role="status">{flying?`Flug nach ${data.stops[pending.current].name}`:''}</span>
+    </div>}
+    {ready&&sceneOnly&&navigation==='widget'&&<div className={styles.widgetTourControls} data-tour data-sc-export-ignore aria-label="Navigation in der Landschaft" aria-busy={flying}>
+     <WidgetIconButton label="Vorheriges Ziel" disabled={flying} onClick={()=>fly((current-1+data.stops.length)%data.stops.length)}><IconChevronLeft size={16}/></WidgetIconButton>
+   {destinationTarget?<span aria-hidden="true"/>:destinationPicker}
+   <WidgetIconButton label="Nächstes Ziel" disabled={flying} onClick={()=>fly((current+1)%data.stops.length)}><IconChevronRight size={16}/></WidgetIconButton>
+   <span className={styles.tourStatus} role="status">{flying?`Flug nach ${data.stops[pending.current].name}`:''}</span>
+    </div>}
+    {ready&&!sceneOnly&&<div className={`${styles.tour} ${styles.heroTour}`} data-tour data-sc-export-ignore>
      <p aria-live="polite">{flying?`Unterwegs · ${data.stops[pending.current].name}`:stop.name}</p>
      <div className={styles.referenceControls}>
       <label><input type="checkbox" checked={guide} onChange={e=>{setGuide(e.target.checked);controls.current?.showReferencePath(e.target.checked);}}/> Flugbahn zeigen</label>

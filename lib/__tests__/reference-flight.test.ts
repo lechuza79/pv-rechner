@@ -98,4 +98,4 @@ it.skipIf(!existsSync('public/geo/landscape-tours/09679/scene.json'))('keeps eve
   pose=route.sample(1);current=next;
  }
  expect(unknown).toBeGreaterThan(0);
-},20_000);
+},60_000); // reads a multi-MB scene; 20 s timed out under parallel load

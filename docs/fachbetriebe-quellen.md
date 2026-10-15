@@ -1034,16 +1034,24 @@ nicht sicherstellen können. **Zwei von drei Bausteinen dieser Begründung halte
   rechtskräftig und hat die Frage nie geprüft. **Wer diesen Blocker wiederverwendet,
   beschafft zuerst die Fundstelle.**
 
-  **Praktisch bleibt die Angabe trotzdem geschuldet, und das ist die ehrliche Fassung:**
-  Der amtliche Leitsatz des BGH stellt die Entbehrlichkeit der Sterneklassen-Aufschlüsselung
-  ausdrücklich unter die Bedingung, „wenn die Gesamtzahl und der Zeitraum der
-  berücksichtigten Bewertungen angegeben ist". Getragen ist sie nur von einer ersten
-  Instanz, aber es gibt keine Gegenstimme, und die Wettbewerbszentrale verfolgt das Thema.
-  **Und ein „Stand des Abrufs" ersetzt den Zeitraum nicht** — verlangt ist die
-  Erhebungsspanne der eingeflossenen Bewertungen, damit der Leser einschätzen kann, was
-  eine Note aussagt; 4,7 aus 30 Bewertungen eines halben Jahres und 4,7 aus 30 über zwölf
-  Jahre sind zwei verschiedene Aussagen und können am selben Tag abgerufen sein. Aus einer
-  strukturierten Angabe auf einer fremden Website ist diese Spanne nicht ableitbar.
+  **Was davon übrig bleibt, ist eine Bedingung, kein Gebot:** Der amtliche Leitsatz macht
+  die Entbehrlichkeit der Sterneklassen-Aufschlüsselung davon abhängig, „wenn die
+  Gesamtzahl und der Zeitraum der berücksichtigten Bewertungen angegeben ist" — was gilt,
+  wenn sie fehlen, lässt er offen. Die Entscheidung erging zudem zu Werbung von **vor** der
+  Einführung der Bewertungs-Transparenzregeln; § 5b Abs. 3 UWG und Anhang Nr. 23b kommen im
+  ganzen Urteil nicht vor. **Wer sie für Bewertungspflichten heranzieht, zitiert die falsche
+  Norm.** Ein „Stand des Abrufs" ersetzt den Zeitraum trotzdem nicht — verlangt wäre die
+  Erhebungsspanne, und 4,7 aus 30 Bewertungen eines halben Jahres ist etwas anderes als 4,7
+  aus 30 über zwölf Jahre.
+
+- **Der Grund, die vorhandenen Werte NICHT zu zeigen, ist ein anderer und trägt besser.**
+  Wer fremde Sterne von einer anderen Website ausliest und in die eigene Darstellung
+  einbaut, macht sie sich zu eigen und haftet für ihre Richtigkeit (§ 5 UWG). Die
+  Entlastung aus der BGH-Entscheidung zum Hotelbewertungsportal greift dabei **nicht** — sie
+  setzt nutzergenerierte Bewertungen im eigenen Portal voraus, nicht übernommene
+  Fremdangaben. Und eine strukturierte Bewertungsangabe auf der Seite eines Betriebs ist
+  von diesem selbst gesetzt und kann frei erfunden sein. **Das ist der Satz, der bleibt:
+  Wir würden für eine Zahl einstehen, die wir nicht prüfen können.**
 
 **Und dann die Messung, die die Quellenfrage entscheidet.** An 157 bzw. 116 zufälligen
 Betriebs-Startseiten geprüft, wer überhaupt auf welche Bewertungsplattform verweist:
@@ -1117,12 +1125,90 @@ dort nach der Gesetzesbegründung gar nicht erst.
 **Der Hebel, den beide Prüfer erst spät gesehen haben, hat mit Bewertungen gar nichts zu
 tun und greift früher:** Wer Verbrauchern eine Suche über mehrere Anbieter anbietet, muss
 die Hauptparameter seiner Reihenfolge und deren Gewichtung offenlegen (§ 5b Abs. 2 UWG).
-Das gilt, sobald das Verzeichnis sortiert — also ab dem ersten Tag und unabhängig davon,
-ob je eine Bewertung angezeigt wird. Die Wettbewerbszentrale hat deswegen nach Angabe des
-Gegenprüfers 33 Vergleichsportale abgemahnt. **Das ist vor dem Livegang des Verzeichnisses
-zu klären, nicht danach.**
+Das gilt, sobald das Verzeichnis sortiert — ab dem ersten Tag und unabhängig davon, ob je
+eine Bewertung angezeigt wird. Die Wettbewerbszentrale hat 64 Vergleichsportale untersucht,
+122 Verstöße gefunden, **33 abgemahnt** und viermal geklagt; ein Portal verkaufte
+Besserplatzierungen als „Gold-, Silber- und Bronze-Einträge", ohne das zu kennzeichnen.
+
+**Die Abgrenzung, die das Partnermodell rettet, steht in der Gesetzesbegründung:** Erfasst
+ist eine Zahlung „zur gezielten Erreichung eines höheren Rankings"; **nicht** erfasst sind
+„Zahlungen für allgemeine Dienstleistungen wie Gebühren für die Listung oder
+Mitgliedsbeiträge …, sofern diese Zahlungen nicht dazu bestimmt sind, ein höheres Ranking
+zu bewirken." Solange die Reihenfolge nach Nutzen sortiert — derselbe Grundsatz, der am
+Balkonkraftwerk-Angebotsblock schon sichtbar am Block steht —, löst eine Pauschalgebühr das
+Per-se-Verbot nicht aus. Sobald Geld die Reihenfolge bewegt, ist die Kennzeichnung Pflicht
+und ihr Fehlen ohne jede Abwägung unlauter.
+
+**Und der eine Weg zu Bewertungen, für die wir wirklich einstehen können, hat eine
+Bedingung an der Beschriftung.** Wer über eine Partnerseite eine Anfrage gestellt hat, hat
+die Leistung **nicht** erworben oder genutzt — „Kundenbewertung" wäre dann eine nachweislich
+unzutreffende Behauptung, und schon dieses eine Wort trägt sie (OLG Köln a. a. O.). Benennt
+die Beschriftung dagegen den Gegenstand — „Bewertung des Erstkontakts durch Nutzer, die
+hierüber angefragt haben" —, liegt gar keine Behauptung im Sinne des Verbots vor, und die
+einzige Prüfung, die dieses Projekt wirklich leisten kann (die Anfrage lief über uns),
+deckt genau die getroffene Aussage. **Das ist die günstigste Konstellation des ganzen
+Themenfelds — und die einzige, in der wir mehr behaupten dürfen als „ungeprüft".**
 
 ---
+
+## 8. Nachtrag 06.10.2026: Google-EWR-Fassung, Erreichbarkeit, Doppel-Einträge
+
+### Für ein deutsches Konto gilt eine andere Fassung — und sie kippt die halbe Begründung
+
+Die globalen Maps Platform Terms sagen selbst: Bei einer Rechnungsadresse im EWR gilt
+seit 08.07.2025 die EWR-Fassung (Bestandsschutz nur für unveränderte Integrationen von
+davor). Alle bisherigen Zitate in diesem Dokument und in CLAUDE.md stammten aus der
+globalen. Volltexte, abgerufen 06.10.2026, im Ordner `docs/quellen/fachbetriebe/`.
+
+- **Hält:** Speicherverbot, EWR-Ziff. 3.3.2(a)(iii)/(b), wortgleich. Die `place_id` darf
+  dauerhaft gespeichert werden (Service Terms „Google ID Caching"), Koordinaten aus
+  Places nur 30 Tage (Ziff. 15.4).
+- **Fällt:** Die Verzeichnis-Klausel (global 3.2.3(d)(iii)) steht in der EWR-Fassung nicht
+  — null Treffer im Volltext, vom Gegenprüfer bestätigt.
+- **Neu und strenger:** Service Terms Ziff. 15.2 — Places-Inhalte außer Koordinaten und
+  `place_id` nur für die neun „Permitted Uses". Anzeige fremder Betriebe an Endnutzer ist
+  keine davon.
+- **Und die Ausnahme, die ich zuerst übersehen hatte:** Ziff. 15.3 nimmt das **Places UI
+  Kit** von 15.1 und 15.2 aus. Für Googles fertiges Anzeige-Bauteil gilt die Positivliste
+  also nicht. Damit ist „Bewertungen nach der Berechnung zeigen" vertraglich NICHT
+  verschlossen; ungeprüft ist, was die Produktdokumentation des UI Kit zusätzlich verlangt.
+- **Die interne Sichtung ist NICHT der sichere Teil.** Die Acceptable Use Policy (für die
+  Maps-Dienste einbezogen) verbietet „to combine any Google data with any personal
+  information held by You to derive additional personal information without user
+  consent". Ein „geeignet / ungeeignet" aus Google-Bewertung plus unseren Daten zu einem
+  Einzelunternehmer ist wortnah genau das. „user consent" ist mehrdeutig, die Klausel also
+  ernsthaft einschlägig, nicht sicher verletzt.
+
+**Die Lehre:** Ich hatte die Positivliste für die Anzeige als Sperre gelesen und die
+interne Nutzung über Nr. 3 („sales team's customers or opportunities") für gedeckt — der
+Gegenprüfer hat beides umgedreht. Wer eine Positivliste findet, sucht als Nächstes, wovon
+sie ausgenommen ist.
+
+**Der Zugang steht bereits** (Projekt, Rechnungskonto und ein auf die Dachflächen-
+Schnittstelle beschränkter Schlüssel aus der Dach-Prüfung). Für das Bauteil fehlen nur zwei
+freigeschaltete Dienste im selben Projekt.
+
+### Website-Erreichbarkeit taugt nicht als Warnsignal — gemessen
+
+Die 121 Betriebe, deren Startseite beim Erfassen nicht antwortete, am 06.10.2026 erneut
+abgerufen: 22 erreichbar, 54 weisen nur ab (403, Bot-Schutz — die Seite lebt), 12 liefern
+404, 3 einen Serverfehler, 30 antworten gar nicht. Eindeutig weg sind **zwei**: Ihre Domain
+steht bei einem Domain-Händler zum Verkauf. Zwei Funde auf 3.115 tragen keinen Nachtlauf.
+
+### Derselbe Eintrag in zwei Beständen — der eigentliche Befund
+
+Unter den 121 standen Tageszeitungen, Landkreise, Firmenverzeichnisse und Energiekonzerne
+als „Betrieb". Gegen die eigenen anderen Bestände gehalten: **110 der 3.115 Betriebe stehen
+zugleich im Presse-Katalog (64) oder in der Versorger-Liste (46).** Fast alle ohne
+Firmennamen (588 Betriebe insgesamt ohne Namen). Ursache: Die Einordnung „Betrieb" ist bei
+3.044 Einträgen allein der Streuungs-Test (wenige Landkreise = kein Portal) — er schließt
+Portale aus, belegt aber keinen Betrieb, und kein Lauf fragt die anderen Bestände.
+**Nicht verwechseln:** Die 3.044 sind kein Fehlerumfang — bei 2.981 steht ein von der
+eigenen Website gemessenes Geschäftsfeld daneben. Belegt mit Name, Gewerk, Ort und
+Fundstelle: 2.211.
+
+Abhilfe gehört in die geteilte Erfassung, nicht in diesen Bestand: keine Domain in zwei
+Beständen, kein Betrieb ohne Firmennamen.
 
 ## Was diese Erhebung ausdrücklich NICHT ist
 

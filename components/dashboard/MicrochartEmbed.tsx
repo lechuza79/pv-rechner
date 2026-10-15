@@ -10,7 +10,7 @@ export default async function MicrochartEmbed({kind,query}:{kind:'solar'|'wind';
  const requestedAt=query.at?new Date(query.at):new Date();
  const now=Number.isFinite(requestedAt.getTime())?requestedAt:new Date();
  const data=await loadMicrocharts(place.ags,place.name,now);
- return <WidgetPresentation appearance={parseWidgetAppearance(query)}>
+ return <WidgetPresentation widgetId={`micro-${kind}`} appearance={parseWidgetAppearance(query)}>
   {kind==='solar'?<WeatherMicroTile place={data.place} validAt={data.at} kind="solar" chart={{power:true,points:data.solar,currentTime:data.at}}/>:
    <WeatherMicroTile place={data.place} validAt={data.at} day={data.wind} layout="separate" kind="wind" chart={{speedMs:data.conditions?.speedMs??null,directionDeg:data.conditions?.directionDeg??null}}/>}
  </WidgetPresentation>;

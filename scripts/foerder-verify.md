@@ -125,6 +125,9 @@ deckelt?").
   - Satz/Cap stimmt nicht → strukturierte Felder anpassen.
   - Programm nimmt keine Anträge an → `status` auf `ausgeschoepft`/`pausiert`/
     `unsicher` setzen (nur `status: "aktiv"` wird in der Berechnung abgezogen).
+  - Programm oder Programmteil von der Amtsseite verschwunden → herausnehmen,
+    sobald die fünf Prüfungen in `funding-daily-review.md` (Abschnitt 3,
+    „vanished from the official page") erfüllt sind; nie mit Hinweis stehen lassen.
   - Betrag durch keine Quelle gedeckt → strukturierte Felder entfernen (Programm
     wird dann „nicht pauschal berechenbar" mit ehrlichem Hinweis) und
     `verified: false`.
@@ -395,3 +398,8 @@ gewesen: Es gab nichts zu entscheiden, nur etwas abzuschreiben.
 - 10 Programme bestätigt (Berlin, Karlsruhe, Regensburg, Frankfurt, Darmstadt,
   Köln, Düsseldorf, Hannover, Bonn, Göttingen).
 - **Beobachten:** Karlsruhe + Bonn (Neustart 2027), Düsseldorf (in Überarbeitung).
+
+
+## Application procedures
+
+For each programme reviewed, also follow [Programme-specific application review](funding-application-review.md). Capture application timing, submission route, required documents and payment steps from the official originals in the shared `application` field. This is part of the existing evidence/review workflow; missing instructions must never be inferred from a generic application flow.

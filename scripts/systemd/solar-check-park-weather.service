@@ -21,4 +21,6 @@ RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 MemoryMax=1G
 CPUQuota=100%
 Nice=15
-TimeoutStartSec=10min
+# A run reads ~150 forecast tiles (7-8 min on 14.10.2026) and grows with every published district;
+# one slow source pushed it past 10 min. The timer fires hourly, so 25 min cannot overlap a run.
+TimeoutStartSec=25min

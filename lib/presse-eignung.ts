@@ -457,7 +457,7 @@ export function verkauftDasProdukt(seite: Pruefseite): Befund {
     // wäre sonst ein Vertriebskanal für Solartechnik — ein Nebenshop macht aus
     // einem Recherchebüro keinen Händler. Gefragt ist, wer Module, Speicher
     // oder Balkonkraftwerke verkauft.
-    /\b(?:in den warenkorb|zum warenkorb|warenkorb ansehen|jetzt kaufen|artikelnummer|art\.-nr\.|lieferzeit|zzgl\. versand|sofort lieferbar|jetzt bestellen)\b[^.]{0,160}\b(?:solar|photovoltaik|pv-|modul|wechselrichter|speicher|balkonkraftwerk|wärmepumpe)|\b(?:solar|photovoltaik|pv-|modul|wechselrichter|speicher|balkonkraftwerk|wärmepumpe)\w*\b[^.]{0,160}\b(?:in den warenkorb|zum warenkorb|jetzt kaufen|artikelnummer|art\.-nr\.|sofort lieferbar|jetzt bestellen)\b/i,
+    /\b(?:in den warenkorb|zum warenkorb|warenkorb ansehen|jetzt kaufen|artikelnummer|art\.-nr\.|lieferzeit|zzgl\. versand|sofort lieferbar|jetzt bestellen)(?!\w)[^.]{0,160}\b(?:solar|photovoltaik|pv-|modul|wechselrichter|speicher|balkonkraftwerk|wärmepumpe)|\b(?:solar|photovoltaik|pv-|modul|wechselrichter|speicher|balkonkraftwerk|wärmepumpe)\w*\b[^.]{0,160}\b(?:in den warenkorb|zum warenkorb|jetzt kaufen|artikelnummer|art\.-nr\.|sofort lieferbar|jetzt bestellen)(?!\w)/i,
   );
 }
 

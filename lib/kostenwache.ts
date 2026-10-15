@@ -9,23 +9,25 @@
 //
 // WAS HIER GEMESSEN WIRD — und was ausdrücklich nicht:
 //
-// Nicht Euro. Die Euro-Aufschlüsselung ist mit unserem Zugang nicht abrufbar
-// (Messung am 29.08.2026, siehe `KOSTENWACHE_ZUGANG` unten). Gemessen werden die
-// beiden MENGEN, aus denen die Rechnung entsteht:
+// Seit dem 07.10.2026 die abgerechneten MENGEN aus den Abrechnungsdaten der
+// Plattform (siehe `KOSTENWACHE_ZUGANG`), je Projekt und Abrechnungstag:
 //
-//   • Aufbauten  — wie viele Anfragen die Produktion beantwortet hat (Last).
-//   • Adressen   — wie viele VERSCHIEDENE Adressen dabei aufgerufen wurden
-//                  (Ausbreitung in die Fläche).
+//   • Aufbauten         — Funktionsaufrufe, also wie viele Anfragen die
+//                         Produktion selbst beantworten musste (Last).
+//   • Schreibvorgänge   — Cache-Schreibvorgänge, der größte Rechnungsposten:
+//                         jede Seite, die neu gebaut und abgelegt wird.
 //
-// DIE ZWEITE ZAHL IST DER EIGENTLICHE BEFUND, und sie ist der Grund, warum es
-// nicht bei einer bleibt. Beide steigen aus verschiedenen Ursachen:
-//   – nur die Last  → jemand ruft DIESELBEN Adressen häufiger auf: eine
-//                     Schleife, eine Wiederholungswelle, eine Route, die aus dem
-//                     Cache gefallen ist.
-//   – nur die Fläche → jemand entdeckt VIELE NEUE Adressen: ein Crawler läuft
-//                     einen Katalog ab. Das ist der teure Fall, denn jede noch
-//                     nie aufgerufene Adresse kostet einen vollen Aufbau.
-//   – beides        → ein echter Verkehrsanstieg oder ein Crawler-Sturm.
+// Nicht der Betrag in Dollar: Der fällt auf null, solange das Inklusivkontingent
+// des Abrechnungszeitraums reicht (gemessen 25.–29.09.2026: 0,00 $ bei normaler
+// Last), und ein Sprung von null ist keiner.
+//
+// ZWEI GRÖSSEN, WEIL SIE VERSCHIEDENE URSACHEN ANZEIGEN:
+//   – nur die Last       → dieselben Seiten werden häufiger gebaut: eine
+//                          Schleife, eine Route, die aus dem Cache gefallen ist.
+//   – nur das Schreiben  → viele Seiten werden NEU gebaut: ein Crawler läuft
+//                          einen Bestand ab, oder ein Datenlauf hat den Cache
+//                          ungültig gemacht. Das ist der teure Fall.
+//   – beides             → ein echter Verkehrsanstieg oder ein Crawler-Sturm.
 // Eine Meldung, die das nicht trennt, sagt „es ist mehr geworden" und lässt
 // offen, wonach zu suchen ist.
 //
@@ -60,58 +62,67 @@ export const KOSTEN_PROJEKTE: KostenProjekt[] = [
 ];
 
 /**
- * Was am 29.08.2026 an Zugängen GEMESSEN wurde — damit die nächste Sitzung nicht
- * dieselbe Endpunktliste noch einmal durchprobiert.
+ * WOHER DIE ZAHLEN KOMMEN — und warum nicht mehr aus den Laufzeitprotokollen.
  *
- *  • Euro je Posten: nicht abrufbar. Der Ausgaben-Endpunkt der Plattform
- *    (`/v1/teams/{id}/spend`) existiert, weist unsere Anfrage aber schon an der
- *    Form ab (HTTP 400 „should NOT have additional property `version`"), und
- *    zwar auch ohne jeden Parameter. Das ist KEIN Rechteproblem an unserem
- *    Zugang — ein zweiter Zugang mit Abrechnungsrechten wäre trotzdem einen
- *    Versuch wert, aber die Wache baut nicht darauf.
- *  • Verbrauchszahlen der Abrechnung (`vercel.com/api/usage`): der Endpunkt
- *    lebt, weist aber jeden Zeitraum ab („invalid_time_range") — geprüft mit
- *    Tages-, Wochen-, Monats- und exakter Abrechnungsperiode, als ISO und als
- *    Millisekunden.
- *  • Die Beobachtungs-Metriken (`/v2/observability/query`) enthalten GENAU die
- *    abgerechneten Größen (`vercel.request.count`, `…fdt_out_bytes` = der
- *    Datenverkehr, der die Rechnung treibt). Sie antworten auf unserem Tarif
- *    aber mit HTTP 402: sie brauchen das Zusatzprodukt „Observability Plus".
- *    Das ist eine Geldfrage und damit eine Entscheidung des Betreibers.
- *  • Die Laufzeitprotokolle sind ohne Zusatzprodukt abrufbar und liefern beide
- *    Mengen. Darauf läuft die Wache.
+ * Bis zum 06.10.2026 zählte die Wache die Laufzeitprotokolle (gruppiert nach
+ * Statuscode und Adresse). Am 06./07.10.2026 hat die Plattform diesen Weg
+ * zweifach geschlossen, beides gemessen:
+ *  • Die Gruppierung nach Statuscode gibt es nicht mehr („Invalid option:
+ *    expected one of requestPath|level|source|deploymentId|branch"), und die
+ *    Protokolle zählen seitdem Protokollzeilen statt Anfragen (167 Zeilen für
+ *    17 Stunden, bei rund 16.000 Funktionsaufrufen im selben Zeitraum).
+ *  • Ein Zeitraum, der älter ist als 24 Stunden ab JETZT, wird ganz abgewiesen
+ *    („does not retain runtime logs for the requested time range") — früher
+ *    lieferte er still den noch vorhandenen Rest. Ein ganzer Vortag ist damit
+ *    nach Mitternacht nie mehr abfragbar. Daher „der 2026-10-06 war nicht
+ *    abrufbar".
+ *
+ * Die Abrechnungsdaten (`/v1/billing/charges`, FOCUS-Format, je Projekt und Tag)
+ * sind seitdem die Quelle. Sie sind dem alten Weg in drei Punkten überlegen:
+ * Sie bleiben ERHALTEN (kein verpasster Tag ist für immer verloren, und es
+ * braucht keine eigene Ablage mehr), sie zählen genau die abgerechneten
+ * Mengen, und es ist EIN Abruf für alle Projekte statt zwei je Projekt.
+ * Ein Abrechnungstag läuft von 07:00 bis 07:00 UTC und trägt das Datum seines
+ * Beginns; er erscheint erst, nachdem er abgeschlossen ist.
+ *
+ * Frühere Messungen am 29.08.2026 (für niemanden erneut zu prüfen): Der
+ * Ausgaben-Endpunkt `/v1/teams/{id}/spend` wies jede Anfrage an der Form ab,
+ * `vercel.com/api/usage` jeden Zeitraum, die Beobachtungs-Metriken verlangen
+ * das Zusatzprodukt „Observability Plus" (HTTP 402).
  */
 export const KOSTENWACHE_ZUGANG = {
-  gemessenAm: "2026-08-29",
-  quelle: "laufzeitprotokoll",
+  gemessenAm: "2026-10-07",
+  quelle: "abrechnung",
 } as const;
 
-/**
- * Die Aufbewahrung der Laufzeitprotokolle beträgt auf unserem Tarif EINEN TAG
- * (gemessen 29.08.2026: der Vortag antwortet, alles davor liefert nichts). Daraus
- * folgt alles Weitere: Es gibt keine Historie zum Nachrechnen — wer den Tag
- * verpasst, hat ihn für immer verpasst. Deshalb die eigene Ablage, und deshalb
- * darf ein leerer Abruf NIEMALS als „null Verkehr" abgelegt werden.
- */
-export const PROTOKOLL_AUFBEWAHRUNG_TAGE = 1;
+/** Die zwei abgerechneten Posten, aus denen die Tagesmengen entstehen — mit
+ *  ihrem Namen in den Abrechnungsdaten (gemessen 07.10.2026). */
+export const ABRECHNUNGS_POSTEN = {
+  aufbauten: "Function Invocations",
+  schreibvorgaenge: "ISR Writes",
+} as const;
+
+/** So viele Tage holt ein Lauf: das Vergleichsfenster plus den beurteilten Tag
+ *  plus zwei Tage Puffer für eine verspätete Abrechnung. */
+export const ABRUF_TAGE = 17;
 
 /**
- * Die Aufbewahrung läuft GLEITEND ab, nicht am Tagesende: Je später am Tag man
- * den Vortag abfragt, desto mehr fehlt an seinem Anfang. Gemessen am 29.08.2026
- * am selben Tag: 5.738 Aufbauten um 07:00 Uhr, 5.661 um 07:45 — rund 1,3 %
- * Schwund je Stunde.
- *
- * Für den Sprung-Vergleich ist das belanglos (die Schwelle liegt beim
- * 2,5-fachen, der Schwund bewegt sich im niedrigen einstelligen Prozentbereich),
- * und weil der Gesundheitscheck den Tag beim ERSTEN Lauf nach Mitternacht
- * erfasst, ist er über alle Tage hinweg ähnlich groß. Es steht hier, damit
- * niemand später einer Abweichung nachjagt, die keine ist — und damit klar ist,
- * dass ein Tageswert eine UNTERGRENZE ist, keine amtliche Summe.
+ * Erscheint der jüngste Abrechnungstag nicht, wird das gemeldet statt
+ * stillschweigend der vorige beurteilt. Normal ist ein abgeschlossener Tag
+ * spätestens einen Tag nach seinem Ende da (gemessen 07.10.2026: am 07.10. um
+ * 07:00 UTC lag der Tag bis 06.10. 07:00 vor).
  */
-export const SCHWUND_JE_STUNDE_ANTEIL = 0.013;
+export const ABRECHNUNG_MAX_VERZUG_STUNDEN = 54;
 
-// ─── Ablage ──────────────────────────────────────────────────────────────────
+// ─── Ablage (stillgelegt) ────────────────────────────────────────────────────
 
+/**
+ * Die eigene Ablage brauchte es, weil die Protokolle nur einen Tag hielten. Die
+ * Abrechnungsdaten bleiben erhalten; seit dem 07.10.2026 schreibt niemand mehr
+ * in diese Tabelle. Sie bleibt als Archiv der Protokoll-Messungen
+ * (29.08.–05.10.2026) stehen — gelöscht wird nichts, was jemand später zum
+ * Vergleich braucht.
+ */
 export const KOSTENWACHE_DDL = `
   create table if not exists kosten_tageswerte (
     projekt text not null,
@@ -129,76 +140,57 @@ export const KOSTENWACHE_DDL = `
   alter table kosten_tageswerte enable row level security;
 `;
 
-/** Eine abgelegte Tageszeile. */
 export interface Tagesmenge {
-  /** ISO-Tag (UTC), immer ein VOLLSTÄNDIGER Tag. */
+  /** ISO-Datum des Abrechnungstags (Beginn 07:00 UTC). */
   tag: string;
+  /** Funktionsaufrufe. */
   aufbauten: number;
-  adressen: number;
+  /** Cache-Schreibvorgänge. */
+  schreibvorgaenge: number;
 }
 
-// ─── Antwort der Plattform lesen ─────────────────────────────────────────────
+/** Eine Zeile der Abrechnungsdaten — nur die Felder, die hier gelesen werden. */
+interface AbrechnungsZeile {
+  ChargePeriodStart?: string;
+  ServiceName?: string;
+  ConsumedQuantity?: number;
+  Tags?: { ProjectId?: string };
+}
 
 /**
- * Was eine Gruppierungs-Antwort hergibt.
+ * Tagesmengen eines Projekts aus den Abrechnungsdaten (JSONL).
  *
- * `verschiedene` ist die Zahl der verschiedenen Werte insgesamt — die Antwort
- * nennt sie selbst, auch wenn sie nur die größten Gruppen auflistet.
+ * Ein Tag erscheint nur, wenn für ihn mindestens einer der beiden Posten in
+ * den Daten steht. Fehlt er, fehlt der Tag — er wird NICHT als null abgelegt:
+ * Eine Null behauptete am Folgetag einen Sprung ins Unendliche und verdürbe
+ * danach zwei Wochen das Vergleichsniveau. Kaputte Zeilen werden übergangen;
+ * kommt aus der ganzen Antwort kein Tag heraus, gibt es eben keinen.
  */
-export interface Gruppenbefund {
-  summe: number;
-  /** Wie viele Gruppen die Antwort aufgelistet hat. */
-  gezeigt: number;
-  /** Wie viele es insgesamt gibt (aus der Antwort). */
-  verschiedene: number;
-  /** Der kleinste aufgelistete Gruppenwert — die Obergrenze für jede fehlende Gruppe. */
-  kleinste: number;
+export function tagesmengenAusAbrechnung(jsonl: string, projectId: string): Tagesmenge[] {
+  const tage = new Map<string, Tagesmenge>();
+  for (const roh of jsonl.split("\n")) {
+    if (!roh.trim()) continue;
+    let z: AbrechnungsZeile;
+    try {
+      z = JSON.parse(roh) as AbrechnungsZeile;
+    } catch {
+      continue;
+    }
+    if (z.Tags?.ProjectId !== projectId || !z.ChargePeriodStart) continue;
+    const feld =
+      z.ServiceName === ABRECHNUNGS_POSTEN.aufbauten ? "aufbauten"
+      : z.ServiceName === ABRECHNUNGS_POSTEN.schreibvorgaenge ? "schreibvorgaenge"
+      : null;
+    if (!feld) continue;
+    const menge = Number(z.ConsumedQuantity);
+    if (!Number.isFinite(menge)) continue;
+    const tag = z.ChargePeriodStart.slice(0, 10);
+    const t = tage.get(tag) ?? { tag, aufbauten: 0, schreibvorgaenge: 0 };
+    t[feld] += menge;
+    tage.set(tag, t);
+  }
+  return [...tage.values()].sort((a, b) => (a.tag < b.tag ? -1 : 1));
 }
-
-/**
- * Liest Summe und Gruppenzahl aus der Antwort.
- *
- * Gibt `null` zurück, wenn die Antwort gar keine Gruppen und keine Gesamtzahl
- * nennt. Das ist der Regelfall außerhalb der Aufbewahrungsfrist — und es heißt
- * „nicht abrufbar", nicht „null Verkehr". Diese Unterscheidung ist der Kern:
- * Eine Null als Messwert abzulegen würde am Folgetag einen Sprung ins
- * Unendliche behaupten und danach das Vergleichsniveau für zwei Wochen
- * verfälschen. Dieselbe Trennung wie beim Förder-Wächter zwischen „hat sich
- * geändert" und „Abruf kam nicht durch".
- */
-export function leseGruppen(text: string): Gruppenbefund | null {
-  const zeilen = [...text.matchAll(/^\|\s*([^|]+?)\s*\|\s*(\d+)\s*\|\s*$/gm)];
-  const gesamt = text.match(/\*\s*(\d[\d.,]*)\s+distinct values total/i);
-  if (!zeilen.length && !gesamt) return null;
-  const werte = zeilen.map((m) => Number(m[2]));
-  const summe = werte.reduce((a, b) => a + b, 0);
-  const verschiedene = gesamt ? Number(gesamt[1].replace(/[.,]/g, "")) : zeilen.length;
-  return { summe, gezeigt: zeilen.length, verschiedene, kleinste: werte.length ? Math.min(...werte) : 0 };
-}
-
-/**
- * Wie weit die Summe daneben liegen KANN, wenn die Antwort nicht alle Gruppen
- * aufgelistet hat.
- *
- * Die Gruppen kommen absteigend, die fehlenden sind also höchstens so groß wie
- * die kleinste gezeigte. Bei der Gruppierung nach Statuscode sind es eine
- * Handvoll Gruppen und die kleinste hat oft den Wert 1 — die Lücke ist dann
- * rechnerisch belanglos. Sie wird trotzdem ausgerechnet statt behauptet: Wächst
- * sie eines Tages, soll das auffallen und nicht stillschweigend in die
- * Vergleichszahl wandern.
- */
-export function fehlbetragObergrenze(b: Gruppenbefund): number {
-  return Math.max(0, b.verschiedene - b.gezeigt) * b.kleinste;
-}
-
-/**
- * Ab welchem Anteil die Lücke die Zahl unbrauchbar macht. Ein Prozent ist
- * bewusst großzügig: Die Schwelle liegt beim 2,5-fachen, ein Prozent Schwund
- * bewegt daran nichts. Es geht darum, den Tag zu erkennen, an dem die Antwort
- * plötzlich nur noch einen Bruchteil zeigt — nicht darum, auf die letzte
- * Anfrage genau zu sein.
- */
-export const FEHLBETRAG_MELDEN_AB_ANTEIL = 0.01;
 
 // ─── Schwelle ────────────────────────────────────────────────────────────────
 
@@ -233,10 +225,13 @@ export const BASIS_TAGE = 14;
  * Grund für die Mindestmengen unten: Bei einstelligen Tageswerten ist jedes
  * Vielfache Rauschen, und es kostet auch nichts.
  *
- * ZU PRÜFEN AB 10/2026: Für die Mengen, um die es hier wirklich geht (Anfragen
- * und Adressen, nicht Seitenaufrufe im Browser), gab es beim Bau KEINE Historie
- * — die Aufbewahrung der Protokolle ist ein Tag. Die Wache legt sie ab dem
- * ersten Lauf an. Sobald vier Wochen echter Werte vorliegen, gehört die Schwelle
+ * ZU PRÜFEN AB 11/2026: Seit dem Wechsel auf die Abrechnungsdaten (07.10.2026)
+ * gibt es echte Historie für genau die abgerechneten Mengen. Gemessen am
+ * Wechseltag über 19.09.–01.10.2026: Normalbetrieb solar-check.io bis zum
+ * 1,72-fachen bei den Funktionsaufrufen und bis zum 2,48-fachen beim Schreiben
+ * (01.10., Tag des monatlichen Datenstands), Filmprojekt bis 2,48 / 2,08. Der
+ * Crawler-Sturm ab 02.10.2026 lag beim 7,02- / 4,41-fachen.
+ * Sobald vier Wochen nach dem Sturm vorliegen, gehört die Schwelle
  * gegen `groesstesVielfaches()` nachgezogen; der Bericht nennt den Wert bei
  * jedem Lauf, damit ihn niemand suchen muss.
  */
@@ -271,9 +266,11 @@ export const SPRUNG_FAKTOR = 2.5;
 // (05.09.2026) ist nach 26 Sekunden gescheitert. Der letzte erfolgreiche davor
 // war der 05.08.2026 — außerhalb des 14-Tage-Fensters, aus dem das Vergleichs-
 // niveau entsteht. Deshalb sieht ein Datenlauf-Tag IMMER wie ein Sprung aus, und
-// zwar in der Fläche, nicht in der Last.
+// zwar in der Fläche, nicht in der Last. (Seit 07.10.2026 heißt die Größe
+// „Schreibvorgänge" — der Aufwärm-Crawl baut jede Gemeindeseite neu und schreibt
+// sie in den Cache, er zeigt sich also dort.)
 //
-// FÜR DEN NÄCHSTEN LAUF: Meldet die Wache einen Flächensprung, ist die erste
+// FÜR DEN NÄCHSTEN LAUF: Meldet die Wache einen Sprung im Schreiben, ist die erste
 // Frage, ob an diesem Tag der Datenlauf lief (`gh run list --workflow=mastr-
 // refresh.yml`). Passen Fenster und Menge zusammen, ist der Befund erledigt.
 // Passen sie NICHT zusammen — Sprung an einem Tag ohne Datenlauf, oder deutlich
@@ -296,7 +293,9 @@ export const SPRUNG_FAKTOR = 2.5;
  * nicht einen echten Sprung.
  */
 export const MIN_AUFBAUTEN = 1000;
-export const MIN_ADRESSEN = 200;
+/** Cache-Schreibvorgänge: normal 50.000 bis 470.000 am Tag bei solar-check.io,
+ *  130.000 bis 440.000 beim Filmprojekt (Abrechnung 19.09.–05.10.2026). */
+export const MIN_SCHREIBVORGAENGE = 20_000;
 
 /** Median statt Mittelwert: Ein einzelner Ausreißer soll das Vergleichsniveau
  *  nicht anheben — sonst versteckt der erste Vorfall den zweiten. */
@@ -307,7 +306,7 @@ export function median(werte: number[]): number {
   return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
 }
 
-export type Groesse = "aufbauten" | "adressen";
+export type Groesse = "aufbauten" | "schreibvorgaenge";
 
 export interface Groessenurteil {
   groesse: Groesse;
@@ -328,7 +327,7 @@ export type Kostenurteil =
 
 const NAME: Record<Groesse, string> = {
   aufbauten: "die Last",
-  adressen: "die Ausbreitung in die Fläche",
+  schreibvorgaenge: "das Schreiben in den Cache",
 };
 
 function urteileGroesse(
@@ -364,13 +363,13 @@ export function beurteileKostenTag(heute: Tagesmenge, vortage: Tagesmenge[]): Ko
       art: "kein-urteil",
       grund:
         `noch kein Vergleichsniveau: ${basis.length} von ${MIN_VERGLEICHSTAGE} nötigen Vortagen abgelegt. ` +
-        `Die Wache sammelt seit ihrem ersten Lauf; vorher kann sie einen Sprung nicht von einem normalen Tag unterscheiden.`,
+        `Ohne genug Vortage lässt sich ein Sprung nicht von einem normalen Tag unterscheiden.`,
     };
   }
 
   const groessen = [
     urteileGroesse("aufbauten", heute.aufbauten, basis.map((t) => t.aufbauten), MIN_AUFBAUTEN),
-    urteileGroesse("adressen", heute.adressen, basis.map((t) => t.adressen), MIN_ADRESSEN),
+    urteileGroesse("schreibvorgaenge", heute.schreibvorgaenge, basis.map((t) => t.schreibvorgaenge), MIN_SCHREIBVORGAENGE),
   ];
 
   const gesprungen = groessen.filter((g) => g.gesprungen);
@@ -386,24 +385,24 @@ export function beurteileKostenTag(heute: Tagesmenge, vortage: Tagesmenge[]): Ko
  */
 function deutung(groessen: Groessenurteil[]): string {
   const last = groessen.find((g) => g.groesse === "aufbauten")!;
-  const flaeche = groessen.find((g) => g.groesse === "adressen")!;
+  const schreiben = groessen.find((g) => g.groesse === "schreibvorgaenge")!;
 
-  if (last.gesprungen && flaeche.gesprungen) {
+  if (last.gesprungen && schreiben.gesprungen) {
     return (
-      `Last UND Fläche zusammen: Es kommen mehr Anfragen, und sie verteilen sich auf mehr Adressen. ` +
+      `Last UND Schreiben zusammen: Es kommen mehr Anfragen, und dabei werden viele Seiten neu gebaut. ` +
       `Das ist entweder ein echter Verkehrsanstieg oder ein Crawler, der den Bestand abläuft. ` +
-      `Zuerst nachsehen, welche Adressen dazugekommen sind und wer sie aufruft.`
+      `Zuerst nachsehen, wer die Seiten aufruft (Anfrageprotokolle der Plattform, nach Kennung und Netzbetreiber).`
     );
   }
-  if (flaeche.gesprungen) {
+  if (schreiben.gesprungen) {
     return (
-      `Nur die Fläche: Es werden viel mehr VERSCHIEDENE Adressen aufgerufen, ohne dass die Last entsprechend steigt. ` +
-      `Das ist der teure Fall — jede noch nie aufgerufene Adresse kostet einen vollen Aufbau und liegt in keinem Cache. ` +
-      `Übliche Ursachen: eine neue Sitemap oder Seitengattung ist live gegangen, oder ein Crawler hat einen Bestand entdeckt.`
+      `Nur das Schreiben: Es werden viel mehr Seiten neu gebaut und abgelegt, ohne dass die Last entsprechend steigt. ` +
+      `Das ist der teure Fall. Übliche Ursachen: ein Datenlauf hat den Cache ungültig gemacht und der Aufwärm-Crawl ` +
+      `baut alles neu, eine neue Seitengattung ist live gegangen, oder ein Crawler hat einen Bestand entdeckt.`
     );
   }
   return (
-    `Nur die Last: Dieselben Adressen werden viel häufiger aufgerufen. ` +
+    `Nur die Last: Dieselben Seiten werden viel häufiger gebaut. ` +
     `Das deutet nicht auf neue Inhalte, sondern auf Wiederholung — eine Route, die aus dem Cache gefallen ist, ` +
     `eine Schleife oder eine Wiederholungswelle. Zuerst die Cache-Wirksamkeit der meistgerufenen Adressen prüfen.`
   );
@@ -430,18 +429,29 @@ export function groesstesVielfaches(reihe: Tagesmenge[], groesse: Groesse): numb
 
 /** Eine Zahl, wie sie in einer Meldung stehen soll. */
 export function menge(n: number): string {
-  return n.toLocaleString("de-DE");
+  // Ganze Zahlen: Die Abrechnung führt Funktionsaufrufe mit Nachkommastellen
+  // (gewichtete Aufrufe), und „20.763,858 Aufrufe" ist keine Aussage.
+  return Math.round(n).toLocaleString("de-DE");
 }
 
 /**
- * Der Tag, der beim Lauf am Stichtag beurteilt wird: der letzte VOLLSTÄNDIGE.
- *
- * HIER IST DIE WELTZEIT RICHTIG, anders als bei jedem Stichtag im Projekt
- * (siehe lib/zeit.ts): Die Protokolle der Plattform sind nach UTC-Tagen
- * abgelegt, und der beurteilte Tag muss derselbe sein, den sie liefert. Ein
- * deutscher Kalendertag träfe dort zwei Stunden lang den falschen Eimer und
- * erzeugte einen Mengensprung, den es nicht gibt.
+ * Der Zeitraum, den ein Lauf abruft: die letzten `ABRUF_TAGE` Tage bis jetzt,
+ * auf ganze UTC-Tage gerundet. HIER IST DIE WELTZEIT RICHTIG, anders als bei
+ * jedem Stichtag im Projekt (siehe lib/zeit.ts): Die Abrechnung rechnet in UTC.
  */
-export function zuBeurteilenderTag(jetzt: Date): string {
-  return new Date(jetzt.getTime() - 86_400_000).toISOString().slice(0, 10);
+export function abrufZeitraum(jetzt: Date): { von: string; bis: string } {
+  const tagBeginn = Date.UTC(jetzt.getUTCFullYear(), jetzt.getUTCMonth(), jetzt.getUTCDate());
+  return {
+    von: new Date(tagBeginn - (ABRUF_TAGE - 1) * 86_400_000).toISOString(),
+    bis: new Date(tagBeginn + 86_400_000).toISOString(),
+  };
+}
+
+/**
+ * Ist der jüngste Abrechnungstag zu alt? Ein Tag ist abgeschlossen 31 Stunden
+ * nach Mitternacht seines Datums (Beginn 07:00 UTC plus 24 Stunden).
+ */
+export function abrechnungVerspaetet(jungsterTag: string, jetzt: Date): boolean {
+  const ende = Date.parse(`${jungsterTag}T07:00:00.000Z`) + 86_400_000;
+  return (jetzt.getTime() - ende) / 3_600_000 > ABRECHNUNG_MAX_VERZUG_STUNDEN;
 }

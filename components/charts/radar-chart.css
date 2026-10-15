@@ -1,0 +1,25 @@
+.sc-radar{width:100%;max-width:760px;margin-inline:auto;min-width:0}
+.sc-radar svg{display:block;width:100%;height:auto;overflow:visible}
+.sc-radar-grid{fill:none;stroke:var(--widget-ink);stroke-opacity:.15;stroke-width:1}
+.sc-radar-axis{stroke:var(--widget-ink);stroke-opacity:.06;stroke-width:1}
+.sc-radar-scale{font-size:11px;fill:var(--widget-ink);opacity:.5}
+.sc-radar-label{font-size:17px;cursor:pointer;outline:none}
+.sc-radar-label:focus-visible rect{stroke:var(--widget-accent);stroke-width:2}
+.sc-radar-value{font-family:var(--font-heading);font-weight:700;font-size:22px}
+.sc-radar-unit{font-family:inherit;font-size:11px;font-weight:400;fill:var(--widget-muted);opacity:.75}
+.sc-radar circle,.sc-radar line{transition:fill .2s,stroke .2s,r .2s}
+@media(prefers-reduced-motion:reduce){.sc-radar *{transition:none!important}}
+
+.sc-radar-note{font-size:var(--sc-type-secondary-size,14px);line-height:1.6;color:var(--widget-muted);max-width:65ch;margin:8px auto 0;}
+
+
+
+.sc-radar{position:relative}
+.sc-radar>svg{position:relative;pointer-events:none}
+.sc-radar-label{pointer-events:auto}
+.sc-radar-art{position:absolute;inset:0}
+.sc-radar-motif{position:absolute;width:25%;aspect-ratio:1;transform:translate(-50%,-50%);filter:grayscale(1);opacity:.22}
+.sc-radar-motif solar-illustration{display:block;width:100%;height:100%}
+
+/* Standalone image exports need an opaque, readable chart surface. */
+[data-sc-export-capture] .sc-widget:has(.sc-radar){background:var(--widget-surface)}

@@ -22,3 +22,23 @@
 @media(max-width:440px){.tile[data-layout=separate][data-combined=true]{grid-template-columns:1fr;width:250px}}
 
 .chart>[role=status]{font-size:11px;color:var(--atlas-secondary);line-height:1.35;text-align:center;align-self:center}
+
+/* Loading: colours derive from the tile's own text tokens, so they match any scheme. */
+.skeleton{display:block;height:11px;border-radius:6px;background:color-mix(in srgb,var(--atlas-text) 14%,transparent);animation:skeletonPulse 1.4s ease-in-out infinite}
+.info>.skeleton:nth-child(2){height:20px}
+.spinner{display:block;width:36px;height:36px;align-self:center;border-radius:50%;border:3px solid color-mix(in srgb,var(--atlas-text) 14%,transparent);border-top-color:var(--atlas-secondary);animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes skeletonPulse{50%{opacity:.5}}
+@media(prefers-reduced-motion:reduce){.spinner{animation-duration:2.4s}.skeleton{animation:none}}
+/* A standalone widget uses the same chart and values without the scene sign surface. */
+.tile[data-layout=widget]{width:100%;padding:0;background:none;grid-template-columns:1fr;gap:24px}
+.tile[data-layout=widget] .panel+.panel{border-left:0;border-top:1px solid var(--atlas-border);padding:20px 0 0}
+.tile[data-layout=widget] .header{margin-bottom:16px}
+.tile[data-layout=widget] .label{font-size:var(--font-size-body,16px)}
+.tile[data-layout=widget] .detail,.tile[data-layout=widget] .header time{font-size:var(--font-size-small,14px)}
+.tile[data-layout=widget] .row{grid-template-columns:100px minmax(0,1fr);gap:20px}
+.tile[data-layout=widget] .chart{width:100px;height:108px}
+.tile[data-layout=widget] .chart svg{width:100%;height:100%}
+.tile[data-layout=widget] .value{font-size:clamp(26px,6cqi,36px)}
+.tile[data-layout=widget] .value small{font-size:16px}
+@container (min-width:560px){.tile[data-layout=widget][data-combined=true]{grid-template-columns:repeat(2,minmax(0,1fr))}.tile[data-layout=widget] .panel+.panel{border-top:0;border-left:1px solid var(--atlas-border);padding:0 0 0 24px}}

@@ -74,6 +74,8 @@ export type GemeindePaket = {
   name: string;
   kreis: { ags: string; name: string };
   registerStand: string;
+  /** Current shared register series; independent of the weather package edition. */
+  solarAnnualGrowth?: { stand: string; years: { year: number; count: number }[] };
   rangStand: string;
   /** Date of the population figures (per-resident values, size classes). */
   einwohnerStand: string | null;

@@ -1,3 +1,4 @@
+import {fmtEnergieMwh,fmtMixLeistung,fmtPvLeistung} from './atlas-format';
 import {calcCurrentPower} from './simulation';
 export type EnergyYear={town:string;year:number;solarKwp:number;windKw:number;sourceDate:string;retrievedAt:string;days:{date:string;solarMwh:number;windMwh:number}[];sourceUrl:string};
 export type YearWeather={hourly:{time:string[];temperature_2m:(number|null)[];shortwave_radiation:(number|null)[];wind_speed_100m:(number|null)[]}};
@@ -34,5 +35,5 @@ export function energyYearSummary(data:EnergyYear):string{
  const share=solar+wind>0?wind/(solar+wind)*100:0;
  const n=(value:number,digits=0)=>value.toLocaleString('de-DE',{maximumFractionDigits:digits});
  const tiny=wind>0&&share<1;
- return `${tiny?'Der Windanteil ist klein, aber nicht null. ':''}Im Stadtgebiet von ${data.town} stehen im verwendeten Bestand ${n(data.windKw,1)} kW Windleistung rund ${n(data.solarKwp,1)} kWp Solarleistung gegenüber. Für ${data.year} ergibt das Referenzmodell ${n(wind)} MWh Windstrom – ${n(share,2)} % der hier dargestellten Solar- und Windstrommenge.${tiny?' Deshalb ist die helle Windschicht auf der gemeinsamen Skala kaum zu erkennen.':''} Anlagen außerhalb der Stadtgrenzen zählen nicht mit. Die Werte sind modelliert, nicht gemessen; für Wind verwenden wir eine vereinfachte Referenzkurve.`;
+ return `${tiny?'Der Windanteil ist klein, aber nicht null. ':''}Im Stadtgebiet von ${data.town} stehen im verwendeten Bestand ${fmtMixLeistung(data.windKw)} Windleistung rund ${fmtPvLeistung(data.solarKwp)} Solarleistung gegenüber. Für ${data.year} ergibt das Referenzmodell ${fmtEnergieMwh(wind)} Windstrom – ${n(share,2)} % der hier dargestellten Solar- und Windstrommenge.${tiny?' Deshalb ist die helle Windschicht auf der gemeinsamen Skala kaum zu erkennen.':''} Anlagen außerhalb der Stadtgrenzen zählen nicht mit. Die Werte sind modelliert, nicht gemessen; für Wind verwenden wir eine vereinfachte Referenzkurve.`;
 }

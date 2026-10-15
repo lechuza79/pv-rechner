@@ -1,29 +1,18 @@
 import { WidgetVideoConfirmation } from "../../components/WidgetVideoDialog";
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import WidgetAutoHeight from "../../components/WidgetAutoHeight";
 import VideoRenderBridge from "../../components/VideoRenderBridge";
 import { widgetBasisCss } from "../../lib/widget-basis-css";
 
-// Dieselben Schriften wie die Site, aus derselben Quelle (next/font lädt sie
-// beim Bauen herunter und liefert sie von unserer Domain — kein Aufruf bei
-// Google). Sie stehen hier nur BEREIT: Welche Schrift ein Widget benutzt,
-// entscheidet `--widget-font-family`, und das bleibt für fremde Einbettungen
-// auf der neutralen System-Schrift. Nur unsere eigenen Seiten reichen ihre
-// Schrift durch (components/AutoHeightIframe.tsx), damit ein eingebettetes
-// Chart nicht in einer anderen Schrift steht als der Text daneben.
-//
-// `preload: false` ist der Grund, warum das fremde Einbettungen nichts kostet:
-// die Schriftdateien werden nur geholt, wenn eine CSS-Regel sie wirklich
-// verlangt — also nur auf unseren Seiten.
-const dmSans = DM_Sans({
-  subsets: ["latin"],
+// Reuse the versioned site fonts without external build-time requests.
+// Embeds preload none; their host chooses whether to use the site typography.
+const dmSans = localFont({src:"../../public/fonts/dm-sans-variable.woff2",weight:"100 900",
   display: "swap",
   variable: "--font-dm-sans",
   preload: false,
 });
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
+const jetBrainsMono = localFont({src:"../../public/fonts/jetbrains-mono-variable.woff2",weight:"100 800",
   display: "swap",
   variable: "--font-jetbrains-mono",
   preload: false,

@@ -3,6 +3,8 @@ import ActionButton, { ActionLink } from "../../../../components/ActionButton";
 import SecondaryButton from "../../../../components/SecondaryButton";
 import {ControlPanel, ControlField} from "../../../../components/ControlPanel";
 import WidgetSettingsFlyout from "../../../../components/dashboard/WidgetSettingsFlyout";
+import SectionFilter from '../../../../components/SectionFilter';
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import PvConsumerExample from "../../../../components/PvConsumerExample";
 import BalkonAngebot from "../../../../components/BalkonAngebot";
 import { DEFAULT_BALKON_CONFIG } from "../../../../lib/balkon-config";
@@ -714,11 +716,14 @@ function ControlPanelExample() {
   return <ControlPanel><ControlField label="Hintergrundbilder" toggle={{enabled,onChange:setEnabled}} onReset={()=>setEnabled(true)}/></ControlPanel>;
 }
 
+function SectionFilterExample(){const [value,setValue]=useState('solar');return <SectionFilter label="Themen" items={[{id:'solar',label:'Solar'},{id:'wind',label:'Wind'}]} value={value} onChange={setValue}/>}
 const BEISPIELE: Record<string, Beispiel> = {
   ActionButton: () => <div style={{display:"flex",gap:8,flexWrap:"wrap"}}><ActionButton variant="primary">Speichern</ActionButton><ActionButton>Weiterleiten</ActionButton><ActionButton iconOnly aria-label="Beispielaktion">+</ActionButton><ActionLink href="/waermepumpe-rechner">Zum Rechner</ActionLink></div>,
   SecondaryButton: () => <SecondaryButton onClick={()=>window.alert("Beispielaktion ausgeführt")}>Mehr erfahren</SecondaryButton>,
   ControlPanel: ControlPanelExample,
   WidgetSettingsFlyout: () => <WidgetSettingsFlyout title="Widget-Vorschau"><ControlPanelExample/></WidgetSettingsFlyout>,
+  SectionFilter: SectionFilterExample,
+  WidgetPresentation: ()=><WidgetPresentation appearance={{theme:'hero'}}><p style={{padding:16,color:'var(--atlas-text)'}}>Hero-Theme</p></WidgetPresentation>,
   OnsiteSearch: OnsiteSearchBeispiel,
  ChartFlag: () => <div style={{position:"relative",height:100}}><ChartFlag placement="below" style={{top:0}}><strong>1.234 €</strong><span>Ersparnis</span></ChartFlag></div>,
  MetricValue: () => <MetricValue value={12345} signed/>,
@@ -762,7 +767,7 @@ const BEISPIELE: Record<string, Beispiel> = {
     </Reihe>
   ),
   Breadcrumb: () => (
-    <Breadcrumb
+    <Breadcrumb variant="page"
       items={[
         { href: "/", label: "Start" },
         { href: "/balkonkraftwerk", label: "Balkonkraftwerk" },

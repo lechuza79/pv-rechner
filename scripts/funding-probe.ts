@@ -1,3 +1,4 @@
+import { REVIEW_BASELINE_SOURCE, readReviewSources, reviewedProgramHash, type ReviewBaseline } from "../lib/funding-review-baseline";
 /**
  * Prüfstand der Förderprogramme — Buchführung über das, was wirklich an der
  * Amtsquelle gelesen wurde.
@@ -38,6 +39,7 @@ import {
   type SeitenAenderung,
 } from "../lib/funding-verify-state";
 import type { FundingProgram } from "../lib/funding-programs";
+import { fundingApplication, validFundingApplication } from "../lib/funding-application";
 import { heuteInBerlin } from "../lib/zeit";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
@@ -86,11 +88,11 @@ function flag(name: string): string | undefined {
 const heute = heuteInBerlin();
 
 async function ladeProgramme(): Promise<FundingProgram[]> {
-  const { data, error } = await sb.from("funding_programs").select("id, data, last_verified, archived");
+  const { data, error } = await sb.from("funding_programs").select("id, data, last_verified, page_changed_at, archived");
   if (error) throw new Error(`Programme nicht lesbar: ${error.message}`);
   return (data ?? [])
     .filter((r) => !r.archived)
-    .map((r) => ({ ...(r.data as FundingProgram), id: r.id, lastVerified: r.last_verified ?? undefined }));
+    .map((r) => ({ ...(r.data as FundingProgram), id: r.id, lastVerified: r.last_verified ?? undefined, changedSinceIso: r.page_changed_at ?? undefined }));
 }
 
 function ladeVersuche(rows: FundingCheckRow[]): PruefVersuch[] {
@@ -166,6 +168,17 @@ async function protokolliere(programId: string, erreichbarkeit: Erreichbarkeit):
     process.exit(1);
   }
 
+  // A reviewer explicitly supplies the complete source inventory after reading it.
+  // Never turn a crawler observation into a reviewed baseline automatically.
+  let baseline: ReviewBaseline | undefined;
+  if (flag("quellen")) {
+    if (!zaehltAlsGeprueft(erreichbarkeit) || !flag("url") || !flag("zitat")) throw new Error("A source-bound substantive review is required.");
+    const urls: unknown = JSON.parse(readFileSync(resolve(flag("quellen")!), "utf8"));
+    if (!Array.isArray(urls) || !urls.every(url => typeof url === "string") || !urls.includes(program.url) || !urls.includes(flag("url")!)) throw new Error("Source inventory must include the programme page and reviewed evidence URL.");
+    if (validFundingApplication(program.application) && program.application.sources.some(source => !urls.includes(source.url))) throw new Error("Application evidence is missing from source inventory.");
+    baseline = { version: 1, reviewedAt: new Date().toISOString(), programHash: reviewedProgramHash(program), sources: await readReviewSources(urls) };
+  }
+
   const { error } = await sb.from("funding_checks").insert({
     program_id: programId,
     verdict: flag("verdikt") ?? (zaehltAlsGeprueft(erreichbarkeit) ? "MATCH" : "UNREACHABLE"),
@@ -187,6 +200,9 @@ async function protokolliere(programId: string, erreichbarkeit: Erreichbarkeit):
       console.error(`Prüfdatum nicht gesetzt: ${e2.message}`);
       process.exit(1);
     }
+    // A manual review without an inventory invalidates any older baseline.
+    const { error: baselineError } = await sb.from("funding_checks").insert({ program_id: programId, verdict: "MATCH", source: REVIEW_BASELINE_SOURCE, found: baseline ?? { version: 0 }, note: "Substantive review; complete source inventory supplied explicitly when available." });
+    if (baselineError) throw new Error(baselineError.message);
     console.log(`${program.name}: an der Amtsquelle geprüft, "Zuletzt geprüft" auf ${heute} gesetzt.`);
     return;
   }
@@ -207,7 +223,14 @@ async function main(): Promise<void> {
   const okId = flag("ok");
   const fehlId = flag("fehl");
 
-  if (process.argv.includes("--vorrat")) {
+  if (process.argv.includes("--antragsvorrat")) {
+    const programs = await ladeProgramme();
+    console.log(JSON.stringify(programs.filter(p => !fundingApplication(p)).map(p => ({ id: p.id, name: p.name, status: p.status, url: p.url, task: "Read official application procedure and documents; preserve source evidence in application." })), null, 2));
+  } else if (flag("antragsdaten")) {
+    const candidate = JSON.parse(readFileSync(resolve(flag("antragsdaten")!), "utf8"));
+    if (!validFundingApplication(candidate)) throw new Error("Application evidence is incomplete, malformed or future-dated.");
+    console.log("Antragsdaten strukturell gültig. Inhaltliche Prüfung und reguläre Katalogfreigabe bleiben erforderlich; nichts veröffentlicht.");
+  } else if (process.argv.includes("--vorrat")) {
     await zeigeVorrat();
   } else if (okId) {
     await protokolliere(okId, (flag("wie") ?? "traeger") as Erreichbarkeit);
@@ -222,7 +245,10 @@ async function main(): Promise<void> {
     console.log(
       "Prüfstand der Förderprogramme.\n\n" +
         "  --vorrat                                  was als Nächstes zu prüfen ist\n" +
+        "  --antragsvorrat                           fehlende Antragsabläufe\n" +
+        "  --antragsdaten <json-file>                 Belegstruktur prüfen, ohne Veröffentlichung\n" +
         "  --ok <id> --wie traeger --url … --zitat …  an der Amtsquelle gelesen\n" +
+        "  --quellen <json-file>                     complete reviewed URL array for daily renewal\n" +
         "  --fehl <id> --wie pruefseite|gesperrt|sekundaer|archiv\n",
     );
   }

@@ -40,6 +40,7 @@
 // `lib/pruefstand.ts` beim Feld `waechter`). Wer hier einen Eintrag anfasst,
 // liest ihn dort nach, statt ihn zu erinnern.
 
+import { marktVon, type Markt } from "./markt";
 import { PRUEFSTAND, tageZwischen, type PruefEintrag } from "./pruefstand";
 
 /** Wo läuft er — und damit: wovon hängt sein Ausfall ab? */
@@ -55,6 +56,15 @@ export type BelegArt = "meldung" | "pruefdatum" | "datenbank" | "keiner";
 export type DbQuelle = "marktpreise" | "foerderkatalog" | "kostenwache";
 
 export interface WaechterJob {
+  /**
+   * Welchen Markt dieser Lauf betreut. Ohne Angabe Deutschland.
+   *
+   * Er entscheidet mit, welche Prüfstand-Einträge `pruefFelder` auflöst: Ein
+   * Schweizer Lauf findet nur Schweizer Werte. Ohne diese Grenze griffe ein
+   * neuer Markt auf die deutschen Datumsangaben zu und meldete Grün, ohne je
+   * gelaufen zu sein.
+   */
+  markt?: Markt;
   /** Ordnername des Auftrags bzw. Dateiname des Workflows — die Kennung, unter der man ihn findet. */
   id: string;
   titel: string;
@@ -538,10 +548,20 @@ export function tageText(tage: number): string {
   return tage === 1 ? "einem Tag" : `${tage} Tagen`;
 }
 
-/** Die Prüfstand-Einträge, die dieser Lauf bewegt — aufgelöst über das Feld. */
+/**
+ * Die Prüfstand-Einträge, die dieser Lauf bewegt — aufgelöst über MARKT UND FELD.
+ *
+ * Der Markt gehört zwingend in den Schlüssel: Sobald zwei Länder dieselbe
+ * Config-Form tragen (und das werden sie, etwa beim Strompreis), fände ein
+ * Vergleich nur über das Feld den erstbesten Treffer. Ein Schweizer Lauf läse
+ * dann das deutsche Prüfdatum und meldete ein Lebenszeichen, das er nie
+ * gegeben hat — Grün ohne Lauf, die teuerste Sorte Fehlalarm in umgekehrter
+ * Richtung.
+ */
 export function pruefEintraege(job: WaechterJob, stand: PruefEintrag[] = PRUEFSTAND): PruefEintrag[] {
+  const markt = marktVon(job);
   return job.pruefFelder
-    .map((f) => stand.find((e) => e.feld === f))
+    .map((f) => stand.find((e) => e.feld === f && marktVon(e) === markt))
     .filter((e): e is PruefEintrag => Boolean(e));
 }
 

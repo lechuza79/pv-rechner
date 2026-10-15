@@ -23,8 +23,10 @@
  * hier nicht zu unterscheiden — das bleibt eine Frage an den Auftraggeber.
  */
 import { execSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { basename, resolve } from "node:path";
+import { ueberwachungStand } from "./lib/ueberwachung-stand";
+import { befundUnverfolgterSender, sendetMails } from "../lib/versand-wache";
 
 const WURZEL = resolve(__dirname, "..");
 
@@ -72,6 +74,7 @@ interface Stand {
   tageStill: number;
   bereiche: string[];
   server: { pid: number; port: string }[];
+  sender: string[];      // nie eingecheckte Dateien, die über das Postfach senden
 }
 
 /** Läuft in diesem Verzeichnis ein Dev-Server? Erkannt am Pfad in der
@@ -173,6 +176,23 @@ function lies(pfad: string, zweig: string): Stand {
 
   const letzter = git("log -1 --format=%cs HEAD", pfad);
 
+  // NIE EINGECHECKTE SKRIPTE, DIE SENDEN. Am 29./30.09.2026 gingen 138
+  // Pressemitteilungen aus einem solchen Skript hinaus; sein Protokoll lag in
+  // einem temporären Ordner und verschwand. Ein Test kann das nicht sehen —
+  // er kennt nur, was eingecheckt ist. Dieser Befehl sieht jeden Arbeitsstand.
+  const sender = git("ls-files --others --exclude-standard", pfad)
+    .split("\n")
+    .filter((d) => /\.(ts|tsx|mjs|js|cjs)$/.test(d) && !d.includes("node_modules"))
+    .filter((d) => {
+      try {
+        const voll = resolve(pfad, d);
+        // Große Dateien sind keine Skripte, sondern Daten oder Bündel.
+        return statSync(voll).size < 2_000_000 && sendetMails(readFileSync(voll, "utf8"));
+      } catch {
+        return false;
+      }
+    });
+
   return {
     pfad,
     name: pfad === HAUPT ? "· Haupt-Repo ·" : basename(pfad),
@@ -185,6 +205,7 @@ function lies(pfad: string, zweig: string): Stand {
     tageStill: tageSeit(letzter),
     bereiche,
     server: serverFuer(pfad),
+    sender,
   };
 }
 
@@ -271,6 +292,11 @@ function befunde(alle: Stand[]): string[] {
       out.push(`${s.name}: ${anz(s.eigene - s.schonOben, "Commit", "Commits")} nirgends gemergt, letzte Bewegung vor ${s.tageStill} Tagen.`);
     }
   }
+  // Vorne, weil es das Einzige hier ist, das schon Schaden angerichtet hat.
+  for (const s of alle) {
+    const b = befundUnverfolgterSender(s.name, s.sender);
+    if (b) out.unshift(b);
+  }
   const server = alle.flatMap((s) => s.server.map((v) => ({ ...v, name: s.name })));
   const ports = new Map<string, string[]>();
   for (const v of server) ports.set(v.port, [...(ports.get(v.port) ?? []), v.name]);
@@ -294,6 +320,10 @@ for (const s of alle) {
   for (const z of zeile(s)) console.log(z);
   console.log("");
 }
+
+// Open monitoring findings come first: nobody gets a mail about them.
+for (const z of ueberwachungStand()) console.log(z);
+console.log("");
 
 const b = befunde(alle);
 if (b.length) {

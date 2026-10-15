@@ -46,6 +46,11 @@ export const MASTR_WIND_SQL = `
   ALTER TABLE mastr_wind_anlagen ADD COLUMN IF NOT EXISTS abschaltung_nachts boolean;
   ALTER TABLE mastr_wind_anlagen ADD COLUMN IF NOT EXISTS abschaltung_tierschutz boolean;
   ALTER TABLE mastr_wind_anlagen ADD COLUMN IF NOT EXISTS eeg_nr text;
+  ALTER TABLE mastr_wind_anlagen ADD COLUMN IF NOT EXISTS betreiber_nr text;
+  CREATE INDEX IF NOT EXISTS mastr_wind_anlagen_betreiber_idx ON mastr_wind_anlagen (betreiber_nr);
+  -- region_id is the municipality the turbine STANDS in (lib/wind-standort.ts);
+  -- this one is what the register names. They differ for about one turbine in nine.
+  ALTER TABLE mastr_wind_anlagen ADD COLUMN IF NOT EXISTS region_id_register text;
   ALTER TABLE mastr_wind_anlagen ENABLE ROW LEVEL SECURITY;
   REVOKE ALL ON mastr_wind_anlagen FROM anon, authenticated, PUBLIC;
   -- Without this the API does not see a new table until its next restart.

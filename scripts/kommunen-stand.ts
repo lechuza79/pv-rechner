@@ -185,8 +185,14 @@ async function main(): Promise<void> {
     const d = domainAus(z.website);
     if (d) gemeindeDomains.set(d, z.mastr_regions.name);
   }
+  // Articles recorded for a press mailing count as well (radio901.de,
+  // lebendiges-neuwied.de): without them, recorded articles came back as
+  // "please look at this yourself" (14.10.2026).
+  const { data: presseBeitraege } = await db.from("aussendung_veroeffentlichung").select("url");
   const beitragsDomains = new Set(
-    ((pubs ?? []) as Veroeffentlichung[]).map((v) => domainAus(v.url)).filter((d): d is string => !!d),
+    [...((pubs ?? []) as Veroeffentlichung[]), ...((presseBeitraege ?? []) as { url: string }[])]
+      .map((v) => domainAus(v.url))
+      .filter((d): d is string => !!d),
   );
 
   // Zweite Quelle: Wer uns Besucher schickt, verlinkt uns — und zwar
@@ -258,6 +264,53 @@ async function main(): Promise<void> {
       (g) => raus.find((z) => domainAus(z.website) === g.domain)?.outreach_status !== "veroeffentlicht",
     );
     if (nichtVermerkt.length) log(`Verlinkt, aber nicht als veröffentlicht vermerkt: ${nichtVermerkt.map((g) => g.gemeinde).join(", ")}`, "warn");
+
+    // WHAT THE LINKS ARE WORTH (operator, 14.10.2026: "was hat das an Domain
+    // Authority gebracht"). The backlink index's own domain rank (0–1000, not
+    // Google's), by month, and which linking domains carry it. Measured that
+    // day: rank 0 → 99 → 110 → 137 from July to mid-October. The per-domain
+    // "rank" of the referring-domains list is the weight the LINK passes, not
+    // the linking domain's authority — reading it as authority made Berkenthin
+    // (217) look stronger than Trier (422). Both are printed, labelled.
+    if (indexGelesen) {
+      try {
+        const auth = "Basic " + Buffer.from(`${login}:${pass}`).toString("base64");
+        const frag = async (pfad: string, body: unknown) => {
+          const r = await fetch(`https://api.dataforseo.com/v3/backlinks/${pfad}/live`, {
+            method: "POST",
+            headers: { Authorization: auth, "Content-Type": "application/json" },
+            body: JSON.stringify([body]),
+          });
+          const t = ((await r.json()) as any).tasks?.[0];
+          if (t?.status_code !== 20000) throw new Error(t?.status_message ?? String(r.status));
+          return t.result?.[0];
+        };
+        const [summe, verlauf, quellen] = await Promise.all([
+          frag("summary", { target: "solar-check.io", backlinks_status_type: "live", internal_list_limit: 0 }),
+          frag("history", { target: "solar-check.io", date_from: "2026-07-01" }),
+          frag("referring_domains", { target: "solar-check.io", backlinks_status_type: "live", limit: 1000 }),
+        ]);
+        const monate = ((verlauf?.items ?? []) as any[]).map((i) => `${i.date.slice(0, 7)}: ${i.rank}`).join(" · ");
+        log(`    Autorität (Rang im Backlink-Index, 0–1000, nicht Googles Wert): heute ${summe.rank} · Monatsende ${monate}`);
+        // EVERY proven link, not a top list (operator, 14.10.2026: "alle unsere
+        // Backlinks"): the domain's own strength next to the weight its link
+        // passes. Weight 0 or "not in index" means the link exists but counts
+        // for nothing in this index yet.
+        const gewicht = new Map(((quellen?.items ?? []) as any[]).map((i) => [i.domain, i.rank as number]));
+        const belegte = [...h.gemeinden.map((g) => ({ domain: g.domain, wer: g.gemeinde })), ...h.beitraege.map((b) => ({ domain: b.domain, wer: "Beitrag" })), ...h.besucher.map((b) => ({ domain: b.domain, wer: "nur Besucher" }))];
+        const staerke = belegte.length ? await frag("bulk_ranks", { targets: belegte.map((b) => b.domain) }) : { items: [] };
+        const domainRang = new Map(((staerke?.items ?? []) as any[]).map((i) => [i.target, i.rank]));
+        const zeilen = belegte
+          .map((b) => ({ ...b, rang: (domainRang.get(b.domain) as number) ?? 0, gew: gewicht.get(b.domain) ?? gewicht.get(b.domain.split(".").slice(-2).join(".")) }))
+          .sort((a, b) => (b.gew ?? -1) - (a.gew ?? -1) || b.rang - a.rang);
+        log(`      Alle belegten Links — Domain · Stärke der Domain · Gewicht des Links:`);
+        for (const z of zeilen) {
+          log(`        ${z.domain.padEnd(26)} ${String(z.rang).padStart(4)}   ${z.gew === undefined ? "nicht im Index" : String(z.gew).padStart(4)}   ${z.wer}`);
+        }
+      } catch (e) {
+        log(`Autorität NICHT gelesen: ${(e as Error).message}`, "warn");
+      }
+    }
   }
 
   // Die Abos sind der eigentliche Ertrag: Wer sich einträgt, hat eingewilligt —

@@ -855,15 +855,12 @@ export const globalStyles = `
      (div ↔ button), die Animation läuft also bei jedem Wechsel neu an. */
   /* Shared disclosure motion for native details and controlled React panels. */
   :root{--disclosure-duration:280ms;--disclosure-easing:ease}
-  .sc-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows var(--disclosure-duration) var(--disclosure-easing),opacity var(--disclosure-duration) var(--disclosure-easing)}
-  .sc-collapse[data-open="true"]{grid-template-rows:1fr;opacity:1}
-  .sc-collapse>div{min-height:0;overflow:hidden}
   @supports (interpolate-size:allow-keywords){
     details{interpolate-size:allow-keywords}
     details::details-content{block-size:0;opacity:0;overflow:clip;transition:block-size var(--disclosure-duration) var(--disclosure-easing),opacity var(--disclosure-duration) var(--disclosure-easing),content-visibility var(--disclosure-duration) allow-discrete}
     details[open]::details-content{block-size:auto;opacity:1}
   }
-  @media(prefers-reduced-motion:reduce){.sc-collapse,details::details-content{transition:none!important}}
+  @media(prefers-reduced-motion:reduce){details::details-content{transition:none!important}}
   .sc-acc{animation:sc-reveal .22s ease-out}
   @media (prefers-reduced-motion:reduce){.sc-acc{animation:none}}
   /* Eine Kalenderwoche, die auf- oder zugeht.
@@ -917,7 +914,7 @@ export const globalStyles = `
        sie hier ihren Inhalt und steht mittig. Im zweispaltigen Layout bleibt sie
        spaltenbreit, damit sie mit den Kacheln darunter bündig ist. */
     .mastr-live{width:fit-content;margin-inline:auto}
-    .mastr-kpis{grid-template-columns:repeat(3,1fr);gap:8px}
+    .mastr-kpis{grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr));gap:8px}
     .mastr-kpis .kachel-tile{padding:10px}
     /* Zusammengedrängte Kachel: der Wert schrumpft — und seine Einheit MUSS
        mitschrumpfen, sonst steht sie fast so groß da wie ihr Wert. Der

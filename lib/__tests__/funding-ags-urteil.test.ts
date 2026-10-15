@@ -92,6 +92,23 @@ describe("Gemeindeschlüssel-Wächter", () => {
       expect(b[0].text).toContain("07131");
     });
 
+    it("accepts a documented cross-county association, but still checks every key", () => {
+      const belegt = {
+        id: "test",
+        region: "Bad Breisig und Nachbargemeinden",
+        agsCode: "07131006",
+        agsCodes: ["05334004"],
+        kreisuebergreifend: "Mitgliederliste der Richtlinie, jeder Schlüssel einzeln aufgelöst",
+      };
+      expect(pruefeProgramm(belegt, REGISTER)).toEqual([]);
+      // An empty reason is no reason: the spread stays a typo suspicion.
+      expect(pruefeProgramm({ ...belegt, kreisuebergreifend: "  " }, REGISTER)[0].text).toContain("mehreren Landkreisen");
+      // The documented reason never excuses a key that does not exist.
+      const b = pruefeProgramm({ ...belegt, agsCodes: ["05334099"] }, REGISTER);
+      expect(b).toHaveLength(1);
+      expect(b[0].text).toContain("05334099 existiert im Melderegister nicht");
+    });
+
     it("schlägt auch bei mehreren Gebieten an, wenn einer im Melderegister fehlt", () => {
       // Die Existenzprüfung gilt für JEDEN Schlüssel — sie ist das, was von der
       // alten Prüfung bei Mehrfach-Gebieten übrig bleibt.

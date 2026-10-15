@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import "./collapse.css";
 
 /** Shared height transition; closed content stays mounted but cannot receive focus. */
 export default function Collapse({ open, children }: { open: boolean; children: ReactNode }) {

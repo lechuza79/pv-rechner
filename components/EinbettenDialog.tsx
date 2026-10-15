@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Modal from "./Modal";
-import { v, space, pad } from "../lib/theme";
+import Modal, {ModalSticky} from "./Modal";
+import PartnerWidgetConfigurator from "./PartnerWidgetConfigurator";
+import AutoHeightIframe from "./AutoHeightIframe";
+import ActionButton from "./ActionButton";
+import SelectField from "./SelectField";
+import {ControlPanel,ControlField} from "./ControlPanel";
+import { v, space, pad, tokens } from "../lib/theme";
 import { embedCode, type EmbedAttribution } from "../lib/embed-code";
 
 /**
@@ -31,6 +36,7 @@ export default function EinbettenDialog({
   height,
   attribution,
   siteUrl,
+  preview = false,
 }: {
   open: boolean;
   onClose: () => void;
@@ -41,9 +47,15 @@ export default function EinbettenDialog({
   height: number;
   attribution: EmbedAttribution;
   siteUrl: string;
+  /** Opt in per supported widget; existing dialogs keep their current layout. */
+  preview?: boolean;
 }) {
   const [kopiert, setKopiert] = useState(false);
-  const code = embedCode({ src, params, width, height, titel, attribution, siteUrl });
+  const [resize,setResize]=useState<'auto'|'fixed'>('auto');
+  const [fixedHeight,setFixedHeight]=useState(height);
+
+  const previewSource = `${src}?${new URLSearchParams({...params,sharing:"off"}).toString()}`;
+  const code = embedCode({ src, params, width, height:resize==='fixed'?fixedHeight:height, resize, titel, attribution, siteUrl });
 
   const kopieren = async () => {
     try {
@@ -56,11 +68,20 @@ export default function EinbettenDialog({
     }
   };
 
+  if (preview && src === "/embed/galerie/regional-annual-growth") return <Modal open={open} onClose={onClose} title={null} ariaLabel="Widget einbetten" maxWidth={1200}>
+    {open && <PartnerWidgetConfigurator widget={{id:'regional-annual-growth',src,params,title:titel}}/>}
+  </Modal>;
+
   return (
     <Modal open={open} onClose={onClose} title={titel} maxWidth={620}>
+      {preview && open && <section inert aria-label="Vorschau der Einbettung" style={{marginBottom:space.lg,...(resize==='fixed'?{height:fixedHeight}:{})}}>
+        {resize==='fixed'
+          ? <iframe src={previewSource} title={`Vorschau: ${titel}`} style={{width:'100%',height:fixedHeight,border:0,display:'block'}}/>
+          : <AutoHeightIframe key={previewSource} src={previewSource} title={`Vorschau: ${titel}`} fallbackHeight={height} framed={false} scheme={params?.theme==='dark'?'dark':'light'} loading="eager"/>}
+      </section>}
       <p style={S.text}>
         Kopieren Sie diese Zeilen in Ihr Redaktionssystem. Die Zahlen
-        aktualisieren sich danach von selbst, sobald das Marktstammdatenregister
+        aktualisieren sich danach von selbst, sobald die jeweilige Quelle
         neue Daten veröffentlicht.
       </p>
       <p style={S.text}>
@@ -69,11 +90,19 @@ export default function EinbettenDialog({
         er ist Teil der Nutzungsbedingungen.
       </p>
 
+      <ControlPanel><ControlField label="Höhe der Einbettung"><SelectField ariaLabel="Höhe der Einbettung" value={resize} onChange={event=>{setResize(event.target.value as 'auto'|'fixed');setKopiert(false)}}><option value="auto">Automatisch an den Inhalt anpassen</option><option value="fixed">Feste Höhe – nur iframe</option></SelectField></ControlField>
+        {resize==='fixed'&&<ControlField label="Höhe in Pixeln"><input aria-label="Höhe in Pixeln" type="number" min={200} max={10000} value={fixedHeight} onChange={event=>{const value=Number(event.target.value);if(Number.isFinite(value))setFixedHeight(Math.max(200,Math.min(10000,value)));setKopiert(false)}}/></ControlField>}
+      </ControlPanel>
+      <p style={S.text}>{resize==='auto'?'Die Höhe passt sich auch bei schmalen Spalten und längeren Inhalten an. Dafür muss Ihr Redaktionssystem das mitgelieferte Skript zulassen.':'Ohne Skript bleibt die Höhe fest. Prüfen Sie die Einbettung auch auf dem Smartphone; längere Inhalte können einen Scrollbalken benötigen.'}</p>
       {/* Ein Textfeld statt eines Kastens: markieren und mit der Tastatur
           kopieren funktioniert dann auch, wo die Zwischenablage gesperrt ist —
           in einer Verwaltung ist das der Normalfall, nicht die Ausnahme. */}
-      <textarea readOnly value={code} rows={9} spellCheck={false} style={S.feld} onFocus={(e) => e.currentTarget.select()} />
+      <textarea aria-label="Einbettungscode" readOnly value={code} rows={9} spellCheck={false} style={S.feld} onFocus={(e) => e.currentTarget.select()} />
 
+      {preview ? <ModalSticky><div style={S.zeile}>
+        <ActionButton variant="primary" style={Object.fromEntries(["--color-cta","--color-cta-ink","--radius-pill"].map(key=>[key,tokens[key as keyof typeof tokens]])) as React.CSSProperties} onClick={kopieren}>{kopiert ? "Kopiert" : "Code kopieren"}</ActionButton>
+        <a href="/widget-nutzungsbedingungen" target="_blank" rel="noopener" style={S.link}>Nutzungsbedingungen</a>
+      </div></ModalSticky> : (
       <div style={S.zeile}>
         <button type="button" onClick={kopieren} style={S.knopf}>
           {kopiert ? "Kopiert" : "Code kopieren"}
@@ -82,6 +111,7 @@ export default function EinbettenDialog({
           Nutzungsbedingungen
         </a>
       </div>
+      )}
     </Modal>
   );
 }

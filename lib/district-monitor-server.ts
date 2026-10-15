@@ -90,9 +90,11 @@ const readPublished=cache(async(kind:'district'|'region',regionId:string):Promis
   return {found:true,generation:manifest.generation,raw:JSON.parse(brotliDecompressSync(body).toString('utf8'))};
 });
 
-/** Starts the package read without waiting; loadDistrictContent/loadRegionContent pick it up. */
-export function preloadPublishedPackage(kind:'district'|'region',regionId:string):void{
-  void readPublished(kind,regionId).catch(()=>{});
+/** Starts the package read without waiting; loadDistrictContent/loadRegionContent pick it up. Returned only so the page can time it. */
+export function preloadPublishedPackage(kind:'district'|'region',regionId:string):Promise<unknown>{
+  const p=readPublished(kind,regionId);
+  void p.catch(()=>{});
+  return p;
 }
 
 export async function loadDistrictContent(regionId:string,members:string[],stand:string):Promise<DistrictContent>{

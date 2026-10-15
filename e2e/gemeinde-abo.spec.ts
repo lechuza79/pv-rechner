@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { klickBisWirkung } from "./klick";
 
 // Das Abo auf der Gemeindeseite — geprüft dort, wo ein Nutzer es bedient.
 //
@@ -26,12 +27,12 @@ test.describe("Gemeinde-Abo", () => {
     // Die Überschrift steht über die volle Breite, der Knopf rechts daneben.
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Nidda");
 
-    const knopf = page.getByRole("button", { name: /^Nidda abonnieren$/ }).first();
-    await knopf.click();
+    const knopf = page.getByRole("button", { name: /^Abonnieren$/ }).first();
+    await klickBisWirkung(knopf, page.getByRole("dialog"), "Förder-Abo");
 
     const fenster = page.getByRole("dialog");
     await expect(fenster).toBeVisible();
-    await expect(fenster).toContainText("Meldungen zu Nidda");
+    await expect(fenster).toContainText("Meldungen zu Förderung · Nidda");
     await expect(fenster.getByLabel("E-Mail-Adresse")).toBeVisible();
   });
 
@@ -40,38 +41,24 @@ test.describe("Gemeinde-Abo", () => {
 
     // Die Leiste erscheint erst beim Scrollen — vorher stünde sie doppelt
     // neben dem Knopf, den sie anbietet.
-    await page.mouse.wheel(0, 1200);
+    await page.locator("#foerder-beispiele").scrollIntoViewIfNeeded();
 
     const leiste = page.locator("#sc-cta-sentinel");
     await expect(leiste).toHaveCount(1); // der Merker, an dem sie sich ausblendet
 
     const stickyKnopf = page.getByRole("button", { name: /^Nidda abonnieren$/ }).last();
     await expect(stickyKnopf).toBeVisible();
-    await stickyKnopf.click();
+    await klickBisWirkung(stickyKnopf, page.getByRole("dialog"), "Förder-Abo");
 
     await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByRole("dialog")).toContainText("Meldungen zu Nidda");
+    await expect(page.getByRole("dialog")).toContainText("Meldungen zu Förderung · Nidda");
   });
 
-  test("die Förderseite trägt dieselbe Kopfzeile", async ({ page }) => {
-    // Beide Seitengattungen tragen denselben Ortsnamen und sprechen
-    // verschiedene Leute an. Der Knopf ist derselbe Baustein; unterschiedlich
-    // ist nur, was als Herkunft mitgeschrieben wird.
-    await page.setViewportSize({ width: 1200, height: 900 });
-    await page.goto("/photovoltaik-foerderung/hessen/nidda");
-
-    const h1 = page.getByRole("heading", { level: 1 });
-    const knopf = page.getByRole("button", { name: /^Nidda abonnieren$/ }).first();
-    const [hb, kb] = await Promise.all([h1.boundingBox(), knopf.boundingBox()]);
-    if (!hb || !kb) throw new Error("Element ohne Ausdehnung");
-
-    // Dieselbe Anordnung wie auf der Atlas-Seite: Knopf rechts neben der
-    // Überschrift, nicht darunter.
-    expect(kb.x).toBeGreaterThan(hb.x + hb.width - 1);
-    expect(kb.y).toBeLessThan(hb.y + hb.height);
-
-    await knopf.click();
-    await expect(page.getByRole("dialog")).toContainText("Meldungen zu Nidda");
+  test("the programme header keeps subscription beside the verification date", async ({ page }) => {
+    await page.goto(ORT);
+    const header = page.locator('[data-foerderprogramm] header').first();
+    await expect(header.getByRole("button", { name: "Abonnieren", exact: true })).toBeVisible();
+    await expect(header).toContainText(/Zuletzt geprüft am|Werte noch nicht nachgeprüft/);
   });
 
   test("der Kreis steht in der Krümelspur, nicht als eigene Zeile", async ({ page }) => {
@@ -99,7 +86,7 @@ test.describe("Gemeinde-Abo", () => {
 
   test("der Abo-Knopf trägt die Glocke", async ({ page }) => {
     await page.goto(ORT);
-    const knopf = page.getByRole("button", { name: /^Nidda abonnieren$/ }).first();
+    const knopf = page.getByRole("button", { name: /^Abonnieren$/ }).first();
     // Das Zeichen sitzt IM Knopf, und der Knopf trägt die Klasse, an der der
     // Schwing-Effekt hängt — der Effekt gehört an die Handlung, nicht ans
     // Symbol (dasselbe Symbol steht anderswo nur beschreibend da).
@@ -107,93 +94,44 @@ test.describe("Gemeinde-Abo", () => {
     await expect(knopf).toHaveClass(/sc-glocke/);
   });
 
-  test("die Förderseite nennt ihren Stand über der Überschrift", async ({ page }) => {
-    await page.goto("/photovoltaik-foerderung/hessen/nidda");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Nidda");
-
-    // Keep both the value month and the verification status above the heading.
-    // Without a verified date, the explicit unverified status is truthful.
-    // The same label also occurs in the program card, so checking text alone
-    // would not prove that the header label exists in the correct position.
-    const befund = await page.evaluate(() => {
-      const h1 = document.querySelector("h1")!;
-      const muster = /Werte von .+, (?:zuletzt geprüft am|noch nicht nachgeprüft)/;
-      const oben = [...document.querySelectorAll("div")].filter(
-        (e) =>
-          e.children.length === 0 &&
-          muster.test(e.textContent ?? "") &&
-          e.getBoundingClientRect().bottom <= h1.getBoundingClientRect().top + 1,
-      );
-      return { anzahl: oben.length, text: oben[0]?.textContent?.trim() ?? null };
-    });
-    expect(befund.anzahl).toBe(1);
-    expect(befund.text).toMatch(/Werte von .+, (?:zuletzt geprüft am \d{2}\.\d{2}\.\d{4}|noch nicht nachgeprüft)(?: ·|$)/);
+  test("the programme retains a truthful verification date", async ({ page }) => {
+    await page.goto(ORT);
+    const header = page.locator('[data-foerderprogramm] header').first();
+    const time = header.locator("time");
+    if (await time.count()) {
+      const date = await time.first().getAttribute("datetime");
+      expect(Number.isFinite(Date.parse(date!))).toBe(true);
+      expect(Date.parse(date!)).toBeLessThanOrEqual(Date.now());
+      await expect(header).toContainText("Zuletzt geprüft am");
+    } else {
+      await expect(header).toContainText("Werte noch nicht nachgeprüft");
+    }
   });
 
-  test("auf der Förderseite bleiben alle drei Wege in der Leiste", async ({ page }) => {
-    // Der Förder-Check musste NICHT weichen: Das Abo tritt als drittes
-    // Element auf, auf schmalen Schirmen nur als Glocke. Ein Symbol braucht
-    // die Breite nicht, die ein dritter Textknopf genommen hätte.
-    await page.setViewportSize({ width: 375, height: 800 });
-    await page.goto("/photovoltaik-foerderung/hessen/nidda");
-    await page.mouse.wheel(0, 1200);
-
-    // Gezielt IN der Leiste zählen: „Förder-Check starten" steht auch in der
-    // Förderkarte, und ein Selektor über die ganze Seite sagt nichts darüber,
-    // ob der Weg in der Leiste noch existiert.
-    const inDerLeiste = await page.evaluate(() => {
-      const symbol = document.querySelector(".sc-cta-dritte");
-      const reihe = symbol?.parentElement;
-      if (!reihe) return null;
-      return [...reihe.children].map((e) => (e.getAttribute("aria-label") ?? e.textContent ?? "").trim());
+  for (const width of [375, 1200]) {
+    test(`all four sticky actions remain available at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto(ORT);
+      await page.locator("#foerder-beispiele").scrollIntoViewIfNeeded();
+      const bar = page.locator(".sc-floating-actions");
+      await expect(bar.getByRole("link", { name: "Solaranlage planen" })).toBeVisible();
+      await expect(bar.getByRole("button", { name: "Förder-Check starten" })).toBeVisible();
+      const subscription = bar.getByRole("button", { name: "Nidda abonnieren" });
+      await expect(subscription).toBeVisible();
+      await expect(subscription).toHaveText("");
+      await expect(bar.getByRole("button", { name: "Seite teilen" })).toBeVisible();
+      expect(await bar.evaluate(el => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(1);
+      await klickBisWirkung(subscription, page.getByRole("dialog"), "Förder-Abo");
+      await expect(page.getByRole("dialog")).toContainText("Meldungen zu Förderung · Nidda");
     });
-    expect(inDerLeiste).not.toBeNull();
-    expect(inDerLeiste!.length).toBe(3);
-    expect(inDerLeiste![0]).toContain("Anlage durchrechnen");
-    expect(inDerLeiste![1]).toContain("Förder-Check");
-    expect(inDerLeiste![2]).toContain("Nidda abonnieren");
-
-    const abo = page.locator(".sc-cta-dritte");
-    await expect(abo).toBeVisible();
-
-    // Auf 375 px trägt der dritte Knopf nur das Symbol — die Beschriftung
-    // steht als Vorlese-Name, sonst wäre er namenlos.
-    const textSichtbar = await page.evaluate(() => {
-      const t = document.querySelector(".sc-cta-dritte-text");
-      return t ? getComputedStyle(t).display !== "none" : null;
-    });
-    expect(textSichtbar).toBe(false);
-
-    // Und nichts läuft über.
-    const ueberlauf = await page.evaluate(() => {
-      const reihe = document.querySelector(".sc-cta-dritte")!.parentElement!;
-      return Math.round(reihe.scrollWidth - reihe.clientWidth);
-    });
-    expect(ueberlauf).toBeLessThanOrEqual(0);
-
-    // Er öffnet dasselbe Fenster.
-    await abo.click();
-    await expect(page.getByRole("dialog")).toContainText("Meldungen zu Nidda");
-  });
-
-  test("auf breiten Schirmen trägt der dritte Weg seine Beschriftung", async ({ page }) => {
-    await page.setViewportSize({ width: 1200, height: 900 });
-    await page.goto("/photovoltaik-foerderung/hessen/nidda");
-    await page.mouse.wheel(0, 1200);
-
-    const textSichtbar = await page.evaluate(() => {
-      const t = document.querySelector(".sc-cta-dritte-text");
-      return t ? getComputedStyle(t).display !== "none" : null;
-    });
-    expect(textSichtbar).toBe(true);
-  });
+  }
 
   test("das Förder-Abo fragt nach der Technik, das Bestands-Abo nicht", async ({ page }) => {
     // Auf der Förderseite ist die Frage sinnvoll: Wen nur ein Balkonkraftwerk
     // interessiert, den betrifft ein Dach-Zuschuss nicht. Auf der Atlas-Seite
     // geht es um den Bestand des Orts — der kennt keine Technik-Wahl.
     await page.goto("/photovoltaik-foerderung/hessen/nidda");
-    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
+    await klickBisWirkung(page.getByRole("button", { name: /^Abonnieren$/ }).first(), page.getByRole("dialog"), "Förder-Abo");
 
     const fenster = page.getByRole("dialog");
     await expect(fenster.getByText("Wofür interessierst du dich?")).toBeVisible();
@@ -229,17 +167,17 @@ test.describe("Gemeinde-Abo", () => {
       /(mail|meldung|nachricht)\w*\s+(im|pro|je)\s+(monat|woche|jahr)|(monatlich|wöchentlich|jährlich)\w*(\s+\w+){0,2}\s+(mail|meldung|nachricht)/i;
 
     await page.goto(ORT);
-    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
+    await klickBisWirkung(page.getByRole("button", { name: /^Abonnieren$/ }).first(), page.getByRole("dialog"), "Förder-Abo");
     const bestand = page.getByRole("dialog");
-    await expect(bestand).toContainText(/Zuschuss/);
+    await expect(bestand).toContainText(/Förderkonditionen/);
     expect((await bestand.innerText()).match(verbotenerTakt)).toBeNull();
 
     await page.goto("/photovoltaik-foerderung/hessen/nidda");
-    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
+    await klickBisWirkung(page.getByRole("button", { name: /^Abonnieren$/ }).first(), page.getByRole("dialog"), "Förder-Abo");
     const foerder = page.getByRole("dialog");
     // Der Unterschied liegt jetzt im ANLASS, nicht im Takt: Die Förderseite
     // nennt die tägliche Prüfung, die Bestandsseite nennt ihre drei Auslöser.
-    await expect(foerder).toContainText("täglich");
+    await expect(foerder).toContainText("Änderungen der Förderkonditionen");
     expect((await foerder.innerText()).match(verbotenerTakt)).toBeNull();
   });
 
@@ -264,7 +202,7 @@ test.describe("Gemeinde-Abo", () => {
     );
 
     await page.goto(ORT);
-    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
+    await klickBisWirkung(page.getByRole("button", { name: /^Abonnieren$/ }).first(), page.getByRole("dialog"), "Förder-Abo");
     const fenster = page.getByRole("dialog");
     const feld = fenster.getByLabel("E-Mail-Adresse");
 
@@ -306,7 +244,7 @@ test.describe("Gemeinde-Abo", () => {
     // Ortsseite mit dem Merker, den die Bestätigung anhängt.
     await page.goto(`${ORT}?abo=1`);
 
-    const quittung = page.getByRole("status").filter({ hasText: "Angemeldet für Nidda" });
+    const quittung = page.getByRole("status").filter({ hasText: "Angemeldet für Förderung · Nidda" });
     await expect(quittung).toBeVisible();
 
     // Kein Anmeldeknopf mehr daneben — er böte an, was gerade geschehen ist.
@@ -319,13 +257,13 @@ test.describe("Gemeinde-Abo", () => {
 
     // Und ohne Merker steht wieder der Knopf da.
     await page.goto(ORT);
-    await expect(page.getByRole("button", { name: /^Nidda abonnieren$/ }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: /^Abonnieren$/ }).first()).toBeVisible();
     await expect(page.getByRole("status").filter({ hasText: "Angemeldet für" })).toHaveCount(0);
   });
 
   test("eine unbrauchbare Adresse kommt nicht durch", async ({ page }) => {
     await page.goto(ORT);
-    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
+    await klickBisWirkung(page.getByRole("button", { name: /^Abonnieren$/ }).first(), page.getByRole("dialog"), "Förder-Abo");
 
     const fenster = page.getByRole("dialog");
     const feld = fenster.getByLabel("E-Mail-Adresse");

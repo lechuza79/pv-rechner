@@ -1553,7 +1553,7 @@ export default function Waermepumpe({
                     {WP_TYPE.map(w => <option key={w.id} value={w.id}>{w.label}</option>)}
                   </SelectField>
                 </div>
-                <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={settingsDraft.oJaz ?? result.jaz} onCommit={v => updateSettings({ oJaz: v })} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
+                <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={settingsDraft.oJaz ?? result.jaz} onCommit={v => updateSettings({ oJaz: v })} unit="" min={2.0} max={4.8} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
 
               </div>
 

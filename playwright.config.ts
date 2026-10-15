@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { smokeMatches } from "./scripts/ci-browser-plan.cjs";
 
 // Playwright config for Solar Check end-to-end smoke tests.
 // Goals:
@@ -75,12 +76,15 @@ export default defineConfig({
   // ihr eigenes Zeitmass bekommen, und ein langer Flow-Lauf hält die schnellen
   // Prüfungen nicht mehr auf.
   projects: [
-    { name: "smoke", use: { ...devices["Desktop Chrome"] }, testIgnore: /(flows|kein-ueberlauf|kontrast)\.spec\.ts/ },
+    { name: "smoke", testMatch: smokeMatches(process.env.CI_BROWSER_PLAN), use: { ...devices["Desktop Chrome"] }, testIgnore: /(flows|kein-ueberlauf|kontrast|menue-verdeckung)\.spec\.ts/ },
     { name: "flows", use: { ...devices["Desktop Chrome"] }, testMatch: /flows\.spec\.ts/ },
     // Telefonbreite: 33 Seitenaufrufe mehr. Im Smoke-Job hätten sie dessen
     // 16-Minuten-Grenze gerissen (der stand am 05.09.2026 bei 14,5–15,5 min) —
     // ein Lauf ohne Urteil. Deshalb eigener Job mit Produktionsbau, wie die Flows.
     { name: "telefon", use: { ...devices["Desktop Chrome"] }, testMatch: /kein-ueberlauf\.spec\.ts/ },
+    // Menu not covered by page elements: one page per layout family, desktop
+    // and phone. Runs in the phone job against the same production build.
+    { name: "menue", use: { ...devices["Desktop Chrome"] }, testMatch: /menue-verdeckung\.spec\.ts/ },
     // Kontrast: noch einmal jede Seite, diesmal auf Schreibtischbreite, und je
     // Seite jeder sichtbare Textknoten. Aus demselben Grund ein eigener Job wie
     // die Telefonbreite — nicht weil er anders wäre, sondern weil der
@@ -97,7 +101,10 @@ export default defineConfig({
     // beim ersten Aufruf neu und ging dabei nach ~15 Minuten in die Knie — der
     // Lauf brach dann mit „nicht erreichbar" ab, was wie ein Testfehler aussah,
     // aber keiner war. Gegen den Build entfällt das Übersetzen komplett.
-    command: process.env.E2E_BUILD
+    // CI restores the exact shared build; never rebuild silently in a consumer.
+    command: process.env.E2E_PREBUILT === "1"
+      ? `next start -p ${E2E_PORT}`
+      : process.env.E2E_BUILD
       ? `npm run build && next start -p ${E2E_PORT}`
       : `next dev -p ${E2E_PORT}`,
     url: `http://localhost:${E2E_PORT}`,

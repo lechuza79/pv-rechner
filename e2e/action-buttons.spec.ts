@@ -1,9 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { wpKatalogFixieren } from './wp-katalog-fixture';
 
 for (const width of [320, 375, 624, 1280, 1440]) {
   test(`calculator actions share one button style at ${width}`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 1000 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
+    // Layout check, not an assortment check: the device cards must not depend
+    // on the live merchant feed being younger than three days.
+    await wpKatalogFixieren(page);
     await page.goto('/waermepumpe-rechner?fl=180&da=0&hz=hk_alt&ah=oel_kohle');
     const result = page.getByRole('region', { name: 'Ergebnisaktionen' });
     const product = page.locator('.wp-product-actions').first();

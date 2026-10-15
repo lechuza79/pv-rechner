@@ -397,7 +397,7 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // eine der beiden Fassungen wählen — das ist eine Entscheidung, keine
   // Übersetzung. Die Bedingungen stehen vollständig auf der Karte.
   "horneburg-nachhaltige-projekte", "nottensdorf-nachhaltige-projekte",
-  "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
+  "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "bergkamen-solardach", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",
   // Die beiden Landesprogramme für Balkonkraftwerke, aufgenommen am 02.09.2026.
@@ -470,6 +470,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Förderhöhe zusätzlich an einer Einkommensprüfung, die das Modell nicht
   // kennt; das ist eine eigene Arbeit und halb erfasst gibt es hier nicht.
   "hamburg-balkon-einkommen", "kiel-solarstadt", "boeblingen-balkonkraftwerke",
+  // Aufgenommen am 07.10.2026, Richtlinie im Volltext gelesen. Wie Hamburg:
+  // Berechtigung hängt am Haushaltseinkommen, das das Modell nicht kennt.
+  "mainz-balkon-einkommen",
   // Aufgenommen am 05.09.2026, Richtlinie und Service-Portal im Volltext
   // gelesen. Die Prüfformen fehlen noch, und eine davon kennt das Modell gar
   // nicht: Die Kumulierungsgrenze deckelt die SUMME aller öffentlichen Mittel
@@ -536,6 +539,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "rhein-hunsrueck-einkommensschwache-haushalte",
   // Added 27 Sep 2026 as a closed historical programme (no calculation fields).
   "niederzissen-photovoltaik",
+  // Added 10 Oct 2026 as closed historical programmes (no calculation fields).
+  "remagen-balkonkraftwerke",
+  "sinzig-kipki-stecker-pv",
   // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",
@@ -787,6 +793,14 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // deduct nothing.
   "hockenheim-stadtwerke-balkon",
   "hockenheim-stadtwerke-hauswaerme",
+  // Added 14 Oct 2026: Klimaschutzfonds Elmshorn (exhausted until 2027) and
+  // the Stadtwerke Elmshorn CO2 programme (tied to being a gas and green-power
+  // customer); both deduct nothing.
+  "elmshorn-klimaschutzfonds",
+  "elmshorn-stadtwerke-co2",
+  // Added 14 Oct 2026: Klimafonds der Stadt Schenefeld (committee discretion,
+  // budget reservation, other-programmes exclusion); deducts nothing.
+  "schenefeld-klimafonds",
 ];
 
 /**

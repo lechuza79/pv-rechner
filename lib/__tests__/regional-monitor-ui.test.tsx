@@ -21,6 +21,25 @@ it('keeps register snapshots when the prepared history is unavailable',()=>{
   expect(html).toContain('Bestand und Entwicklung');
 });
 
+it('gives regional stock cards independent compact slots without stretching to the viewport',()=>{
+  const cells=[
+    {...props.cells[0],count:3000,kwp:12000},
+    {...props.cells[0],segment:'steckersolar',count:1001,kwp:600},
+    {...props.cells[0],segment:'freiflaeche',count:30,kwp:20000},
+  ];
+  const html=renderToStaticMarkup(<LandkreisMonitor {...props} regionId="12063" cells={cells}/>);
+  const stock=html.slice(html.indexOf('<section aria-label="Anlagenbestand"')).split('</section>')[0];
+  expect(stock.match(/data-widget-host="dashboard"/g)).toHaveLength(4);
+  for(const id of ['solar-mix','stock-privat_dach','stock-steckersolar','stock-freiflaeche']) {
+    expect(stock).toContain(`data-composition-item="${id}"`);
+  }
+  expect(html).toContain('data-widget-density="compact"');
+  expect(html).not.toContain('data-widget-layout="allocated"');
+  // Regional totals use the same readable cell budget as municipal monitors.
+  expect(stock).toContain('1001 von 4031 Anlagen. Ein Rechteck steht für 100 Anlagen.');
+  for(const label of ['Gebäudeanlagen','Balkonkraftwerke','Freiflächenanlagen']) expect(stock).toContain(label);
+});
+
 // Optional read-only integration check using the data team's local packages.
 const fixtureDir=process.env.REGIONAL_UI_FIXTURES;
 describe.skipIf(!fixtureDir)('prepared regional examples',()=>{

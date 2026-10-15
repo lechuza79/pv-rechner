@@ -32,9 +32,10 @@ export default function HeatPumpRunningComparison({strompreis,wpKwh,jaz,wpAutark
         // wieder — und der Hinweistext unten hängt am Ergebnis-Flag, nicht an einer
         // zweiten Formulierung derselben Regel.
         //
-        // Grundpreis und Wartung stehen auf BEIDEN Seiten (Quelle für beide:
-        // lib/fossil-reference.ts) — eine Seite damit zu belasten und die andere nicht
-        // war genau der Fehler, den der Wärmepumpen-Rechner am 28.07.2026 korrigiert hat.
+        // Wartung steht auf BEIDEN Seiten. Den Grundpreis trägt nur die fossile
+        // Seite: Die Wärmepumpe läuft hier am gemeinsamen Hauszähler, ein zweiter
+        // Zählergrundpreis entsteht nicht (der Text unten sagt das). Den vollen Fall
+        // mit WP-Tarif rechnet der Wärmepumpen-Rechner.
         const ref = calcFossilReference({
           fuelKind: fuelType,
           fuelKwh: fuelKwhForWpHeat(wpKwh, fuelType, jaz),

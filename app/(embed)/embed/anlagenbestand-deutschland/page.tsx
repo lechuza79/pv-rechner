@@ -1,3 +1,4 @@
+import WidgetPresentation from '../../../../components/dashboard/WidgetPresentation';
 import type { Metadata } from "next";
 import AnlagenbestandEmbed from "./client";
 import { anlagenbestand } from "../../../../lib/anlagenbestand-server";
@@ -22,5 +23,5 @@ export default async function AnlagenbestandEmbedPage() {
   } catch {
     bestand = null;
   }
-  return <AnlagenbestandEmbed bestand={bestand} />;
+  return <WidgetPresentation widgetId="anlagenbestand-deutschland"><AnlagenbestandEmbed bestand={bestand} /></WidgetPresentation>;
 }

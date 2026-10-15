@@ -17,6 +17,12 @@ describe("Taugt ein Postfach für ein Anschreiben?", () => {
       expect(postfachTauglich(m).ok, m).toBe(true);
     }
   });
+  it("weist technische Kennungen aus dem Seitencode ab (Wix-Fehlerberichte)", () => {
+    for (const m of ["605a7baede844d278b89dc95ae0a9123@sentry-next.wixpress.com", "abc@o123.ingest.sentry.io", "0123456789abcdef0123456789@firma.de"]) {
+      expect(postfachTauglich(m).ok, m).toBe(false);
+    }
+    expect(postfachTauglich("cafe@firma.de").ok).toBe(true);
+  });
   it("weist kaputte Adressen ab", () => {
     expect(postfachTauglich("info@quartiersnetz-bayern.de​").ok).toBe(false);
     expect(postfachTauglich("kein-postfach").ok).toBe(false);

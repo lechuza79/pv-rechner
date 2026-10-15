@@ -19,6 +19,7 @@ const nextConfig = {
   // No "X-Powered-By: Next.js" — tells an attacker the framework for free.
   poweredByHeader: false,
   outputFileTracingIncludes: {
+    "/api/og/funding": ["./app/api/og/Montserrat-Bold.ttf", "./public/brand/funding-money.png", "./public/brand/logo-result.svg"],
     "/fuer-organisationen/kommunen": ["./public/kommunen/index.html"],
     "/api/windraeder-vorschau/*": ["./public/plz.json", "./public/plz-ags.json", "./public/geo/gemeinden/*.geo.json"],
     "/embed/micro-*": ["./public/plz.json", "./public/plz-ags.json", "./public/geo/gemeinden/*.geo.json"],
@@ -33,6 +34,8 @@ const nextConfig = {
     return config;
   },
   experimental: {
+    // Keep a multi-widget development gallery below the restart threshold.
+    webpackMemoryOptimizations: process.env.NODE_ENV === 'development',
     // Lets app/global-not-found.tsx replace Next's bare default 404. Needed
     // because this app has no app/layout.tsx — every route group brings its own
     // root layout, and a root not-found.tsx without one is refused by Next
@@ -87,6 +90,15 @@ const nextConfig = {
         ],
       },
       {
+        // Landscape scenes are republished under the same address after
+        // repairs (scene bucket, see rewrites). Immutable would keep a
+        // returning visitor on the broken scene for a year. Later rule wins.
+        source: "/geo/landscape-tours/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400" },
+        ],
+      },
+      {
         // Harmlose Basis-Header global — MIME-Sniffing aus, Referrer sparsam.
         // Absichtlich KEIN X-Frame-Options hier: die /embed/*-Widgets müssen
         // fremd-einbettbar bleiben. Der Framing-Schutz steht im nächsten
@@ -120,6 +132,8 @@ const nextConfig = {
     // also entsteht keine Schleife mit der Umkehrung oben.
     return {
       beforeFiles: [
+        // Local energy widgets read the deployed app, including its shared caches.
+        ...(process.env.NODE_ENV === "development" ? [{ source: "/api/energy/:path((?!(?:physical-flows|import-mix)).*)", destination: "https://solar-check.io/api/energy/:path*" }] : []),
         { source: "/solar-atlas/hamburg", destination: "/solar-atlas/hamburg/hamburg/hamburg" },
         { source: "/solar-atlas/berlin", destination: "/solar-atlas/berlin/berlin/berlin" },
         // Embed codes carry their subject in the query (`?ags=…`). A page
@@ -131,6 +145,12 @@ const nextConfig = {
         // but valid forms ("09-679-147") are rewritten by the middleware.
         // Kept in step with lib/embed-pfad-weiche.ts by its test.
         ...EMBED_PFAD_REWRITES,
+        // Prepared landscape scenes live in the Hetzner bucket, not in the
+        // deployment (all of Germany would be tens of GB). Proxied, not linked:
+        // the browser keeps talking only to solar-check.io, so no visitor IP
+        // reaches a third party and no CORS is involved. Must equal
+        // SZENEN_BASIS_URL in lib/szenen-speicher.ts (held by its test).
+        { source: "/geo/landscape-tours/:place/:file", destination: "https://solar-check-szenen.fsn1.your-objectstorage.com/landscape-tours/:place/:file" },
       ],
     };
   },
@@ -175,6 +195,51 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/nottensdorf", destination: "/photovoltaik-foerderung/niedersachsen/nottensdorf", permanent: true },
       // Gemeinde Niederkrüchten, 21.09.2026
       { source: "/photovoltaik-foerderung/niederkruechten", destination: "/photovoltaik-foerderung/nordrhein-westfalen/niederkruechten", permanent: true },
+      { source: "/photovoltaik-foerderung/mehren", destination: "/photovoltaik-foerderung/rheinland-pfalz/mehren", permanent: true },
+      { source: "/photovoltaik-foerderung/holzminden", destination: "/photovoltaik-foerderung/niedersachsen/holzminden", permanent: true },
+      { source: "/photovoltaik-foerderung/landkreis-schaumburg", destination: "/photovoltaik-foerderung/niedersachsen/landkreis-schaumburg", permanent: true },
+      { source: "/photovoltaik-foerderung/suedheide", destination: "/photovoltaik-foerderung/niedersachsen/suedheide", permanent: true },
+      { source: "/photovoltaik-foerderung/cremlingen", destination: "/photovoltaik-foerderung/niedersachsen/cremlingen", permanent: true },
+      { source: "/photovoltaik-foerderung/goedenstorf", destination: "/photovoltaik-foerderung/niedersachsen/goedenstorf", permanent: true },
+      { source: "/photovoltaik-foerderung/wuerselen", destination: "/photovoltaik-foerderung/nordrhein-westfalen/wuerselen", permanent: true },
+      { source: "/photovoltaik-foerderung/eckental", destination: "/photovoltaik-foerderung/bayern/eckental", permanent: true },
+      { source: "/photovoltaik-foerderung/fritzlar", destination: "/photovoltaik-foerderung/hessen/fritzlar", permanent: true },
+      { source: "/photovoltaik-foerderung/ehningen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/ehningen", permanent: true },
+      { source: "/photovoltaik-foerderung/mauer", destination: "/photovoltaik-foerderung/baden-wuerttemberg/mauer", permanent: true },
+      { source: "/photovoltaik-foerderung/rauschenberg", destination: "/photovoltaik-foerderung/hessen/rauschenberg", permanent: true },
+      { source: "/photovoltaik-foerderung/schwarzenfeld", destination: "/photovoltaik-foerderung/bayern/schwarzenfeld", permanent: true },
+      { source: "/photovoltaik-foerderung/kumhausen", destination: "/photovoltaik-foerderung/bayern/kumhausen", permanent: true },
+      { source: "/photovoltaik-foerderung/mutterstadt", destination: "/photovoltaik-foerderung/rheinland-pfalz/mutterstadt", permanent: true },
+      { source: "/photovoltaik-foerderung/adendorf", destination: "/photovoltaik-foerderung/niedersachsen/adendorf", permanent: true },
+      { source: "/photovoltaik-foerderung/barnstedt", destination: "/photovoltaik-foerderung/niedersachsen/barnstedt", permanent: true },
+      { source: "/photovoltaik-foerderung/deutsch-evern", destination: "/photovoltaik-foerderung/niedersachsen/deutsch-evern", permanent: true },
+      { source: "/photovoltaik-foerderung/embsen", destination: "/photovoltaik-foerderung/niedersachsen/embsen", permanent: true },
+      { source: "/photovoltaik-foerderung/melbeck", destination: "/photovoltaik-foerderung/niedersachsen/melbeck", permanent: true },
+      { source: "/photovoltaik-foerderung/artlenburg", destination: "/photovoltaik-foerderung/niedersachsen/artlenburg", permanent: true },
+      { source: "/photovoltaik-foerderung/brietlingen", destination: "/photovoltaik-foerderung/niedersachsen/brietlingen", permanent: true },
+      { source: "/photovoltaik-foerderung/echem", destination: "/photovoltaik-foerderung/niedersachsen/echem", permanent: true },
+      { source: "/photovoltaik-foerderung/hittbergen", destination: "/photovoltaik-foerderung/niedersachsen/hittbergen", permanent: true },
+      { source: "/photovoltaik-foerderung/hohnstorf-elbe", destination: "/photovoltaik-foerderung/niedersachsen/hohnstorf-elbe", permanent: true },
+      { source: "/photovoltaik-foerderung/luedersburg", destination: "/photovoltaik-foerderung/niedersachsen/luedersburg", permanent: true },
+      { source: "/photovoltaik-foerderung/rullstorf", destination: "/photovoltaik-foerderung/niedersachsen/rullstorf", permanent: true },
+      { source: "/photovoltaik-foerderung/scharnebeck", destination: "/photovoltaik-foerderung/niedersachsen/scharnebeck", permanent: true },
+      { source: "/photovoltaik-foerderung/alsbach", destination: "/photovoltaik-foerderung/rheinland-pfalz/alsbach", permanent: true },
+      { source: "/photovoltaik-foerderung/breitenau", destination: "/photovoltaik-foerderung/rheinland-pfalz/breitenau", permanent: true },
+      { source: "/photovoltaik-foerderung/caan", destination: "/photovoltaik-foerderung/rheinland-pfalz/caan", permanent: true },
+      { source: "/photovoltaik-foerderung/deesen", destination: "/photovoltaik-foerderung/rheinland-pfalz/deesen", permanent: true },
+      { source: "/photovoltaik-foerderung/hundsdorf", destination: "/photovoltaik-foerderung/rheinland-pfalz/hundsdorf", permanent: true },
+      { source: "/photovoltaik-foerderung/nauort", destination: "/photovoltaik-foerderung/rheinland-pfalz/nauort", permanent: true },
+      { source: "/photovoltaik-foerderung/oberhaid", destination: "/photovoltaik-foerderung/rheinland-pfalz/oberhaid", permanent: true },
+      { source: "/photovoltaik-foerderung/ransbach-baumbach", destination: "/photovoltaik-foerderung/rheinland-pfalz/ransbach-baumbach", permanent: true },
+      { source: "/photovoltaik-foerderung/sessenbach", destination: "/photovoltaik-foerderung/rheinland-pfalz/sessenbach", permanent: true },
+      { source: "/photovoltaik-foerderung/wirscheid", destination: "/photovoltaik-foerderung/rheinland-pfalz/wirscheid", permanent: true },
+      { source: "/photovoltaik-foerderung/wittgert", destination: "/photovoltaik-foerderung/rheinland-pfalz/wittgert", permanent: true },
+      { source: "/photovoltaik-foerderung/hilgert", destination: "/photovoltaik-foerderung/rheinland-pfalz/hilgert", permanent: true },
+      { source: "/photovoltaik-foerderung/kammerforst", destination: "/photovoltaik-foerderung/rheinland-pfalz/kammerforst", permanent: true },
+      { source: "/photovoltaik-foerderung/oberviechtach", destination: "/photovoltaik-foerderung/bayern/oberviechtach", permanent: true },
+      { source: "/photovoltaik-foerderung/maxhuette-haidhof", destination: "/photovoltaik-foerderung/bayern/maxhuette-haidhof", permanent: true },
+      { source: "/photovoltaik-foerderung/bruck-i-d-opf", destination: "/photovoltaik-foerderung/bayern/bruck-i-d-opf", permanent: true },
+      { source: "/photovoltaik-foerderung/bad-kreuznach", destination: "/photovoltaik-foerderung/rheinland-pfalz/bad-kreuznach", permanent: true },
       { source: "/photovoltaik-foerderung/marloffstein", destination: "/photovoltaik-foerderung/bayern/marloffstein", permanent: true },
       { source: "/photovoltaik-foerderung/uttenreuth", destination: "/photovoltaik-foerderung/bayern/uttenreuth", permanent: true },
       { source: "/photovoltaik-foerderung/spardorf", destination: "/photovoltaik-foerderung/bayern/spardorf", permanent: true },
@@ -462,6 +527,8 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/walldorf", destination: "/photovoltaik-foerderung/baden-wuerttemberg/walldorf", permanent: true },
       { source: "/photovoltaik-foerderung/hirschberg-bergstrasse", destination: "/photovoltaik-foerderung/baden-wuerttemberg/hirschberg-bergstrasse", permanent: true },
       { source: "/photovoltaik-foerderung/schwetzingen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/schwetzingen", permanent: true },
+      { source: "/photovoltaik-foerderung/elmshorn", destination: "/photovoltaik-foerderung/schleswig-holstein/elmshorn", permanent: true },
+      { source: "/photovoltaik-foerderung/schenefeld", destination: "/photovoltaik-foerderung/schleswig-holstein/schenefeld", permanent: true },
       { source: "/photovoltaik-foerderung/hockenheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/hockenheim", permanent: true },
       { source: "/photovoltaik-foerderung/laudenbach", destination: "/photovoltaik-foerderung/baden-wuerttemberg/laudenbach", permanent: true },
       { source: "/photovoltaik-foerderung/oftersheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/oftersheim", permanent: true },

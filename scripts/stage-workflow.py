@@ -61,15 +61,16 @@ def plan(root, place):
     inventory = read(inventory_path) if inventory_path.exists() else None
     if inventory and inventory.get('municipality') != place:
         raise ValueError('Inventory belongs to another municipality')
-    adapter = 'niedersachsen-municipality' if len(place) == 8 and place.startswith('03') else None
+    # Mirrors landscape_state_sources.ADAPTERS; kept standard-library only here.
+    adapter = {'01': 'schleswig-holstein-municipality', '02': 'hamburg-municipality', '04': 'bremen-municipality', '10': 'saarland-municipality', '06': 'hessen-municipality', '03': 'niedersachsen-municipality', '05': 'nordrhein-westfalen-municipality',
+               '07': 'rheinland-pfalz-municipality', '08': 'baden-wuerttemberg-municipality', '09': 'bayern-municipality', '13': 'mecklenburg-vorpommern-municipality', '12': 'brandenburg-municipality', '14': 'sachsen-municipality',
+               '15': 'sachsen-anhalt-municipality', '16': 'thueringen-municipality'}.get(place[:2]) if len(place) == 8 else None
     counts = dict(Counter(unit['kind'] for unit in inventory.get('units', []))) if inventory else {}
     blockers = []
     if not adapter:
         blockers.append('No generic geometry adapter for this location yet; use the source-adapter step in the runbook, not an unrelated pilot recipe')
     if not inventory:
         blockers.append('Municipality inventory missing; districts require a verified member/boundary preparation')
-    if adapter and inventory and not counts.get('wind'):
-        blockers.append('Current Niedersachsen worker requires active onshore wind; solar-only/town-only support must be added explicitly')
     for relative in ('inputs/national-register/wind.json', 'inputs/national-register/solar.json', 'inputs/DE_VG250.gpkg'):
         if not (root/relative).is_file():
             blockers.append('Missing cached input: '+relative)
@@ -115,7 +116,9 @@ def check(directory, place):
     by_id = {r.get('mastr_nr'): r for r in rows}
     for turbine in turbines:
         for displayed, source in (('hub', 'nabenhoehe_m'), ('rotor', 'rotor_m'), ('ratedKw', 'brutto_kw')):
-            if turbine.get(displayed) != by_id.get(turbine.get('id'), {}).get(source):
+            estimated = displayed in ('hub', 'rotor') and by_id.get(turbine.get('id'), {}).get(source) in (None, 0) \
+                and ('hub' if displayed == 'hub' else 'rotorMetres') in (turbine.get('dimensionEstimates') or {})
+            if not estimated and turbine.get(displayed) != by_id.get(turbine.get('id'), {}).get(source):
                 errors.append('Wind model differs from register: '+str(turbine.get('id'))+' '+displayed)
     stops = scene.get('stops', [])
     if not stops or not any(stop.get('kind') == 'town' for stop in stops):
@@ -146,6 +149,9 @@ def check(directory, place):
                     powers = [by_id[unit].get('brutto_kw') for unit in units]
                     if any(not finite(power) for power in powers) or abs(sum(powers)-capacity) > .001:
                         errors.append('Wind capacity differs from linked units: '+sid)
+    for turbine in turbines:
+        if not finite(turbine.get('hub')) or not finite(turbine.get('rotor')) or turbine['hub'] <= 0 or turbine['rotor'] <= 0:
+            errors.append('Turbine without drawable dimensions: '+str(turbine.get('id')))
     if not scene.get('buildings'):
         errors.append('Real buildings missing; not a complete hero stage')
     for field in ('buildingLicense', 'terrainLicense', 'sources'):
@@ -199,7 +205,7 @@ def run(root, place, osm_file):
         if preparation['blockers']:
             raise ValueError('; '.join(preparation['blockers']))
         if not osm_file or not osm_file.is_file():
-            raise ValueError('Provide the cached, dated Niedersachsen OSM extract with --osm-file')
+            raise ValueError('Provide the cached, dated OSM extract of the state/region with --osm-file')
         if shutil.disk_usage(root).free < 2*1024**3:
             raise ValueError('Less than 2 GiB free; no automatic storage expansion')
         # Hold the same lock as the national collector, preventing mixed input generations.
@@ -220,7 +226,7 @@ def run(root, place, osm_file):
             status_path = root/'jobs/stages'/(place+'.json')
             state = dict(preparation, status='running', pid=os.getpid(), processBirth=process_birth(os.getpid()), startedAt=timestamp(), log=str(root/'logs'/('stage-'+place+'.log')))
             write(status_path, state)
-            command = [sys.executable, str(SCRIPTS/'landscape-niedersachsen-worker.py'), '--root', str(candidate),
+            command = [sys.executable, str(SCRIPTS/'landscape-municipality-worker.py'), '--root', str(candidate),
                        '--municipality', place, '--osm-file', str(osm_file.resolve())]
             try:
                 with Path(state['log']).open('a') as log:

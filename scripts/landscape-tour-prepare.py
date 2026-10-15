@@ -10,7 +10,7 @@ from datetime import datetime,timezone
 import numpy as np
 import rasterio
 from rasterio.merge import merge
-from landscape_terrain_quality import trim_uncovered_margin, mask_uncovered_outer_surface, assert_measured_points, normalise_bw_crs
+from landscape_terrain_quality import trim_uncovered_margin, mask_uncovered_outer_surface, assert_measured_points, normalise_bw_crs, normalise_st_crs
 from pyproj import Transformer
 from shapely.geometry import shape,Polygon,Point,LineString,GeometryCollection
 from shapely.ops import transform
@@ -50,7 +50,11 @@ def buildings(files,boundary,windows,origin):
    pts=[p for s in surfaces for p in s['points']]
    if pts:
     x=sum(p[0]+origin[0] for p in pts)/len(pts);y=sum(origin[1]-p[2] for p in pts)/len(pts)
-    if boundary.covers(Point(x,y)) and any((x-a)**2+(y-b)**2<=radius**2 for a,b,radius in windows):result[identifier]=dict(id=identifier,surfaces=surfaces)
+    if boundary.covers(Point(x,y)) and any((x-a)**2+(y-b)**2<=radius**2 for a,b,radius in windows):
+     result[identifier]=dict(id=identifier,surfaces=surfaces)
+     # Keep the surveyed function of structures that are not ordinary buildings (e.g. 51002_1220 wind turbine).
+     function=(el.findtext('b:function',namespaces=ns) or '').strip()
+     if function and not function.startswith('31001_'):result[identifier]['function']=function
    el.clear()
  for file in files:
   if file.suffix=='.zip':
@@ -65,7 +69,9 @@ def main(id):
  out=root/'public/geo/landscape-tours'/id;register=json.loads((out/'register.json').read_text());name=register['feature']['properties']['name'];boundary=transform(tr.transform,shape(register['feature']['geometry']));elements=osm_data(id)
  configuration=json.loads((out/'preparation.json').read_text()) if (out/'preparation.json').exists() else {}
  town_name=configuration.get('townName','Kirchhatten' if id=='03458009' else name)
- towns=[e for e in elements if e['type']=='node' and e.get('tags',{}).get('name')==town_name and e['tags'].get('place') in ['town','city','village']]
+ towns=[e for e in elements if e['type']=='node' and e.get('tags',{}).get('name')==town_name and e['tags'].get('place') in ['town','city','village','hamlet']]
+ # The worker may choose a mapped seat of another place class (suburb, municipality); take exactly that node.
+ if not towns and configuration.get('townId') is not None:towns=[e for e in elements if e['type']=='node' and str(e['id'])==str(configuration['townId']) and e.get('tags',{}).get('name')==town_name]
  if not towns:raise ValueError('No sourced town point: '+name)
  town=towns[0];east,north=tr.transform(town['lon'],town['lat']);stops=[dict(id='town',name=configuration.get('townLabel',name),kind='town',x=0,z=0,zoom=12,cta='Nach '+configuration.get('townLabel',name))]
  rows=register['turbines'];remaining=set(range(len(rows)));groups=[]
@@ -118,6 +124,10 @@ def main(id):
   if '-dgm-bw-' in path.name:
    rasters[index],correction=normalise_bw_crs(path,source_entries[path.name]['url'])
    if correction:crs_normalisations.append(correction)
+  # Sachsen-Anhalt DGM5 tiles, the state's own or a neighbour's: decided by their source, not their name.
+  elif 'www.lvermgeo.sachsen-anhalt.de' in source_entries.get(path.name,{}).get('url',''):
+   rasters[index],correction=normalise_st_crs(path,source_entries[path.name]['url'],source_entries[path.name].get('sourceMember'))
+   if correction:crs_normalisations.append(correction)
  extent=coords+[(east,north)]+[(east+p['x'],north-p['z']) for p in stops]
  for field in solar:extent.extend((east+x,north-z) for x,z in field['ring'])
  enrichment_destinations=[]
@@ -160,6 +170,11 @@ def main(id):
  windows=[(east+stop['x'],north-stop['z'],550 if stop['kind']=='town' else 350) for stop in stops]+enrichment_destinations
  files=list(source.glob(prefix+'-lod*.gml'))+list(source.glob(prefix+'-lod*.zip'))
  architecture=buildings(files,boundary,windows,origin)
+ # A very large building (industrial hall, chemical park) chosen by its centre inside a
+ # window can reach beyond the terrain box. It is left out whole, never cut, and counted.
+ inside=lambda b:all(w<=east+p[0]<=e and s<=north-p[2]<=n for surface in b['surfaces'] for ring in [surface['points']]+surface.get('holes',[]) for p in ring)
+ beyond=[b['id'] for b in architecture if not inside(b)]
+ architecture=[b for b in architecture if inside(b)]
  if not architecture:raise ValueError('No real buildings')
  assert_measured_points(data,affine,coords+[(east+p['x'],north-p['z']) for p in stops]+[(east+p[0],north-p[2]) for building in architecture for surface in building['surfaces'] for ring in [surface['points']]+surface.get('holes',[]) for p in ring])
  if any(not (w<=east+p[0]<=e and s<=north-p[2]<=n) for building in architecture for surface in building['surfaces'] for ring in [surface['points']]+surface.get('holes',[]) for p in ring):raise ValueError('Real building surface outside measured terrain')
@@ -223,6 +238,7 @@ def main(id):
  audit['solarEvidence']=['https://www.openstreetmap.org/way/'+str(way) for way in selected_solar]
  if id=='07312000':audit['solarEvidence'].append('https://www.kaiserslautern.de/sozial_leben_wohnen/planen_bauen_wohnen/bebauungsplan/rechtskraeftige_bebauungsplaene/innenstadt/039728/index.html.de')
  audit['limitations'].append('Solar footprints are the verified mapped subset, not a complete register inventory of all ground-mounted solar plants.')
+ audit['buildingsBeyondTerrainOmitted']=beyond
  (out/'provenance.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2));print(audit['name'],len(architecture),len(rows),len(solar),width,height,flush=True)
 if __name__=='__main__':
  for id in sys.argv[2:] or ['09679147','07312000','06632009']:main(id)

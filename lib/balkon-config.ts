@@ -179,13 +179,20 @@ export interface BalkonConfig {
 }
 
 export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
+  // Set prices follow the partner catalogue's balcony-mount variant without
+  // storage (rule: lib/balkon-partner-referenz.ts), accepted only while that
+  // price lies inside an independent market range (scripts/balkon-verify.md).
+  // 15.10.2026: duo = Solakon onBasic 1000 Wp "Balkon" 349.99 €, max = onPower
+  // 2000 Wp "Balkon" 599.99 €; ADAC (18.08.2026) puts two-module sets with
+  // mount at 250–500 €. "single" has no partner counterpart and stays on the
+  // market research value (ADAC: from 150 €; component sum 250–570 €).
   sets: [
     { id: "single", label: "1 Modul", what: "~500 Wp mit kleinem Wechselrichter — für schmale Balkone oder eine Wand.", moduleWp: 500, inverterW: 600, price: 300 },
     // 960 Wp statt früher 1.000: genau die Grenze, bis zu der die VDE-Vornorm den
     // normalen Schuko-Stecker vorsieht. Der Markt verkauft seit der Norm exakt
     // solche Sets — damit ist die gängigste Größe ohne Sternchen normkonform.
-    { id: "duo", label: "2 Module (Standard)", what: "~960 Wp am 800-W-Wechselrichter — die gängigste Größe, läuft am normalen Schuko-Stecker.", moduleWp: 960, inverterW: 800, price: 500 },
-    { id: "max", label: "4 Module (Maximum)", what: "~2.000 Wp am 800-W-Wechselrichter — mehr Ertrag morgens und abends, die Mittagsspitze wird gedrosselt. Gesetzlich erlaubt; die VDE-Vornorm sieht dafür eine spezielle Einspeisesteckdose vor.", moduleWp: 2000, inverterW: 800, price: 800 },
+    { id: "duo", label: "2 Module (Standard)", what: "~960 Wp am 800-W-Wechselrichter — die gängigste Größe, läuft am normalen Schuko-Stecker.", moduleWp: 960, inverterW: 800, price: 350 },
+    { id: "max", label: "4 Module (Maximum)", what: "~2.000 Wp am 800-W-Wechselrichter — mehr Ertrag morgens und abends, die Mittagsspitze wird gedrosselt. Gesetzlich erlaubt; die VDE-Vornorm sieht dafür eine spezielle Einspeisesteckdose vor.", moduleWp: 2000, inverterW: 800, price: 600 },
   ],
   orientations: [
     { id: "sued_flach", label: "Süd, aufgeständert", sub: "Optimaler Winkel (Flachdach, Garten, Terrasse)" },
@@ -237,20 +244,21 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   degradation: DEGRAD,
   // Bewusst 20 statt der 25 Jahre des PV-Rechners: Ein Fixpreis-Set mit
   // 800-W-Wechselrichter und Steckerelektronik ist eine andere Geräteklasse als
-  // eine Dachanlage; die Oberfläche trägt „Gewinn nach 20 J." durchgehend.
-  // (Council 05.09.2026: dokumentiert, keine Kopie.)
+  // eine Dachanlage. Hub, Ratgeber und FAQ rechnen mit diesen 20 Jahren; der
+  // Rechner startet seit 27.09.2026 mit 10 Jahren und bietet 20 als Wahl
+  // (open decision, Council 13.10.2026). (Council 05.09.2026: dokumentiert, keine Kopie.)
   gridCo2PerKwh: 0.38,
   stromPrice: DEFAULT_PRICES.electricityPrice, // kanonischer Haushaltspreis (kein eigener Wert → kein Drift)
 
-  validFrom: "2026-07",
+  validFrom: "2026-10",
   /** Tag, an dem ein Lauf die Preisquellen zuletzt wirklich gelesen hat.
    *  Getrennt von `validFrom`, obwohl bei einem Markt-Scan beide zusammen
    *  entstehen: Sichtbar sind sie als „Set- und Speicherpreise von Juli 2026,
    *  geprüft am 15. Juli 2026" — und sobald ein Lauf die Preise bestätigt, ohne
    *  dass sich einer bewegt, laufen sie auseinander. Startwert ist der Lauf des
    *  Geräte-Wächters vom 15.07.2026, aus dem die Preise stammen. */
-  geprueftIso: "2026-07-15",
-  reviewBy: "2026-10", // Quartals-Rhythmus (scripts/balkon-verify.md), nicht jährlich
+  geprueftIso: "2026-10-15",
+  reviewBy: "2027-01", // Quartals-Rhythmus (scripts/balkon-verify.md), nicht jährlich
 };
 
 /** Die Wirkungsgrad-Kette hinter `storageRoundtrip` — einzeln, weil der

@@ -1,3 +1,4 @@
+import {newsletterEventName} from "./newsletter-metrics";
 import {widgetEventName, type WidgetAction, type WidgetScope} from "./widget-analytics";
 import { track } from "@vercel/analytics";
 
@@ -85,6 +86,9 @@ export const EVENTS = [
   // sich der Anmeldung zuordnen ließe. Welcher Ort es war, wird bewusst nicht
   // erfasst; das stünde sonst über den Seitenaufruf ohnehin schon zu viel dabei.
   "abo_anmeldung",
+  // Municipality publishing CTA: opening and successful full-message copy.
+  "gemeinde_meldung_geoeffnet",
+  "gemeinde_meldung_kopiert",
 ] as const;
 
 export type AnalyticsEvent = (typeof EVENTS)[number];
@@ -152,4 +156,10 @@ export function trackWidgetEvent(id:string,scope:WidgetScope,action:WidgetAction
   const name=widgetEventName(id,scope,action);
   if(!name)return;
   try {track(name);} catch {/* Measurement must never interrupt a widget. */}
+}
+
+/** Fixed edition, variant and action only; no recipient or visitor properties. */
+export function trackNewsletterEvent(campaign: string, variant: string, action: string) {
+  const name = newsletterEventName(campaign, variant, action);
+  if (name) { try { track(name); } catch { /* Measurement must never interrupt navigation. */ } }
 }

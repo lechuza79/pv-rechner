@@ -264,7 +264,7 @@ export function pvSpeicherFaq(prices?: PriceConfig): FaqEntry[] {
       // Entscheidung des Betreibers am 25.08.2026: „das werkzeug muss immer
       // führend sein". Wo Text und Rechnung auseinandergehen, weicht der Text —
       // festgehalten von `lib/__tests__/faq-gegen-werkzeug.test.ts`.
-      a: "Das hängt weniger am Haus als am Verbrauch: Ein Speicher lohnt sich erst, wenn abends und nachts genug Strom gebraucht wird, um ihn wieder zu leeren. Bei einem kleinen Haushalt ohne Wärmepumpe und ohne E-Auto ist das oft gar nicht der Fall — dann rechnet sich die Anlage ohne Speicher besser. Kommen große Verbraucher dazu, ändert sich das schnell. Ab einer gewissen Größe bringt mehr Kapazität ohnehin kaum noch etwas: Der Speicher ist im Sommer voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung rechnet die wirtschaftlich sinnvolle Kombination aus Anlagengröße und Speicher für deinen Haushalt durch.",
+      a: "Das hängt weniger am Haus als am Verbrauch: Ein Speicher lohnt sich erst, wenn abends und nachts genug Strom gebraucht wird, um ihn wieder zu leeren. Bei einem kleinen Haushalt ohne Wärmepumpe und ohne E-Auto ist das oft nur zum Teil der Fall — dann schlägt die Empfehlung keinen Speicher vor, weil er im Verhältnis zum Verbrauch zu groß wäre. Kommen große Verbraucher dazu, ändert sich das schnell. Ab einer gewissen Größe bringt mehr Kapazität ohnehin kaum noch etwas: Der Speicher ist im Sommer voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung schlägt eine zu deinem Verbrauch passende Kombination aus Anlagengröße und Speicher vor.",
       links: [{ phrase: "Die Empfehlung", href: "/photovoltaik-rechner" }],
       cta: { label: "Passende Größe finden", href: "/photovoltaik-rechner" },
     },
@@ -680,26 +680,29 @@ export function balkonAnmeldenFaq(): FaqEntry[] {
 export function strommixFaq(): FaqEntry[] {
   return [
     {
-      q: "Wie setzt sich der deutsche Strommix aktuell zusammen?",
-      a: "Übers Jahr gerechnet liefern erneuerbare Energien — Wind, Solar, Wasserkraft und Biomasse — mehr als die Hälfte des öffentlich erzeugten Stroms in Deutschland; der Rest kommt überwiegend aus Kohle- und Gaskraftwerken. Der Mix schwankt aber stark mit Wetter und Tageszeit: An sonnigen, windigen Tagen decken Erneuerbare zeitweise fast die gesamte Erzeugung, in windstillen Winternächten übernehmen die steuerbaren Kraftwerke. Die Live-Ansicht oben zeigt den Stand von jetzt gerade.",
+      q: "Wie setzt sich der Strommix in Deutschland aktuell zusammen?",
+      a: "Die aktuelle Ansicht zeigt den zuletzt verfügbaren Messzeitpunkt, die Anteile der Energieträger und den Anteil erneuerbarer Energien an der öffentlichen Nettostromerzeugung. Die Werte ändern sich mit dem Datenstand. Der Jahresdurchschnitt kann deutlich vom aktuellen Moment abweichen.",
     },
     {
-      q: "Wann ist der Strom in Deutschland am saubersten?",
-      a: "Typischerweise mittags, wenn die Solaranlagen ihre Tagesspitze erreichen — und generell an windigen Tagen. Wer flexible Verbraucher hat, etwa ein E-Auto oder einen Heimspeicher, lädt am klimafreundlichsten in den Mittagsstunden. Nachts ist der Strom im Schnitt am fossilsten, weil die Solarerzeugung komplett wegfällt.",
-      links: [{ phrase: "Heimspeicher", href: "/photovoltaik-rechner" }],
+      q: "Wie oft werden die Live-Daten aktualisiert?",
+      a: "Kurzfristige Erzeugungsdaten liegen in Viertelstunden vor, können aber verzögert veröffentlicht werden. Die Seite prüft im sichtbaren Tab alle fünf Minuten auf neue Werte. Die Uhrzeit am Chart ist der Messzeitpunkt, nicht die Zeit des Seitenaufrufs. Für abgeschlossene historische Zeiträume gibt es keine laufende Aktualisierungsprüfung.",
     },
     {
-      q: "Warum laufen nachts mehr Kohle- und Gaskraftwerke?",
-      a: "Nachts liefert Solar nichts, und Wind weht nicht immer. Die Lücke zwischen erneuerbarer Erzeugung und Verbrauch füllen steuerbare Kraftwerke — vor allem Kohle und Gas —, dazu Stromimporte und zunehmend Batteriespeicher. Deshalb wechselt die Grafik nachts sichtbar von Grün zu Grau.",
+      q: "Ist der Strommix mittags immer erneuerbarer als nachts?",
+      a: "Nein. Solarstrom kann den erneuerbaren Anteil tagsüber erhöhen. Bei starkem Wind kann er aber auch nachts hoch sein. Neben Wind und Sonne beeinflusst die übrige Stromerzeugung den Anteil. Für einen konkreten Zeitpunkt zählen die gemeldeten Werte, keine pauschale Tageszeitregel.",
     },
     {
-      q: "Erzeugt Deutschland noch Atomstrom?",
-      a: "Nein. Am 15. April 2023 gingen die letzten drei deutschen Kernkraftwerke vom Netz. Im Strommix taucht Kernenergie seitdem nur noch als rechnerischer Import auf: Ein Teil des importierten Stroms stammt aus Nachbarländern mit Kernkraftwerken, allen voran Frankreich. Wie groß dieser Anteil ist, zeigt unsere Auswertung zum Atomstrom-Import.",
+      q: "Sind Stromimporte im deutschen Strommix enthalten?",
+      a: "Die öffentliche Nettostromerzeugung umfasst die Erzeugung in Deutschland. Importe gehören nicht dazu. Die zusätzliche Anzeige zum Atomstrom-Import berechnet einen Kernenergie-Anteil aus Grenzflüssen und dem Erzeugungsmix der Nachbarländer. Sie ist kein Nachweis für die Lieferung aus einem bestimmten Kraftwerk und keine vollständige Importbilanz.",
       links: [{ phrase: "Atomstrom-Import", href: "/atomstrom-import" }],
     },
     {
+      q: "Was ist der Unterschied zwischen GW und GWh?",
+      a: "GW bezeichnet die elektrische Leistung zu einem Zeitpunkt. GWh bezeichnet die über einen Zeitraum erzeugte Strommenge. Eine konstante Leistung von 1 GW über eine Stunde entspricht 1 GWh. Deshalb zeigt die Momentaufnahme Leistung, der Tages- oder Jahresvergleich dagegen Strommengen.",
+    },
+    {
       q: "Woher kommen die Daten zum Strommix?",
-      a: "Von Energy-Charts, der Datenplattform des Fraunhofer-Instituts für Solare Energiesysteme (ISE). Gezeigt wird die öffentliche Nettostromerzeugung — also der Strom, der ins öffentliche Netz eingespeist wird — in 15-Minuten-Schritten. Die Daten stehen unter der offenen Lizenz CC BY 4.0.",
+      a: "Die Daten stammen vorrangig von Energy-Charts des Fraunhofer ISE. Bei Ausfällen kann für kurzfristige Deutschland-Daten SMARD der Bundesnetzagentur einspringen. Die tatsächlich verwendete Quelle steht am Chart. Falls keine neuen Daten verfügbar sind, wird der letzte gespeicherte Stand als solcher angezeigt.",
     },
   ];
 }

@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, SCHRITTE_OHNE_AUSWAHL, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, FLOW_TEST_ZEITLIMIT_MS, flowTestTitel, uebrigeFragenBeantworten, akkordeonWahlenPruefen, akkordeonFragen, waehle, weiterKlicken } from "./flows";
+import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, SCHRITTE_OHNE_AUSWAHL, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, FLOW_TEST_ZEITLIMIT_MS, flowTestTitel, nachtTeil, gehoertZumTeil, uebrigeFragenBeantworten, akkordeonWahlenPruefen, akkordeonFragen, waehle, weiterKlicken } from "./flows";
 import { meldungstext } from "./konsole";
 
 /**
@@ -59,6 +59,21 @@ interface LaufErgebnis {
    *  Schritt genügt: „hält die Antwort" hängt am Bauteil, nicht am Weg dorthin
    *  — und je Weg zu prüfen würde den Lauf vervielfachen. */
   akkordeonsGeprueft: Set<string>;
+  /** Depth of the first step with a choice — where a split nightly run
+   *  (FLOW_TEIL) divides the tree. Set when that step is first reached. */
+  teilTiefe?: number;
+  /** Start of the walk, for the progress line. */
+  start: number;
+}
+
+/** Every 100 ways one line with the count and the elapsed minutes. Without it a
+ *  run that hits its time limit says nothing about how far it got — from
+ *  21.09. to 06.10.2026 thirteen nightly runs ended that way, and what had grown
+ *  (more ways or slower ways) could not be read from any of them. */
+function fortschritt(flowName: string, erg: LaufErgebnis) {
+  if (erg.wege % 100 !== 0) return;
+  const min = (Date.now() - erg.start) / 60_000;
+  console.log(`  ${flowName}: ${erg.wege} Wege nach ${min.toFixed(1)} min (${((min * 60) / erg.wege).toFixed(1)} s je Weg)`);
 }
 
 /**
@@ -177,6 +192,7 @@ async function gehe(
   // Kein Schritt mehr: Der Weg muss in einem Ergebnis angekommen sein.
   if (!(await imFlow(page))) {
     erg.wege++;
+    fortschritt(flowName, erg);
     await bildAblegen(page, flowName, `ergebnis__${pfad.join("__")}`, erg);
     const text = await page.locator("body").innerText();
     if (!text.includes(ergebnisEnthaelt)) {
@@ -284,7 +300,14 @@ async function gehe(
   const signatur = `${pfad.length}:${wahlen.join("¦")}`;
   const schonErschoepft = !ALLE_KOMBINATIONEN && erg.erschoepfteSchritte.has(signatur);
   erg.erschoepfteSchritte.add(signatur);
-  const zuGehen = schonErschoepft ? wahlen.slice(0, 1) : wahlen;
+  let zuGehen = schonErschoepft ? wahlen.slice(0, 1) : wahlen;
+  // Split nightly run: the first step with a choice is divided between the
+  // parts, everything below it is walked in full by the part that owns it.
+  const teil = nachtTeil();
+  if (teil && (erg.teilTiefe === undefined || erg.teilTiefe === pfad.length)) {
+    erg.teilTiefe = pfad.length;
+    zuGehen = zuGehen.filter((w) => gehoertZumTeil(wahlen.indexOf(w), teil));
+  }
 
   for (const wahl of zuGehen) {
     if (erg.wege >= MAX_WEGE_JE_FLOW) {
@@ -424,6 +447,7 @@ for (const flow of FLOWS) {
       bilder: new Set(),
       erschoepfteSchritte: new Set(),
       akkordeonsGeprueft: new Set(),
+      start: Date.now(),
     };
     await bildAblegen(page, flow.name, "01-start", erg);
     await gehe(page, flow.name, flow.pfad, flow.startKnopf, flow.ergebnisEnthaelt, [], erg);
@@ -434,7 +458,8 @@ for (const flow of FLOWS) {
         `⚠ ${flow.name}: Deckel von ${MAX_WEGE_JE_FLOW} Wegen erreicht — NICHT alle Wege geprüft.`,
       );
     }
-    console.log(`  ${flow.name}: ${erg.wege} Wege geprüft`);
+    const teilNote = nachtTeil() ? ` (Teil ${process.env.FLOW_TEIL})` : "";
+    console.log(`  ${flow.name}${teilNote}: ${erg.wege} Wege geprüft in ${((Date.now() - erg.start) / 60_000).toFixed(1)} min`);
 
     expect(erg.wege, `${flow.name}: kein einziger Weg durchlaufen`).toBeGreaterThan(0);
     expect(erg.fehler, `Gebrochene Wege in „${flow.name}"`).toEqual([]);

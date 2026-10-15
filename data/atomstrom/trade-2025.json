@@ -1,0 +1,15 @@
+{
+  "start": "2025-01-01",
+  "end": "2025-12-31",
+  "asOf": "2025-12-31T23:00:00.000Z",
+  "retrievedAt": "2026-10-09T12:54:12.381Z",
+  "mode": "year",
+  "partial": false,
+  "totals": {
+    "importMwh": 76693742.25999995,
+    "exportMwh": 54770774.82
+  },
+  "source": "Bundesnetzagentur | SMARD.de",
+  "license": "CC BY 4.0",
+  "modifiedAt": "2026-10-09T12:56:32.434200+00:00"
+}

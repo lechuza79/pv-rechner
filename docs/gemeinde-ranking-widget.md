@@ -34,3 +34,79 @@ prompt and compositions are preserved in the illustration library.
 PV and splash embedded images match `energy-tools-v4` library assets.
 Battery and balcony assets were visually matched by the illustration session;
 their exact composite export provenance was not established.
+
+## Complete ranking composition (13 October 2026)
+
+`RankingWidgetCombination` accepts `categories: RankingCategory[]`, a panel
+`label`, and an optional `initialCategory`. It combines the existing podium
+with the municipality category panel: placement badges, discovery state,
+category selection and previous/next navigation. The approved category styles
+are shared with the municipal page; the old script remains its compatibility
+controller. No independent podium or ranking calculation is introduced.
+
+Each category carries `data: RankingPodiumData` and optionally `rank`,
+`distinction`, `rowsUrl`, `format` and `selectedPlaceId`. Supply complete,
+pre-ranked rows when available. Saved municipal comparisons use the existing
+public ranking endpoint through `useWidgetResource`; repeated selections reuse
+its cache. A failed comparison displays an explicit unavailable state, never a
+made-up podium. The municipal adapter preserves the package's saved categories
+and the existing opening-selection rule.
+
+`RankingPodiumWidget` remains the standalone podium, unchanged.
+`RankingPodiumWithList` adds the optional complete-table action. Both retain
+sources, sharing and PNG export. The combination uses that same frame; the
+selected category is retained in share parameters. PNG exports contain the
+selected podium, scope, date and sources; navigation and the table dialog are
+excluded.
+
+Gallery/embed example:
+`/embed/galerie/gemeinde-ranking?ags=12063080&list=on&theme=light`.
+Without `list=on`, the podium-only behavior is unchanged. On narrow containers,
+the category panel moves below the podium.
+
+For district-page integration, provide the district's own category comparisons
+from the existing district-ranking data adapter. A ranking of municipalities
+inside a district is a different comparison and cannot replace the district's
+own placements. The target page places the complete composition after its race.
+
+Local review only; district page integration is a separate change.
+
+### Combination acceptance corrections (13 October 2026)
+
+The reusable composition now scopes the approved light surfaces and yellow own
+bar to its host, retains the separate podium, and places the list action in the
+shared footer below both columns. The panel stretches to the podium; CSS
+specificity no longer collapses its scroll area. Loading a saved comparison
+triggers discovery only after its rows arrive. The municipality's remote
+per-resident comparison is included when there are too few local peers.
+
+At narrow container widths the category list is a horizontal snap strip with
+active-card advancement and keyboard navigation. Resizing realigns the active
+selection rather than resetting it. Full-list values keep their base units and
+rank changes; the podium may use scaled units. State/national lists explicitly
+label their top-100 limit rather than claiming they contain every municipality.
+
+Browser checks: light and dark compositions, 390px mobile without page overflow,
+category changes, full-list modal with the own row, selection across responsive
+breakpoints, and the independent Meinersen podium. Local preview only; no release.
+
+### Discovery behavior parity (13 October 2026)
+
+The interaction reference is `public/gemeinde/rangliste.js`, not the older
+prototype controller. The shared combination preserves these contracts:
+
+- First discovery runs the original bar/count-up and badge reveal; revisiting a
+  discovered category shows its final values immediately, including autoplay hosts.
+- Next completes a running reveal before advancing on the following click.
+- Desktop selection scrolls only enough to remain visible, never to the top on
+  every selection. Mobile keeps the original horizontal snap behavior.
+- A first discovery of the current place in the top three invokes the original
+  confetti engine. Hosts share one listener; ranking-only embeds do not poll for
+  an absent municipality hero. Reduced motion suppresses the particles.
+- The original purple invitation appears on the next undiscovered visible tile
+  after discovery and dismisses on interaction. The complete-list invitation is
+  retained for own placements outside the podium.
+
+Number animation updates are isolated from the frame, controls and full table;
+this preserves timing and visuals without rerendering the whole widget on each
+animation frame. The standalone podium retains its presentation and export.

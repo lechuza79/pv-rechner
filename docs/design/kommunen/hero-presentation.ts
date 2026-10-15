@@ -29,6 +29,7 @@ export function municipalHeroCss(styles:{referenceControls:string}):string {
  #municipal-landscape-hero .v3-scroll-indicator{display:inline-flex;align-items:center;gap:12px;font:400 16px/1.5 var(--font-text)}
  #municipal-landscape-hero .v3-scroll-indicator svg{width:22px;height:22px}
  .municipal-hero-place{position:absolute;top:108px;right:var(--municipal-hero-inset);z-index:29;font-family:var(--font-text);font-size:var(--sc-type-body-size);--font-size-small:var(--sc-type-body-size)}
+ .municipal-hero-place [role=combobox]::placeholder{color:var(--color-accent-light);opacity:1}
  #municipal-landscape-hero .hero-copy h1, #municipal-landscape-hero .hero-copy h1 span{font-family:var(--font-heading);font-weight:700;letter-spacing:normal}
  @media(max-width:700px){
  #municipal-landscape-hero{--municipal-hero-inset:6vw;--municipal-header-height:80px}

@@ -1,0 +1,25 @@
+.root{display:flex;align-items:center;gap:20px;min-width:0;max-width:440px;padding-block:12px;--color-accent:var(--widget-accent);--color-bg:var(--widget-surface);}
+.trend{flex:1 1 140px;min-width:64px;max-width:200px;}
+.metric{flex:0 0 auto;color:var(--widget-accent);--metric-value-size:36px;--metric-stacked-unit-size:.35em;}
+.label{display:block;margin-bottom:4px;max-width:125px;font:400 var(--widget-meta-size,12px)/var(--widget-meta-leading,1.5) var(--widget-meta-font,var(--font-text,sans-serif));color:var(--widget-muted);}
+.missing{font:700 36px/1.15 var(--atlas-display);}
+.missing small{font:400 16px/1 var(--atlas-text);color:var(--widget-muted);}
+.root :global(.sc-category-bars[data-compact=true]){--chart-plot-height:var(--sparkline-height,48px);--chart-bar-gap:5px;--chart-bar-radius:2px;}
+.root :global(.sc-category-column[data-highlighted=false]){--color-accent:color-mix(in srgb,var(--widget-ink) 30%,var(--widget-surface));}
+/* Incompleteness remains explicit in the shared tooltip, never a decorative pattern. */
+.root :global(.sc-category-bar[data-partial=true]),.root :global(.sc-category-column[data-active=true] .sc-category-bar[data-partial=true]){background:var(--color-accent);}
+.root :global(.sc-category-column[data-missing=true] .sc-category-bar){height:auto!important;background:none;}
+.metric :global(.sc-metric-affix){color:var(--widget-muted);opacity:1;}
+/* Anchor the shared detail bubble to the trend, not a tiny edge bar. */
+.trend{position:relative;}
+.root :global(.sc-category-column),.root :global(.sc-category-bar){position:static;}
+.root :global(.sc-category-flag){left:0;right:auto;top:0;bottom:auto;transform:none;max-width:180px;}
+.root :global(.sc-category-flag:after){display:none;}
+
+.root :global(.sc-category-bars[data-compact=true] .sc-category-plot){border-bottom:1px solid color-mix(in srgb,var(--widget-surface) 35%,#000);}
+
+@keyframes buildBars{from{height:0;}}
+@media(prefers-reduced-motion:no-preference){
+ .root[data-entered=false] :global(.sc-category-bar){height:0!important;}
+ .root[data-entered=true] :global(.sc-category-bar){animation:buildBars 650ms cubic-bezier(.22,1,.36,1) both;}
+}

@@ -24,12 +24,16 @@ name: Sachfragen an Förderstellen
 
 on:
   schedule:
-    # Weltzeit. Im Sommer (+2 h) sind das 10:07, 13:23 und 15:41 deutscher Zeit,
-    # im Winter (+1 h) eine Stunde früher — beides liegt in der Bürozeit, die
-    # der Lauf selbst noch einmal prüft.
-    - cron: "7 8 * * 1-5"
-    - cron: "23 11 * * 1-5"
-    - cron: "41 13 * * 1-5"
+    # Weltzeit, bewusst früh. GitHub startet geplante Läufe hier regelmäßig
+    # sechs bis neun Stunden zu spät (gemessen 29.09.–05.10.2026: die Läufe
+    # für 08:07/11:23/13:41 kamen zwischen 14:42 und 21:13 Uhr Weltzeit). So
+    # landete fast jeder Lauf nach 17 Uhr deutscher Zeit und verschickte wegen
+    # der Bürozeit nichts. Läuft ein früher Termin doch pünktlich, verweigert
+    # der Lauf selbst den Versand außerhalb der Bürozeit; die Zahl der Läufe
+    # und damit die Höchstmenge bleibt gleich.
+    - cron: "7 6 * * 1-5"
+    - cron: "23 8 * * 1-5"
+    - cron: "41 10 * * 1-5"
   workflow_dispatch:
     inputs:
       fall:

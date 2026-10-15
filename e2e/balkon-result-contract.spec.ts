@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 test('ten-year default, cancelled edits and twenty-year recalculation', async ({ page }) => {
   await page.goto(base, { waitUntil: 'domcontentloaded' });
   const result = page.locator('#bkw-ueberblick');
-  await expect(result.locator('.wp-result-label-copy')).toContainText('über 10 Jahre', { timeout: 60000 });
+  await expect(result.locator('.wp-result-label-copy')).toContainText('nach 10 Jahren', { timeout: 60000 });
   await expect(result).toContainText('Ersparnis im 1. Jahr');
   await result.getByRole('button', { name: 'Hinweis zur Speicherberechnung' }).click();
   await expect(page.getByRole('tooltip')).toContainText('15 % Mindestladung');
@@ -25,12 +25,12 @@ test('ten-year default, cancelled edits and twenty-year recalculation', async ({
   await expect(modal.getByRole('button', { name: /^Ergebnis neu berechnen/ })).toBeDisabled();
   await modal.getByRole('button', { name: '20 Jahre', exact: true }).click();
   await modal.getByRole('button', { name: 'Abbrechen', exact: true }).click();
-  await expect(result.locator('.wp-result-label-copy')).toContainText('über 10 Jahre');
+  await expect(result.locator('.wp-result-label-copy')).toContainText('nach 10 Jahren');
   await page.locator('.wp-assumptions-trigger').click();
   modal = page.getByRole('dialog', { name: 'Preise und Preisentwicklung' });
   await modal.getByRole('button', { name: '20 Jahre', exact: true }).click();
   await modal.getByRole('button', { name: /^Ergebnis neu berechnen/ }).click();
-  await expect(result.locator('.wp-result-label-copy')).toContainText('über 20 Jahre');
+  await expect(result.locator('.wp-result-label-copy')).toContainText('nach 20 Jahren');
   await expect(page.locator('.wp-product-card[data-recommended="false"]').first().locator('.bkw-product-header')).toContainText('Ersparnis über 20 Jahre');
   await result.getByRole('slider', { name: 'Tag wählen' }).press('End');
   await expect(result).toContainText('Die Bilanz nach 20 Jahren');

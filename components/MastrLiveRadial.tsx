@@ -1,4 +1,5 @@
 "use client";
+import {useWidgetResource} from "./dashboard/WidgetData";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { v, iconSizes } from "../lib/theme";
@@ -113,7 +114,7 @@ function pointAt(
   r: number,
 ): [number, number] {
   const rad = ((visualAngleDeg - 90) * Math.PI) / 180;
-  return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+  return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)].map(value=>Number(value.toFixed(4))) as [number,number];
 }
 
 function visualAngleFromHour(h: number): number {
@@ -147,6 +148,7 @@ export function MastrLiveRadial({
   helpOverlay = null,
   footer = null,
   onValue,
+  onDataAsOf,
   unit = "GW",
   injected = null,
   highlightTs,
@@ -216,6 +218,8 @@ export function MastrLiveRadial({
   /** Reports the current value in GW (settled, not animated) — used by the
    * embed widget to bake the value into the exported image. */
   onValue?: (gw: number | null) => void;
+  /** Latest displayed observation, not the browser retrieval time. */
+  onDataAsOf?: (date: string | undefined) => void;
   /** When set, replaces the chart content with this node (e.g. help screen).
       Container border + padding are preserved so the flip looks like a
       back-side of the same card. */
@@ -233,60 +237,8 @@ export function MastrLiveRadial({
   // Rohdaten werden NUR durch Fetches geändert, NICHT beim Energieträger-
   // Wechsel. Damit bleibt das Widget beim Tab-Switch sichtbar (kein Blitz),
   // nur die abgeleiteten bars/latest/scaleMaxMw werden neu berechnet.
-  const [rawPoints, setRawPoints] = useState<GenerationPoint[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Injizierte lokale Daten → kein bundesweiter Fetch. `injected` liegt hier
-    // absichtlich NICHT in den Deps: Konsumenten (GemeindeSolarLive) mounten das
-    // Radial erst, wenn ihre Daten stehen, und schalten `injected` danach nicht
-    // mehr auf null. Ein künftiger Konsument, der genau das täte, müsste `injected`
-    // in die Deps aufnehmen, damit der bundesweite Fetch wieder anläuft.
-    if (injected) {
-      setLoading(false);
-      return;
-    }
-    let cancelled = false;
-    const load = () => {
-      setLoading(true);
-      // Fetch 26h with the incomplete tail kept (trim=0): we render a full 24h
-      // dial ending at the freshest raw point and style the still-incomplete
-      // newest points (where solar hasn't reported yet) ourselves.
-      fetch("/api/energy/generation?hours=26&trim=0")
-        .then((r) => r.json())
-        .then((d: { data?: GenerationPoint[] }) => {
-          if (cancelled) return;
-          setRawPoints(d.data ?? []);
-          setLoading(false);
-        })
-        .catch(() => {
-          if (cancelled) return;
-          setLoading(false);
-        });
-    };
-    load();
-    // Energy-Charts veröffentlicht 15-Min-Intervalle, die API-Route cached
-    // s-maxage=300. Wir pollen alle 90 Sekunden — neue Werte kommen damit
-    // spätestens 90 s nach Veröffentlichung (in der Praxis aus dem CDN-Cache).
-    const id = setInterval(load, 90 * 1000);
-
-    // Page Visibility: beim Zurückwechseln zum Tab sofortiger Refresh,
-    // damit der jüngste Wert immer aktuell ist, auch nach langer Inaktivität.
-    const onVisible = () => {
-      if (typeof document !== "undefined" && !document.hidden) load();
-    };
-    if (typeof document !== "undefined") {
-      document.addEventListener("visibilitychange", onVisible);
-    }
-
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-      if (typeof document !== "undefined") {
-        document.removeEventListener("visibilitychange", onVisible);
-      }
-    };
-  }, []);
+  const {data: generation, loading} = useWidgetResource<{data?: GenerationPoint[]}>(injected?null:'/api/energy/generation?hours=26&trim=0',{},90_000);
+  const rawPoints=generation.data??[];
 
   // Abgeleitete bars + Skala — synchron pro Render, wechselt sofort beim
   // Energieträger-Tausch ohne Loading-Flash.
@@ -385,6 +337,7 @@ export function MastrLiveRadial({
   useEffect(() => {
     onValue?.(latestMw != null ? latestMw / 1000 : null);
   }, [latestMw, onValue]);
+  useEffect(() => { onDataAsOf?.(bars.at(-1)?.ts); }, [bars, onDataAsOf]);
 
   const cardStyle: React.CSSProperties = bare
     ? { background: "transparent", border: "none", borderRadius: 0, padding: 0, display: "block" }
@@ -399,6 +352,7 @@ export function MastrLiveRadial({
         // bleibt block-Level (volle Container-Breite). `fuelltBreite` hebt das
         // Schrumpfen auf, wenn die Karte in einer Spalte steht.
         display: isCompact && !fuelltBreite ? "inline-block" : "block",
+        verticalAlign: "top",
         ...(fuelltBreite ? { width: "100%", boxSizing: "border-box" as const } : {}),
       };
 
@@ -413,7 +367,7 @@ export function MastrLiveRadial({
     // springt, sobald die Daten eintreffen. Genau darüber ist der
     // Größen-Test gestolpert — er fand rechts keinen Kasten zum Messen.
     return (
-      <div style={{ ...cardStyle, boxSizing: "border-box" }}>
+      <div data-widget-loading={loading && !injected} style={{ ...cardStyle, boxSizing: "border-box" }}>
         <div
           style={{
             width: "100%",
@@ -491,7 +445,7 @@ export function MastrLiveRadial({
     ? "var(--widget-muted, var(--color-text-secondary))"
     : v("--color-accent");
   const accentLatest = secondaryBars
-    ? "var(--widget-accent, var(--color-highlight))"
+    ? "var(--widget-accent, var(--color-accent))"
     : v("--color-highlight");
   // Muted text token instead of fixed black so the unit label stays legible on
   // a dark widget background (where it resolves to a light tone).
@@ -514,6 +468,7 @@ export function MastrLiveRadial({
       style={{
         perspective: "1200px",
         display: isCompact && !fuelltBreite ? "inline-block" : "block",
+        verticalAlign: "top",
         ...(fuelltBreite ? { width: "100%" } : {}),
       }}
     >
@@ -674,7 +629,7 @@ export function MastrLiveRadial({
         </div>
       ))}
 
-      <div style={{ position: "relative", width: SIZE, maxWidth: "100%", flexShrink: 0, margin: isCompact ? "0 auto" : "0 auto 20px" }}>
+      <div style={{ position: "relative", width: `min(${SIZE}px, var(--widget-radial-max, ${SIZE}px))`, maxWidth: "100%", flexShrink: 0, margin: isCompact ? "0 auto" : "0 auto 20px" }}>
         {/* Breite/Höhe als CSS, nicht als SVG-Attribut: `height="auto"` ist als
             Attribut ungültig (dort sind nur Längen erlaubt) und wurde vom
             Browser als Fehler verworfen. Über `style` skaliert das Bild

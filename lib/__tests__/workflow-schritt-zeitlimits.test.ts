@@ -26,8 +26,18 @@ import { FLOW_TEST_ZEITLIMIT_MIN } from "../../e2e/flows";
 
 const WURZEL = resolve(__dirname, "..", "..", ".github", "workflows");
 
-/** Die Schritte, die wirklich Zeit fressen — Testläufe gegen einen Browser. */
-const TEURE_SCHRITTE = /npm run test:(e2e|flows)\b/;
+/**
+ * Die Schritte, die wirklich Zeit fressen — Testläufe gegen einen Browser.
+ *
+ * NUR EINE `run:`-ZEILE ZAEHLT, nie eine Erwaehnung im Kommentar (geschaerft
+ * 06.10.2026). Vorher traf das Muster jedes Vorkommen, und die Kommentare am
+ * Smoke-Schritt nennen den Befehl selbst — darunter einer, der VOR der echten
+ * Zeile steht. Die Pruefung „der Testschritt traegt ein eigenes Zeitlimit"
+ * suchte damit das Limit am falschen Schritt und war gruen, obwohl keines mehr
+ * da war: An der Sabotage „Zeitlimit entfernt" hat sie nicht angeschlagen.
+ * Gefunden nur, weil die Gegenprobe gemacht wurde — im Code sah sie richtig aus.
+ */
+const TEURE_SCHRITTE = /^\s*run:\s*npm run test:(e2e|flows)\b/m;
 
 type Job = { datei: string; name: string; jobLimit: number | null; schrittLimits: number[]; text: string };
 
@@ -48,8 +58,24 @@ function jobs(datei: string): Job[] {
 
   const gefunden: Job[] = [];
   let aktuell: { name: string; ab: number } | null = null;
-  const schliesse = (bis: number) => {
+  // Ein Job endet VOR dem Kommentarblock, der den naechsten einleitet.
+  //
+  // Ohne diese Trennung erbt jeder Job die Begruendung seines Nachfolgers —
+  // und die nennt regelmaessig den Befehl, den der Nachfolger ausfuehrt. Beim
+  // Aufteilen am 06.10.2026 hat das sofort zugeschlagen: Das Tor `test` fuehrt
+  // keinen Test mehr aus, galt aber als teurer Job, weil die Erklaerung des
+  // Flow-Laeufers darueber „npm run test:flows\" erwaehnt. Der Wachter haette
+  // damit ein Zeitlimit an einem Job verlangt, der keinen Testschritt hat —
+  // eine erfundene Anforderung, und in der Gegenrichtung genauso moeglich.
+  const endeOhneFremdenKommentar = (bis: number) => {
+    let e = bis;
+    while (e > 0 && /^(\s*(#.*)?)$/.test(zeilen[e - 1])) e--;
+    return e;
+  };
+
+  const schliesse = (rohesEnde: number) => {
     if (!aktuell) return;
+    const bis = endeOhneFremdenKommentar(rohesEnde);
     const block = zeilen.slice(aktuell.ab, bis).join("\n");
     const alle = [...block.matchAll(/^(\s*)timeout-minutes:\s*(\d+)/gm)].map((m) => ({
       tiefe: m[1].length,
@@ -86,6 +112,39 @@ const ALLE_JOBS = readdirSync(WURZEL)
 
 const MIT_TESTSCHRITT = ALLE_JOBS.filter((j) => TEURE_SCHRITTE.test(j.text));
 
+/**
+ * DIE AUFTEILUNG DARF KEINE TESTS VERLIEREN — und ein Verlust ist hier GRUEN.
+ *
+ * Seit 06.10.2026 fahren die Browser-Smoke-Tests auf mehreren Laeufern
+ * (`--shard=i/n`). Die Zahl der Laeufer steht in der Matrix, der Teiler im
+ * Aufruf — zwei Stellen fuer eine Zahl. Laufen sie auseinander, passiert das
+ * Schlimmste, was eine Pruefung tun kann: Bei einer Matrix [1, 2] und einem
+ * Teiler 3 fuehrt niemand das letzte Drittel aus, jeder Job meldet Erfolg, und
+ * der Lauf ist gruen. Kein Fehler, kein roter Test, keine kaputte Seite — nur
+ * ein Drittel der Oberflaeche, das ab dann niemand mehr prueft.
+ *
+ * Gegenprobe zur Aufteilung selbst (06.10.2026, an Playwright gemessen, nicht
+ * gerechnet): 438 Tests, 146 je Scherbe, keiner doppelt, keiner fehlt.
+ */
+describe("Aufteilung der Smoke-Tests", () => {
+  const text = readFileSync(resolve(WURZEL, "ci.yml"), "utf8");
+
+  it("verteilt auf so viele Laeufer, wie der Aufruf als Teiler nennt", () => {
+    const matrix = /scherbe:\s*\[([^\]]+)\]/.exec(text);
+    expect(matrix, "die Matrix der Scherben ist nicht mehr auffindbar").not.toBeNull();
+    const laeufer = matrix![1].split(",").map((s) => Number(s.trim()));
+
+    const aufrufe = [...text.matchAll(/--shard=\$\{\{\s*matrix\.scherbe\s*\}\}\/(\d+)/g)].map((m) =>
+      Number(m[1]),
+    );
+    expect(aufrufe.length, "kein Scherben-Aufruf gefunden — dann prueft dieser Test nichts").toBe(1);
+
+    // Die Matrix muss GENAU 1..n sein: eine Luecke verliert ihr Stueck, eine
+    // Zahl ueber n laesst Playwright den Lauf abbrechen.
+    expect(laeufer).toEqual(Array.from({ length: aufrufe[0] }, (_, i) => i + 1));
+  });
+});
+
 describe("Zeitlimits der Browser-Test-Workflows", () => {
   it("findet die Jobs überhaupt — sonst prüft der Test nichts und meldet trotzdem grün", () => {
     // Die Gegenprobe zum Test selbst: Eine Zerlegung, die leer ausgeht, vergleicht
@@ -93,7 +152,10 @@ describe("Zeitlimits der Browser-Test-Workflows", () => {
     expect(ALLE_JOBS.length).toBeGreaterThan(3);
     expect(MIT_TESTSCHRITT.map((j) => `${j.datei}::${j.name}`).sort()).toEqual([
       "ci.yml::flows",
-      "ci.yml::test",
+      // Seit 06.10.2026 traegt der Job `smoke` die Browser-Tests, nicht mehr
+      // `test` — der heisst weiter so, weil der geschuetzte Zweig diesen Namen
+      // als Pflichtpruefung fuehrt, und ist seitdem nur noch das Tor darueber.
+      "ci.yml::smoke",
       "flows-nightly.yml::flows-alle",
     ]);
   });
@@ -161,4 +223,38 @@ describe("Zeitlimits der Browser-Test-Workflows", () => {
       expect(summe).toBeLessThan(jobLimit);
     },
   );
+});
+
+// Each browser group must test the same successful build, including generated assets.
+describe("Shared CI production runtime", () => {
+  const ci = jobs("ci.yml");
+  const producer = ci.find((job) => job.name === "build")!;
+
+  it("produces one artifact for this commit without bundling credentials or build caches", () => {
+    expect(ci.filter((job) => /^\s*run: npm run build$/m.test(job.text))).toHaveLength(1);
+    expect(producer.text).toContain(".next public/kommunen public/location-search");
+    expect(producer.text).toContain("--exclude='.next/cache'");
+    expect(producer.text).toContain("if-no-files-found: error");
+    expect(producer.text).toContain("browser-build-${{ github.sha }}");
+    const archive = producer.text.split("\n").find((line) => line.trim().startsWith("tar "))!;
+    expect(archive).not.toMatch(/\.env|node_modules/);
+  });
+
+  it.each(["smoke", "flows", "telefon", "kontrast"])("%s requires and validates the shared artifact", (name) => {
+    const consumer = ci.find((job) => job.name === name)!;
+    expect(consumer.text).toMatch(/^    needs: (build|\[build, plan\])$/m);
+    expect(consumer.text).toContain('E2E_PREBUILT: "1"');
+    expect(consumer.text).toContain("actions/download-artifact@v4");
+    expect(consumer.text).toContain("browser-build-${{ github.sha }}");
+    expect(consumer.text).toContain("test -s .next/BUILD_ID");
+    expect(consumer.text).toContain('test "$(cat .next/ci-commit)" = "$GITHUB_SHA"');
+  });
+
+  it("fails the protected gate when the build fails or is skipped", () => {
+    const gate = ci.find((job) => job.name === "test")!;
+    expect(gate.text).toContain("needs: [plan, unit, build, smoke, flows, telefon, kontrast]");
+    expect(gate.text).toContain("if: always()");
+    expect(gate.text).toContain('node scripts/ci-browser-plan.cjs gate');
+    expect(gate.text).toContain('CI_JOB_RESULTS: ${{ toJSON(needs) }}');
+  });
 });

@@ -1,4 +1,6 @@
 'use client';
+import {useInModal} from "../Modal";
+import {reportNewsletterPlayback} from "../../lib/newsletter-playback";
 import {useEffect,useState,useRef} from 'react';
 import {IconPause,IconPlay,IconRefresh} from '../Icons';
 import type {SolarMonth} from '../../lib/story-monthly-solar';
@@ -7,12 +9,15 @@ import {EXPORT_IGNORE_ATTR,EXPORT_ONLY_ATTR} from '../../lib/export-markers';
 import {formatStoryDate} from '../../lib/story-format';
 import {WidgetSetting} from '../dashboard/WidgetSetting';
 import {useWidgetPresentation} from '../dashboard/WidgetPresentationContext';
-import {WidgetStepper,WidgetIconButton,WidgetToolbar,widgetDayLabel} from '../dashboard/WidgetControls';
+import {WidgetStepper,WidgetIconButton,widgetDayLabel} from '../dashboard/WidgetControls';
 import {SOLAR_DAY_MS, solarAnimationFrame} from '../../lib/monthly-solar-animation';
 import styles from './MonitorMonthlySolarChart.module.css';
+import {RadialChartLayout} from '../charts/RadialChartLayout';
 
 function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished,onTag}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void;onTag?:(datum:string|null)=>void}) {
  const [selected,setSelected]=useState(data.peakDay),[focused,setFocused]=useState(false),[hovered,setHovered]=useState<string|null>(null),[playing,setPlaying]=useState(false),[frame,setFrame]=useState<number|null>(null);
+ const inModal=useInModal();
+ useEffect(()=>{if(playing&&!paused&&!compact&&inModal)reportNewsletterPlayback(data.month);},[playing,paused,compact,inModal,data.month]);
  const [exportTime,setExportTime]=useState<number|null>(null);
  const exportHost=useRef<HTMLDivElement>(null);
  const savedExport=useRef<{selected:string;focused:boolean;hovered:string|null;playing:boolean;frame:number|null}|null>(null);
@@ -58,15 +63,30 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
  const shiftDay=(direction:number)=>{const index=selectedIndex>=0?selectedIndex:data.days.findIndex(day=>day.date===data.peakDay);const next=Math.max(0,Math.min(data.days.length-1,index+direction));if(data.days[next])chooseDay(data.days[next].date)};
  const controls=<div className={styles.settings} {...{[EXPORT_IGNORE_ATTR]:''}}><WidgetSetting hideLabel label="Monat" value={data.month} onChange={onMonthChange} stepper options={months.map(item=>({value:item.month,label:formatStoryDate(item.month)}))}/></div>;
  const footer=<div className={styles.footer} {...{[EXPORT_IGNORE_ATTR]:''}}><WidgetStepper label="Tag" previousLabel="Vorheriger Tag" nextLabel="Nächster Tag" onPrevious={()=>shiftDay(-1)} onNext={()=>shiftDay(1)} previousDisabled={selectedIndex<=0} nextDisabled={selectedIndex<0||selectedIndex>=data.days.length-1}><button type="button" aria-label="Besten Tag anzeigen" onClick={()=>chooseDay(data.peakDay)}>{widgetDayLabel(focused?active.date:data.peakDay,data.peakDay,focused,formatStoryDate)}</button></WidgetStepper><div className={styles.transport}><WidgetIconButton label={playing?'Wiedergabe pausieren':'Monat abspielen'} aria-pressed={playing} onClick={togglePlayback}>{playing?<IconPause size={16}/>:<IconPlay size={16}/>}</WidgetIconButton><WidgetIconButton label="Zurücksetzen" onClick={clearDay}><IconRefresh size={16}/></WidgetIconButton></div></div>;
- return <div ref={exportHost} data-chart-animation="month" data-solar-month-preview={compact?true:undefined} className={`${styles.chart} ${compact?styles.compact:''}`}>{!compact&&<><WidgetToolbar>{controls}{footer}</WidgetToolbar><p className={styles.exportState} {...{[EXPORT_ONLY_ATTR]:'block'}} style={{display:'none'}}>{formatStoryDate(data.month)}{focused&&gezeigterTag?` · ${formatStoryDate(gezeigterTag.date)}`:''} · modelliert</p></>}
-  <MonthlySolarRadial artwork={compact} animationSample={exportTime!==null?(frame!==null?solarAnimationFrame(data.days.map(day=>day.mwh),exportTime):{index:data.days.length-1,progress:1,value:data.totalMwh}):undefined} data={data} layout="monitor" compact={compact} displayDate={displayDate} frame={frame} playing={playing} focused={focused} onHover={setHovered} onChoose={chooseDay} classes={styles}/>
+ const plot=<MonthlySolarRadial artwork={compact} animationSample={exportTime!==null?(frame!==null?solarAnimationFrame(data.days.map(day=>day.mwh),exportTime):{index:data.days.length-1,progress:1,value:data.totalMwh}):undefined} data={data} layout="monitor" compact={compact} displayDate={displayDate} frame={frame} playing={playing} focused={focused} onHover={setHovered} onChoose={chooseDay} classes={styles}/>;
+ return <div ref={exportHost} data-chart-animation="month" data-solar-month-preview={compact?true:undefined} className={`${styles.chart} ${compact?styles.compact:''}`}>
+  {!compact&&<p className={styles.exportState} {...{[EXPORT_ONLY_ATTR]:'block'}} style={{display:'none'}}>{formatStoryDate(data.month)}{focused&&gezeigterTag?` · ${formatStoryDate(gezeigterTag.date)}`:''} · modelliert</p>}
+  {compact?plot:<RadialChartLayout period={controls} playback={footer}>{plot}</RadialChartLayout>}
  </div>;
 }
 
 export function MonitorMonthlySolarChart({data,datasets=[data],onPeriodChange,compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished,onTag}:{data:SolarMonth;datasets?:SolarMonth[];onPeriodChange?:(month:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void;onTag?:(datum:string|null)=>void}){
  const presentation=useWidgetPresentation();
  const [month,setMonth]=useState(data.month);
+ const [linkPlayback,setLinkPlayback]=useState(false);
+ const linkApplied=useRef(false);
+ useEffect(()=>{
+  if(linkApplied.current)return;
+  linkApplied.current=true;
+  const query=new URLSearchParams(window.location.search);
+  if(!query.get('chart')?.startsWith('solar-check-radial-'))return;
+  const requested=datasets.find(item=>item.month===query.get('period'));
+  if(!requested)return;
+  setMonth(requested.month);
+  onPeriodChange?.(requested.month);
+  setLinkPlayback(query.get('autoplay')==='on');
+ },[datasets,onPeriodChange]);
  const selected=datasets.find(item=>item.month===month)??data;
- return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={value=>{setMonth(value);onPeriodChange?.(value);}} compact={compact} autoPlay={presentation.autoplay??autoPlay} paused={paused} startDelayMs={startDelayMs} onFinished={onFinished} onTag={onTag}/>;
+ return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={value=>{setMonth(value);onPeriodChange?.(value);}} compact={compact} autoPlay={linkPlayback || (presentation.autoplay??autoPlay)} paused={paused} startDelayMs={startDelayMs} onFinished={onFinished} onTag={onTag}/>;
 }
 export default MonitorMonthlySolarChart;

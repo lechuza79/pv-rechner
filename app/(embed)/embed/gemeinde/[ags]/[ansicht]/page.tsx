@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ladeGemeindePaket } from "../../../../../../lib/gemeinde-paket-server";
+import { ladeGemeindeAnzeigePaket, ladeGemeindePaket } from "../../../../../../lib/gemeinde-paket-server";
 import { paketFuer } from "../../../../../../components/gemeinde/paket-teile";
 import GemeindeAnsicht from "../../../../../../components/gemeinde/GemeindeAnsicht";
 
@@ -17,7 +17,7 @@ import GemeindeAnsicht from "../../../../../../components/gemeinde/GemeindeAnsic
 // cache write (up to three per page visit) for a read that never came. The
 // same reasoning and the same switch as the deep rankings
 // (app/(site)/solar-atlas/ranking-tief). A render reads only the town's
-// package, which the data cache keeps for a day, so it stays cheap.
+// package and the shared cached register series for its growth chart.
 // Guarded by lib/__tests__/gemeinde-einbettung-ohne-ablage.test.ts.
 export const dynamic = "force-dynamic";
 
@@ -27,7 +27,7 @@ const ANSICHTEN = ["insights", "monitor", "kopf"] as const;
 export default async function GemeindeEinbettung(props: { params: Promise<{ ags: string; ansicht: string }> }) {
   const { ags, ansicht } = await props.params;
   if (!(ANSICHTEN as readonly string[]).includes(ansicht)) notFound();
-  const paket = await ladeGemeindePaket(ags);
+  const paket = await (ansicht === "monitor" ? ladeGemeindeAnzeigePaket(ags) : ladeGemeindePaket(ags));
   if (!paket) notFound();
   const view = ansicht as (typeof ANSICHTEN)[number];
   return <GemeindeAnsicht ansicht={view} paket={paketFuer(view === "insights" ? "geschichten" : view, paket)} />;

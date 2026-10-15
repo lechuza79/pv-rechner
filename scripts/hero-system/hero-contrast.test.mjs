@@ -32,7 +32,7 @@ test('unsafe previous colors never survive hysteresis; safe colors do not chatte
  assert.equal(choose([[240,240,240]],'dark').tone,'dark');
 });
 test('host has no backing surface and mobile/legacy colors cannot override region decisions',()=>{
- const css=read('public/homepage-study/homepage.css'),js=read('public/homepage-study/interactions.js');
+ const css=read('public/homepage-study/homepage.css'),js=read('public/shared-nav/hero-presentation.js');
  assert.doesNotMatch(css,/sc-hero-backing|sc-hero-contrast\{/);
  assert.doesNotMatch(js,/createElement\('canvas'\)|sc-hero-contrast/);
  assert.match(js,/getComputedStyle\(node\)/);
@@ -40,8 +40,8 @@ test('host has no backing surface and mobile/legacy colors cannot override regio
 });
 
 test('transparent actions on both routes receive their own contrast decision after insertion',()=>{
- const js=read('public/homepage-study/interactions.js'),css=read('public/homepage-study/homepage.css');
- const targets=js.match(/const targets=\(\)=>[^;]+/)[0];
+ const js=read('public/shared-nav/hero-presentation.js'),css=read('public/homepage-study/homepage.css');
+ const targets=js.match(/const targets=[^;]+/)[0];
  for(const selector of ['.hero-actions .secondary-cta','.hs-retro-actions .hs-retro-secondary'])assert.ok(targets.includes(selector));
  assert.match(js,/contentObserver\.observe\(root,\{childList:true,subtree:true\}\)/);
  assert.match(css,/:is\(\.hero-actions \.secondary-cta,\.hs-retro-actions \.hs-retro-secondary\)\[data-hero-tone\]\{color:var\(--sc-region-ink\)!important;border-color:currentColor/);

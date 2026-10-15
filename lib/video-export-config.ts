@@ -34,7 +34,7 @@ export const VIDEO_WIDGETS: Record<VideoWidgetId, {
   "regional-race": {
     embedPath: (p) => `/embed/regional-race/${p.ags}${p.period==="current"?"":"?"+raceQuery(raceSettingsFromPeriod(p.period))}`,
     agsAllowlist: [],
-    regionPattern: /^(de|\d{2}|\d{5})$/, periodPattern: /^(current|race_(count|kwp|per-capita)_(all|private-roofs)_(all|districts)_(none|\d{2,8}))$/, periodControl: "none",
+    regionPattern: /^(de|\d{2}|\d{5})$/, periodPattern: /^(current|race_(count|kwp|per-capita)_(all|private-roofs|commercial-roofs|ground-mounted|balcony)_(all|districts)_(none|\d{2,8}))$/, periodControl: "none",
   },
 };
 

@@ -15,6 +15,8 @@
  */
 import { createClient } from "@supabase/supabase-js";
 import { aktuellerGemeindeschluessel } from "../lib/ags-nachfolger";
+import { windGemeinde } from "../lib/wind-standort";
+import { ladeGemeindeflaechen, type Vg250Gemeinden } from "./lib/vg250";
 import { MASTR_WIND_SQL, MASTR_WIND_TABELLE } from "../lib/mastr-wind-sql";
 import { UNIT_SPECS, findCachedZip, listZipEntries, parseKwp, streamXmlRecords } from "./mastr-bnetza-refresh";
 
@@ -22,7 +24,12 @@ const flag = (name: string) => process.argv.includes(`--${name}`);
 
 export type WindZeile = {
   mastr_nr: string;
+  /** Municipality the turbine STANDS in (lib/wind-standort.ts) — the key every
+   *  Atlas number uses. */
   region_id: string | null;
+  /** The municipality the register names. Kept: where the two differ, the
+   *  register entry is wrong, and that is worth being able to show. */
+  region_id_register: string | null;
   status: string;
   lage: string | null;
   lat: number | null;
@@ -41,6 +48,9 @@ export type WindZeile = {
   abschaltung_tierschutz: boolean | null;
   /** Key into the EEG payment data, where measured feed-in per plant lives. */
   eeg_nr: string | null;
+  /** Register number of the operator (ABR…). The operator's own row lives in
+   *  windbetreiber; this is the only link from a turbine to who runs it. */
+  betreiber_nr: string | null;
 };
 
 /** Catalogue codes → the words they stand for (manufacturer, on/offshore). */
@@ -72,7 +82,7 @@ function koordinate(lat: number | null, lon: number | null) {
 
 const text = (raw: string | undefined) => (raw && raw.trim() ? raw.trim() : null);
 
-export function windZeile(row: Record<string, string>, katalog: Katalog): WindZeile | null {
+export function windZeile(row: Record<string, string>, katalog: Katalog, flaechen: Vg250Gemeinden): WindZeile | null {
   const mastr = text(row.EinheitMastrNummer);
   const status = text(row.EinheitBetriebsstatus);
   if (!mastr || !status) return null;
@@ -80,11 +90,20 @@ export function windZeile(row: Record<string, string>, katalog: Katalog): WindZe
   const { lat, lon } = koordinate(zahl(row.Breitengrad), zahl(row.Laengengrad));
   const brutto = parseKwp(row.Bruttoleistung);
   const netto = parseKwp(row.Nettonennleistung);
+  // Same key translation as the main import, so a turbine lands on the page
+  // that exists today and not on a merged-away Gemeinde — then the same
+  // placement by location, so this table and the Atlas sums agree.
+  const register = gks.length >= 8 ? aktuellerGemeindeschluessel(gks.slice(0, 8)) : null;
+  const region_id = register
+    ? windGemeinde(
+        { registerAgs: register, breitengrad: row.Breitengrad, laengengrad: row.Laengengrad, ort: row.Ort, gemarkung: row.Gemarkung },
+        flaechen,
+      ).regionId
+    : null;
   return {
     mastr_nr: mastr,
-    // Same key translation as the main import, so a turbine lands on the page
-    // that exists today and not on a merged-away Gemeinde.
-    region_id: gks.length >= 8 ? aktuellerGemeindeschluessel(gks.slice(0, 8)) : null,
+    region_id,
+    region_id_register: register,
     status,
     lage: row.WindAnLandOderAufSee ? (katalog.get(row.WindAnLandOderAufSee) ?? row.WindAnLandOderAufSee) : null,
     lat,
@@ -102,6 +121,7 @@ export function windZeile(row: Record<string, string>, katalog: Katalog): WindZe
     abschaltung_nachts: jaNein(row.AuflagenAbschaltungSchallimmissionsschutzNachts),
     abschaltung_tierschutz: jaNein(row.AuflagenAbschaltungTierschutz),
     eeg_nr: text(row.EegMaStRNummer),
+    betreiber_nr: text(row.AnlagenbetreiberMastrNummer),
   };
 }
 
@@ -127,11 +147,12 @@ async function main() {
   });
   if (katalog.size < 1000) throw new Error(`Katalog unvollständig (${katalog.size} Werte).`);
 
+  const flaechen = await ladeGemeindeflaechen();
   const zeilen: WindZeile[] = [];
   let verworfen = 0;
   for (const name of eintraege) {
     await streamXmlRecords(zipPath, name, spec.recordTag, (row) => {
-      const z = windZeile(row, katalog);
+      const z = windZeile(row, katalog, flaechen);
       if (z) zeilen.push(z);
       else verworfen++;
     });
@@ -141,6 +162,7 @@ async function main() {
   const zaehle = (f: (z: WindZeile) => boolean) => inBetrieb.filter(f).length;
   console.log(`${zeilen.length} Windräder gelesen (${verworfen} ohne Kennung verworfen), ${inBetrieb.length} in Betrieb`);
   console.log(`  in Betrieb mit Gemeinde: ${zaehle((z) => !!z.region_id)}`);
+  console.log(`  in Betrieb, nach Standort in anderer Gemeinde als im Register: ${zaehle((z) => z.region_id !== z.region_id_register)}`);
   console.log(`  in Betrieb mit Koordinate: ${zaehle((z) => z.lat !== null)}`);
   console.log(`  in Betrieb mit Nabenhöhe: ${zaehle((z) => z.nabenhoehe_m !== null)}`);
   console.log(`  in Betrieb mit Rotor: ${zaehle((z) => z.rotor_m !== null)}`);
@@ -151,6 +173,7 @@ async function main() {
   for (const z of zeilen) status.set(z.status, (status.get(z.status) ?? 0) + 1);
   console.log(`  Status-Codes: ${[...status].map(([k, v]) => `${k}=${v}`).join(", ")}`);
   console.log(`  in Betrieb mit EEG-Nummer: ${zaehle((z) => !!z.eeg_nr)}`);
+  console.log(`  in Betrieb mit Betreiber-Nummer: ${zaehle((z) => !!z.betreiber_nr)}`);
   console.log(`  in Betrieb stillgelegt-Datum gesetzt: ${zaehle((z) => !!z.stilllegung)}`);
   const mw = inBetrieb.reduce((s, z) => s + (z.brutto_kw ?? 0), 0) / 1000;
   console.log(`  Leistung in Betrieb: ${Math.round(mw).toLocaleString("de-DE")} MW`);
@@ -171,7 +194,13 @@ async function main() {
   const jetzt = new Date().toISOString();
   for (let i = 0; i < zeilen.length; i += 1000) {
     const teil = zeilen.slice(i, i + 1000).map((z) => ({ ...z, updated_at: jetzt }));
-    const { error } = await db.from(MASTR_WIND_TABELLE).upsert(teil, { onConflict: "mastr_nr" });
+    // A new column reaches the API only after its schema reload; 3 s were not
+    // always enough (09.10.2026). Retry that one error, nothing else.
+    let { error } = await db.from(MASTR_WIND_TABELLE).upsert(teil, { onConflict: "mastr_nr" });
+    for (let v = 0; error && /schema cache/.test(error.message) && v < 6; v++) {
+      await new Promise((r) => setTimeout(r, 5000));
+      ({ error } = await db.from(MASTR_WIND_TABELLE).upsert(teil, { onConflict: "mastr_nr" }));
+    }
     if (error) throw new Error(`Schreiben ab Zeile ${i}: ${error.message}`);
   }
   // Turbines that left the register would otherwise stay forever.

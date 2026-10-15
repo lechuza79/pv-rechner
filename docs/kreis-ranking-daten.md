@@ -123,3 +123,23 @@ Prüfungen lockern.
 - Für Pressemeldungen/Skripte ist der direkte Aufruf in Ordnung
   (`tsx --conditions=react-server`).
 - Nicht angefasst: Outreach- und Pressetexte, Seiten, Komponenten.
+
+## Shared page integration — 13 October 2026
+
+`LandkreisRanking` follows the three-row municipality directory below the racing chart in the shared `LandkreisSeite`.
+It adapts prepared district-versus-district data through
+`districtRankingCategories` and the handed-off `RankingWidgetCombination`.
+Associations, states, Germany and districts without a meaningful comparison
+do not receive the district composition. Existing member tables stay separate.
+
+`scripts/kreis-ranking-snapshot.ts` prepares the complete comparison input once
+from the existing rollup reader. Run with the project's environment and
+`--conditions=react-server`. Default output is local `.cache/district-rankings/current.json`;
+`--publish` uploads that one validated JSON object into the existing municipal
+package bucket. The monthly district step invokes publication before page
+invalidation. Page requests only read this prepared object, never scan rollups.
+The displayed date remains the register date; build time is separate.
+
+Initial publication requires a prepared snapshot and a public district check.
+Shared links carry `comparison=districts`, the district ID and selected category,
+so the embed does not fall back to comparing member municipalities.

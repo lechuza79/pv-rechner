@@ -51,20 +51,27 @@ async function verlinkendeGemeindenUncached(): Promise<string[]> {
   // Weiches Zeitbudget: Es gibt einen vollwertigen Rückfall (die Seite bleibt
   // gesperrt), also wäre längeres Warten reine Verzögerung — dieselbe Regel
   // wie bei Marktpreisen und Förderkatalog.
-  const { data, error } = await withDbTimeout(
-    supabase
-      .from("kommunen_kontakt")
-      .select("region_id")
-      .not("contacted_at", "is", null)
-      .neq("outreach_status", "gesperrt")
-      .limit(1000),
-    "angeschriebeneGemeinden",
-    DB_SOFT_READ_TIMEOUT_MS,
-  );
-  if (error) throw new Error(`angeschriebeneGemeinden: ${error.message}`);
-  const angeschrieben = ((data ?? []) as { region_id: string }[])
-    .map((z) => z.region_id)
-    .filter((id) => typeof id === "string" && id.length === 8);
+  // PAGED AND ORDERED. A single read with `.limit(1000)` stood here; on
+  // 14.10.2026 the written-to towns passed 1,000 and an arbitrary rest stayed
+  // on noindex (four Uckermark towns of that day's send, measured).
+  const angeschrieben: string[] = [];
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await withDbTimeout(
+      supabase
+        .from("kommunen_kontakt")
+        .select("region_id")
+        .not("contacted_at", "is", null)
+        .neq("outreach_status", "gesperrt")
+        .order("region_id")
+        .range(von, von + 999),
+      "angeschriebeneGemeinden",
+      DB_SOFT_READ_TIMEOUT_MS,
+    );
+    if (error) throw new Error(`angeschriebeneGemeinden: ${error.message}`);
+    const seite = (data ?? []) as { region_id: string }[];
+    for (const z of seite) if (typeof z.region_id === "string" && z.region_id.length === 8) angeschrieben.push(z.region_id);
+    if (seite.length < 1000) break;
+  }
 
   return angeschrieben;
 }
@@ -87,9 +94,18 @@ async function verlinkendeGemeindenUncached(): Promise<string[]> {
  * angeschriebenen Orte nach einer Datenbankstörung einen ganzen Tag lang
  * gesperrt.
  */
+/**
+ * Marker on the list AND on every town page that read it. A send must
+ * invalidate it (POST /api/atlas/revalidate?umfang=outreach), otherwise the
+ * pages keep their cached "noindex" for up to a day — measured 06.10.2026: all
+ * 95 towns of that morning's send still said noindex in the afternoon, because
+ * the preflight had warmed them while they were not yet released.
+ */
+export const OUTREACH_VERLINKER_TAG = "atlas-outreach-verlinker";
+
 const verlinkendeGemeindenGecacht = unstable_cache(verlinkendeGemeindenUncached, ["atlas-outreach-verlinker-v1"], {
   revalidate: 86400,
-  tags: ["atlas-outreach-verlinker"],
+  tags: [OUTREACH_VERLINKER_TAG],
 });
 
 export async function verlinkendeGemeinden(): Promise<string[]> {

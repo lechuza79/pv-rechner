@@ -186,3 +186,12 @@ Bestehende passende Datenstories als kompakte Einstiege, Visuals oder verlinkte 
 
 ### ⬜ Alle Rechner-Einstiege prüfen
 Betreiberauftrag 30.09.2026: PV-Rechner und weitere Rechner-Einstiege in die Optimierungsrunde aufnehmen. [Inventar und Messgrenzen](pv-history-pilot-2026-09-30.md). Vorhandene Schritt-/Ergebnisereignisse auswerten; Vercel-Bounce nicht als Rechner-Abbruchquote behandeln. Noch kein flächiger Umbau.
+
+## Stromhandel (5. Oktober 2026)
+
+### ⬜ Börsenwert-Ansicht zurückgestellt
+**Entscheidung:** Das zentrale Stromhandelswidget und die Atomseite zeigen vorerst ausschließlich Strommengen in GWh/TWh. Die Euroauswahl ist entfernt; auch bisherige Embed-Links mit `mode=money` zeigen Strommengen.
+
+**Vor einer Wiederaufnahme:** Bewertung je Handelsintervall und Preiszone fachlich abgleichen, Datenabdeckung prüfen und eine verständliche Darstellung entwickeln. Die Differenz der bewerteten Importe und Exporte ist nicht der Preis der netto zusätzlich importierten Strommenge. Rechnerische Börsenwerte sind keine tatsächlich gezahlten Ausgaben oder Erlöse und belegen keine Kosten des Atomausstiegs oder der Versorgungssicherung.
+
+Die Berechnungsgrundlage bleibt für diese spätere Prüfung erhalten. Für die Einordnung aktuell Handelsmengen und deren Differenz verwenden; ein Saldo allein belegt keine Versorgungsabhängigkeit.

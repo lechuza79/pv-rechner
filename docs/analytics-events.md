@@ -161,3 +161,22 @@ and by the existing sanitized page path for a particular locality. Counts are
 not unique people. `video_complete` means the file was generated, not that a
 user saved it. `video_error` counts a failed or interrupted generation.
 Local preview events are development diagnostics; collection begins after release.
+
+## Municipal publishing CTA
+
+- `gemeinde_meldung_geoeffnet`: the share dialog was opened through “Meldung mit Ortslink übernehmen” in the municipal publishing section.
+- `gemeinde_meldung_kopiert`: the clipboard confirmed a successful full-message copy from that dialog. Failed copies and link-only copies do not count.
+
+Other share entry points do not increment these counters. Repeated successful
+actions count again; these are action totals, not unique visitors or proof of
+publication. No municipality, message text, URL or visitor properties are sent.
+
+## Newsletter editions
+
+The fixed catalog in `lib/newsletter-metrics.ts` permits only known editions,
+variants and actions. September 2026 uses `newsletter_september_2026_{kommunal|allgemein}_{bild|ort|start}`.
+No arbitrary query values, recipient identifiers or properties are sent.
+`bild` and `ort` count arrivals on the Atlas, not all mail clicks. `start` counts
+actual playback once per page load, including autoplay. Test links (`nl_test`)
+are excluded. Reloads and forwarded links can count again; blocking and scanners
+make these event totals unsuitable as unique-person or delivery rates.

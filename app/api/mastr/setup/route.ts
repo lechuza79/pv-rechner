@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MASTR_AWARD_SQL } from "../../../../lib/mastr-award-sql";
 import { supabase } from "../../../../lib/supabase-server";
+import { MASTR_ROLLUP_SQL, rollupSchrittweise } from "../../../../lib/mastr-rollup-sql";
 import { MASTR_REGION_FUNCTIONS_SQL } from "../../../../lib/mastr-region-sql";
 
 // One-time setup route to create MaStR data lake tables.
@@ -146,6 +147,31 @@ export async function GET(req: NextRequest) {
         PRIMARY KEY (region_key, energietraeger, segment, year)
       );
 
+      -- AUSGESCHRIEBENE ZUGEHÖRIGKEIT: welche Gemeinde zu welcher Oberregion
+      -- gehört. Sie ersetzt die Annahme „der Schlüssel eines Orts beginnt mit
+      -- dem seines Kreises" — die gilt in Deutschland und nicht in der Schweiz,
+      -- wo eine Zürcher Gemeindenummer nicht mit der ihres Kantons beginnt.
+      --
+      -- Für Deutschland wird sie GENAU AUS dieser Stellenlogik erzeugt, damit
+      -- die Summen sich nicht um eine Stelle bewegen; gemessen am 06.10.2026
+      -- über 65.137 Zellen, null Abweichungen (npm run region:zugehoerigkeit).
+      CREATE TABLE IF NOT EXISTS mastr_region_mitglied (
+        region_key text NOT NULL,
+        gemeinde_id text NOT NULL,
+        PRIMARY KEY (region_key, gemeinde_id)
+      );
+      CREATE INDEX IF NOT EXISTS idx_mrm_gemeinde ON mastr_region_mitglied (gemeinde_id);
+
+      ALTER TABLE mastr_region_mitglied ENABLE ROW LEVEL SECURITY;
+      DO $$ BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_region_mitglied_anon_read') THEN
+          CREATE POLICY mastr_region_mitglied_anon_read ON mastr_region_mitglied FOR SELECT TO anon USING (true);
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_region_mitglied_service_write') THEN
+          CREATE POLICY mastr_region_mitglied_service_write ON mastr_region_mitglied FOR ALL TO service_role USING (true);
+        END IF;
+      END $$;
+
       ALTER TABLE mastr_aggregates_gem ENABLE ROW LEVEL SECURITY;
       ALTER TABLE mastr_region_rollup ENABLE ROW LEVEL SECURITY;
       DO $$ BEGIN
@@ -168,24 +194,7 @@ export async function GET(req: NextRequest) {
       -- per PK schon genau eine Zeile, da braucht es keinen Rollup. Alle Keys sind
       -- 8-stellig, daher summieren die drei Ebenen disjunkt (kein Doppelzählen).
       -- Statement-Timeout hier bewusst aufheben (läuft nur beim Datenlauf).
-      CREATE OR REPLACE FUNCTION mastr_refresh_region_rollup()
-      RETURNS void LANGUAGE plpgsql AS $fn$
-      BEGIN
-        SET LOCAL statement_timeout = 0;
-        TRUNCATE mastr_region_rollup;
-        INSERT INTO mastr_region_rollup (region_key, energietraeger, segment, year, count, kwp, kwh)
-        SELECT left(region_id,5), energietraeger, segment, year, sum(count)::bigint, sum(kwp), sum(kwh)
-          FROM mastr_aggregates_gem GROUP BY 1,2,3,4
-        UNION ALL
-        SELECT left(region_id,2), energietraeger, segment, year, sum(count)::bigint, sum(kwp), sum(kwh)
-          FROM mastr_aggregates_gem GROUP BY 1,2,3,4
-        UNION ALL
-        SELECT '', energietraeger, segment, year, sum(count)::bigint, sum(kwp), sum(kwh)
-          FROM mastr_aggregates_gem GROUP BY energietraeger, segment, year;
-      END;
-      $fn$;
-      REVOKE ALL ON FUNCTION mastr_refresh_region_rollup() FROM PUBLIC;
-      GRANT EXECUTE ON FUNCTION mastr_refresh_region_rollup() TO service_role;
+      ${MASTR_ROLLUP_SQL}
     `,
   });
   results.push({ step: "mastr_aggregates_gem", status: e2gem ? "error" : "ok", error: e2gem?.message });
@@ -198,9 +207,12 @@ export async function GET(req: NextRequest) {
   //     PostgREST's 1000-row cap. Both problems disappear if the database does the
   //     grouping: every call below returns at most a few hundred rows.
   //
-  //     The AGS is nested by design (2 = Bundesland, 5 = Kreis, 8 = Gemeinde), so
-  //     a prefix match is all a rollup needs. Gemeinde is the only stored grain —
-  //     nothing is double counted.
+  //     Welche Gemeinden unter einer Region liegen, steht seit 06.10.2026 in
+  //     mastr_region_mitglied, und welche Kinder eine Region hat, im Verzeichnis
+  //     (parent_region_id) — nicht mehr in der Länge und im gemeinsamen Anfang
+  //     des Schlüssels. Das war eine Eigenschaft des deutschen
+  //     Gemeindeschlüssels, keine der Sache. Gemeinde bleibt das einzige
+  //     gespeicherte Korn, es wird nichts doppelt gezählt.
   //
   //     SECURITY INVOKER (the default) is deliberate: these run with the caller's
   //     rights, so the existing RLS read policy stays the security boundary. EXECUTE
@@ -274,6 +286,9 @@ export async function GET(req: NextRequest) {
         WHERE a.energietraeger = 'solar'
           -- Unbewohnte Gebiete würden durch null teilen und jede Tabelle anführen.
           AND r.level = 'gemeinde' AND r.population > 0 AND r.slug IS NOT NULL
+          -- German municipalities only: Swiss rows share the table since
+          -- 07.10.2026 ("chg0261") and have no published page or ranking yet.
+          AND a.region_id ~ '^[0-9]{8}$'
         GROUP BY a.region_id, r.population;
       END;
       $fn$;
@@ -390,9 +405,25 @@ export async function GET(req: NextRequest) {
   //     selbstheilende region_series sind da schon committed; scheitert die
   //     Befüllung (Timeout o. Ä.), bleibt die Seite über den Fallback-Scan
   //     korrekt und wird beim nächsten erfolgreichen Refresh schnell.
-  const { error: e2e } = await supabase.rpc("exec_sql", {
-    sql: `SELECT mastr_refresh_region_rollup();`,
-  });
+  //     SCHRITTWEISE: Die Funktion hebt ihr Statement-Timeout nicht selbst auf
+  //     (siehe lib/mastr-rollup-sql.ts) — in einem Zug wird sie nach acht
+  //     Sekunden abgeschnitten. Hier wird die Zugehörigkeit erzeugt und je
+  //     Energieträger summiert; scheitert ein Teil, bleibt die Seite über den
+  //     Fallback-Scan korrekt.
+  const sb = supabase!;
+  const { data: traegerZeilen } = await sb
+    .from("mastr_aggregates_gem")
+    .select("energietraeger")
+    .limit(100_000);
+  const traegerListe = [
+    ...new Set((traegerZeilen ?? []).map((r) => (r as { energietraeger: string }).energietraeger)),
+  ].sort();
+  let e2e: { message: string } | null = null;
+  try {
+    await rollupSchrittweise((fn, args) => sb.rpc(fn, args ?? {}), traegerListe);
+  } catch (err) {
+    e2e = { message: err instanceof Error ? err.message : String(err) };
+  }
   results.push({ step: "mastr_region_rollup_refresh", status: e2e ? "error" : "ok", error: e2e?.message });
 
   // 3. mastr_meta — single-row metadata (last import, source version)

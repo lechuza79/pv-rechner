@@ -8,7 +8,7 @@
  * bleibt für Suchmaschinen vollständig lesbar.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useId } from "react";
 import { space, v } from "../../lib/theme";
 import { PLOT_MARGIN } from "./ZubauTimelineChart";
 
@@ -44,6 +44,7 @@ interface Props {
 }
 
 export default function EventTimeline({ events, active, onChange, startYear, endYear, margin = PLOT_MARGIN }: Props) {
+  const instanceId = useId();
   const touchX = useRef<number | null>(null);
   // Auf schmalen Displays wandern die Blätter-Pfeile unter den Text: neben dem
   // Text quetschen sie die Spalte auf wenige Wörter je Zeile.
@@ -160,8 +161,8 @@ export default function EventTimeline({ events, active, onChange, startYear, end
                 key={e.year}
                 role="tab"
                 aria-selected={isActive}
-                aria-controls={`ev-panel-${i}`}
-                id={`ev-tab-${i}`}
+                aria-controls={`${instanceId}-ev-panel-${i}`}
+                id={`${instanceId}-ev-tab-${i}`}
                 onClick={() => onChange(i)}
                 title={`${e.year} · ${e.label}`}
                 style={{
@@ -236,7 +237,7 @@ export default function EventTimeline({ events, active, onChange, startYear, end
           {!narrow && prevBtn}
           <div style={{ flex: narrow ? undefined : 1, minWidth: 0, minHeight: 92 }}>
             {events.map((e, i) => (
-              <div key={e.year} id={`ev-panel-${i}`} role="tabpanel" aria-labelledby={`ev-tab-${i}`} hidden={i !== active}>
+              <div key={e.year} id={`${instanceId}-ev-panel-${i}`} role="tabpanel" aria-labelledby={`${instanceId}-ev-tab-${i}`} hidden={i !== active}>
                 <div style={{ fontSize: v("--font-size-body"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: 3 }}>
                   <span style={{ fontFamily: v("--font-mono"), color: v("--color-accent") }}>{e.year}</span>
                   {"  ·  "}
