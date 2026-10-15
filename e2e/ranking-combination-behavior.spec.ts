@@ -2,6 +2,13 @@ import {test,expect} from '@playwright/test';
 
 const preview='/embed/galerie/gemeinde-ranking?ags=12063080&list=on&theme=light&autoplay=on';
 
+// The first category's rows come from a live API backed by the shared database;
+// its podium (and with it the reveal) appears only once they arrive. Wait for the
+// data itself, so a slow read is not mistaken for a reveal that never happens.
+async function firstCategoryLoaded(page:import('@playwright/test').Page){
+  await expect(page.locator('[data-podium-layout]').first(),'first ranking rows did not load').toBeVisible({timeout:20_000});
+}
+
 for (const width of [713,390]) test(`ranking list action remains visible while the next category loads at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:844});
   // Hold the next category's real response so the loading state cannot escape the assertion.
@@ -14,6 +21,7 @@ for (const width of [713,390]) test(`ranking list action remains visible while t
   await page.goto(preview.replace('autoplay=on','autoplay=off'));
   const list=page.locator('.ranking-footer .ranking-open');
   const tiles=page.locator('.ranking-choice');
+  await firstCategoryLoaded(page);
   await expect(tiles.first()).not.toHaveClass(/ranking-undiscovered/);
   await expect(list).toBeEnabled();
   if(width>600) await page.getByRole('button',{name:'Nächste Platzierung entdecken',exact:true}).click();
@@ -55,6 +63,7 @@ test('shared ranking retains mobile category navigation and the own table row',a
   await page.setViewportSize({width:390,height:844});
   await page.goto(preview.replace('autoplay=on','autoplay=off'));
   const tiles=page.locator('.ranking-choice');
+  await firstCategoryLoaded(page);
   await expect(tiles.first()).not.toHaveClass(/ranking-undiscovered/);
   await tiles.first().click();
   await expect(tiles.nth(1)).toHaveAttribute('aria-pressed','true');
