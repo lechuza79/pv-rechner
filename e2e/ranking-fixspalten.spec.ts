@@ -14,21 +14,18 @@ async function openRankingTable(page: import("@playwright/test").Page) {
   // rows follow a working click within one second, while a failing first
   // attempt sat 28 s on a closed disclosure whose summary had been clicked
   // during hydration. So prove the rows and open again otherwise.
+  // Toggled by keyboard: a pointer click on the summary was retried for 90 s
+  // against the sticky section rail covering it, and scrolling it to the middle
+  // first moved the page — which the floating-copy test depends on (the copy
+  // only appears while the marked row is out of view). Focus scrolls only as
+  // far as needed, exactly like the old click did.
   await expect(async () => {
     if (await disclosure.getAttribute("open") === null) {
-      await mittigKlicken(disclosure.locator("summary"));
+      await disclosure.locator("summary").focus();
+      await page.keyboard.press("Enter");
     }
     await expect(rows.first()).toBeVisible({ timeout: 8_000 });
   }).toPass({ timeout: 25_000 });
-}
-
-// Scroll a control to the middle before clicking it. Scrolled only "into
-// view", it lands at the viewport edge under the sticky section rail or page
-// actions, and Playwright then retries against the covering element until the
-// test times out (90 s on the Eifelkreis table in CI, 15 Oct 2026).
-async function mittigKlicken(ziel: import("@playwright/test").Locator) {
-  await ziel.evaluate((element) => element.scrollIntoView({ block: "center", inline: "nearest" }));
-  await ziel.click({ timeout: 3_000 });
 }
 
 async function platzierungWaehlen(page: import("@playwright/test").Page, wahl: string) {
