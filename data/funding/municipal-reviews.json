@@ -4741,7 +4741,7 @@
   {
     "regionId": "01059001",
     "name": "Alt Bennebek",
-    "checkedAt": "2026-09-19T20:10:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -4781,13 +4781,13 @@
       {
         "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
         "disposition": "replaced",
-        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt. Am 15.10.2026 nach Seitenbewegung erneut gelesen: Veranstalterseite „Förderung des Kindergartens Erfde e.V.“ mit einer Veranstaltung („Alles Rund ums Kind“, 28.02.2026), sachfremd.",
         "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
       },
       {
         "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?ical=1",
         "disposition": "replaced",
-        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt. Am 15.10.2026 erneut abgerufen: leere Kalenderdatei.",
         "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
       },
       {
@@ -4935,7 +4935,7 @@
   {
     "regionId": "01059020",
     "name": "Dörpstedt",
-    "checkedAt": "2026-09-19T20:10:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -4975,13 +4975,13 @@
       {
         "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
         "disposition": "replaced",
-        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt. Am 15.10.2026 nach Seitenbewegung erneut gelesen: Veranstalterseite „Förderung des Kindergartens Erfde e.V.“ mit einer Veranstaltung („Alles Rund ums Kind“, 28.02.2026), sachfremd.",
         "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
       },
       {
         "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?ical=1",
         "disposition": "replaced",
-        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt. Am 15.10.2026 erneut abgerufen: leere Kalenderdatei.",
         "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
       },
       {
@@ -29812,14 +29812,15 @@
   {
     "regionId": "07143214",
     "name": "Bretthausen",
-    "checkedAt": "2026-09-23T10:25:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf rennerod.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
     "conclusion": "Zuständig ist die Verbandsgemeinde Rennerod; ihre Richtlinie „Lebendiger Ortskern“ trägt in § 1a einen Klimaschutz-Baustein, der für alle eigengenutzten Wohngrundstücke der gesamten Verbandsgemeinde gilt — also auch für Bretthausen — und Balkonkraftwerke mit 25 % der Investitionssumme, höchstens einmalig 250 €, bezuschusst. Das Programm steht als vg-rennerod-klimaschutz im Katalog, mit Bretthausen unter den Fördergebieten. Ein eigenes Programm der Ortsgemeinde ist auf keiner der sechs erfassten Fundstellen belegt; Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht.",
     "searches": [
       "rennerod.de/bauen-umwelt/foerderprogramme — alle sechs erfassten Fundstellen im Volltext gelesen",
-      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten"
+      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten",
+      "15.10.2026: Formular-, Fördergebiets-, Klimaschutz- und Richtlinienseite der VG Rennerod nach Seitenbewegung erneut im Volltext gelesen, unverändert"
     ],
     "evidence": [
       {
@@ -29828,7 +29829,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
-        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“."
+        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“. Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme",
@@ -29836,7 +29837,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
-        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme."
+        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern",
@@ -29844,7 +29845,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
-        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung."
+        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein."
       }
     ],
     "sources": [
@@ -29857,7 +29858,7 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
         "disposition": "reviewed",
-        "reason": "Formularseite ohne eigene Förderangabe.",
+        "reason": "Formularseite ohne eigene Förderangabe. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege"
       },
       {
@@ -29875,13 +29876,13 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
         "disposition": "reviewed",
-        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein.",
+        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete"
       },
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
         "disposition": "reviewed",
-        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“",
+        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“ Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie"
       }
     ]
@@ -30947,14 +30948,15 @@
   {
     "regionId": "07143237",
     "name": "Hellenhahn-Schellenberg",
-    "checkedAt": "2026-09-23T10:25:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf rennerod.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
     "conclusion": "Zuständig ist die Verbandsgemeinde Rennerod; ihre Richtlinie „Lebendiger Ortskern“ trägt in § 1a einen Klimaschutz-Baustein, der für alle eigengenutzten Wohngrundstücke der gesamten Verbandsgemeinde gilt — also auch für Hellenhahn-Schellenberg — und Balkonkraftwerke mit 25 % der Investitionssumme, höchstens einmalig 250 €, bezuschusst. Das Programm steht als vg-rennerod-klimaschutz im Katalog, mit Hellenhahn-Schellenberg unter den Fördergebieten. Ein eigenes Programm der Ortsgemeinde ist auf keiner der sechs erfassten Fundstellen belegt; Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht.",
     "searches": [
       "rennerod.de/bauen-umwelt/foerderprogramme — alle sechs erfassten Fundstellen im Volltext gelesen",
-      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten"
+      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten",
+      "15.10.2026: Formular-, Fördergebiets-, Klimaschutz- und Richtlinienseite der VG Rennerod nach Seitenbewegung erneut im Volltext gelesen, unverändert"
     ],
     "evidence": [
       {
@@ -30963,7 +30965,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
-        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“."
+        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“. Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme",
@@ -30971,7 +30973,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
-        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme."
+        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern",
@@ -30979,7 +30981,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
-        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung."
+        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein."
       }
     ],
     "sources": [
@@ -30992,7 +30994,7 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
         "disposition": "reviewed",
-        "reason": "Formularseite ohne eigene Förderangabe.",
+        "reason": "Formularseite ohne eigene Förderangabe. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege"
       },
       {
@@ -31010,13 +31012,13 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
         "disposition": "reviewed",
-        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein.",
+        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete"
       },
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
         "disposition": "reviewed",
-        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“",
+        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“ Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie"
       }
     ]
@@ -31367,14 +31369,15 @@
   {
     "regionId": "07143245",
     "name": "Hüblingen",
-    "checkedAt": "2026-09-23T10:25:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf rennerod.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
     "conclusion": "Zuständig ist die Verbandsgemeinde Rennerod; ihre Richtlinie „Lebendiger Ortskern“ trägt in § 1a einen Klimaschutz-Baustein, der für alle eigengenutzten Wohngrundstücke der gesamten Verbandsgemeinde gilt — also auch für Hüblingen — und Balkonkraftwerke mit 25 % der Investitionssumme, höchstens einmalig 250 €, bezuschusst. Das Programm steht als vg-rennerod-klimaschutz im Katalog, mit Hüblingen unter den Fördergebieten. Ein eigenes Programm der Ortsgemeinde ist auf keiner der sechs erfassten Fundstellen belegt; Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht.",
     "searches": [
       "rennerod.de/bauen-umwelt/foerderprogramme — alle sechs erfassten Fundstellen im Volltext gelesen",
-      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten"
+      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten",
+      "15.10.2026: Formular-, Fördergebiets-, Klimaschutz- und Richtlinienseite der VG Rennerod nach Seitenbewegung erneut im Volltext gelesen, unverändert"
     ],
     "evidence": [
       {
@@ -31383,7 +31386,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
-        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“."
+        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“. Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme",
@@ -31391,7 +31394,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
-        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme."
+        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern",
@@ -31399,7 +31402,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
-        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung."
+        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein."
       }
     ],
     "sources": [
@@ -31412,7 +31415,7 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
         "disposition": "reviewed",
-        "reason": "Formularseite ohne eigene Förderangabe.",
+        "reason": "Formularseite ohne eigene Förderangabe. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege"
       },
       {
@@ -31430,13 +31433,13 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
         "disposition": "reviewed",
-        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein.",
+        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete"
       },
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
         "disposition": "reviewed",
-        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“",
+        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“ Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie"
       }
     ]
@@ -31977,14 +31980,15 @@
   {
     "regionId": "07143256",
     "name": "Liebenscheid",
-    "checkedAt": "2026-09-23T10:25:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf rennerod.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
     "conclusion": "Zuständig ist die Verbandsgemeinde Rennerod; ihre Richtlinie „Lebendiger Ortskern“ trägt in § 1a einen Klimaschutz-Baustein, der für alle eigengenutzten Wohngrundstücke der gesamten Verbandsgemeinde gilt — also auch für Liebenscheid — und Balkonkraftwerke mit 25 % der Investitionssumme, höchstens einmalig 250 €, bezuschusst. Das Programm steht als vg-rennerod-klimaschutz im Katalog, mit Liebenscheid unter den Fördergebieten. Ein eigenes Programm der Ortsgemeinde ist auf keiner der sechs erfassten Fundstellen belegt; Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht.",
     "searches": [
       "rennerod.de/bauen-umwelt/foerderprogramme — alle sechs erfassten Fundstellen im Volltext gelesen",
-      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten"
+      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten",
+      "15.10.2026: Formular-, Fördergebiets-, Klimaschutz- und Richtlinienseite der VG Rennerod nach Seitenbewegung erneut im Volltext gelesen, unverändert"
     ],
     "evidence": [
       {
@@ -31993,7 +31997,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
-        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“."
+        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“. Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme",
@@ -32001,7 +32005,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
-        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme."
+        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern",
@@ -32009,7 +32013,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
-        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung."
+        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein."
       }
     ],
     "sources": [
@@ -32022,7 +32026,7 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
         "disposition": "reviewed",
-        "reason": "Formularseite ohne eigene Förderangabe.",
+        "reason": "Formularseite ohne eigene Förderangabe. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege"
       },
       {
@@ -32040,13 +32044,13 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
         "disposition": "reviewed",
-        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein.",
+        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete"
       },
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
         "disposition": "reviewed",
-        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“",
+        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“ Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie"
       }
     ]
@@ -32731,14 +32735,15 @@
   {
     "regionId": "07143272",
     "name": "Neustadt/ Westerwald",
-    "checkedAt": "2026-09-23T10:25:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf rennerod.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
     "conclusion": "Zuständig ist die Verbandsgemeinde Rennerod; ihre Richtlinie „Lebendiger Ortskern“ trägt in § 1a einen Klimaschutz-Baustein, der für alle eigengenutzten Wohngrundstücke der gesamten Verbandsgemeinde gilt — also auch für Neustadt/ Westerwald — und Balkonkraftwerke mit 25 % der Investitionssumme, höchstens einmalig 250 €, bezuschusst. Das Programm steht als vg-rennerod-klimaschutz im Katalog, mit Neustadt/ Westerwald unter den Fördergebieten. Ein eigenes Programm der Ortsgemeinde ist auf keiner der sechs erfassten Fundstellen belegt; Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht.",
     "searches": [
       "rennerod.de/bauen-umwelt/foerderprogramme — alle sechs erfassten Fundstellen im Volltext gelesen",
-      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten"
+      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten",
+      "15.10.2026: Formular-, Fördergebiets-, Klimaschutz- und Richtlinienseite der VG Rennerod nach Seitenbewegung erneut im Volltext gelesen, unverändert"
     ],
     "evidence": [
       {
@@ -32747,7 +32752,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
-        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“."
+        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“. Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme",
@@ -32755,7 +32760,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
-        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme."
+        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern",
@@ -32763,7 +32768,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
-        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung."
+        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein."
       }
     ],
     "sources": [
@@ -32776,7 +32781,7 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
         "disposition": "reviewed",
-        "reason": "Formularseite ohne eigene Förderangabe.",
+        "reason": "Formularseite ohne eigene Förderangabe. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege"
       },
       {
@@ -32794,13 +32799,13 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
         "disposition": "reviewed",
-        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein.",
+        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete"
       },
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
         "disposition": "reviewed",
-        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“",
+        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“ Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie"
       }
     ]
@@ -33916,14 +33921,15 @@
   {
     "regionId": "07143291",
     "name": "Salzburg",
-    "checkedAt": "2026-09-23T10:25:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf rennerod.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
     "conclusion": "Zuständig ist die Verbandsgemeinde Rennerod; ihre Richtlinie „Lebendiger Ortskern“ trägt in § 1a einen Klimaschutz-Baustein, der für alle eigengenutzten Wohngrundstücke der gesamten Verbandsgemeinde gilt — also auch für Salzburg — und Balkonkraftwerke mit 25 % der Investitionssumme, höchstens einmalig 250 €, bezuschusst. Das Programm steht als vg-rennerod-klimaschutz im Katalog, mit Salzburg unter den Fördergebieten. Ein eigenes Programm der Ortsgemeinde ist auf keiner der sechs erfassten Fundstellen belegt; Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht.",
     "searches": [
       "rennerod.de/bauen-umwelt/foerderprogramme — alle sechs erfassten Fundstellen im Volltext gelesen",
-      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten"
+      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten",
+      "15.10.2026: Formular-, Fördergebiets-, Klimaschutz- und Richtlinienseite der VG Rennerod nach Seitenbewegung erneut im Volltext gelesen, unverändert"
     ],
     "evidence": [
       {
@@ -33932,7 +33938,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
-        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“."
+        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“. Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme",
@@ -33940,7 +33946,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
-        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme."
+        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern",
@@ -33948,7 +33954,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
-        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung."
+        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein."
       }
     ],
     "sources": [
@@ -33961,7 +33967,7 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
         "disposition": "reviewed",
-        "reason": "Formularseite ohne eigene Förderangabe.",
+        "reason": "Formularseite ohne eigene Förderangabe. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege"
       },
       {
@@ -33979,13 +33985,13 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
         "disposition": "reviewed",
-        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein.",
+        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete"
       },
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
         "disposition": "reviewed",
-        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“",
+        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“ Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie"
       }
     ]
@@ -33993,14 +33999,15 @@
   {
     "regionId": "07143295",
     "name": "Stein-Neukirch",
-    "checkedAt": "2026-09-23T10:25:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf rennerod.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
     "conclusion": "Zuständig ist die Verbandsgemeinde Rennerod; ihre Richtlinie „Lebendiger Ortskern“ trägt in § 1a einen Klimaschutz-Baustein, der für alle eigengenutzten Wohngrundstücke der gesamten Verbandsgemeinde gilt — also auch für Stein-Neukirch — und Balkonkraftwerke mit 25 % der Investitionssumme, höchstens einmalig 250 €, bezuschusst. Das Programm steht als vg-rennerod-klimaschutz im Katalog, mit Stein-Neukirch unter den Fördergebieten. Ein eigenes Programm der Ortsgemeinde ist auf keiner der sechs erfassten Fundstellen belegt; Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht.",
     "searches": [
       "rennerod.de/bauen-umwelt/foerderprogramme — alle sechs erfassten Fundstellen im Volltext gelesen",
-      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten"
+      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten",
+      "15.10.2026: Formular-, Fördergebiets-, Klimaschutz- und Richtlinienseite der VG Rennerod nach Seitenbewegung erneut im Volltext gelesen, unverändert"
     ],
     "evidence": [
       {
@@ -34009,7 +34016,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
-        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“."
+        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“. Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme",
@@ -34017,7 +34024,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
-        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme."
+        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern",
@@ -34025,7 +34032,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
-        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung."
+        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein."
       }
     ],
     "sources": [
@@ -34038,7 +34045,7 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
         "disposition": "reviewed",
-        "reason": "Formularseite ohne eigene Förderangabe.",
+        "reason": "Formularseite ohne eigene Förderangabe. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege"
       },
       {
@@ -34056,13 +34063,13 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
         "disposition": "reviewed",
-        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein.",
+        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete"
       },
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
         "disposition": "reviewed",
-        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“",
+        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“ Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie"
       }
     ]
@@ -34463,14 +34470,15 @@
   {
     "regionId": "07143303",
     "name": "Waldmühlen",
-    "checkedAt": "2026-09-23T10:25:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf rennerod.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
     "conclusion": "Zuständig ist die Verbandsgemeinde Rennerod; ihre Richtlinie „Lebendiger Ortskern“ trägt in § 1a einen Klimaschutz-Baustein, der für alle eigengenutzten Wohngrundstücke der gesamten Verbandsgemeinde gilt — also auch für Waldmühlen — und Balkonkraftwerke mit 25 % der Investitionssumme, höchstens einmalig 250 €, bezuschusst. Das Programm steht als vg-rennerod-klimaschutz im Katalog, mit Waldmühlen unter den Fördergebieten. Ein eigenes Programm der Ortsgemeinde ist auf keiner der sechs erfassten Fundstellen belegt; Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht.",
     "searches": [
       "rennerod.de/bauen-umwelt/foerderprogramme — alle sechs erfassten Fundstellen im Volltext gelesen",
-      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten"
+      "Richtlinie der VG Rennerod, § 1a und § 2 (Förderhöhen) gegen den Katalogeintrag gehalten",
+      "15.10.2026: Formular-, Fördergebiets-, Klimaschutz- und Richtlinienseite der VG Rennerod nach Seitenbewegung erneut im Volltext gelesen, unverändert"
     ],
     "evidence": [
       {
@@ -34479,7 +34487,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
-        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“."
+        "finding": "Richtlinie der Verbandsgemeinde Rennerod vom 01.01.2007 in der Fassung vom 15.12.2022, am 23.09.2026 im Volltext gelesen: § 1a Ziffer 5 „Photovoltaik-Kleinanlagen (‚Balkonkraftwerke‘)“, Förderhöhe „25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €“. Dem Antrag beizufügen ist unter anderem die „Bescheinigung des Haus- oder Wohnungseigentümers über die Erlaubnis zur Anbringung eines ‚Balkonkraftwerks‘“. Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme",
@@ -34487,7 +34495,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
-        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme."
+        "finding": "„Nachfolgend können Sie sich die Formulare und Anträge zu unseren Förderprogrammen herunterladen“ — Förderantrag, Anlagen, Hinweise Bodenversiegelung, Objektangebot. Keine Förderhöhe, keine eigene Maßnahme. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe."
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern",
@@ -34495,7 +34503,7 @@
       },
       {
         "url": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
-        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung."
+        "finding": "„Fördergebiete in den Ortsgemeinden“ — Kartendateien je Ortsgemeinde für den Ortskern-Baustein. Für den Klimaschutz-Baustein ohne Bedeutung, der gilt ausdrücklich unabhängig von dieser Abgrenzung. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein."
       }
     ],
     "sources": [
@@ -34508,7 +34516,7 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege",
         "disposition": "reviewed",
-        "reason": "Formularseite ohne eigene Förderangabe.",
+        "reason": "Formularseite ohne eigene Förderangabe. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin nur Formulare und Anträge („Förderantrag“, „Anlagen zum Förderantrag“), keine eigene Förderangabe.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/formulare-antraege"
       },
       {
@@ -34526,13 +34534,13 @@
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete",
         "disposition": "reviewed",
-        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein.",
+        "reason": "Kartenübersicht der Fördergebiete; betrifft nur den Ortskern-Baustein, nicht den Klimaschutz-Baustein. Am 15.10.2026 nach Seitenbewegung erneut gelesen: weiterhin Kartenliste „Fördergebiete in den Ortsgemeinden“ für den Ortskern-Baustein.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerdergebiete"
       },
       {
         "url": "rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie",
         "disposition": "reviewed",
-        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“",
+        "reason": "Die Richtlinie selbst (Fassung vom 15.12.2022). § 1a Ziffer 5 nennt Photovoltaik-Kleinanlagen, § 2: „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i. H. v. 250,00 €.“ Am 15.10.2026 erneut gelesen: Fassung vom 15.12.2022 unverändert, „§ 1 a Ziffer 5 beträgt 25% der Investitionssumme, maximal einmaliger Gesamtförderbetrag i .H. v. 250,00 €“.",
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie"
       }
     ]
@@ -61792,7 +61800,7 @@
   {
     "regionId": "03459025",
     "name": "Menslage",
-    "checkedAt": "2026-10-14T12:36:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -61802,7 +61810,8 @@
       "Richtlinien Quakenbrück (Scan, Seite für Seite), Badbergen und Menslage im Volltext gelesen; verlinkte Dateien byte-identisch mit der Akte",
       "Übersicht „Kommunale Förderungen“ der Samtgemeinde gelesen",
       "Websuche nach Programmen des Landkreises Osnabrück und nach einem Nortruper Klimafonds: nichts gefunden",
-      "14.10.2026: vom Seiten-Wächter als geändert gemeldete Quelle(n) im Original neu gelesen (Kommunale Förderungen | Samtgemeinde Artland; Auch in 2026 wurden erneut Haushaltsmittel bereitgestellt), Ergebnis unverändert"
+      "14.10.2026: vom Seiten-Wächter als geändert gemeldete Quelle(n) im Original neu gelesen (Kommunale Förderungen | Samtgemeinde Artland; Auch in 2026 wurden erneut Haushaltsmittel bereitgestellt), Ergebnis unverändert",
+      "15.10.2026: Klimafonds-Seite der Samtgemeinde Artland nach Seitenbewegung erneut gelesen, Menslage-Abschnitt unverändert"
     ],
     "evidence": [
       {
@@ -61823,7 +61832,7 @@
       },
       {
         "url": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383",
-        "finding": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten."
+        "finding": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten. Am 15.10.2026 nach Seitenbewegung erneut gesichtet: Navigationsseite, der Klimafonds-Eintrag führt auf dieselbe Programmseite."
       },
       {
         "url": "https://artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung",
@@ -61866,13 +61875,13 @@
       {
         "url": "artland.de/portal/seiten/foerderprogramm-klimafonds-in-der-samtgemeinde-artland-900000468-31440.html?naviID=900001388&amp;brotID=900001388&amp;rubrik=900000004",
         "disposition": "replaced",
-        "reason": "Alte Portal-Adresse derselben Klimafonds-Seite.",
+        "reason": "Alte Portal-Adresse derselben Klimafonds-Seite. Am 15.10.2026 nach Seitenbewegung erneut gelesen: für Menslage weiterhin „Auch in 2026 wurden erneut Haushaltsmittel bereitgestellt. Der Haushalt 2026 wurde kürzlich genehmigt, somit sind Antragsstellungen möglich.“",
         "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland"
       },
       {
         "url": "artland.de/portal/sitemap-mosaik.html?naviID=900001383&amp;brotID=900001383&amp;navi_id=900001383",
         "disposition": "reviewed",
-        "reason": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten.",
+        "reason": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten. Am 15.10.2026 nach Seitenbewegung erneut gesichtet: Navigationsseite, der Klimafonds-Eintrag führt auf dieselbe Programmseite.",
         "evidenceUrl": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383"
       }
     ]
@@ -68230,7 +68239,7 @@
   {
     "regionId": "03257035",
     "name": "Stadthagen",
-    "checkedAt": "2026-10-14T12:36:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-26T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Landkreis Schaumburg.",
     "outcome": "programme-geprueft",
@@ -68249,7 +68258,7 @@
       },
       {
         "url": "https://www.stadthagen.de/Dateien/Richtlinie-Zuschuesse-Sanierungsmassnahmen.html",
-        "finding": "Richtlinie (Scan) am 26.09.2026 gelesen: „Die Stadt Stadthagen gewährt zur Förderung der städtebaulichen Entwicklung der Stadt Zuschüsse zur Modernisierung und Instandsetzung stadtbildprägender Gebäude.“"
+        "finding": "Richtlinie (Scan) am 26.09.2026 gelesen: „Die Stadt Stadthagen gewährt zur Förderung der städtebaulichen Entwicklung der Stadt Zuschüsse zur Modernisierung und Instandsetzung stadtbildprägender Gebäude.“ Am 15.10.2026 nach Seitenbewegung das verlinkte Dokument (show.cfm?id=373460) gelesen: Richtlinie vom 24.02.2014 „zur Modernisierung und Instandsetzung stadtbildprägender Gebäude“, kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
       },
       {
         "url": "https://www.stadthagen.de/Dateien/Grundsaetze-Gewaehrung-Zuschuesse-Renovierung-Fassaden.html",
@@ -68282,7 +68291,7 @@
       {
         "url": "stadthagen.de/Dateien/Richtlinie-Zuschuesse-Sanierungsmassnahmen.html",
         "disposition": "reviewed",
-        "reason": "Gelesen: Sanierung stadtbildprägender Gebäude.",
+        "reason": "Gelesen: Sanierung stadtbildprägender Gebäude. Am 15.10.2026 nach Seitenbewegung das verlinkte Dokument (show.cfm?id=373460) gelesen: Richtlinie vom 24.02.2014 „zur Modernisierung und Instandsetzung stadtbildprägender Gebäude“, kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
         "evidenceUrl": "https://www.stadthagen.de/Dateien/Richtlinie-Zuschuesse-Sanierungsmassnahmen.html"
       },
       {
@@ -68300,7 +68309,7 @@
       {
         "url": "stadthagen.de/Dateien/2026-07-14-RL-Bundesfoerderung-Jung-kauft-Alt-Ae1.html",
         "disposition": "replaced",
-        "reason": "Am 26.09.2026 „Der aufgerufene Inhalt ist nicht mehr verfügbar“; Titel ist die Bundesförderung Jung kauft Alt (Wohneigentum), keine Energie-Förderung; die Übersicht „Stadthagen wird gefördert“ nennt kein Energieprogramm.",
+        "reason": "Am 26.09.2026 „Der aufgerufene Inhalt ist nicht mehr verfügbar“; Titel ist die Bundesförderung Jung kauft Alt (Wohneigentum), keine Energie-Förderung; die Übersicht „Stadthagen wird gefördert“ nennt kein Energieprogramm. Am 15.10.2026 erneut abgerufen: weiterhin 404.",
         "evidenceUrl": "https://www.stadthagen.de/Buergerservice/Rathaus/Stadthagen-wird-gefoerdert.htm"
       },
       {
@@ -87183,7 +87192,7 @@
   {
     "regionId": "08226040",
     "name": "Laudenbach",
-    "checkedAt": "2026-10-01T18:20:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2026-12-30T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -87204,34 +87213,34 @@
       },
       {
         "url": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6006897&cHash=2f43af438eb3a7716f0ce544d033a2ce",
-        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu betrieblichem Mobilitätsmanagement; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu betrieblichem Mobilitätsmanagement; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen. Am 15.10.2026 erneut gelesen: „Betriebliches und Behördliches Mobilitätsmanagement - Förderung beantragen“, richtet sich an Arbeitgeber."
       },
       {
         "url": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6007739&cHash=a524b843538b3695da74c1c7f5bdadf7",
-        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu kommunalen Digitallotsen; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu kommunalen Digitallotsen; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen. Am 15.10.2026 erneut gelesen: „Förderprogramm „Kommunale Digitallotsen““ für Verwaltungsmitarbeitende."
       },
       {
         "url": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&cHash=de3e33828e04fffb8f29aa54c5e0ebeb",
-        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu einer allgemeinen Lebenslage; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+        "finding": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu einer allgemeinen Lebenslage; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen. Am 15.10.2026 nach Seitenbewegung erneut gelesen: Lebenslage „Förderung Elektromobilität“ des Verkehrsministeriums (E-Fahrzeuge, Ladeinfrastruktur), keine PV-, Speicher-, Balkon- oder Wärmepumpenförderung."
       }
     ],
     "sources": [
       {
         "url": "gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6006897&amp;cHash=2f43af438eb3a7716f0ce544d033a2ce",
         "disposition": "reviewed",
-        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu betrieblichem Mobilitätsmanagement; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen.",
+        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu betrieblichem Mobilitätsmanagement; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen. Am 15.10.2026 erneut gelesen: „Betriebliches und Behördliches Mobilitätsmanagement - Förderung beantragen“, richtet sich an Arbeitgeber.",
         "evidenceUrl": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6006897&cHash=2f43af438eb3a7716f0ce544d033a2ce"
       },
       {
         "url": "gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&amp;tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6007739&amp;cHash=a524b843538b3695da74c1c7f5bdadf7",
         "disposition": "reviewed",
-        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu kommunalen Digitallotsen; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen.",
+        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu kommunalen Digitallotsen; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen. Am 15.10.2026 erneut gelesen: „Förderprogramm „Kommunale Digitallotsen““ für Verwaltungsmitarbeitende.",
         "evidenceUrl": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/dienstleistungen?tx_hwservicebw2_hwservicebw2leistungenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2leistungenfe%5Bcontroller%5D=LeistungenFrontend&tx_hwservicebw2_hwservicebw2leistungenfe%5Bid%5D=6007739&cHash=a524b843538b3695da74c1c7f5bdadf7"
       },
       {
         "url": "gemeinde-laudenbach.de/rathaus-service/buergerservice/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&amp;tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&amp;cHash=de3e33828e04fffb8f29aa54c5e0ebeb",
         "disposition": "reviewed",
-        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu einer allgemeinen Lebenslage; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen.",
+        "reason": "Am 01.10.2026 gelesen: Landesportal-Eintrag (service-bw) zu einer allgemeinen Lebenslage; keine Förderung privater PV-, Speicher-, Balkon- oder Wärmepumpenanlagen. Am 15.10.2026 nach Seitenbewegung erneut gelesen: Lebenslage „Förderung Elektromobilität“ des Verkehrsministeriums (E-Fahrzeuge, Ladeinfrastruktur), keine PV-, Speicher-, Balkon- oder Wärmepumpenförderung.",
         "evidenceUrl": "https://gemeinde-laudenbach.de/rathaus-service/buergerservice/lebenslagen?tx_hwservicebw2_hwservicebw2lebenslagenfe%5Baction%5D=show&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bcontroller%5D=LebenslagenFrontend&tx_hwservicebw2_hwservicebw2lebenslagenfe%5Bid%5D=5001819&cHash=de3e33828e04fffb8f29aa54c5e0ebeb"
       }
     ]
@@ -89582,7 +89591,7 @@
   {
     "regionId": "08226",
     "name": "Rhein-Neckar-Kreis",
-    "checkedAt": "2026-10-06T06:17:00Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2027-01-04T08:00:00Z",
     "scope": "Private Haushalte: Zuschüsse des Landkreises für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -89615,7 +89624,7 @@
       },
       {
         "url": "https://www.rhein-neckar-kreis.de/-/startseite/leb5000550",
-        "finding": "Am 06.10.2026 aufgerufen: die alte service-bw-Lebenslagenadresse führt nach dem Relaunch der Kreis-Website nur noch auf die Startseite; keine Förderung privater Anlagen. Dieselben Lebenslagen sind bei Rhein-Neckar-Gemeinden als allgemeine Landesportal-Einträge ohne kommunalen Zuschuss gelesen."
+        "finding": "Am 06.10.2026 aufgerufen: die alte service-bw-Lebenslagenadresse führt nach dem Relaunch der Kreis-Website nur noch auf die Startseite; keine Förderung privater Anlagen. Dieselben Lebenslagen sind bei Rhein-Neckar-Gemeinden als allgemeine Landesportal-Einträge ohne kommunalen Zuschuss gelesen. Am 15.10.2026 nach Seitenbewegung erneut abgerufen: die Adresse zeigt die Startseite des Kreises mit Tagesmeldungen (Gehölzpflege, Kreistag), kein Förderprogramm."
       },
       {
         "url": "https://www.rhein-neckar-kreis.de/-/startseite/leb5001428",
@@ -89642,7 +89651,7 @@
       {
         "url": "rhein-neckar-kreis.de/-/startseite/leb5000550",
         "disposition": "reviewed",
-        "reason": "Alte Lebenslagenadresse, heute nur Startseite; keine Förderung privater Anlagen.",
+        "reason": "Alte Lebenslagenadresse, heute nur Startseite; keine Förderung privater Anlagen. Am 15.10.2026 nach Seitenbewegung erneut abgerufen: die Adresse zeigt die Startseite des Kreises mit Tagesmeldungen (Gehölzpflege, Kreistag), kein Förderprogramm.",
         "evidenceUrl": "https://www.rhein-neckar-kreis.de/-/startseite/leb5000550"
       },
       {
@@ -97685,7 +97694,7 @@
   {
     "regionId": "01057",
     "name": "Kreis Plön",
-    "checkedAt": "2026-10-15T06:11:55Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2027-01-13T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -97714,19 +97723,19 @@
       {
         "url": "kreis-ploen.de/B%C3%BCrgerservice/Pressedienst/Anpassung-der-F%C3%B6rderrichtlinie-zur-Installation-von-Photovoltaikanlagen-in-Verbindung-mit-Batteriespeichern.php",
         "disposition": "reviewed",
-        "reason": "Pressemitteilung 14.11.2024 zur Kreis-Richtlinie Photovoltaik mit Batteriespeicher an und auf kommunalen Gebäuden — Zuwendungsempfänger Kommunen und Einrichtungen, keine Privathaushalte.",
+        "reason": "Pressemitteilung 14.11.2024 zur Kreis-Richtlinie Photovoltaik mit Batteriespeicher an und auf kommunalen Gebäuden — Zuwendungsempfänger Kommunen und Einrichtungen, keine Privathaushalte. Am 15.10.2026 nach Seitenbewegung im Browser erneut gelesen: dieselbe Pressemitteilung vom 14.11.2024 („Richtlinie zur Förderung von Photovoltaikanlagen und Batteriespeichern an und auf kommunalen Gebäuden“), keine Privathaushalte.",
         "evidenceUrl": "https://www.kreis-ploen.de/B%C3%BCrgerservice/F%C3%B6rderprogramme-des-Kreises.php?object=tx,2158.3442.1"
       },
       {
         "url": "kreis-ploen.de/B%C3%BCrgerservice/Pressedienst/Anpassung-der-F%C3%B6rderrichtlinie-zur-Installation-von-Photovoltaikanlagen-in-Verbindung-mit-Batteriespeichern.php?ModID=255&FID=3932.18097.1&kat=2156.5&text=Anpassung_der_F%C3%B6rderrichtlinie_zur_Installation_von_Photovoltaikanlagen_in_Verbindung_mit_Batteriespeichern",
         "disposition": "reviewed",
-        "reason": "Pressemitteilung 14.11.2024 zur Kreis-Richtlinie Photovoltaik mit Batteriespeicher an und auf kommunalen Gebäuden — Zuwendungsempfänger Kommunen und Einrichtungen, keine Privathaushalte.",
+        "reason": "Pressemitteilung 14.11.2024 zur Kreis-Richtlinie Photovoltaik mit Batteriespeicher an und auf kommunalen Gebäuden — Zuwendungsempfänger Kommunen und Einrichtungen, keine Privathaushalte. Am 15.10.2026 nach Seitenbewegung im Browser erneut gelesen: dieselbe Pressemitteilung vom 14.11.2024 („Richtlinie zur Förderung von Photovoltaikanlagen und Batteriespeichern an und auf kommunalen Gebäuden“), keine Privathaushalte.",
         "evidenceUrl": "https://www.kreis-ploen.de/B%C3%BCrgerservice/F%C3%B6rderprogramme-des-Kreises.php?object=tx,2158.3442.1"
       },
       {
         "url": "kreis-ploen.de/B%C3%BCrgerservice/Pressedienst/Anpassung-der-F%C3%B6rderrichtlinie-zur-Installation-von-Photovoltaikanlagen-in-Verbindung-mit-Batteriespeichern.php?object=tx,3932.5.1&amp;ModID=7&amp;FID=3932.18097.1&amp;NavID=2158.17&amp;text=Anpassung%25der%25F%C3%B6rderrichtlinie%25zur%25Installation%25von%25Photovoltaikanlagen%25in%25Verbindung%25mit%25Batteriespeichern&amp;kat=2156.5",
         "disposition": "reviewed",
-        "reason": "Pressemitteilung 14.11.2024 zur Kreis-Richtlinie Photovoltaik mit Batteriespeicher an und auf kommunalen Gebäuden — Zuwendungsempfänger Kommunen und Einrichtungen, keine Privathaushalte.",
+        "reason": "Pressemitteilung 14.11.2024 zur Kreis-Richtlinie Photovoltaik mit Batteriespeicher an und auf kommunalen Gebäuden — Zuwendungsempfänger Kommunen und Einrichtungen, keine Privathaushalte. Am 15.10.2026 nach Seitenbewegung im Browser erneut gelesen: dieselbe Pressemitteilung vom 14.11.2024 („Richtlinie zur Förderung von Photovoltaikanlagen und Batteriespeichern an und auf kommunalen Gebäuden“), keine Privathaushalte.",
         "evidenceUrl": "https://www.kreis-ploen.de/B%C3%BCrgerservice/F%C3%B6rderprogramme-des-Kreises.php?object=tx,2158.3442.1"
       },
       {
@@ -97758,7 +97767,7 @@
   {
     "regionId": "01057057",
     "name": "Plön",
-    "checkedAt": "2026-10-15T06:11:55Z",
+    "checkedAt": "2026-10-15T16:15:00Z",
     "recheckAt": "2027-01-13T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -97788,7 +97797,7 @@
       {
         "url": "ploen.de/PL%C3%96N-aktuell/Stadtnachrichten/-Pl%C3%B6n-schl%C3%A4gt-Klimawellen-Neue-Homepage-Inhalte-und-Klimaschutz-F%C3%B6rderm%C3%B6glichkeiten.php",
         "disposition": "reviewed",
-        "reason": "Meldung 16.06.2020: verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (seit 16.11.2023 gestoppt), kein Stadtprogramm.",
+        "reason": "Meldung 16.06.2020: verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (seit 16.11.2023 gestoppt), kein Stadtprogramm. Am 15.10.2026 nach Seitenbewegung erneut gelesen: Suchergebnis mit der Meldung vom 16.06.2020 zu neuen Homepage-Inhalten, kein städtisches Förderprogramm.",
         "evidenceUrl": "https://www.ploen.de/index.php?ffmod=suche&such=Photovoltaik"
       },
       {
@@ -98653,5 +98662,45 @@
       "website": "https://www.amt-kisdorf.de",
       "question": "Die Gemeindevertretung Kisdorf hat am 16.05.2024 eine Richtlinie zur Förderung von Balkonkraftwerken beschlossen (100 € je Haushalt, Gesamtbetrag 10.000 €); 2024 wurden laut Ausschussprotokoll zehn Anträge ausgezahlt. Die Richtlinie selbst finde ich weder auf kisdorf.de noch im Ortsrecht beim Amt, und das Antragsformular ist nicht mehr verlinkt. Läuft die Förderung 2026 noch, und können Sie mir die geltende Richtlinie schicken oder sagen, wo sie veröffentlicht ist? Falls sie beendet ist, hilft mir auch das kurze Enddatum."
     }
+  },
+  {
+    "regionId": "01060044",
+    "name": "Kaltenkirchen",
+    "checkedAt": "2026-10-15T16:15:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Kaltenkirchen bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Fördermaßnahmen“ listet nur geförderte LED-Umrüstungen städtischer Schulen und Sporthallen (Nationale Klimaschutzinitiative), das Klimaschutzmanagement beschreibt PV auf eigenen Liegenschaften und Beratung (Energieberatung der Verbraucherzentrale), die E-Mobilitätsseite regelt Sondernutzungserlaubnisse für Ladesäulen. Die Stadtwerke Kaltenkirchen bieten für Wärmepumpen nur einen Stromtarif, keinen Zuschuss. Stand 15.10.2026.",
+    "searches": [
+      "kaltenkirchen.de: Aktuelles, Fördermaßnahmen, Klimaschutzmanagement und E-Mobilität im Volltext gelesen (die Website-Suche antwortet mit 404)",
+      "stadtwerke-kaltenkirchen.de: Startseite nach Förder-/Zuschuss-/Bonus-Links durchsucht, Wärmepumpen-Seite gelesen",
+      "Websuchen: Kaltenkirchen Förderung Balkonkraftwerk Photovoltaik Zuschuss; Kaltenkirchen Förderprogramm Wärmepumpe Balkonkraftwerk Stromspeicher Stadtwerke — nur Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kaltenkirchen.de/de/rathaus-politik/aktuelles/foerdermassnahmen.php",
+        "finding": "Am 15.10.2026 gelesen: „Fördermaßnahmen“ — „Umstellung auf LED-Beleuchtung an der Schirnau“, Sanierung der Hallen- und Flurbeleuchtung in Schulen und Sporthallen; geförderte Projekte der Stadt, kein Programm für Haushalte."
+      },
+      {
+        "url": "https://www.kaltenkirchen.de/de/wirtschaft-verkehr/klimaschutzmanagement/",
+        "finding": "Am 15.10.2026 gelesen: Die Stadt nennt ihre Rolle als Vorbild bei eigenen Liegenschaften („Errichtung von PV-Anlagen, Dachbegrünung“), Planung und Beratung; Aktuelles: „Sonderberatungstag der Energieberatung der Verbraucherzentrale im Rathaus“. Kein Zuschuss."
+      },
+      {
+        "url": "https://www.kaltenkirchen.de/de/wirtschaft-verkehr/klimaschutzmanagement/e-mobilitaet.php",
+        "finding": "Am 15.10.2026 gelesen: Ladesäulen-Richtlinie vom 27.05.2025 über Sondernutzungserlaubnisse im öffentlichen Raum, keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-kaltenkirchen.de/de/Produkte/Waerme/Waermepumpe/",
+        "finding": "Am 15.10.2026 gelesen: „eigenen Stromtarif für Wärmepumpen im Netzgebiet“ (PremiumStrom Wärmepumpen), kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kaltenkirchen.de/de/rathaus-politik/aktuelles.php",
+        "disposition": "reviewed",
+        "reason": "Am 15.10.2026 gelesen: Nachrichtenübersicht (Ehrenamtspreis, Bürgerservicebüro, Naturschutzbeauftragte) mit Navigationslink „Fördermaßnahmen“; dieser führt nur auf geförderte LED-Projekte der Stadt, kein Programm für Haushalte.",
+        "evidenceUrl": "https://www.kaltenkirchen.de/de/rathaus-politik/aktuelles/foerdermassnahmen.php"
+      }
+    ]
   }
 ]
