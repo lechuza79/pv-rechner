@@ -47,8 +47,12 @@ test("stored copy: data shown, outage and real time named, no 'gerade'", async (
   await page.goto("/strommix-deutschland");
 
   const hinweis = "Energy-Charts (Fraunhofer ISE) liefert gerade keine Daten. Gezeigt wird der letzte Stand vom 05.10., 11:45 Uhr.";
-  // Hero, radar and history each carry the source notice; reduced motion keeps the timestamp fixed.
-  await expect(page.getByRole("status").filter({ hasText: hinweis })).toHaveCount(3);
+  // Stale data has a short dismissible notice; provenance remains in chart details.
+  const notices = page.getByRole("note").filter({hasText: "Die Daten sind gerade nur verzögert verfügbar."});
+  await expect(notices).toHaveCount(3);
+  await expect(page.getByRole("status").filter({hasText: hinweis})).toHaveCount(0);
+  await notices.first().getByRole("button", {name: "Hinweis schließen"}).click();
+  await expect(notices).toHaveCount(2);
   await expect(page.getByText(/Zuletzt stammten/)).toBeVisible();
   await expect(page.getByText(/Gerade decken erneuerbare/)).toHaveCount(0);
   await expect(page.getByText("Daten konnten nicht geladen werden")).toHaveCount(0);
@@ -76,7 +80,8 @@ test("SMARD live: numbers shown, SMARD named and credited", async ({ page }) => 
 
   const hinweis =
     "Energy-Charts (Fraunhofer ISE) liefert gerade keine Daten. Gezeigt werden die Zahlen von Bundesnetzagentur | SMARD.de, Stand 05.10., 11:45 Uhr.";
-  await expect(page.getByRole("status").filter({ hasText: hinweis })).toHaveCount(3);
+  await expect(page.getByRole("status").filter({ hasText: hinweis })).toHaveCount(0);
+  await expect(page.getByRole("note").filter({hasText: "Die Daten sind gerade nur verzögert verfügbar."})).toHaveCount(0);
   await expect(page.getByText(/Zuletzt stammten/)).toBeVisible();
   // The page credit names who supplied the numbers on screen.
   await expect(page.getByText(/Bundesnetzagentur \| SMARD\.de.*CC BY 4\.0/).first()).toBeVisible();
