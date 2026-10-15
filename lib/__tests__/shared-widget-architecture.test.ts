@@ -87,7 +87,7 @@ describe('state electricity component reuse',()=>{
  });
 });
 
-it('regional hourly mix reuses the central map, picker, frame and table',()=>{
+it('regional hourly mix reuses the central map, detail heading, frame and table',()=>{
  const source=read('components/RegionalHourlyMap.tsx');
- for(const dependency of ['./landkreis/RegionKarte','./Auswahl','./dashboard/ExportableWidgetFrame','./ContentTable'])expect(source).toContain(dependency);
+ for(const dependency of ['./landkreis/RegionKarte','./charts/ChartDetailHeading','./dashboard/ExportableWidgetFrame','./ContentTable'])expect(source).toContain(dependency);
 });
