@@ -280,7 +280,7 @@ jobs:
 
       - name: E2E smoke tests (Playwright)
         timeout-minutes: 22
-        run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3 --repeat-each=2 --retries=0 --trace=retain-on-failure 2>&1 | tee e2e-diag.log; test ${PIPESTATUS[0]} -eq 0
+        run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3
         env:
           E2E_BUILD: "1"
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —
@@ -317,13 +317,11 @@ jobs:
       # Playwright schreibt die Verfolgung erst beim Abschluss eines Versuchs.
       # Gegen einen Abbruch hilft das Schritt-Zeitlimit oben, nicht der Upload.
       - name: Upload Playwright-Ablaufverfolgung
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.scherbe }}
-          path: |
-            test-results/
-            e2e-diag.log
+          name: playwright-report
+          path: test-results/
           retention-days: 7
 
   # DER NAME BLEIBT, WEIL DER GESCHÜTZTE ZWEIG IHN VERLANGT.
