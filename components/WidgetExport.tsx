@@ -379,6 +379,11 @@ export function WidgetSourceEdge({
   // Lizenzkürzel und der Änderungshinweis bleiben in jedem Fall stehen; lieber
   // ein Vermerk ohne Datum als ein abgeschnittener.
   const [ohneDatum, setOhneDatum] = useState(false);
+  // Hidden until the first fit has run. The server renders the edge at the
+  // starting size, which on a short card is longer than the card is high; until
+  // hydration that label stood clipped at both ends and painted outside its
+  // card (CI 15.10.2026, funding check at 1920 px on a slow runner).
+  const [eingepasst, setEingepasst] = useState(false);
   const datum = ohneDatum ? "" : chartDataDate(stand);
 
   // Der VOLLE Quellenvermerk, nicht eine Kurzform davon. Bis 08/2026 warf die
@@ -443,6 +448,7 @@ export function WidgetSourceEdge({
       if (zuLang()) setOhneDatum(true);
     };
     passeAn();
+    setEingepasst(true);
     // Noch einmal, sobald die echte Schrift da ist: Beim ersten Lauf misst der
     // Browser mit der Ersatzschrift, und die ist breiter — der Vermerk landete
     // dadurch dauerhaft kleiner als nötig (6,4 statt 7,8 px). Die
@@ -487,7 +493,7 @@ export function WidgetSourceEdge({
         letterSpacing: 0.2,
         color: "var(--widget-muted, var(--color-text-faint))",
         pointerEvents: "none",
-        opacity: visible ? 1 : 0,
+        opacity: visible && eingepasst ? 1 : 0,
         transition: "opacity .18s ease-out",
       }}
     >

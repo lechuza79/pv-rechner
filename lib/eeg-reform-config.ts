@@ -685,7 +685,11 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   „Überwiesen", letzter Schritt weiter 30.09.2026, keine Beschlussempfehlung.
   //   Fachpresse (pv magazine, 07.10.) erwartet die 2./3. Lesung in dieser
   //   Sitzungswoche — nur Anlass zum Nachsehen, kein Zustand.
-  geprueftIso: "2026-10-14",
+  // 15.10.2026: Bundestag, Tagesordnung komplett (101.–103. Sitzung, Stand
+  //   13.10.2026), tagesaktuelle Tagesordnung Donnerstag und Ablaufplan (Stand
+  //   14.10.2026, 12:22 Uhr) im Original gelesen: kein Tagesordnungspunkt zu
+  //   21/7867, keine 2./3. Lesung in dieser Sitzungswoche. Zustand unverändert.
+  geprueftIso: "2026-10-15",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

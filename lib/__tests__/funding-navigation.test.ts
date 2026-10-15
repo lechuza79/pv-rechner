@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fundingLinks, walkFundingSources } from "../funding-navigation";
+import { fundingLinks, isShareOrOversizedUrl, walkFundingSources } from "../funding-navigation";
 import { linkKandidaten } from "../funding-url-suche";
 const root = "https://gemeinde.example/";
 const a = (url: string, text: string) => `<a href="${url}">${text}</a>`;
@@ -27,6 +27,18 @@ describe("outreach navigation transferred to funding discovery", () => {
   it("decodes HTML entities, drops unresolved templates and preserves meaningful parameters", () => {
     const html = a("/download?id=17&amp;format=pdf", "Förderrichtlinie Solar") + a("/{{ item.url }}", "Förderprogramm Solar");
     expect(fundingLinks(html, root, root).map(l => l.url)).toEqual([root + "download?format=pdf&id=17"]);
+  });
+  it("never follows share buttons or addresses too long to store", async () => {
+    const share = "https://api.whatsapp.com/send?text=Pflanzaktion+F%C3%B6rderung+Photovoltaik";
+    const lang = root + "foerderung/solar?" + "x".repeat(2100);
+    expect(isShareOrOversizedUrl(share)).toBe(true);
+    expect(isShareOrOversizedUrl(lang)).toBe(true);
+    expect(isShareOrOversizedUrl("https://amt.example/foerderung")).toBe(false);
+    const html = a(share, "Förderprogramm Solar teilen") + a(lang, "Förderprogramm Solar");
+    const read: string[] = [];
+    const result = await walkFundingSources({ html, root, budget: 3, read: async target => { read.push(target); return null; } });
+    expect(read).toEqual([]);
+    expect(result.leads).toHaveLength(0);
   });
   it("records foreign provenance without expanding into unrelated sites", async () => {
     const url = "https://amt.example/foerderung";

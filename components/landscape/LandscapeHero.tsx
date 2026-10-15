@@ -39,10 +39,18 @@ export default function LandscapeHero({placeId:id,showPlacePicker=false,sourcesH
   const timer=setTimeout(()=>{setShown({id,key:requestKey});setPhase('loading');},reduced?0:360);
   return()=>clearTimeout(timer);
  },[requestKey,id]);
+ // A scene that already started can still fail later: the browser drops the
+ // WebGL context under memory or GPU pressure (phones in the background, CI's
+ // software renderer). That is not a broken place, so restart it once on its
+ // own instead of parking the hero on the error notice; a second loss for the
+ // same place keeps the manual retry button.
+ const started=useRef<string|null>(null);
+ const restarted=useRef<string|null>(null);
  const ready=(key:string,ok:boolean)=>{
   if(latest.current!==key)return;
-  if(ok)setPhase('entering');
-  else {setShown(null);setPhase('error');}
+  if(ok){started.current=key;setPhase('entering');return;}
+  if(started.current===key&&restarted.current!==id){restarted.current=id;setAttempt(n=>n+1);return;}
+  setShown(null);setPhase('error');
  };
  useEffect(()=>{
   if(phase==='entering'){const timer=setTimeout(()=>setPhase('ready'),matchMedia('(prefers-reduced-motion: reduce)').matches?0:450);return()=>clearTimeout(timer);}

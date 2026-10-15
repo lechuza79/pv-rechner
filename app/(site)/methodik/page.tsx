@@ -9,7 +9,7 @@ import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { SCENARIOS, NATIONAL_AVG_YIELD } from "../../../lib/constants";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
-import { DEFAULT_AIRCON_CONFIG } from "../../../lib/aircon-config";
+import { DEFAULT_AIRCON_CONFIG, AC_REAL_FACTOR } from "../../../lib/aircon-config";
 import { FUEL, FUEL_PRICE_INFLATION } from "../../../lib/constants";
 import { eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { pageMetadata } from "../../../lib/seo";
@@ -469,7 +469,11 @@ export default async function MethodikPage() {
           bläst. Wir stellen deshalb alle drei Gerätetypen auf dieselbe Grundlage — die Effizienz im echten Betrieb
           über eine ganze Saison: Monoblock {acSeer("monoblock")}, mobile Split-Anlage {acSeer("portasplit")}, fest
           installierte Split-Anlage {acSeer("split")}. Ein Monoblock zieht damit für dieselbe Kühlung rund das
-          Vierfache einer festen Split-Anlage. Womit wir rechnen, mit Stand und Quelle, steht auf der{" "}
+          Vierfache einer festen Split-Anlage. Vom Typenschild ziehen wir dafür einheitlich{" "}
+          {Math.round((1 - AC_REAL_FACTOR) * 100)} % ab. Den Wert legen wir selbst fest; er liegt in der Spanne, die
+          Messungen zeigen: Laut dem schwedischen Prüfinstitut RISE heizen Split-Geräte mit ihrer eigenen
+          Regelung um bis zu rund 10 % schlechter als im Normtest, laut einer US-Feldmessung für den
+          Effizienzverband NEEP liegt der Alltag im Mittel um 22 % (Kühlen) bis 36 % (Heizen) neben der Angabe. Womit wir rechnen, mit Stand und Quelle, steht auf der{" "}
           <Link href="/datenstand" style={{ ...S.link, fontWeight: 600 }}>Datenstand-Seite</Link>.
         </p>
         <p style={S.p}>

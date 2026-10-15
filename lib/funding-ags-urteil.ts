@@ -74,7 +74,7 @@ function istGemeindeverband(region: string): boolean {
  * Melderegister nicht vorhanden".
  */
 export function pruefeProgramm(
-  p: Pick<FundingProgram, "id" | "region" | "agsCode" | "agsCodes">,
+  p: Pick<FundingProgram, "id" | "region" | "agsCode" | "agsCodes" | "kreisuebergreifend">,
   registerNamen: Map<string, string>,
 ): AgsBefund[] {
   const gebiete = foerdergebiete(p).filter((g) => g.length === 8);
@@ -116,8 +116,12 @@ export function pruefeProgramm(
   // EIN VERTIPPER INNERHALB DESSELBEN KREISES BLEIBT UNENTDECKT. Das ist die
   // ehrliche Grenze dieser Prüfung und kein Grund, sie wegzulassen: Bis zum
   // 12.09.2026 war an Mehrfach-Gebieten ÜBERHAUPT NICHTS geprüft.
+  //
+  // A real cross-county association (members on both sides of a county
+  // border) carries its documented reason in `kreisuebergreifend`; without
+  // that reason the spread stays a typo suspicion.
   const kreise = new Set(gebiete.map((g) => g.slice(0, 5)));
-  if (kreise.size > 1) {
+  if (kreise.size > 1 && !p.kreisuebergreifend?.trim()) {
     befunde.push({
       id: p.id,
       schluessel: "",

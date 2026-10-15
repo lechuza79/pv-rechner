@@ -63,6 +63,19 @@ export function publishedLanguageAliases(html: string, base: string): Map<string
   return result;
 }
 
+/**
+ * Share buttons ("send this article via WhatsApp") carry the whole article text
+ * in the address. They are never a funding source, and such an address does
+ * not fit the database key: on 15.10.2026 one Stadtwald article's WhatsApp
+ * link (about 3 kB) aborted a municipality's whole discovery task with
+ * "index row size exceeds btree maximum".
+ */
+const SHARE_ENDPOINT = /^https?:\/\/(?:api\.whatsapp\.com\/send|wa\.me\/|(?:www\.)?facebook\.com\/sharer|(?:www\.)?(?:twitter|x)\.com\/(?:intent|share)|(?:www\.)?linkedin\.com\/(?:sharing|shareArticle)|t\.me\/share|(?:www\.)?xing\.com\/(?:spi\/)?share|(?:www\.)?pinterest\.[a-z.]+\/pin\/create)/i;
+const MAX_SOURCE_URL_LENGTH = 2000;
+export function isShareOrOversizedUrl(url: string): boolean {
+  return url.length > MAX_SOURCE_URL_LENGTH || SHARE_ENDPOINT.test(url);
+}
+
 /** Fair, bounded traversal: sibling sections survive a stronger first branch. */
 export async function walkFundingSources(options: {
   html: string; root: string; seeds?: LinkKandidat[]; priorLeads?: FundingLead[]; budget: number;
@@ -73,6 +86,7 @@ export async function walkFundingSources(options: {
   const seen = new Set([options.root]), branches = new Map<string, number>();
   const add = (lead: FundingLead) => {
     if (/\{\{|%7b%7b|%7d%7d/i.test(entschluesseltOderRoh(lead.url))) return;
+    if (isShareOrOversizedUrl(lead.url)) return;
     const alias = aliases.get(seitenSchluessel(lead.url));
     if (alias) { leads.set(lead.url, { ...lead, duplicateOf: alias }); return; }
     if (seen.has(lead.url)) return;

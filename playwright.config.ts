@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { smokeMatches } from "./scripts/ci-browser-plan.cjs";
 
 // Playwright config for Solar Check end-to-end smoke tests.
 // Goals:
@@ -75,7 +76,7 @@ export default defineConfig({
   // ihr eigenes Zeitmass bekommen, und ein langer Flow-Lauf hält die schnellen
   // Prüfungen nicht mehr auf.
   projects: [
-    { name: "smoke", use: { ...devices["Desktop Chrome"] }, testIgnore: /(flows|kein-ueberlauf|kontrast|menue-verdeckung)\.spec\.ts/ },
+    { name: "smoke", testMatch: smokeMatches(process.env.CI_BROWSER_PLAN), use: { ...devices["Desktop Chrome"] }, testIgnore: /(flows|kein-ueberlauf|kontrast|menue-verdeckung)\.spec\.ts/ },
     { name: "flows", use: { ...devices["Desktop Chrome"] }, testMatch: /flows\.spec\.ts/ },
     // Telefonbreite: 33 Seitenaufrufe mehr. Im Smoke-Job hätten sie dessen
     // 16-Minuten-Grenze gerissen (der stand am 05.09.2026 bei 14,5–15,5 min) —

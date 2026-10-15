@@ -243,8 +243,7 @@ describe("calcBalkon — Speicher", () => {
     const withS = calcBalkon({ ...base, storageId: "small" });
     const price = CFG.storage.find(s => s.id === "small")!.price;
     expect(withS.storagePrice).toBe(price);
-    // duo set price 500 + Speicher-Aufpreis
-    expect(withS.invest).toBe(500 + price);
+    expect(withS.invest).toBe(CFG.sets.find(s => s.id === "duo")!.price + price);
   });
 
   it("stored energy never exceeds the available surplus", () => {
