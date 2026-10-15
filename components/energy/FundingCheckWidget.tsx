@@ -144,7 +144,7 @@ export default function FoerderCheckWidget() {
     >
       {/* Quelle vertikal an der rechten Kante (geteilter Baustein), nie als
           horizontaler Block. Auf einer eigenen Seite kreditiert die Seite. */}
-      <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
+      <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} stand={BEG_ANTRAG_STAND.geprueftIso} />
       {/* ── Kopf: Titel als Überschrift + Trennlinie darunter ── */}
       <div style={{ fontSize: "var(--font-size-lead)", fontWeight: 800, letterSpacing: 0.1, lineHeight: 1.2 }}>
         Wärmepumpen-Förderung berechnen
