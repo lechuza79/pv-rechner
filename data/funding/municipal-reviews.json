@@ -97361,6 +97361,10 @@
       {
         "url": "https://www.buedelsdorf.de/?ffmod=suche&NavID=3205.1&such=Photovoltaik",
         "finding": "Suchtreffer zu Photovoltaik/Solar/Balkonkraftwerk/Speicher: Klimaschutzseiten, Bebauungspläne, Solardachkataster-Flyer, Klimaschutzkonzept, Wärmeplanung; Förder-Richtlinien nur für Jugend, Altenhilfe, Sport, Partnerschaft."
+      },
+      {
+        "url": "https://www.buedelsdorf.de/Auf-einen-Klick/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "finding": "Dienstleistungseintrag „Kommunale Förderung für den Klimaschutz beantragen“ (Leistung Nr. 99148286017000) am 15.10.2026 über die Volltextsuche geöffnet: Eintrag ohne Inhalt; die Leistung betrifft Fördermittel, die Kommunen selbst beantragen (Kommunalrichtlinie), kein Zuschuss an Bürger."
       }
     ],
     "sources": [
@@ -97375,6 +97379,12 @@
         "disposition": "replaced",
         "reason": "Veranstaltungshinweis zur Demokratieförderung in der Stadtbücherei — kein Förderprogramm; von der Energie-Volltextsuche nicht erfasst.",
         "evidenceUrl": "https://www.buedelsdorf.de/?ffmod=suche&NavID=3205.1&such=Photovoltaik"
+      },
+      {
+        "url": "buedelsdorf.de/Auf-einen-Klick/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundes-Dienstleistung für Kommunen (Klimaschutzförderung beantragen), ohne Bürgerprogramm; Tiefenlink lieferte am 23.09. nur das A-Z-Verzeichnis, über die Suche am 15.10. gelesen.",
+        "evidenceUrl": "https://www.buedelsdorf.de/Auf-einen-Klick/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php"
       }
     ]
   },
