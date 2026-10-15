@@ -21,7 +21,7 @@ describe('bounded widget inventory',()=>{
    expect(html).toContain(`Seite ${page} von 6`);
    if(page<6)expect(html).toContain(`gruppe=energy&amp;varianten=alle&amp;seite=${page+1}`);
   }
-  expect(ids).toHaveLength(42);expect(new Set(ids).size).toBe(42);
+  expect(ids).toHaveLength(45);expect(new Set(ids).size).toBe(45);
   expect(ids.filter(id=>id.startsWith('strommix-radar-'))).toHaveLength(2);
   expect(ids.filter(id=>id.startsWith('atomstrom-jahr-'))).toHaveLength(4);
  });

@@ -32,13 +32,14 @@ export function StrommixRadarWidget({points,timestamp,onChange,hero=false,hideLa
  const source=energieQuelle(provenance);
  const notice=quellenHinweis(provenance,stand);
  const help=<>
+  {notice&&<p>{notice}</p>}
   <p>Die Anteile zeigen die öffentliche Nettostromerzeugung in Deutschland. Speicherabgabe und Importe sind nicht enthalten.</p>
   <p>Wind an Land und auf See sowie Braun- und Steinkohle sind jeweils zusammengefasst. Die Skala bleibt über die letzten 24 Stunden gleich; der äußere Ring entspricht nicht 100 %.</p>
   <p>Der Verlauf nutzt die verfügbaren Viertelstundenwerte. Fehlende Messpunkte werden nicht ergänzt. Speicher und Stromhandel zeigen unabhängig davon ihren neuesten Stand.</p>
   <p>Datenstand: {stand?new Date(stand).toLocaleString('de-DE',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Berlin'})+' Uhr':'nicht verfügbar'}. Quelle: {source.name}.</p>
  </>;
  return <ExportableWidgetFrame className="sc-strommix-radar-frame" data-story-scheme={theme==='hero'?'highlight':theme} widget={{...WIDGETS.strommixRadar,sources:[source]}} place="" stand={stand} filename="strommix-radar" showHeading={!hero} showMenuWithoutHeading={hero} title="Stromerzeugung nach Energieträger" kind="radial" surface={surface} help={help} sourceVisible={sourceVisible} sharePath={observation?'/embed/strommix-radar':undefined} shareParams={observation?{at:observation}:points.at(-1)?.ts?{stand:points.at(-1)!.ts}:{}} einbetten={{params:{...(observation?{at:observation}:{}),...(hero?{presentation:'hero'}:{})},height:720}} exportUnit="%" exportDescription="Öffentliche Nettostromerzeugung ohne Speicherabgabe und Importe" headingMeta={<span className="sc-widget-subtitle sc-widget-update"><LiveDataStatus observedAt={stand} showObservedAt retrievedAt={retrievedAt} renderedAt={renderedAt} refreshPage={false}/></span>}>
-  {notice&&<EnergyDataNotice details={notice}/>}
+  {notice&&<EnergyDataNotice stale={!!provenance.stale} details={notice}/>}
   {frame?<RadarChart artwork="/illustrations/energy/radar-carriers-v1.png" rows={frame.rows} max={max} label="Erzeugungsmix ohne Speicherabgabe und Importe"/>:<p role="status">{loading?<LoadingDots/>:'Daten gerade nicht erreichbar.'}</p>}
   <ChartTimePlayback timestamps={times} value={timestamp} onChange={onChange} autoPlay={autoPlay} hideLabels={hideLabels}/>
  </ExportableWidgetFrame>;

@@ -1,3 +1,4 @@
+import EnergyDataNotice from "../../components/energy/EnergyDataNotice";
 import {describe,it,expect,vi} from 'vitest';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {galleryEntries} from '../widget-gallery';
@@ -48,5 +49,17 @@ describe('registered Strommix radar',()=>{
   expect(useGenerationMix).toHaveBeenLastCalledWith('de',24,{start:'2026-10-12',end:'2026-10-13'});
   expect(render({presentation:'hero'})).toContain('data-heading="false"');
   expect(useGenerationMix).toHaveBeenLastCalledWith('de',24,undefined);
+ });
+});
+
+describe('energy availability notice',()=>{
+ it('only warns for stale data while retaining source details for exports',()=>{
+  const details='Replacement source, observed at 08:15.';
+  const current=renderToStaticMarkup(<EnergyDataNotice stale={false} details={details}/>);
+  const stale=renderToStaticMarkup(<EnergyDataNotice stale details={details}/>);
+  expect(current).not.toContain('Die Daten sind gerade nur verzögert verfügbar.');
+  expect(stale).toContain('Die Daten sind gerade nur verzögert verfügbar.');
+  expect(current).toContain(details);
+  expect(stale).toContain(details);
  });
 });

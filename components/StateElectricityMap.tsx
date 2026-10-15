@@ -6,7 +6,7 @@ import {type StateElectricity,STATE_MIX_GROUPS} from '../lib/state-electricity';
 import {jahrInBerlin,zeitpunktInBerlin} from '../lib/zeit';
 import {formatGWhCompare} from '../lib/chart-utils';
 import {Auswahl} from './Auswahl';
-import {WidgetPresentationProvider} from './dashboard/WidgetPresentationContext';
+import {useWidgetPresentation,WidgetPresentationProvider} from './dashboard/WidgetPresentationContext';
 import {ExportableWidgetFrame} from './dashboard/ExportableWidgetFrame';
 import {WIDGETS} from '../lib/widget-registry';
 import {LoadingDots} from './LoadingDots';
@@ -20,7 +20,8 @@ import styles from './StateElectricityMap.module.css';
 import './dashboard/dashboard.css';
 
 const amount=(twh:number)=>({value:formatGWhCompare(twh*1000,'TWh').replace(/\s*TWh$/,''),unit:'TWh'});
-export default function StateElectricityMap({shapes,initialData,sceneContext,review=false,hero=false,nested=false}:{nested?:boolean;hero?:boolean;review?:boolean;sceneContext:SceneContext;shapes:ProjectedRegion[];initialData:StateElectricity|null}){
+export default function StateElectricityMap({shapes,initialData,sceneContext,review=false,hero=false,nested=false,standalone=false,initialSelected="",initialYear}:{initialYear?:number;standalone?:boolean;initialSelected?:string;nested?:boolean;hero?:boolean;review?:boolean;sceneContext:SceneContext;shapes:ProjectedRegion[];initialData:StateElectricity|null}){
+ const appearance=useWidgetPresentation();
  const [carrierColors,setCarrierColors]=useState<Record<string,string>>({});
  const [arrivedRegion,setArrivedRegion]=useState('');
  const [pinnedBars,setPinnedBars]=useState<string[]>([]);
@@ -28,14 +29,14 @@ export default function StateElectricityMap({shapes,initialData,sceneContext,rev
  const [highlightLabel,setHighlightLabel]=useState<string|null>(null);
  const hoverBar=(label:string|null)=>{setHighlightLabel(label);setHighlightedBars(label?[label]:pinnedBars);};
  const currentYear=jahrInBerlin();
- const [year,setYear]=useState(initialData?.year??currentYear),[data,setData]=useState(initialData);
+ const [year,setYear]=useState(initialData?.year??initialYear??currentYear),[data,setData]=useState(initialData);
  const [loading,setLoading]=useState(false),[error,setError]=useState(''),[retry,setRetry]=useState(0),[ready,setReady]=useState(false);
- const [selected,setSelected]=useState('');
+ const [selected,setSelected]=useState(initialSelected);
  const detailSelected=useExitPresence(selected===arrivedRegion?selected:'',180);
  useEffect(()=>{setPinnedBars([]);setHighlightedBars([]);setHighlightLabel(null);},[selected]);
  const [metricLabel,setMetricLabel]=useState('Stromerzeugung nach Energieträger');
  const metricChanged=useCallback((label:string)=>setMetricLabel(label),[]);
- useEffect(()=>{const sharedYear=Number(new URLSearchParams(window.location.search).get('jahr'));if(sharedYear>=currentYear-2&&sharedYear<=currentYear)setYear(sharedYear);},[currentYear]);
+ useEffect(()=>{if(standalone)return;const sharedYear=Number(new URLSearchParams(window.location.search).get('jahr'));if(sharedYear>=currentYear-2&&sharedYear<=currentYear)setYear(sharedYear);},[currentYear,standalone]);
  const host=useRef<HTMLDivElement>(null);
  useEffect(()=>{const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){setReady(true);observer.disconnect();}},{rootMargin:'240px'});if(host.current)observer.observe(host.current);return()=>observer.disconnect();},[]);
  useEffect(()=>{
@@ -55,9 +56,9 @@ export default function StateElectricityMap({shapes,initialData,sceneContext,rev
     <thead><tr><th scope="col">Gebiet</th>{activeGroups.map(group=><th scope="col" key={group.id}>{group.label}</th>)}<th scope="col">Wind auf See</th><th scope="col">Gesamt</th></tr></thead>
     <tbody>{data.states.map(state=><tr key={state.id}><th scope="row">{state.name}</th>{activeGroups.map(group=><td key={group.id}>{amount(state.segments.find(segment=>segment.id===group.id)?.value??0).value}</td>)}<td>–</td><td>{amount(state.totalTwh).value}</td></tr>)}{(data.offshore??[]).map(sea=><tr key={sea.id}><th scope="row">{sea.name}</th>{activeGroups.map(group=><td key={group.id}>–</td>)}<td>{amount(sea.value).value}</td><td>{amount(sea.value).value}</td></tr>)}</tbody>
    </ContentTable>):undefined;
- return <div ref={host} className={`${styles.map} ${hero?styles.heroMap:""}`}>
- <WidgetPresentationProvider appearance={{theme:'dark',autoplay:true}}>
- <ExportableWidgetFrame showHeading={!nested} data-story-scheme="dark" place="Deutschland" widget={WIDGETS.stateElectricityMap} title="Stromerzeugung nach Energieträger" dataTable={dataTable} kind="time-series" filename={`strommix-bundeslaender-${data?.year??year}`} stand={data?.dataUntil??''} sourceVisible={false} exportDescription={`${period} · ${metricLabel}`} shareParams={{jahr:String(data?.year??year)}} help={<>
+ return <div ref={host} className={`${standalone?styles.standalone:styles.map} ${hero?styles.heroMap:""}`}>
+ <WidgetPresentationProvider appearance={standalone?{...appearance,theme:'dark'}:{theme:'dark',autoplay:true}}>
+ <ExportableWidgetFrame showHeading={!nested} data-story-scheme="dark" place="Deutschland" widget={WIDGETS.stateElectricityMap} title="Stromerzeugung nach Energieträger" dataTable={dataTable} kind="time-series" filename={`strommix-bundeslaender-${data?.year??year}`} stand={data?.dataUntil??''} sourceVisible={standalone} sourcePlacement={standalone?"plot":"frame"} einbetten={{params:{jahr:String(data?.year??year),selected},height:760}} sharePath={standalone?"/embed/state-electricity-map":undefined} exportDescription={`${period} · ${metricLabel}`} shareParams={{jahr:String(data?.year??year),selected}} help={<>
   <p>Gesamte Nettostromerzeugung öffentlicher und industrieller Kraftwerke. Die Live-Zahlen oben beziehen sich dagegen auf die öffentliche Nettostromerzeugung.</p>
   <p>Fraunhofer regionalisiert die Erzeugung: Wind und Solar anhand von Anlagen- und Wetterdaten, andere Energieträger anhand von Kraftwerksmeldungen und installierter Leistung. Die Werte sind teilweise modelliert und liegen etwa sechs Tage zurück.</p>
   <p>Datenstand: {zeitpunktInBerlin(data?.dataUntil)??'nicht verfügbar'}. Veröffentlichung: {zeitpunktInBerlin(data?.updatedAt)??'nicht verfügbar'}.</p>

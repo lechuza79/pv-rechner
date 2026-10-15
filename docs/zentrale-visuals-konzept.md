@@ -1079,3 +1079,9 @@ data; it never freezes the currently scrubbed frame. A dated embed shares `at`.
 The contribution guide needs no new rule: registry, common renderer, scoped data,
 content sizing and compatibility adapters follow its existing delivery contract.
 Pumped storage, physical trade and the state map are outside this package.
+
+### Storage, physical trade and state generation widgets (15 October 2026)
+
+`pumpspeicher` and `physischer-stromhandel` reuse the existing power bars and diverging bars through `ElectricityFlowWidgets`; the editorial flow section composes these same exportable widgets. Physical border power in GW remains separate from the existing monetary trade widget. Missing power stays missing and categories and totals share one scale.
+
+`state-electricity-map` now has a standalone route, gallery entry and dashboard renderer. It retains the established dark map, state/sea-area selection, donut, table and export. `jahr` and `selected` belong to each widget instance; the embed does not read the surrounding page URL. The supported three-year window matches its existing picker. These are content-height widgets, without allocated grid support or invented compact variants.

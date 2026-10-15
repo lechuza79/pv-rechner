@@ -1,4 +1,5 @@
 import {NextRequest,NextResponse} from 'next/server';
+import {livePreviewResponse} from '../../../../lib/preview-data';
 import {unstable_cache} from 'next/cache';
 import {fetchCrossBorderFlows} from '../../../../lib/energy-api';
 import {latestPhysicalFlows} from '../../../../lib/physical-flows';
@@ -11,6 +12,7 @@ const load=unstable_cache(async()=>{
  return {snapshot,retrievedAt:new Date().toISOString()};
 },['german-physical-flows-v1'],{revalidate:300});
 export async function GET(req:NextRequest){
+ const preview=await livePreviewResponse(req);if(preview)return preview;
  const limited=rateLimit(req,'physical-flows');if(limited)return limited;
  try{return NextResponse.json(await load());}catch{return NextResponse.json({snapshot:null,error:'Physikalische Grenzflüsse sind gerade nicht vollständig verfügbar.'},{status:503});}
 }

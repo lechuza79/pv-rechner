@@ -42,6 +42,7 @@ export const CHART_KATALOG: KatalogEintrag[] = [
   { datei: "charts/RadialChartLayout", art: "baustein", wofuer: "Gemeinsame Anordnung von radialem Plot, Zeitraum und Abspielsteuerung." },
   { datei: "charts/SparklineMetric", art: "baustein", wofuer: "Kompakte Tagesbalken mit hervorgehobener Kennzahl für Hero-Vorschauen." },
 
+  {datei:"energy/ElectricityFlowWidgets",art:"widget",wofuer:"Pumped storage and physical electricity trade reuse existing power and diverging bars across editorial pages, embeds and dashboards."},
   { datei: "energy/NuclearYearWidget", art: "widget", wofuer: "Calendar-year import months, origin countries and generation totals using shared category bars and export frame." },
   {datei:"charts/WeatherMicroTile",art:"widget",wofuer:"Compact weather tile with modelled power, shared timestamp and optional wind day profile."},
   {datei:"charts/WindMicroCompass",art:"baustein",wofuer:"Wind flow particles scaled to speed, respecting the meteorological origin direction."},

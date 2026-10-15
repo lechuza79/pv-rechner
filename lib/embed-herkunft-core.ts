@@ -141,7 +141,7 @@ export const EMBED_WIDGETS = [
   "regional-solar",
   "simulation",
   "story-preview",
-  "strommix", "strommix-radar",
+  "strommix", "strommix-radar", "pumpspeicher", "physischer-stromhandel", "state-electricity-map",
   "strommix-anteil",
   "welt-stromrennen",
   "zubau-erneuerbare-atom",

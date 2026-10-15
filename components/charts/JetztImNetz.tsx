@@ -92,7 +92,7 @@ export default function JetztImNetz({ initialData }: { initialData?: GenerationD
 
       {/* Energy-Charts down: either SMARD's live numbers or our stored copy. */}
       {hinweis && (
-        <EnergyDataNotice details={hinweis}/>
+        <EnergyDataNotice stale={!!data.stale} details={hinweis}/>
       )}
 
       {/* Einordnung ÜBER den Karten */}

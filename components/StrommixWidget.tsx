@@ -321,7 +321,7 @@ export default function StrommixWidget({ initialData, initialNuclear = true, edi
         filename={`solar-check-strommix-${selected}`} stand={letzterZeitpunkt(genData.data) ?? rangeLabel}
         stateLabel={rangeLabel} sourceVisible={!onsite} shareParams={{range:selected}}
         exportBranding={branding} einbetten={embed ? {params:{range:selected},height:640} : undefined}
-        help={<><p>Öffentliche Nettostromerzeugung in Deutschland. Kurze Zeiträume zeigen die Leistung, längere Zeiträume die erzeugte Strommenge.</p><p>Importierte Kernenergie wird zusätzlich berechnet: Grenzflüsse multipliziert mit dem Kernenergie-Anteil des Nachbarlandes.</p><p>Datenstand: {letzterZeitpunkt(genData.data) ? new Date(letzterZeitpunkt(genData.data)!).toLocaleString('de-DE',{timeZone:'Europe/Berlin'}) : 'Noch nicht verfügbar'}.</p></>}
+        help={<>{quellenNotiz&&<p>{quellenNotiz}</p>}<p>Öffentliche Nettostromerzeugung in Deutschland. Kurze Zeiträume zeigen die Leistung, längere Zeiträume die erzeugte Strommenge.</p><p>Importierte Kernenergie wird zusätzlich berechnet: Grenzflüsse multipliziert mit dem Kernenergie-Anteil des Nachbarlandes.</p><p>Datenstand: {letzterZeitpunkt(genData.data) ? new Date(letzterZeitpunkt(genData.data)!).toLocaleString('de-DE',{timeZone:'Europe/Berlin'}) : 'Noch nicht verfügbar'}.</p></>}
         settingsPlacement="below-title"
         settings={switchable ? <Auswahl titel={rangeLabel} aktiv={selected} onWahl={selectRange} breite={220} suchbar={false} eintraege={[
           ...LETZTE_RANGES.map(r=>({schluessel:r.value,name:`Letzte ${r.label}`})),
@@ -424,7 +424,7 @@ export default function StrommixWidget({ initialData, initialNuclear = true, edi
         {/* Energy-Charts down, the route serves our last stored copy: say why
             the curve ends early and when, instead of an empty box. */}
         {quellenNotiz && !loading && (
-          <EnergyDataNotice details={quellenNotiz}/>
+          <EnergyDataNotice stale={!!genData.stale} details={quellenNotiz}/>
         )}
         {isStale && !genData.stale && (
           <div style={{
