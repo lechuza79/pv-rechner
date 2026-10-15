@@ -61941,8 +61941,8 @@
     },
     "enquiry": {
       "id": "klaerung-03459007",
-      "recipient": "badbergen@artland.de",
-      "recipientSource": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+      "recipient": "info@artland.de",
+      "recipientSource": "https://www.artland.de/impressum",
       "website": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
       "question": "Auf der Seite der Samtgemeinde Artland steht für den Badberger Klimafonds, dass für 2025 Haushaltsmittel bereitgestellt wurden; für Quakenbrück und Menslage ist 2026 bereits genannt. Stehen für den Badberger Klimafonds auch 2026 Mittel bereit, sodass Anträge für Photovoltaik-Dachanlagen und Speicher möglich sind?"
     }
@@ -97596,16 +97596,9 @@
       }
     ],
     "nextAction": {
-      "kind": "enquiry",
-      "dueAt": "2026-10-15T07:00:00Z",
-      "detail": "Rückfrage an das Amt Dänischer Wohld vormerken (Versand nur über den bestehenden Versandlauf zur Bürozeit). Bis zur Antwort kein Katalogeintrag; nach 14 Tagen ohne Antwort Amtsseiten und Ortsrecht erneut prüfen."
-    },
-    "enquiry": {
-      "id": "klaerung-01058165",
-      "recipient": "poststelle@amtdw.landsh.de",
-      "recipientSource": "https://www.amt-daenischer-wohld.de/politik-amt-gemeinden/ortsrecht/",
-      "website": "https://www.amt-daenischer-wohld.de",
-      "question": "Das Klimaschutzkonzept der Gemeinde Tüttendorf (Stand 11/2025) nennt als Maßnahme einen Zuschuss der Gemeinde für Balkonkraftwerke, Photovoltaik-Anlagen und Speicher und als nächsten Schritt eine Förderrichtlinie. Hat die Gemeindevertretung Tüttendorf eine solche Richtlinie beschlossen, und kann man derzeit einen Zuschuss beantragen? Falls ja: Wo finde ich die Richtlinie mit Betrag und Bedingungen? Falls nein, hilft mir auch diese kurze Auskunft."
+      "kind": "manual",
+      "dueAt": "2026-10-16T08:00:00Z",
+      "detail": "Die einzige veröffentlichte Adresse des Amts Dänischer Wohld ist poststelle@amtdw.landsh.de (Landesnetz-Domain, nicht die Amtswebsite amt-daenischer-wohld.de); der Versand kann sie nicht als Postfach dieser Gemeinde belegen und weist sie ab. Nächster Schritt: Kontaktformular oder eine Adresse auf der Amtswebsite suchen; sonst die Frage über die Gemeinde Tüttendorf selbst stellen."
     }
   },
   {
