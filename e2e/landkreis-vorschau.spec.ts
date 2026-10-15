@@ -242,6 +242,11 @@ test('district chart proportions and source footer remain responsive',async({pag
   // One shared arc per composition (flat start, rounded end; components/charts/CompositionArc).
   await expect(composition.locator('[data-composition-arc]')).toHaveCount(3);
   const art=page.locator('#atlas-foerderung solar-illustration');
+  // Expired programmes move into the collapsed archive; open it before testing lazy artwork.
+  const archive=page.locator('#atlas-foerderung details').filter({has:page.locator('solar-illustration')});
+  if(await archive.count() && await archive.getAttribute('open') === null) {
+    await archive.locator('summary').click();
+  }
   await art.scrollIntoViewIfNeeded();
   await expect.poll(()=>art.evaluate(e=>!!e.shadowRoot?.querySelector('svg'))).toBe(true);
   const footer=page.locator('[data-page-footer]');
