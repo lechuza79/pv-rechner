@@ -1,0 +1,5 @@
+/* Keep controlled disclosures functional on standalone embed surfaces. */
+.sc-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows var(--disclosure-duration,280ms) var(--disclosure-easing,ease),opacity var(--disclosure-duration,280ms) var(--disclosure-easing,ease)}
+.sc-collapse[data-open="true"]{grid-template-rows:1fr;opacity:1}
+.sc-collapse>div{min-height:0;overflow:hidden}
+@media(prefers-reduced-motion:reduce){.sc-collapse{transition:none!important}}

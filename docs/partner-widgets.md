@@ -72,3 +72,20 @@ the plot baseline, wrap into additional columns and reserve matching plot space.
 The partner header uses a compact 6 px name/headline gap.
 
 Without a partner header, its measured responsive height is subtracted from the preset. The plot retains the same height as the full-header variant at the same width. The hidden measurement reuses WidgetBrandHeader and is excluded from exports and accessibility.
+
+## Annual-growth embedding dialog
+
+The unbranded annual-growth widget opens embedding from its existing options
+menu. It reuses the partner configurator inside the shared modal, without partner
+branding or header controls. The current municipality, range and theme are
+preserved. Width is a responsive maximum; the fixed iframe height uses the
+registered allocated layout. Compact uses the explicitly registered
+`presentation=compact` variant with a 400 px minimum; standard and large retain
+the full variant and its 640 px minimum. Existing partner presets and grid slots
+are unchanged. Sources and Solar Check attribution remain inside the widget.
+The preview is interactive. The embed starts with the selection from the originating widget.
+
+Only `/embed/galerie/regional-annual-growth` opts into this preview. Nidda and
+other embedding dialogs retain their existing behavior. The focused browser
+test `e2e/annual-growth-embed.spec.ts` covers selection preservation, source
+credit, actual plot growth and overflow at 1280, 375 and 320 px.
