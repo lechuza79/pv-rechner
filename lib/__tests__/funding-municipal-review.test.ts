@@ -4,7 +4,7 @@ import { municipalReviewQueue, validateMunicipalReviews, type MunicipalReview } 
 import { renderMunicipalInquiry } from "../funding-inquiry-draft";
 import { istAntwortAufSachfrage } from "../outreach-sachfrage";
 import { ordneAnfrageZu, faelligeAnfragen } from "../funding-anfragen";
-import { fehlendePflichtangaben } from "../outreach-mail";
+import { fehlendePflichtangaben, postfachBefund } from "../outreach-mail";
 import reviews from "../../data/funding/municipal-reviews.json";
 const now = "2026-09-17T10:00:00Z";
 const source: ReviewSource = { region_id: "01001000", url: "town.de/solar", gelesen_am: null, gelesen_ergebnis: null, gelesen_notiz: null, seite_geaendert_am: null };
@@ -86,5 +86,26 @@ describe("Municipal completion and follow-through", () => {
     expect(faelligeAnfragen(candidates,new Set()).senden).toHaveLength(3);
     expect(faelligeAnfragen([candidates[0]],new Set([candidates[0].programId])).senden).toEqual([]);
     expect(faelligeAnfragen([{...candidates[0],tageSeitBrief:2}],new Set()).senden).toEqual([]);
+  });
+});
+
+describe("queued enquiries are sendable when they are entered", () => {
+  // The sender checks the mailbox only at send time. A record that cannot pass
+  // sat in the queue and turned every run red (Badbergen's
+  // "badbergen@artland.de" would have, Tuettendorf's state-network address
+  // did on 15 Oct 2026). The same checks run here, so the commit fails instead.
+  const host = (u: string) => new URL(u).hostname.replace(/^www\./, "");
+  it("every queued enquiry passes the sender's mailbox and source checks", () => {
+    const problems = validateMunicipalReviews(reviews)
+      .filter(r => r.nextAction?.kind === "enquiry" && r.enquiry)
+      .flatMap(r => {
+        const q = r.enquiry!;
+        const box = postfachBefund(q.recipient, r.name, q.website);
+        return [
+          ...(box.ok ? [] : [`${r.regionId} ${r.name}: ${box.grund}`]),
+          ...(host(q.recipientSource) === host(q.website) ? [] : [`${r.regionId} ${r.name}: contact source is not on the checked website`]),
+        ];
+      });
+    expect(problems).toEqual([]);
   });
 });
