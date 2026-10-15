@@ -95,7 +95,7 @@ export default function HeatPumpMetering({ kwp, speicherKwh, ertragKwp, monthly,
         })}
       </ul>
       <p>
-        Umbau für einen zweiten Zähler laut Angebot: <InlineEdit value={umbau} onCommit={value => setUmbau(Math.max(0, Math.round(value)))} min={0} max={10000} step={50} unit=" €" />
+        Umbau für einen zweiten Zähler laut Angebot: <InlineEdit value={umbau} onCommit={value => setUmbau(Math.max(0, Math.round(value)))} min={0} max={30000} step={50} unit=" €" />
         {umbau > 0 && <> (verteilt auf {HEATING_YEARS} Jahre)</>}
       </p>
     </div>
