@@ -7,7 +7,7 @@
   min-height: 44px;
   padding: 10px 24px;
   border: 1px solid color-mix(in srgb, var(--color-text-primary) 35%, transparent);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-pill, 999px);
   background: transparent;
   color: var(--color-text-primary);
   font: 600 14px/1.25 var(--font-text);

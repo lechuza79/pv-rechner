@@ -529,9 +529,9 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.mastr], embeddable: false,
   },
   regionalHourlyMix: {
-    id:'regional-hourly-mix',title:'Regionaler Strommix im Stundenvergleich',kind:'chart',
+    id:'regional-hourly-mix',title:'Regionaler Strommix',kind:'chart',
     configuration:{presentations:{full:widgetVariant('map',{maxWidth:1200,contentSizing:'Hourly regional map with time selection and regional detail; natural content height.'})},themes:['dark'],background:false,sharing:true,data:'Modellierte Erzeugung in 13 Regionen',period:'Stündlich'},
-    shareUrl:`${SITE}/strommix-deutschland?variante=regional#bundeslaender`,shareText:'Regionaler Strommix im Stundenvergleich – Solar Check',
+    shareUrl:`${SITE}/strommix-deutschland?variante=regional#bundeslaender`,shareText:'Regionaler Strommix – Solar Check',
     sources:[DATA_SOURCES.co2map,DATA_SOURCES.bkg],
   },
   stateElectricityMap: {
