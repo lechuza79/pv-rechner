@@ -18,7 +18,9 @@ describe('Strommix initial HTML', () => {
     const html = renderToStaticMarkup(<JetztImNetz initialData={initialData} renderedAt="2026-10-10T10:30:00Z" />);
     expect(html).toContain('90');
     expect(html).toContain('Solar');
-    expect(html).toContain('dateTime="2026-10-10T10:25:00Z"');
+    const observed = html.match(/dateTime="([^"]+)"/);
+    expect(observed).not.toBeNull();
+    expect(Date.parse(observed![1])).toBe(Date.parse(initialData.retrievedAt));
     expect(html).toContain('öffentlichen Nettostromerzeugung');
     expect(html).not.toContain('typisch für die Mittagsstunden');
   });

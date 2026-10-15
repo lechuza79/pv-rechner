@@ -1,5 +1,5 @@
 'use client';
-import {createContext, useContext, useRef, useState, useEffect, useCallback, useSyncExternalStore, type ReactNode} from 'react';
+import {createContext, useContext, useRef, useMemo, useState, useEffect, useCallback, useSyncExternalStore, type ReactNode} from 'react';
 import {widgetBasisCss} from '../../lib/widget-basis-css';
 import {createWidgetResourceStore, type WidgetSnapshots, type WidgetSnapshot} from '../../lib/widget-resource';
 const basis=widgetBasisCss('[data-widget-host="dashboard"]','[data-widget-host="dashboard"]');
@@ -17,7 +17,13 @@ export function useWidgetResource<T>(endpoint: string | null, defaultValue: T, t
   useEffect(() => { supplied.current = initialSnapshot; }, [initialSnapshot]);
   const subscribe = useCallback((listener: () => void) => endpoint ? store.subscribe(endpoint, listener) : () => {}, [store, endpoint]);
   const read = useCallback(() => store.read(endpoint ?? ''), [store, endpoint]);
-  const state = useSyncExternalStore(subscribe, read, read);
+  // Hydration must use this instance's server observation, even when another
+  // widget has already refreshed the shared endpoint before this one hydrates.
+  const serverSnapshot = useMemo(() => initialSnapshot
+    ? {...initialSnapshot, loading: false, error: null}
+    : undefined, [initialSnapshot?.data, initialSnapshot?.fetchedAt, initialSnapshot?.refreshPending]);
+  const readServer = useCallback(() => serverSnapshot ?? read(), [serverSnapshot, read]);
+  const state = useSyncExternalStore(subscribe, read, readServer);
   const refetch = useCallback(() => { if (endpoint) void store.load(endpoint, ttl, true); }, [store, endpoint, ttl]);
   useEffect(() => {
     if (!endpoint) return;
