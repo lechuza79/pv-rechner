@@ -96095,5 +96095,875 @@
         "evidenceUrl": "https://www.kreis-rendsburg-eckernfoerde.de/umwelt/klimaschutz/richtlinie-zur-foerderung-in-entwicklungs-und-schwellenlaendern"
       }
     ]
+  },
+  {
+    "regionId": "01058004",
+    "name": "Altenhof",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Altenhof gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/altenhof/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Altenhof am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058012",
+    "name": "Barkelsby",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Barkelsby gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/barkelsby/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Barkelsby am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058032",
+    "name": "Brodersby",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brodersby gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/brodersby/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Brodersby am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058040",
+    "name": "Damp",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Damp gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/damp/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Damp am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Einzige Förderrichtlinie: Zuschuss zum Erwerb der Fahrerlaubnis bei Eintritt in die Freiwillige Feuerwehr Damp-Dorotheenthal."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058042",
+    "name": "Dörphof",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dörphof gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/doerphof/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Dörphof am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058057",
+    "name": "Gammelby",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gammelby gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/gammelby/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Gammelby am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058082",
+    "name": "Holzdorf",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Holzdorf gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/holzdorf/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Holzdorf am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058084",
+    "name": "Hummelfeld",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hummelfeld gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/hummelfeld/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Hummelfeld am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058087",
+    "name": "Karby",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Karby gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/karby/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Karby am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058090",
+    "name": "Kosel",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kosel gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm",
+      "kosel.sh Startseite und alle vier erfassten Artikel gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/kosel/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Kosel am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      },
+      {
+        "url": "https://kosel.sh/",
+        "finding": "Website der Gemeinde Kosel (15.10.2026): Nachrichtenartikel (Deponie Gammelby, Kulturkirche, Regionalbudget) — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://kosel.sh/de/artikel/region_eckernfoerde_kaempft_gegen_glindemanns_deponieplaene_in_gammelby_und_kosel?p=0",
+        "finding": "Im Original gelesen (15.10.2026): Presseartikel zur Deponie-Erweiterung in Gammelby — kein Förderbezug."
+      },
+      {
+        "url": "https://kosel.sh/de/die-gemeinde-und-politik/artikel/freiflaechen-photovoltaik_gemeinden_legen_kriterien_fuer_standorte_fest",
+        "finding": "Im Original gelesen (15.10.2026): Artikel 2022: Kriterien für Freiflächen-PV-Standorte (Bauleitplanung) — kein Zuschuss."
+      },
+      {
+        "url": "https://kosel.sh/de/die-gemeinde-und-politik/artikel/kosel_hofft_auf_zuschuesse_fuer_bewegungspark_auf_dem_dorfanger",
+        "finding": "Im Original gelesen (15.10.2026): Artikel 2022: Antrag der Gemeinde bei der AktivRegion für einen Bewegungspark — Fördermittel an die Gemeinde, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://kosel.sh/de/die-gemeinde-und-politik/artikel/zuschuss_laurentius_kirche_kirche_des_monats",
+        "finding": "Im Original gelesen (15.10.2026): Artikel 2019: Zuschuss für die Laurentius-Kirche — kein Energiebezug."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      },
+      {
+        "url": "kosel.sh/de/artikel/region_eckernfoerde_kaempft_gegen_glindemanns_deponieplaene_in_gammelby_und_kosel?p=0",
+        "disposition": "reviewed",
+        "reason": "Presseartikel zur Deponie-Erweiterung in Gammelby — kein Förderbezug.",
+        "evidenceUrl": "https://kosel.sh/de/artikel/region_eckernfoerde_kaempft_gegen_glindemanns_deponieplaene_in_gammelby_und_kosel?p=0"
+      },
+      {
+        "url": "kosel.sh/de/die-gemeinde-und-politik/artikel/freiflaechen-photovoltaik_gemeinden_legen_kriterien_fuer_standorte_fest",
+        "disposition": "reviewed",
+        "reason": "Artikel 2022: Kriterien für Freiflächen-PV-Standorte (Bauleitplanung) — kein Zuschuss.",
+        "evidenceUrl": "https://kosel.sh/de/die-gemeinde-und-politik/artikel/freiflaechen-photovoltaik_gemeinden_legen_kriterien_fuer_standorte_fest"
+      },
+      {
+        "url": "kosel.sh/de/die-gemeinde-und-politik/artikel/kosel_hofft_auf_zuschuesse_fuer_bewegungspark_auf_dem_dorfanger",
+        "disposition": "reviewed",
+        "reason": "Artikel 2022: Antrag der Gemeinde bei der AktivRegion für einen Bewegungspark — Fördermittel an die Gemeinde, kein Bürgerprogramm.",
+        "evidenceUrl": "https://kosel.sh/de/die-gemeinde-und-politik/artikel/kosel_hofft_auf_zuschuesse_fuer_bewegungspark_auf_dem_dorfanger"
+      },
+      {
+        "url": "kosel.sh/de/die-gemeinde-und-politik/artikel/zuschuss_laurentius_kirche_kirche_des_monats",
+        "disposition": "reviewed",
+        "reason": "Artikel 2019: Zuschuss für die Laurentius-Kirche — kein Energiebezug.",
+        "evidenceUrl": "https://kosel.sh/de/die-gemeinde-und-politik/artikel/zuschuss_laurentius_kirche_kirche_des_monats"
+      }
+    ]
+  },
+  {
+    "regionId": "01058099",
+    "name": "Loose",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Loose gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/loose/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Loose am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058102",
+    "name": "Goosefeld",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Goosefeld gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/goosefeld/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Goosefeld am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058162",
+    "name": "Thumby",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Thumby gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/thumby/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Thumby am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058173",
+    "name": "Windeby",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Windeby gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/windeby/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Windeby am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01058174",
+    "name": "Winnemark",
+    "checkedAt": "2026-10-15T00:30:00Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Winnemark gehört zum Amt Schlei-Ostsee (Kreis Rendsburg-Eckernförde). Weder Gemeinde noch Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Ortsrecht enthält keine solche Richtlinie, die Amtssuche findet nur das eingestellte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Stopp 16.11.2023), der Versorger Stadtwerke SH bietet keinen Zuschuss und der Klimaschutzfonds des Kreises fördert keine Privathaushalte (Stand 15.10.2026).",
+    "searches": [
+      "amt-schlei-ostsee.de vollständig über die Navigation erfasst (155 Inhaltsseiten am 15.10.2026 abgerufen: Amtsverwaltung, alle 18 Amtsgemeinden einschließlich Unterseiten, Service, Wirtschaft) und nach Zuschuss/Förderprogramm/Förderrichtlinie/Balkonkraftwerk/Stecker/Wärmepumpe/Photovoltaik durchsucht: nur Nav-Eintrag Wirtschaftsförderung, LSE-Förderung Hardesvogtei Fleckeby, Ortsentwicklungskonzept Windeby, Wärmeplanung",
+      "Ortsrecht des Amtes und aller 18 Amtsgemeinden plus Schul- und Kita-Verband (Satzungstitel) gelesen: einzige Förderrichtlinie ist der Feuerwehr-Führerschein in Damp",
+      "Volltextsuche amt-schlei-ostsee.de: Balkonkraftwerk, Photovoltaik, Zuschuss, Förderung, Wärmepumpe, Stecker, Speicher, Klimaschutz (15.10.2026)",
+      "Stadtwerke SH (Versorger Eckernförde/Schleswig/Rendsburg): Sitemap (109 Seiten) und PV-Produktseite gelesen — kein Zuschuss",
+      "Kreis Rendsburg-Eckernförde (Klimaschutzfonds) und Landesprogramme: kein Haushaltsprogramm, Land eingestellt",
+      "Websuche (15.10.2026): Zuschuss Balkonkraftwerk/Photovoltaik für Damp, Barkelsby, Loose, Windeby, Karby, Holzdorf, Thumby und „Amt Schlei-Ostsee“ Förderprogramm — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlei-ostsee.de/gemeinden/winnemark/ortsrecht/",
+        "finding": "Ortsrecht der Gemeinde Winnemark am 15.10.2026 vollständig gelesen (Satzungstitel): Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Gebühren- und Benutzungssatzungen — keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/suche/",
+        "finding": "Volltextsuche des Amtes (15.10.2026): „Balkonkraftwerk“ 0 Treffer; „Stecker“ 3 Treffer, davon einschlägig nur die Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ aus dem Landesportal; „Photovoltaik“ nur „Anmeldung beim Finanzamt“ (Landesportal); „Wärmepumpe“ nur Unternehmenszertifizierung; „Zuschuss“ nur Vereins-, Gründungs- und Schülerbeförderungs-Leistungen; „Klimaschutz“ nur „Klimaschutz auf Kommunalebene“."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/amtsverwaltung/was-erledige-ich-wo/leistungen/leistungen/ansicht/ort/24351/Damp/vorgang/zuschuss-fuer-steckerfertige-photovoltaikanlagen-be/",
+        "finding": "Im Original gelesen (15.10.2026): Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ der Investitionsbank Schleswig-Holstein, „vorläufiger Stopp des Förderprogramms am 16.11.2023“, Antragsfrist 16.11.2023 — kein kommunales Programm, Landesprogramm eingestellt und im Katalog geführt."
+      },
+      {
+        "url": "https://www.amt-schlei-ostsee.de/service/waermeplanung/",
+        "finding": "Kommunale Wärmeplanung des Amtes — Planungsinstrument mit Hinweis auf Wahlfreiheit (z. B. Wärmepumpe), keine Förderung."
+      },
+      {
+        "url": "https://www.stadtwerke-sh.de/produkte/photovoltaik",
+        "finding": "Stadtwerke SH (Schleswig, Eckernförde, Rendsburg), am 15.10.2026 gelesen: Planung, Installation und Netzanmeldung von PV-Anlagen als Produkt — kein Zuschuss, kein Bonus."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde: nur Gemeinden, Ämter, Schul-/Kita-Träger, Sportvereine und Kultureinrichtungen antragsberechtigt; Kreis 01058 am 14.10.2026 als keine-passende-foerderung abgeschlossen."
+      },
+      {
+        "url": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "finding": "Potenzialstudie Freiflächen-Photovoltaik des Amtes (Stand 26.06.2024), am 08.10.2026 im Original gelesen: Raumordnung/Ausschlusskriterien, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf",
+        "disposition": "reviewed",
+        "reason": "Planungsstudie zu Potenzialflächen für Freiflächen-PV (Stand 26.06.2024), im Original gelesen — keine Förderung privater Haushalte.",
+        "evidenceUrl": "https://amt-schlei-ostsee.de/fileadmin/Bilder/Amtsverwaltung/Weissflaechenkartierung_Freiflaechensolaranlagen/240626_Amt_Schlei-Ostsee_PV-Studie_-_Text.pdf"
+      }
+    ]
   }
 ]
