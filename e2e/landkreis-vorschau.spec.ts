@@ -16,7 +16,9 @@ test("district sections reuse navigation and subscription without municipality g
   await expect(page.locator("dialog[data-abo]")).not.toBeVisible();
   for(const width of [375,320]) {
     await page.setViewportSize({width,height:850});
-    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    // Charts re-measure through ResizeObserver one frame after the resize; a
+    // single read races that re-layout. A real overflow persists and still fails.
+    await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth),{message:`page width at ${width}px`}).toBeLessThanOrEqual(width);
   }
 });
 
