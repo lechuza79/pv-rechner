@@ -15,8 +15,27 @@ on:
   # no workflow by itself. Dispatch is the one way it can run the gate first
   # (scripts/autofix-deliver.ts).
   workflow_dispatch: {}
+  schedule:
+    - cron: "30 0 * * *"
 
 jobs:
+  plan:
+    name: Browser-Prüfumfang bestimmen
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      mode: ${{ steps.scope.outputs.mode }}
+      plan: ${{ steps.scope.outputs.plan }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - id: scope
+        run: node scripts/ci-browser-plan.cjs plan
+
   # AUFGETEILT AM 06.10.2026 — und das ist die dritte Runde derselben Frage,
   # deshalb diesmal nicht mit einer größeren Zahl.
   #
@@ -124,8 +143,9 @@ jobs:
 
   smoke:
     name: Smoke-Tests ${{ matrix.scherbe }}/3
-    needs: build
+    needs: [build, plan]
     env:
+      CI_BROWSER_PLAN: ${{ needs.plan.outputs.plan }}
       E2E_PREBUILT: "1"
     runs-on: ubuntu-latest
     # Über der Summe der Schritt-Limits (22 + 10 + 5) plus Grundlast — sonst
@@ -254,6 +274,10 @@ jobs:
       # LOKAL bleibt es beim Dev-Server (`npm run test:e2e` unveraendert): Dort
       # laeuft ohnehin nur der eine Test, an dem gerade gearbeitet wird, und ein
       # voller Build je Durchlauf waere die falsche Rechnung.
+      - name: Verify selected specs contain tests
+        timeout-minutes: 2
+        run: node scripts/ci-browser-plan.cjs verify
+
       - name: E2E smoke tests (Playwright)
         timeout-minutes: 22
         run: npm run test:e2e -- --shard=${{ matrix.scherbe }}/3
@@ -316,23 +340,19 @@ jobs:
     name: Type check + unit tests + e2e smoke
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [unit, build, smoke]
+    needs: [plan, unit, build, smoke, flows, telefon, kontrast]
     if: always()
 
     steps:
-      - name: Urteile der Vorgänger zusammenfassen
-        run: |
-          echo "Typprüfung + Unit-Tests: ${{ needs.unit.result }}"
-          echo "Smoke-Tests (3 Scherben):      ${{ needs.smoke.result }}"
-          echo "Produktionsbuild: ${{ needs.build.result }}"
-          fehler=0
-          [ "${{ needs.build.result }}" = "success" ] || fehler=1
-          [ "${{ needs.unit.result }}" = "success" ] || fehler=1
-          [ "${{ needs.smoke.result }}" = "success" ] || fehler=1
-          if [ "$fehler" -ne 0 ]; then
-            echo "::error::Mindestens eine Stufe ist nicht grün — Einzelheiten im jeweiligen Job."
-            exit 1
-          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Require every selected check to succeed
+        env:
+          CI_PLAN_MODE: ${{ needs.plan.outputs.mode }}
+          CI_JOB_RESULTS: ${{ toJSON(needs) }}
+        run: node scripts/ci-browser-plan.cjs gate
 
   # Eigener Job, weil diese Stufe eine andere Größenordnung hat: Der Flow-Läufer
   # klickt jede Option jedes Schritts durch jeden Flow und baut dafür je Weg
@@ -353,8 +373,9 @@ jobs:
   # bei hunderten Aufrufen geht er dabei in die Knie — der Lauf bricht dann mit
   # „nicht erreichbar" ab, was wie ein Testfehler aussieht, aber keiner ist.
   flows:
+    if: needs.plan.outputs.mode == 'full'
     name: Flow-Läufer (jede Option, jeder Zweig)
-    needs: build
+    needs: [build, plan]
     env:
       E2E_PREBUILT: "1"
     runs-on: ubuntu-latest
