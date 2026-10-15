@@ -97292,5 +97292,310 @@
         "finding": "Klimaschutzfonds des Kreises Rendsburg-Eckernförde (zuletzt am 15.10.2026 im Lauf Schlei-Ostsee gelesen): antragsberechtigt nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen — keine Privathaushalte."
       }
     ]
+  },
+  {
+    "regionId": "01058135",
+    "name": "Rendsburg",
+    "checkedAt": "2026-10-15T04:14:16Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rendsburg hat seit 1. August 2026 einen Klimafonds für das Sanierungsgebiet Altstadt (bis 50 %, max. 3.000 €, 2026 insgesamt 10.000 €), schließt aber die Erzeugung und Nutzung erneuerbarer Energien ausdrücklich aus; gefördert werden Begrünung, Entsiegelung, kleine energetische Sanierungen mit Gemeinwohlnutzen. Die „Fördermaßnahmen“-Seiten listen nur Fördermittel an die Stadt selbst. Kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte (Stand 15.10.2026).",
+    "searches": [
+      "rendsburg.de Volltextsuche (15.10.2026): Förderung, Photovoltaik, Solar, Balkonkraftwerk, Zuschuss, Wärmepumpe, Batteriespeicher, Förderprogramm — einziger einschlägiger Treffer: Klimafonds Altstadt",
+      "rendsburg.de/klimafonds samt Fördergrundsätzen (PDF) im Original gelesen",
+      "Fördermaßnahmen Hochbau/Tiefbau gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rendsburg.de/klimafonds",
+        "finding": "Im Original gelesen: „Die Förderung von Erzeugung und Nutzung erneuerbarer Energien ist vom Klimafonds ausgeschlossen, da hier der individuelle Nutzen im Vordergrund steht.“ Nur Sanierungsgebiet Altstadt, Maßnahme muss der Allgemeinheit dienen."
+      },
+      {
+        "url": "https://www.rendsburg.de/fileadmin/Aktueller_Upload/Politik_und_Verwaltung/Fachbereiche_und_Sachgebiete/Nachhaltigkeit_und_Zukunft/Klimaanpassung/Foerdergrundsaetze_Klimafonds_Rendsburg.pdf",
+        "finding": "Fördergrundsätze (Städtebauförderung „Lebendige Zentren“): Begrünung, Entsiegelung, energetische Sanierung, nachhaltige Mobilität; Allgemeinwohlbezug; keine Doppelförderung."
+      },
+      {
+        "url": "https://www.rendsburg.de/politik-verwaltung/fachbereiche-sachgebiete/bauen-stadtplanung/foerdermassnahmen",
+        "finding": "Fördermaßnahmen Hochbau (LED-Schulbeleuchtung, NKI 25 %) und Tiefbau (Mobilitätsstation, Lichtsignalanlagen, RaD stark) — Mittel an die Stadt, kein Bürgerprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rendsburg.de/politik-verwaltung/fachbereiche-sachgebiete/bauen-stadtplanung/foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite, verweist nur auf Hochbau/Tiefbau-Fördervorhaben der Stadt.",
+        "evidenceUrl": "https://www.rendsburg.de/politik-verwaltung/fachbereiche-sachgebiete/bauen-stadtplanung/foerdermassnahmen"
+      },
+      {
+        "url": "rendsburg.de/politik-verwaltung/fachbereiche-sachgebiete/bauen-stadtplanung/foerdermassnahmen/foerdermassnahmen-hochbau",
+        "disposition": "reviewed",
+        "reason": "LED-Sanierungen an Schulen, gefördert durch NKI — kommunale Projekte.",
+        "evidenceUrl": "https://www.rendsburg.de/politik-verwaltung/fachbereiche-sachgebiete/bauen-stadtplanung/foerdermassnahmen"
+      },
+      {
+        "url": "rendsburg.de/politik-verwaltung/fachbereiche-sachgebiete/bauen-stadtplanung/foerdermassnahmen/foerdermassnahmen-tiefbau",
+        "disposition": "reviewed",
+        "reason": "Mobilitätsstation, Lichtsignalanlagen, Radverkehr — Fördermittel an die Stadt.",
+        "evidenceUrl": "https://www.rendsburg.de/politik-verwaltung/fachbereiche-sachgebiete/bauen-stadtplanung/foerdermassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "01058034",
+    "name": "Büdelsdorf",
+    "checkedAt": "2026-10-15T04:14:16Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Büdelsdorf führt kein eigenes Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Klimaschutz-Seiten verweisen für den Heizungstausch auf die Bundesförderung (BEG), bieten Energieberatung (Energiekarawane, vom Kreis bezuschusst) und das Solardachkataster; die Richtlinien im Ortsrecht betreffen Jugend-, Senioren- und Sportförderung (Stand 15.10.2026).",
+    "searches": [
+      "buedelsdorf.de Volltextsuche (15.10.2026): Förderung, Photovoltaik, Solar, Balkonkraftwerk, Zuschuss, Wärmepumpe, Speicher, Förderprogramm",
+      "Klimaschutz-Seiten (Übersicht, Gut zu wissen, Energiekarawane, Klima-Aktivitäten mit 16 Unterseiten) gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.buedelsdorf.de/Planung-Bauen-Umwelt/Klimaschutz/Gut-zu-wissen/",
+        "finding": "„Gibt es Förderungen für den Heizungstausch? Ja. Die Bundesregierung unterstützt … über die Bundesförderung für effiziente Gebäude (BEG)“ — kein städtischer Zuschuss genannt."
+      },
+      {
+        "url": "https://www.buedelsdorf.de/?ffmod=suche&NavID=3205.1&such=Photovoltaik",
+        "finding": "Suchtreffer zu Photovoltaik/Solar/Balkonkraftwerk/Speicher: Klimaschutzseiten, Bebauungspläne, Solardachkataster-Flyer, Klimaschutzkonzept, Wärmeplanung; Förder-Richtlinien nur für Jugend, Altenhilfe, Sport, Partnerschaft."
+      }
+    ],
+    "sources": [
+      {
+        "url": "buedelsdorf.de/Quicknavigation/F%C3%B6rderung-der-Insektenvielfalt-in-B%C3%BCdelsdorf.php",
+        "disposition": "replaced",
+        "reason": "Titel betrifft Insektenvielfalt (Naturschutz), kein Energiethema; die Volltextsuche nach allen Energiebegriffen führt diese Seite nicht als Förderprogramm.",
+        "evidenceUrl": "https://www.buedelsdorf.de/?ffmod=suche&NavID=3205.1&such=Photovoltaik"
+      },
+      {
+        "url": "buedelsdorf.de/Quicknavigation/Vortrag-zur-Demokratief%C3%B6rderung-durch-digitale-Unabh%C3%A4ngigkeit-in-der-Stadtb%C3%BCcherei-.php",
+        "disposition": "replaced",
+        "reason": "Veranstaltungshinweis zur Demokratieförderung in der Stadtbücherei — kein Förderprogramm; von der Energie-Volltextsuche nicht erfasst.",
+        "evidenceUrl": "https://www.buedelsdorf.de/?ffmod=suche&NavID=3205.1&such=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "01058043",
+    "name": "Eckernförde",
+    "checkedAt": "2026-10-15T04:14:16Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eckernförde führt kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Das Klimaschutzkonzept nennt PV bei privaten Wohngebäuden nur als Maßnahme („Text in Bearbeitung“), die Stadt verweist auf Solardachkataster und Beratung der Klimaschutzagentur; die Volltextsuche findet nach „Balkonkraftwerk“ nichts (Stand 15.10.2026).",
+    "searches": [
+      "eckernfoerde.de Volltextsuche (15.10.2026): Förderung (188), Photovoltaik (13), Solar (9), Balkonkraftwerk (0), Zuschuss (72), Wärmepumpe (7), Speicher (26), Förderprogramm (12) — Treffer gesichtet, keiner ein Bürgerprogramm",
+      "Klimaschutz-Seiten (Übersicht, Energieeffizienz, Klimaschutzkonzept, Maßnahmenübersicht, Mobilitätswende, Sprottenflotte) gelesen",
+      "Websuche „Eckernförde Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss Stadtwerke“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.eckernfoerde.de/Und-das-Leben/Klimaschutz/Klimaschutzkonzept/Ma%C3%9Fnahmen%C3%BCbersicht/",
+        "finding": "Maßnahme G/EE6 „Photovoltaik bei Unternehmen und privaten Wohngebäuden“ ohne Inhalt („Text in Bearbeitung“); G/EE5 Solardachkataster der Klimaschutzagentur."
+      },
+      {
+        "url": "https://www.eckernfoerde.de/?NavID=3457.12&qs=Photovoltaik",
+        "finding": "Treffer: Maßnahmenübersicht, Klimaschutz, Gutachten, Verwaltungsberichte, Haushalte, ISEK — kein Förderprogramm; „Balkonkraftwerk“ ergibt keine Treffer."
+      }
+    ],
+    "sources": [
+      {
+        "url": "eckernfoerde.de/F%C3%BCr-die-B%C3%BCrger/Service/Ansprechpersonen-/Eckernf%C3%B6rder-Service-Einrichtung-ECKSE-.php",
+        "disposition": "replaced",
+        "reason": "Ansprechpartner-Eintrag einer sozialen Einrichtung (ECKSE) — kein Förderprogramm; Volltextsuche nach Energiebegriffen führt sie nicht.",
+        "evidenceUrl": "https://www.eckernfoerde.de/?NavID=3457.12&qs=Photovoltaik"
+      },
+      {
+        "url": "eckernfoerde.de/F%C3%BCr-die-B%C3%BCrger/Service/Ansprechpersonen-/Eckernf%C3%B6rder-Tafel-.php",
+        "disposition": "replaced",
+        "reason": "Ansprechpartner-Eintrag der Eckernförder Tafel — kein Energiethema.",
+        "evidenceUrl": "https://www.eckernfoerde.de/?NavID=3457.12&qs=Photovoltaik"
+      },
+      {
+        "url": "eckernfoerde.de/F%C3%BCr-die-B%C3%BCrger/Service/Ansprechpersonen-/LAG-AktivRegion-Eckernf%C3%B6rder-Bucht-e-V-.php",
+        "disposition": "replaced",
+        "reason": "Kontakt der LAG AktivRegion (EU-LEADER-Verein für Regionalprojekte) — kein Zuschuss für private PV/Wärmepumpen; die Stadt nennt sie nur als Geldgeber des Solardachkatasters.",
+        "evidenceUrl": "https://www.eckernfoerde.de/?NavID=3457.12&qs=Photovoltaik"
+      },
+      {
+        "url": "eckernfoerde.de/F%C3%BCr-die-B%C3%BCrger/Service/Ansprechpersonen-/Tischtennisclub-Eckernf%C3%B6rder-Bucht.php",
+        "disposition": "replaced",
+        "reason": "Vereinskontakt Tischtennis — kein Energiethema.",
+        "evidenceUrl": "https://www.eckernfoerde.de/?NavID=3457.12&qs=Photovoltaik"
+      },
+      {
+        "url": "eckernfoerde.de/F%C3%BCr-die-B%C3%BCrger/Service/Ansprechpersonen-/Verein-zur-F%C3%B6rderung-der-Umweltbildung-in-Eckernf%C3%B6rde.php",
+        "disposition": "replaced",
+        "reason": "Vereinskontakt Umweltbildung — kein Zuschussprogramm.",
+        "evidenceUrl": "https://www.eckernfoerde.de/?NavID=3457.12&qs=Photovoltaik"
+      },
+      {
+        "url": "eckernfoerde.de/F%C3%BCr-die-B%C3%BCrger/Service/B%C3%BCrgerinformationssystem/Kommunale-Projektf%C3%B6rderung-zur-St%C3%A4rkung-kommunaler-Partnerschaften-beantragen.php",
+        "disposition": "replaced",
+        "reason": "Dienstleistung für Städtepartnerschafts-Projekte — kein Energiethema.",
+        "evidenceUrl": "https://www.eckernfoerde.de/?NavID=3457.12&qs=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "01058121",
+    "name": "Osdorf",
+    "checkedAt": "2026-10-15T04:14:16Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Osdorf (Amt Dänischer Wohld) führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Gemeindeseite erläutert nur die Bundesförderung (BEG über KfW) und Bundesmittel für das geplante Wärmenetz; Fördermittel aus Kreis-Klimaschutzfonds und BAFA gehen an gemeindeeigene Gebäude, die kostenlose Energieberatung des Sanierungsmanagements lief bis Oktober 2025 (Stand 15.10.2026).",
+    "searches": [
+      "osdorf.de Suche (15.10.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Förderprogramm, Speicher, Solar — Treffer gesichtet",
+      "Schlagwortseiten Heizungsförderung und Förderprogramm gelesen",
+      "amt-daenischer-wohld.de: Seitenverzeichnis (398 Seiten) gefiltert, Photovoltaik- und Klimaseiten gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.osdorf.de/der-einbau-klimafreundlicher-heizungen-wird-wieder-bezuschusst",
+        "finding": "Beitrag erklärt ausschließlich die Bundesförderung (Grundförderung 30 %, Boni, Antrag bei der KfW) — kein Gemeindezuschuss."
+      },
+      {
+        "url": "https://osdorf.de/aktuelles-aus-dem-sanierungsmanagement-april-mai-2025/",
+        "finding": "Sanierungsmanagement-Bericht: Fördermittel an die Gemeinde (LED-Straßenbeleuchtung, Kreis-Klimaschutzfonds für PV auf Gemeindegebäuden, BAFA für Wohnungstüren); kostenlose Erstberatung nur bis Oktober 2025."
+      }
+    ],
+    "sources": [
+      {
+        "url": "osdorf.de/der-einbau-klimafreundlicher-heizungen-wird-wieder-bezuschusst",
+        "disposition": "reviewed",
+        "reason": "Erläuterung der Bundesförderung BEG, kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.osdorf.de/der-einbau-klimafreundlicher-heizungen-wird-wieder-bezuschusst"
+      },
+      {
+        "url": "osdorf.de/tag/heizungsfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schlagwortseite, enthält nur den BEG-Beitrag.",
+        "evidenceUrl": "https://www.osdorf.de/der-einbau-klimafreundlicher-heizungen-wird-wieder-bezuschusst"
+      },
+      {
+        "url": "osdorf.de/tag/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Schlagwortseite zu BAFA-/Wärmenetz-Bundesprogrammen (Pausen nach dem Haushaltsurteil) — keine Gemeindeförderung.",
+        "evidenceUrl": "https://www.osdorf.de/der-einbau-klimafreundlicher-heizungen-wird-wieder-bezuschusst"
+      },
+      {
+        "url": "osdorf.de/antrag-fuer-die-bundesfoerderung-fuer-effiziente-waermenetze-modul-2-fuer-den-osdorfer-ortskern-wurde-eingereicht",
+        "disposition": "replaced",
+        "reason": "Bundesförderung effiziente Wärmenetze (BEW) für das Gemeinde-Wärmenetz — Mittel an Gemeinde/Netzbetreiber, kein Haushaltszuschuss; Wärmenetz-Stand im gelesenen Sanierungsmanagement-Bericht.",
+        "evidenceUrl": "https://osdorf.de/aktuelles-aus-dem-sanierungsmanagement-april-mai-2025/"
+      },
+      {
+        "url": "osdorf.de/bundesfoerderung-effiziente-waermenetze-bew-wieder-moeglich",
+        "disposition": "replaced",
+        "reason": "BEW-Bundesprogramm für das Wärmenetz, nicht für Privathaushalte.",
+        "evidenceUrl": "https://osdorf.de/aktuelles-aus-dem-sanierungsmanagement-april-mai-2025/"
+      },
+      {
+        "url": "osdorf.de/foerderprogramme-des-bafa-zum-teil-gestoppt-ohne-foerdermittel-kein-waermenetz-in-osdorf",
+        "disposition": "replaced",
+        "reason": "Meldung zur Pause von Bundesprogrammen (Wärmenetz) — kein Gemeindeprogramm.",
+        "evidenceUrl": "https://osdorf.de/aktuelles-aus-dem-sanierungsmanagement-april-mai-2025/"
+      },
+      {
+        "url": "osdorf.de/foerderung-fuer-waermenetze-pausiert-und-nun",
+        "disposition": "replaced",
+        "reason": "Wärmenetz-Bundesförderung pausiert — kein Gemeindezuschuss.",
+        "evidenceUrl": "https://osdorf.de/aktuelles-aus-dem-sanierungsmanagement-april-mai-2025/"
+      }
+    ]
+  },
+  {
+    "regionId": "01058157",
+    "name": "Strande",
+    "checkedAt": "2026-10-15T04:14:16Z",
+    "recheckAt": "2027-01-13T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Strande (Amt Dänischenhagen) führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Das vollständige Ortsrecht der Gemeinde (26 Satzungen und Richtlinien) enthält nur Jugendförderung und Ehrungen als Förderrichtlinien, die Gemeindeseiten des Amts nennen nur die Photovoltaik-Standortstudie und die AktivRegion; Dänischenhagen und Noer im selben Amt sind seit 23.09.2026 ohne Programm (Stand 15.10.2026).",
+    "searches": [
+      "amt-daenischenhagen.de: Ortsrecht Strande und Amt, Gemeindeseite Strande und Ortsentwicklung gelesen (15.10.2026)",
+      "Websuche „Strande Gemeinde Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe Förderung Amt Dänischenhagen“: nur Mitteilungsblätter, kein Programm",
+      "strande.de zweimal nicht erreichbar (Zeitüberschreitung 15.10.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-daenischenhagen.de/amt_daenischenhagen/Amt%20und%20Gemeinden/Strande/Satzungen/",
+        "finding": "Ortsrecht Strande vollständig gelesen: Abwasser, Hafen, Feuerwehr, Steuern, Kurabgabe, Strand, Richtlinien für Ehrungen und Jugendförderung — keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-daenischer-wohld.de/wirtschaft-klima-umweltschutz/aktivregion-eckernfoerder-bucht/",
+        "finding": "AktivRegion Eckernförder Bucht: EU-LEADER-Verein für Regionalprojekte, verweist auf seine Homepage — kein Zuschuss für private PV oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "strande.de/eckernfoerder-bucht",
+        "disposition": "replaced",
+        "reason": "Seite selbst nicht erreichbar (Zeitüberschreitung); Thema ist die AktivRegion Eckernförder Bucht, deren Rolle (Regionalprojekte, kein Haushaltszuschuss) auf der gelesenen Amtsseite und in den Prüfungen Dänischenhagen/Noer belegt ist.",
+        "evidenceUrl": "https://www.amt-daenischer-wohld.de/wirtschaft-klima-umweltschutz/aktivregion-eckernfoerder-bucht/"
+      }
+    ]
+  },
+  {
+    "regionId": "01058165",
+    "name": "Tüttendorf",
+    "checkedAt": "2026-10-15T04:14:16Z",
+    "recheckAt": "2026-11-12T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Das Klimaschutzkonzept der Gemeinde Tüttendorf (Stand 11/2025) sieht als Maßnahme 6 (Priorität 3) eine „Förderung über die Gemeinde für z. B. Zuschuss für Balkonkraftanlagen, PV-Anlagen, Speicher“ vor, mit dem Schritt „Vorlage für Förderrichtlinie verfassen“. Ob die Gemeindevertretung eine Richtlinie beschlossen hat, ist nicht belegt: Ortsrecht und Ratsinformation des Amts Dänischer Wohld sind nur über ein eingebettetes Fremdelement lesbar, die Amtsseiten und Websuche nennen kein Programm. Kein Katalogeintrag, deshalb Rückfrage.",
+    "searches": [
+      "amt-daenischer-wohld.de: Seitenverzeichnis (398 Seiten) gefiltert; Photovoltaik-, Klima-, AktivRegion- und Ortsrechtsseiten gelesen (15.10.2026)",
+      "Klimaschutzkonzept Tüttendorf (PDF, 11/2025) nach Förder-/Zuschuss-/Balkon-Stellen durchsucht",
+      "Websuche „Tüttendorf Gemeinde Förderrichtlinie Balkonkraftwerk Photovoltaik Speicher Zuschuss“ und „Amt Dänischer Wohld Ratsinformationssystem Tüttendorf …“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-daenischer-wohld.de/dokumente/klimaschutzkonzepte/251114-ksk-tuettendorf-final.pdf?cid=3fv",
+        "finding": "Maßnahmentabelle: „6 Solarenergie — Förderung über die Gemeinde für z. B. Zuschuss für Balkonkraftanlagen, PV-Anlagen, Speicher, etc. — Vorlage für Förderrichtlinie verfassen — Gemeinde/Verwaltung — 3“; Maßnahme 4: Klimaschutzfonds für PV auf eigenen Liegenschaften."
+      },
+      {
+        "url": "https://www.amt-daenischer-wohld.de/bauen-wohnen-verkehr/photovoltaik/",
+        "finding": "Photovoltaik-Seite des Amts: nur PV-Standortanalyse Osdorf (Freiflächen), kein Zuschuss."
+      },
+      {
+        "url": "https://www.amt-daenischer-wohld.de/wirtschaft-klima-umweltschutz/aktivregion-eckernfoerder-bucht/",
+        "finding": "AktivRegion Eckernförder Bucht: EU-LEADER-Verein für Regionalprojekte — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-daenischer-wohld.de/politik-amt-gemeinden/ortsrecht/",
+        "finding": "Ortsrecht-Seite zeigt Inhalt nur nach Einwilligung in ein Fremdelement („Dieses Element wurde ausgeblendet …“); Kontakt im Seitenfuß: poststelle@amtdw.landsh.de."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-daenischer-wohld.de/dokumente/photovoltaik/24-07-16-osdorf-pv-standortanalyse-konzept-1.pdf?cid=2cj",
+        "disposition": "replaced",
+        "reason": "Standortanalyse für PV-Freiflächen der Nachbargemeinde Osdorf, verlinkt auf der gelesenen Photovoltaik-Seite des Amts — Planungsgrundlage, kein Zuschuss.",
+        "evidenceUrl": "https://www.amt-daenischer-wohld.de/bauen-wohnen-verkehr/photovoltaik/"
+      },
+      {
+        "url": "amt-daenischer-wohld.de/wirtschaft-klima-umweltschutz/aktivregion-eckernfoerder-bucht",
+        "disposition": "reviewed",
+        "reason": "AktivRegion-Verweisseite, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.amt-daenischer-wohld.de/wirtschaft-klima-umweltschutz/aktivregion-eckernfoerder-bucht/"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-10-15T07:00:00Z",
+      "detail": "Rückfrage an das Amt Dänischer Wohld vormerken (Versand nur über den bestehenden Versandlauf zur Bürozeit). Bis zur Antwort kein Katalogeintrag; nach 14 Tagen ohne Antwort Amtsseiten und Ortsrecht erneut prüfen."
+    },
+    "enquiry": {
+      "id": "klaerung-01058165",
+      "recipient": "poststelle@amtdw.landsh.de",
+      "recipientSource": "https://www.amt-daenischer-wohld.de/politik-amt-gemeinden/ortsrecht/",
+      "website": "https://www.amt-daenischer-wohld.de",
+      "question": "Das Klimaschutzkonzept der Gemeinde Tüttendorf (Stand 11/2025) nennt als Maßnahme einen Zuschuss der Gemeinde für Balkonkraftwerke, Photovoltaik-Anlagen und Speicher und als nächsten Schritt eine Förderrichtlinie. Hat die Gemeindevertretung Tüttendorf eine solche Richtlinie beschlossen, und kann man derzeit einen Zuschuss beantragen? Falls ja: Wo finde ich die Richtlinie mit Betrag und Bedingungen? Falls nein, hilft mir auch diese kurze Auskunft."
+    }
   }
 ]
