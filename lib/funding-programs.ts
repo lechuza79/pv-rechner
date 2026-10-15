@@ -2883,14 +2883,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // Verfügung stehen. Ein Rechtsanspruch auf Bewilligung besteht nicht.",
   // Ziffer 7). Sätze und Bedingungen bleiben deshalb stehen.
   //
-  // Die Wiedereröffnung zum 01.01.2027 steht auf der Programmseite, NICHT in der
-  // Pressemitteilung — sie ist eine Ankündigung der Stadt, keine Zusage, und
-  // wird von keiner Automatik ausgewertet. Wer den Eintrag im Januar wieder
-  // scharf schaltet, prüft das vorher an der Trägerseite nach.
+  // Die Programmseite kündigte bis Anfang Oktober 2026 „Anträge können wieder ab
+  // 1. Januar 2027 gestellt werden" an (Beleg 01.10.2026). Am 15./16.10.2026 war
+  // der Satz von der Seite verschwunden (zwei Abrufe, Richtlinie Baustein 3
+  // gelesen, keine andere Amtsseite nennt einen Termin; Council 3/3) — seither
+  // nennen wir keinen Termin. Wieder scharf schalten nur nach Träger-Beleg.
   "freiburg-stromerzeugung": {
     id: "freiburg-stromerzeugung", name: "Klimafreundlich Wohnen – Stromerzeugung",
     traeger: "Stadt Freiburg im Breisgau", level: "kommune", region: "Freiburg im Breisgau", bundesland: "Baden-Württemberg", agsCode: "08311",
-    url: "https://www.freiburg.de/pb/232441.html", stand: "August 2026",
+    url: "https://www.freiburg.de/pb/232441.html", stand: "Oktober 2026",
     status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp für Dach-PV (nur Anteil über der Solarpflicht-Mindestgröße) — Jahrestopf 2026 leer",
@@ -2900,7 +2901,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Balkonkraftwerk (Mieter)", value: "150 € (mit Freiburg-Pass 300 €)" },
     ],
     conditions: [
-      "Mittel für 2026 vollständig ausgeschöpft: seit dem 14.07.2026 keine neuen Anträge — auch nicht für Balkonkraftwerke; nach Angaben der Stadt wieder ab 1. Januar 2027",
+      "Mittel für 2026 vollständig ausgeschöpft: seit dem 14.07.2026 keine neuen Anträge — auch nicht für Balkonkraftwerke; einen Termin für neue Anträge nennt die Stadt derzeit nicht",
       "Bereits eingegangene Anträge werden weiter bearbeitet",
       "Gefördert nur der Anlagenteil über der gesetzlichen Solarpflicht-Mindestgröße",
       "Antrag bis 6 Monate nach Inbetriebnahme; Ausführung durch Fachbetrieb",
