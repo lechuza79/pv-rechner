@@ -9,10 +9,43 @@ async function openRankingTable(page: import("@playwright/test").Page) {
     has: page.getByText(/^Alle .* in der ausführlichen Tabelle$/),
   });
   await expect(disclosure).toBeAttached();
-  if (await disclosure.getAttribute("open") === null) {
-    await disclosure.locator("summary").click();
-  }
-  await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+  const rows = page.locator(".atlas-tabelle-scroller .atlas-rank-row");
+  // Opened but empty is a lost toggle, not a slow table: measured in CI, the
+  // rows follow a working click within one second, while a failing first
+  // attempt sat 28 s on a closed disclosure whose summary had been clicked
+  // during hydration. So prove the rows and open again otherwise.
+  // Toggled by keyboard: a pointer click on the summary was retried for 90 s
+  // against the sticky section rail covering it, and scrolling it to the middle
+  // first moved the page — which the floating-copy test depends on (the copy
+  // only appears while the marked row is out of view). Focus scrolls only as
+  // far as needed, exactly like the old click did.
+  await expect(async () => {
+    if (await disclosure.getAttribute("open") === null) {
+      await disclosure.locator("summary").focus();
+      await page.keyboard.press("Enter");
+    }
+    await expect(rows.first()).toBeVisible({ timeout: 8_000 });
+  }).toPass({ timeout: 25_000 });
+}
+
+async function platzierungWaehlen(page: import("@playwright/test").Page, wahl: string) {
+  // By keyboard, like the jump test below: the stress run (4 workers, 15 Oct
+  // 2026) showed the pointer losing to a page that is still shifting — tooltip,
+  // place search and the opened table took turns covering the trigger even
+  // after centring. This test is about where the box lands, not about pointer
+  // reachability, and Enter on a focused button is the same activation.
+  const trigger = page.getByRole("button", { name: /Platzierung nach/ });
+  const option = trigger.locator("xpath=..").getByRole("button", { name: wahl, exact: true });
+  await expect(async () => {
+    if (!(await option.isVisible())) {
+      await trigger.focus();
+      await page.keyboard.press("Enter");
+    }
+    await expect(option).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 15_000 });
+  await option.focus();
+  await page.keyboard.press("Enter");
+  await expect(option).toBeHidden();
 }
 
 
@@ -391,8 +424,7 @@ for (const [name, viewport] of [
       expect(getrennt.pfeileAn).toBe(1);
 
       // Andere Platzierung wählen: die Box wandert mit dem Feld darüber.
-      await page.getByRole("button", { name: /Platzierung nach/ }).click();
-      await page.getByRole("button", { name: "CO₂ gespart", exact: true }).first().click();
+      await platzierungWaehlen(page, "CO₂ gespart");
       await page.waitForTimeout(400);
       const umgestellt = await zustand();
       expect(umgestellt.box).toEqual(["co2"]);
@@ -615,8 +647,7 @@ test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
       ];
       for (const [wahl, key] of platzierungen) {
         if (key !== "perCapita") {
-          await page.getByRole("button", { name: /Platzierung nach/ }).click();
-          await page.getByRole("button", { name: wahl, exact: true }).first().click();
+          await platzierungWaehlen(page, wahl);
         }
         // Auf den Zustand warten, nicht auf die Uhr: Unter Last hat ein fester
         // Wartewert schon die alte Spalte gemessen.
@@ -710,8 +741,7 @@ test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufe
         ["Anlagen", "count"],
       ] as const) {
         if (key !== "perCapita") {
-          await page.getByRole("button", { name: /Platzierung nach/ }).click();
-          await page.getByRole("button", { name: wahl, exact: true }).first().click();
+          await platzierungWaehlen(page, wahl);
           // Auf den Zustand warten, nicht auf die Uhr.
           await expect(page.locator(`[data-spaltenkopf="${key}"][data-platziert]`)).toHaveCount(1, { timeout: 10_000 });
           await kopfInDenBlick();
