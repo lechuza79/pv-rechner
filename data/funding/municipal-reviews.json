@@ -101355,7 +101355,7 @@
   {
     "regionId": "04012000",
     "name": "Bremerhaven",
-    "checkedAt": "2026-10-16T13:20:00Z",
+    "checkedAt": "2026-10-16T14:12:00Z",
     "recheckAt": "2027-01-14T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -101363,7 +101363,8 @@
     "searches": [
       "bremerhaven.de-Seitensuche 16.10.2026: Photovoltaik, Balkonkraftwerk, Wärmepumpe, Batteriespeicher, Zuschuss Solar",
       "Förderrichtlinie „Kommunaler Klimaschutz für die Stadt Bremerhaven“ (Amtsblatt 09.06.2020) im Volltext gelesen",
-      "Alle sieben erfassten Fundstellen geöffnet"
+      "Alle sieben erfassten Fundstellen geöffnet",
+      "16.10.2026 (14Z): die zwei am 23.09. vermerkten Fundstellen (Heizungstausch-Dienstleistung, Imkerei) erneut geöffnet und in den Datensatz übernommen"
     ],
     "evidence": [
       {
@@ -101385,6 +101386,14 @@
       {
         "url": "https://www.bremerhaven.de/de/aktuelles/gemeinsame-initiative-neues-klimaschutz-foerderprogramm-kliff-soll.10153.html",
         "finding": "Meldung KliFF: Klimaschutz-Förderprogramm Fernwärme der Stadt und swb (Fernwärmeanschlüsse), kein PV-/Speicher-/WP-Zuschuss."
+      },
+      {
+        "url": "https://www.bremerhaven.de/de/verwaltung-politik-sicherheit/buergerservice/dienstleistungen/klimaschutz-fuer-buergerinnen-und-buerger-foerderung-fuer-nicht-fossile.154908.html",
+        "finding": "Dienstleistungsseite 16.10.2026 im echten Browser: nur Überschrift „Klimaschutz für Bürgerinnen und Bürger Förderung für nicht-fossile Heizungssysteme beantragen“ und Kontaktformular, kein Programmtext; Leistung = Landesprogramm Heizungstausch des Landes Bremen (BAB), seit 31.08.2025 Antragsstopp, im Katalog als Landesprogramm."
+      },
+      {
+        "url": "https://www.bremerhaven.de/de/verwaltung-politik-sicherheit/buergerservice/adressen-oeffnungszeiten/umweltschutzamt/foerderrichtlinie-zur-foerderung-der-heimischen-imkerei.119847.html",
+        "finding": "Förderrichtlinie des Umweltschutzamts zur heimischen Imkerei (16.10.2026 gelesen): Bienenhaltung, kein Energiezuschuss."
       }
     ],
     "sources": [
@@ -101429,6 +101438,200 @@
         "disposition": "reviewed",
         "reason": "Übersicht EU-Finanzhilfeprogramme für Projektträger, kein Haushaltszuschuss.",
         "evidenceUrl": "https://www.bremerhaven.de/de/verwaltung-politik-sicherheit/klimastadt/beratungsangebote-und-weitere-foerderprogramme.135165.html"
+      },
+      {
+        "url": "bremerhaven.de/de/verwaltung-politik-sicherheit/buergerservice/dienstleistungen/klimaschutz-fuer-buergerinnen-und-buerger-foerderung-fuer-nicht-fossile.154908.html",
+        "disposition": "reviewed",
+        "reason": "Leere Dienstleistungsseite des Landesprogramms Heizungstausch (Land Bremen, Antragsstopp 31.08.2025), kein städtisches Programm.",
+        "evidenceUrl": "https://www.bremerhaven.de/de/verwaltung-politik-sicherheit/buergerservice/dienstleistungen/klimaschutz-fuer-buergerinnen-und-buerger-foerderung-fuer-nicht-fossile.154908.html"
+      },
+      {
+        "url": "bremerhaven.de/de/verwaltung-politik-sicherheit/buergerservice/adressen-oeffnungszeiten/umweltschutzamt/foerderrichtlinie-zur-foerderung-der-heimischen-imkerei.119847.html",
+        "disposition": "reviewed",
+        "reason": "Imkerei-Förderung, kein PV-/Speicher-/WP-Zuschuss.",
+        "evidenceUrl": "https://www.bremerhaven.de/de/verwaltung-politik-sicherheit/buergerservice/adressen-oeffnungszeiten/umweltschutzamt/foerderrichtlinie-zur-foerderung-der-heimischen-imkerei.119847.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03462",
+    "name": "Landkreis Wittmund",
+    "checkedAt": "2026-10-16T14:12:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Landkreis Wittmund hat keinen Kreiszuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Klimaschutzseite nennt Leitbild, Klimaschutz- und Klimaanpassungskonzepte (Anpassungskonzept über das Aktionsprogramm Natürlicher Klimaschutz gefördert), die Seite „Förderprojekte“ betrifft den Gelege- und Kükenschutz für Wiesenvögel, das Leitbild Energie/Mobilität enthält nur Absichten (Ladeinfrastruktur, Akzeptanz Windenergie). Stand 16.10.2026.",
+    "searches": [
+      "Klimaschutz-/Klimaanpassungsseite, Förderprojekte und Leitbild-Seiten (Leitziel 1 und 4 Verkehr/Energie) am 16.10.2026 gelesen",
+      "Websuche 16.10.2026: „Landkreis Wittmund Förderung Photovoltaik Balkonkraftwerk Zuschuss 2026“ und „landkreis-wittmund.de Förderprogramm Solar Speicher Wärmepumpe“ — kein Kreisprogramm",
+      "Alle sechs erfassten Fundstellen geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landkreis-wittmund.de/Leben-Wohnen/Wohnen/Umwelt/Klimaschutz-Klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung im Landkreis Wittmund: Klima-Leitbild, Klimastrategie, Klimaschutz- und Anpassungskonzepte, Förderhinweis nur zum ANK-geförderten Anpassungskonzept (01.07.2024–30.06.2026); kein Zuschussprogramm für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-wittmund.de/Leben-Wohnen/Wohnen/Umwelt/Naturschutz/F%C3%B6rderprojekte",
+        "finding": "„Förderprojekte“: Gelege- und Kükenschutz für Wiesenbrutvögel 2025/2026 (NKomFöG/Land), kein Energiezuschuss."
+      },
+      {
+        "url": "https://landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-",
+        "finding": "Leitziel 1 (Mobilität): Absicht, Ladeinfrastruktur und alternative Mobilität zu fördern; kein Haushaltsprogramm. Unterseiten mit object=tx,3105.85.1 / 3105.91.1 leiten auf Öffnungszeiten, FID 3105.1.1 auf die Leistungsübersicht A–Z (nur Repowering-Genehmigung, kein Zuschuss)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landkreis-wittmund.de/Leben-Wohnen/Wohnen/Umwelt/Naturschutz/F%C3%B6rderprojekte",
+        "disposition": "reviewed",
+        "reason": "Naturschutz-Förderprojekt Wiesenvögel, kein Energiezuschuss.",
+        "evidenceUrl": "https://www.landkreis-wittmund.de/Leben-Wohnen/Wohnen/Umwelt/Naturschutz/F%C3%B6rderprojekte"
+      },
+      {
+        "url": "landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-",
+        "disposition": "reviewed",
+        "reason": "Leitbild Mobilität, nur Absichtserklärung (Ladeinfrastruktur), kein Zuschuss.",
+        "evidenceUrl": "https://landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-"
+      },
+      {
+        "url": "landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-/index.php?La=1&amp;object=tx,3105.85.1&amp;kat=&amp;kuo=2&amp;sub=0",
+        "disposition": "reviewed",
+        "reason": "Liefert die Öffnungszeiten der Kreisverwaltung, kein Förderthema.",
+        "evidenceUrl": "https://landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-"
+      },
+      {
+        "url": "landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-/index.php?object=tx,3105.1&amp;ModID=9&amp;FID=3105.1.1&amp;mt_step=contact&amp;to_id=3105.1.1&amp;NavID=3105.492",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular zur Leistungsübersicht, kein Förderthema.",
+        "evidenceUrl": "https://landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-"
+      },
+      {
+        "url": "landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-/index.php?object=tx,3105.1&amp;ModID=9&amp;FID=3105.1.1&amp;NavID=3105.492",
+        "disposition": "reviewed",
+        "reason": "Leistungsübersicht A–Z der Kreisverwaltung; einziger Energie-Eintrag ist eine Repowering-Genehmigung, kein Zuschuss.",
+        "evidenceUrl": "https://landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-"
+      },
+      {
+        "url": "landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-/index.php?object=tx,3105.91.1&amp;NavID=3105.492",
+        "disposition": "reviewed",
+        "reason": "Leitet (307) auf die Öffnungszeiten weiter, kein Förderthema.",
+        "evidenceUrl": "https://landkreis-wittmund.de/Politik-Verwaltung/Politik/Leitbild/Handlungsfeld-Verkehr-Energie-digitale-Infrastruktur/Leitziel-1-Wir-wollen-alternative-Mobilit%C3%A4tsangebote-zus%C3%A4tzlich-zum-Individualverkehr-f%C3%B6rdern-"
+      }
+    ]
+  },
+  {
+    "regionId": "05113000",
+    "name": "Essen",
+    "checkedAt": "2026-10-16T14:12:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Essen hatte ein städtisches Förderprogramm für Photovoltaik- und Solaranlagen (im Katalog als essen-solar, eingestellt) und eines für energetische Gebäudemodernisierung; beide wurden wegen der Haushaltslage zum 03.07.2025 gestoppt, seitdem keine neuen Anträge. Kein laufender städtischer Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Stand 16.10.2026.",
+    "searches": [
+      "Solarförderungsseite, Sanierungsförderungsseite und Fördermittelmanagement der Stadt am 16.10.2026 gelesen",
+      "Einzige erfasste Fundstelle geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.essen.de/leben/umwelt/klima/klimaschutz/solarfoederung.de.html",
+        "finding": "„Einstellung des Förderprogramms für Photovoltaik zum 3. Juli 2025“; „Anträge, die noch nicht bewilligt wurden oder ab dem 03.07.2025 (00:00 Uhr) eingehen, können nicht mehr berücksichtigt werden.“ (16.10.2026) — Katalog essen-solar steht auf eingestellt."
+      },
+      {
+        "url": "https://www.essen.de/leben/umwelt/klima/klimaschutz/sanierungsfoerderung.de.html",
+        "finding": "„Einstellung des Förderprogramms für Gebäudesanierung zum 3. Juli 2025“, gleiche Antragsregel (16.10.2026)."
+      },
+      {
+        "url": "https://www.essen.de/leben/planen_bauen_und_wohnen/foerdermittelmanagement/foerdermittelmanagement.de.html",
+        "finding": "Fördermittelmanagement der Immobilienwirtschaft: Fördermittel, die die Stadt selbst für Schulen, Kitas, Sportstätten einwirbt — kein Haushaltszuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "essen.de/leben/planen_bauen_und_wohnen/foerdermittelmanagement/foerdermittelmanagement.de.html",
+        "disposition": "reviewed",
+        "reason": "Fördermittelakquise der Stadt für eigene Bauvorhaben, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.essen.de/leben/planen_bauen_und_wohnen/foerdermittelmanagement/foerdermittelmanagement.de.html"
+      }
+    ]
+  },
+  {
+    "regionId": "05114000",
+    "name": "Krefeld",
+    "checkedAt": "2026-10-16T14:12:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Krefeld hat das städtische Programm „Klimafreundliches Wohnen in Krefeld“ (PV je kWp, Speicher, Balkonkraftwerk; im Katalog als krefeld-klimafreundlich, ausgeschöpft). Beide Töpfe (allgemein und sozial) sind derzeit ausgeschöpft, Anträge über das Online-Formular nicht möglich. Weitere erfasste Seiten betreffen Ehrenamt, Wildtierhilfe, Wirtschaft, EU-Projekte und die städtische Fördermittelakquise. Stand 16.10.2026; Wiederprüfung zum Jahresende wegen möglicher neuer Haushaltsmittel.",
+    "searches": [
+      "Programmseite „Klimafreundliches Wohnen“ und Übersichten „Förderprogramme und Beratung“ / „Förderprogramme & Service“ am 16.10.2026 gelesen",
+      "Alle acht erfassten Fundstellen geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.krefeld.de/klimafreundlicheswohnen",
+        "finding": "„Beide Förderprogramme, der Topf für allgemeine Förderung und der Topf für soziale Förderung, sind derzeit ausgeschöpft.“ (16.10.2026) — deckt sich mit dem Katalog (ausgeschöpft)."
+      },
+      {
+        "url": "https://www.krefeld.de/foerderprogramme-und-beratung",
+        "finding": "Übersicht Umwelt-/Klima-Förderprogramme: verweist auf Klimafreundliches Wohnen, Innenstadt-/Uerdingen-Programm, Bürger-Solarberatung; kein weiteres Haushaltsprogramm für PV/Speicher/WP."
+      },
+      {
+        "url": "https://www.krefeld.de/f%C3%B6rderprogramme-service",
+        "finding": "Übersicht Bauen: Innenstadt/Uerdingen, Denkmalförderung, Hof- und Fassadenprogramm — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt",
+        "finding": "Jahresbericht Fördermittelakquise 2025: Mittel, die die Stadt selbst erhielt, kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "krefeld.de/foerderprogramme-und-beratung",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite (geändert 07.10.), verweist auf das Katalogprogramm, kein weiteres Programm.",
+        "evidenceUrl": "https://www.krefeld.de/foerderprogramme-und-beratung"
+      },
+      {
+        "url": "krefeld.de/f%C3%B6rderprogramme-service",
+        "disposition": "reviewed",
+        "reason": "Bau-Förderübersicht (Fassaden, Denkmal), kein Energiezuschuss.",
+        "evidenceUrl": "https://www.krefeld.de/f%C3%B6rderprogramme-service"
+      },
+      {
+        "url": "krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt",
+        "disposition": "reviewed",
+        "reason": "Meldung zur städtischen Fördermittelakquise, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt"
+      },
+      {
+        "url": "krefeld.de/foerderprogramm-2000-x-1000",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm Ehrenamt (bis 1.000 € für Engagement), kein Energiezuschuss.",
+        "evidenceUrl": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt"
+      },
+      {
+        "url": "krefeld.de/foerderprogramm-fuer-wildtierhilfe-krefeld",
+        "disposition": "reviewed",
+        "reason": "Wildtierhilfe-Förderung, kein Energiezuschuss.",
+        "evidenceUrl": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt"
+      },
+      {
+        "url": "krefeld.de/foerderprogramm-unterstuetzt-kaffeeroesterei",
+        "disposition": "reviewed",
+        "reason": "Wirtschaftsförderung für ein Unternehmen, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt"
+      },
+      {
+        "url": "krefeld.de/angebote-der-beschaeftigungsfoerderung-mit-24000-teilnehmenden",
+        "disposition": "reviewed",
+        "reason": "Beschäftigungsförderung, kein Energiezuschuss.",
+        "evidenceUrl": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt"
+      },
+      {
+        "url": "krefeld.de/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "EU-finanzierte Projekte der Stadt, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt"
       }
     ]
   }
