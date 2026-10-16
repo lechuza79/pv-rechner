@@ -99633,5 +99633,394 @@
         "evidenceUrl": "https://www.gemeinde-warringholz.com/fileadmin/Amt/Dateien/Bauleitplanung/Warringholz/B-Plan_Nr._3_komplett__m._U._.pdf"
       }
     ]
+  },
+  {
+    "regionId": "01062",
+    "name": "Kreis Stormarn",
+    "checkedAt": "2026-10-16T00:30:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Kreis Stormarn bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Seine Seite zur Energiespar-Förderung verweist nur auf Bundes- und Landesprogramme, und sein Klimaschutz ist eine Koordinations- und Beratungsstelle für die Kommunen. Stand 16.10.2026.",
+    "searches": [
+      "kreis-stormarn.de: Klimaschutz und Informationen zur Energiespar-Förderung im Volltext gelesen",
+      "Websuche „Kreis Stormarn Förderprogramm Balkonkraftwerk Photovoltaik Speicher private Haushalte 2026“ am 16.10.2026 — kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kreis-stormarn.de/service/lvw/leistungen/index.php?bereich=0&lid=236",
+        "finding": "Am 16.10.2026 gelesen: „Informationen zur Energiespar-Förderung“ des Kreises verweist nur auf Bundesförderung (BEG bei BAFA und KfW, Förderwegweiser), das Landesförderprogramm und Stiftungen; kein eigener Zuschuss des Kreises."
+      },
+      {
+        "url": "https://www.kreis-stormarn.de/kreis/fachbereiche/bau-umwelt-und-verkehr/klimaschutz/index.html",
+        "finding": "Am 16.10.2026 gelesen: Klimaschutz beim Kreis Stormarn — Klimaschutzkoordination für die Kommunen (Nationale Klimaschutzinitiative, Laufzeit 01.11.2025–31.10.2029) mit Fördermittelberatung; kein Haushaltsprogramm."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "01062016",
+    "name": "Elmenhorst",
+    "checkedAt": "2026-10-16T00:30:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Elmenhorst (Amt Bargteheide-Land) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die einzige erfasste Fundstelle, die Seite „Fördermaßnahmen“ des Amts, listet nur geförderte Vorhaben der Gemeinden selbst; das PV-Konzept des Amts betrifft Freiflächenanlagen. Der Kreis Stormarn ist gesondert geprüft (kein eigener Zuschuss). Stand 16.10.2026.",
+    "searches": [
+      "bargteheide-land.de: Navigation (Bekanntmachungen, Wärmeplanung, Fördermaßnahmen, PV-Konzept) durchgesehen, Fördermaßnahmen und PV-Konzept im Volltext gelesen",
+      "Websuche „Elmenhorst OR Hammoor OR Nienwohld Stormarn Förderung Balkonkraftwerk Photovoltaik Zuschuss“ und „site:bargteheide-land.de Förderung Zuschuss Klimaschutz“ am 16.10.2026 — nur Programme anderer Orte (Bargteheide: Klimaschutzfonds für Kinder- und Jugendprojekte)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bargteheide-land.de/Amt/Bekanntmachungen/F%C3%B6rderma%C3%9Fnahmen",
+        "finding": "Am 16.10.2026 gelesen: „Fördermaßnahmen“ listet nur geförderte Vorhaben der Gemeinden und des Amts selbst (Mehrgenerationenplatz Todendorf, Elektrofahrzeug und Feuerwehrgerätehaus Elmenhorst, Feuerwehrgerätehaus Delingsdorf, LED-Straßen-, Sportplatz- und Verwaltungsbeleuchtung); kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.bargteheide-land.de/Amt/Bekanntmachungen/PV-Konzept",
+        "finding": "Am 16.10.2026 gelesen: „Solar-/Photovoltaik-Freiflächenkonzept“ des Amts (Planungsgrundlage für Freiflächenanlagen); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.kreis-stormarn.de/service/lvw/leistungen/index.php?bereich=0&lid=236",
+        "finding": "Am 16.10.2026 gelesen: „Informationen zur Energiespar-Förderung“ des Kreises verweist nur auf Bundesförderung (BEG bei BAFA und KfW, Förderwegweiser), das Landesförderprogramm und Stiftungen; kein eigener Zuschuss des Kreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bargteheide-land.de/Amt/Bekanntmachungen/F%C3%B6rderma%C3%9Fnahmen",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 gelesen: geförderte Vorhaben der Gemeinden und des Amts selbst, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.bargteheide-land.de/Amt/Bekanntmachungen/F%C3%B6rderma%C3%9Fnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "01062027",
+    "name": "Hammoor",
+    "checkedAt": "2026-10-16T00:30:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Hammoor (Amt Bargteheide-Land) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die einzige erfasste Fundstelle, die Seite „Fördermaßnahmen“ des Amts, listet nur geförderte Vorhaben der Gemeinden selbst; das PV-Konzept des Amts betrifft Freiflächenanlagen. Der Kreis Stormarn ist gesondert geprüft (kein eigener Zuschuss). Stand 16.10.2026.",
+    "searches": [
+      "bargteheide-land.de: Navigation (Bekanntmachungen, Wärmeplanung, Fördermaßnahmen, PV-Konzept) durchgesehen, Fördermaßnahmen und PV-Konzept im Volltext gelesen",
+      "Websuche „Elmenhorst OR Hammoor OR Nienwohld Stormarn Förderung Balkonkraftwerk Photovoltaik Zuschuss“ und „site:bargteheide-land.de Förderung Zuschuss Klimaschutz“ am 16.10.2026 — nur Programme anderer Orte (Bargteheide: Klimaschutzfonds für Kinder- und Jugendprojekte)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bargteheide-land.de/Amt/Bekanntmachungen/F%C3%B6rderma%C3%9Fnahmen",
+        "finding": "Am 16.10.2026 gelesen: „Fördermaßnahmen“ listet nur geförderte Vorhaben der Gemeinden und des Amts selbst (Mehrgenerationenplatz Todendorf, Elektrofahrzeug und Feuerwehrgerätehaus Elmenhorst, Feuerwehrgerätehaus Delingsdorf, LED-Straßen-, Sportplatz- und Verwaltungsbeleuchtung); kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.bargteheide-land.de/Amt/Bekanntmachungen/PV-Konzept",
+        "finding": "Am 16.10.2026 gelesen: „Solar-/Photovoltaik-Freiflächenkonzept“ des Amts (Planungsgrundlage für Freiflächenanlagen); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.kreis-stormarn.de/service/lvw/leistungen/index.php?bereich=0&lid=236",
+        "finding": "Am 16.10.2026 gelesen: „Informationen zur Energiespar-Förderung“ des Kreises verweist nur auf Bundesförderung (BEG bei BAFA und KfW, Förderwegweiser), das Landesförderprogramm und Stiftungen; kein eigener Zuschuss des Kreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bargteheide-land.de/Amt/Bekanntmachungen/F%C3%B6rderma%C3%9Fnahmen",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 gelesen: geförderte Vorhaben der Gemeinden und des Amts selbst, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.bargteheide-land.de/Amt/Bekanntmachungen/F%C3%B6rderma%C3%9Fnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "01062051",
+    "name": "Nienwohld",
+    "checkedAt": "2026-10-16T00:30:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Nienwohld (Amt Bargteheide-Land) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die einzige erfasste Fundstelle, die Seite „Fördermaßnahmen“ des Amts, listet nur geförderte Vorhaben der Gemeinden selbst; das PV-Konzept des Amts betrifft Freiflächenanlagen. Der Kreis Stormarn ist gesondert geprüft (kein eigener Zuschuss). Stand 16.10.2026.",
+    "searches": [
+      "bargteheide-land.de: Navigation (Bekanntmachungen, Wärmeplanung, Fördermaßnahmen, PV-Konzept) durchgesehen, Fördermaßnahmen und PV-Konzept im Volltext gelesen",
+      "Websuche „Elmenhorst OR Hammoor OR Nienwohld Stormarn Förderung Balkonkraftwerk Photovoltaik Zuschuss“ und „site:bargteheide-land.de Förderung Zuschuss Klimaschutz“ am 16.10.2026 — nur Programme anderer Orte (Bargteheide: Klimaschutzfonds für Kinder- und Jugendprojekte)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bargteheide-land.de/Amt/Bekanntmachungen/F%C3%B6rderma%C3%9Fnahmen",
+        "finding": "Am 16.10.2026 gelesen: „Fördermaßnahmen“ listet nur geförderte Vorhaben der Gemeinden und des Amts selbst (Mehrgenerationenplatz Todendorf, Elektrofahrzeug und Feuerwehrgerätehaus Elmenhorst, Feuerwehrgerätehaus Delingsdorf, LED-Straßen-, Sportplatz- und Verwaltungsbeleuchtung); kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.bargteheide-land.de/Amt/Bekanntmachungen/PV-Konzept",
+        "finding": "Am 16.10.2026 gelesen: „Solar-/Photovoltaik-Freiflächenkonzept“ des Amts (Planungsgrundlage für Freiflächenanlagen); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.kreis-stormarn.de/service/lvw/leistungen/index.php?bereich=0&lid=236",
+        "finding": "Am 16.10.2026 gelesen: „Informationen zur Energiespar-Förderung“ des Kreises verweist nur auf Bundesförderung (BEG bei BAFA und KfW, Förderwegweiser), das Landesförderprogramm und Stiftungen; kein eigener Zuschuss des Kreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bargteheide-land.de/Amt/Bekanntmachungen/F%C3%B6rderma%C3%9Fnahmen",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 gelesen: geförderte Vorhaben der Gemeinden und des Amts selbst, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.bargteheide-land.de/Amt/Bekanntmachungen/F%C3%B6rderma%C3%9Fnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "01062020",
+    "name": "Grande",
+    "checkedAt": "2026-10-16T00:30:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Grande (Amt Trittau) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderseite des Amts nennt nur Bundesprogramme, und das Balkonkraftwerk-Programm der Gemeinde Trittau galt nur dort und ist seit 31.12.2025 eingestellt. Der Kreis Stormarn ist gesondert geprüft (kein eigener Zuschuss). Stand 16.10.2026.",
+    "searches": [
+      "amt-trittau.de: Startseite, Fördermöglichkeiten und Klimaschutzkonzept-Seite gelesen; Klimaschutzkonzept im Volltext nach Förder-/Zuschussbegriffen durchsucht",
+      "trittau.de: Balkonkraftwerk-Programm der Gemeinde Trittau gelesen (eingestellt, nur Gemeindegebiet Trittau)",
+      "Websuche „Grönwohld OR Lütjensee OR Hohenfelde OR Grande OR Rausdorf Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde Amt Trittau“ und „site:amt-trittau.de Förderung Zuschuss Photovoltaik Balkon“ am 16.10.2026 — nur das eingestellte Trittauer Programm und Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html",
+        "finding": "Am 16.10.2026 gelesen: „Fördermöglichkeiten“ des Amts Trittau nennt nur Bundesförderung (KfW, BAFA, Energieberatung), die Verbraucherzentrale, den Solardach-Check und die Bingo!-Projektförderung als „Hinweise … welche Fördermittel es überhaupt geben kann“; kein Zuschuss des Amts oder seiner Gemeinden."
+      },
+      {
+        "url": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09",
+        "finding": "Am 16.10.2026 gelesen (Volltext, 32.021 Wörter): Integriertes Klimaschutzkonzept für Grönwohld, Hohenfelde und Lütjensee (Abschlussbericht Juli 2024). Es empfiehlt eigene Förderprogramme etwa für Balkonkraftwerke und nennt als Vorbild nur das Trittauer Programm „Sonnenstrom für Trittau“; ein Programm dieser Gemeinden selbst beschließt es nicht."
+      },
+      {
+        "url": "https://www.amt-trittau.de/",
+        "finding": "Am 16.10.2026 gelesen: Startseite des Amts; einzige Klimaschutz-Verlinkung ist das Klimaschutzkonzept Grönwohld, Hohenfelde und Lütjensee."
+      },
+      {
+        "url": "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html",
+        "finding": "Am 16.10.2026 gelesen: Das Balkonkraftwerk-Programm „Sonnenstrom für Trittau“ galt nur im Gemeindegebiet Trittau und ist „zum 31.12.2025 eingestellt“."
+      },
+      {
+        "url": "https://www.kreis-stormarn.de/service/lvw/leistungen/index.php?bereich=0&lid=236",
+        "finding": "Am 16.10.2026 gelesen: „Informationen zur Energiespar-Förderung“ des Kreises verweist nur auf Bundesförderung (BEG bei BAFA und KfW, Förderwegweiser), das Landesförderprogramm und Stiftungen; kein eigener Zuschuss des Kreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 gelesen: Klimaschutzkonzept mit Empfehlung, aber ohne beschlossenes Förderprogramm der Gemeinde.",
+        "evidenceUrl": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09"
+      },
+      {
+        "url": "amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 gelesen: nur Hinweise auf Bundesförderung, kein Zuschuss des Amts.",
+        "evidenceUrl": "https://www.amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01062058",
+    "name": "Rausdorf",
+    "checkedAt": "2026-10-16T00:30:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Rausdorf (Amt Trittau) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderseite des Amts nennt nur Bundesprogramme, und das Balkonkraftwerk-Programm der Gemeinde Trittau galt nur dort und ist seit 31.12.2025 eingestellt. Der Kreis Stormarn ist gesondert geprüft (kein eigener Zuschuss). Stand 16.10.2026.",
+    "searches": [
+      "amt-trittau.de: Startseite, Fördermöglichkeiten und Klimaschutzkonzept-Seite gelesen; Klimaschutzkonzept im Volltext nach Förder-/Zuschussbegriffen durchsucht",
+      "trittau.de: Balkonkraftwerk-Programm der Gemeinde Trittau gelesen (eingestellt, nur Gemeindegebiet Trittau)",
+      "Websuche „Grönwohld OR Lütjensee OR Hohenfelde OR Grande OR Rausdorf Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde Amt Trittau“ und „site:amt-trittau.de Förderung Zuschuss Photovoltaik Balkon“ am 16.10.2026 — nur das eingestellte Trittauer Programm und Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html",
+        "finding": "Am 16.10.2026 gelesen: „Fördermöglichkeiten“ des Amts Trittau nennt nur Bundesförderung (KfW, BAFA, Energieberatung), die Verbraucherzentrale, den Solardach-Check und die Bingo!-Projektförderung als „Hinweise … welche Fördermittel es überhaupt geben kann“; kein Zuschuss des Amts oder seiner Gemeinden."
+      },
+      {
+        "url": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09",
+        "finding": "Am 16.10.2026 gelesen (Volltext, 32.021 Wörter): Integriertes Klimaschutzkonzept für Grönwohld, Hohenfelde und Lütjensee (Abschlussbericht Juli 2024). Es empfiehlt eigene Förderprogramme etwa für Balkonkraftwerke und nennt als Vorbild nur das Trittauer Programm „Sonnenstrom für Trittau“; ein Programm dieser Gemeinden selbst beschließt es nicht."
+      },
+      {
+        "url": "https://www.amt-trittau.de/",
+        "finding": "Am 16.10.2026 gelesen: Startseite des Amts; einzige Klimaschutz-Verlinkung ist das Klimaschutzkonzept Grönwohld, Hohenfelde und Lütjensee."
+      },
+      {
+        "url": "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html",
+        "finding": "Am 16.10.2026 gelesen: Das Balkonkraftwerk-Programm „Sonnenstrom für Trittau“ galt nur im Gemeindegebiet Trittau und ist „zum 31.12.2025 eingestellt“."
+      },
+      {
+        "url": "https://www.kreis-stormarn.de/service/lvw/leistungen/index.php?bereich=0&lid=236",
+        "finding": "Am 16.10.2026 gelesen: „Informationen zur Energiespar-Förderung“ des Kreises verweist nur auf Bundesförderung (BEG bei BAFA und KfW, Förderwegweiser), das Landesförderprogramm und Stiftungen; kein eigener Zuschuss des Kreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 gelesen: Klimaschutzkonzept mit Empfehlung, aber ohne beschlossenes Förderprogramm der Gemeinde.",
+        "evidenceUrl": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09"
+      },
+      {
+        "url": "amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 gelesen: nur Hinweise auf Bundesförderung, kein Zuschuss des Amts.",
+        "evidenceUrl": "https://www.amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01062033",
+    "name": "Hohenfelde",
+    "checkedAt": "2026-10-16T00:30:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Hohenfelde (Amt Trittau) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderseite des Amts nennt nur Bundesprogramme, und das Balkonkraftwerk-Programm der Gemeinde Trittau galt nur dort und ist seit 31.12.2025 eingestellt. Das gemeinsame Klimaschutzkonzept (Juli 2024) empfiehlt ein solches Programm nur. Der Kreis Stormarn ist gesondert geprüft (kein eigener Zuschuss). Stand 16.10.2026.",
+    "searches": [
+      "amt-trittau.de: Startseite, Fördermöglichkeiten und Klimaschutzkonzept-Seite gelesen; Klimaschutzkonzept im Volltext nach Förder-/Zuschussbegriffen durchsucht",
+      "trittau.de: Balkonkraftwerk-Programm der Gemeinde Trittau gelesen (eingestellt, nur Gemeindegebiet Trittau)",
+      "Websuche „Grönwohld OR Lütjensee OR Hohenfelde OR Grande OR Rausdorf Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde Amt Trittau“ und „site:amt-trittau.de Förderung Zuschuss Photovoltaik Balkon“ am 16.10.2026 — nur das eingestellte Trittauer Programm und Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html",
+        "finding": "Am 16.10.2026 gelesen: „Fördermöglichkeiten“ des Amts Trittau nennt nur Bundesförderung (KfW, BAFA, Energieberatung), die Verbraucherzentrale, den Solardach-Check und die Bingo!-Projektförderung als „Hinweise … welche Fördermittel es überhaupt geben kann“; kein Zuschuss des Amts oder seiner Gemeinden."
+      },
+      {
+        "url": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09",
+        "finding": "Am 16.10.2026 gelesen (Volltext, 32.021 Wörter): Integriertes Klimaschutzkonzept für Grönwohld, Hohenfelde und Lütjensee (Abschlussbericht Juli 2024). Es empfiehlt eigene Förderprogramme etwa für Balkonkraftwerke und nennt als Vorbild nur das Trittauer Programm „Sonnenstrom für Trittau“; ein Programm dieser Gemeinden selbst beschließt es nicht."
+      },
+      {
+        "url": "https://www.amt-trittau.de/buergerservice-politik/klimaschutzkonzept-groenwohld-hohenfelde-und-luetjensee/",
+        "finding": "Am 16.10.2026 gelesen: Seite zum Klimaschutzkonzept- und -management der drei Gemeinden — „Das integrierte Klimaschutzkonzept … ist fertiggestellt“; kein Förderprogramm genannt."
+      },
+      {
+        "url": "https://www.amt-trittau.de/",
+        "finding": "Am 16.10.2026 gelesen: Startseite des Amts; einzige Klimaschutz-Verlinkung ist das Klimaschutzkonzept Grönwohld, Hohenfelde und Lütjensee."
+      },
+      {
+        "url": "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html",
+        "finding": "Am 16.10.2026 gelesen: Das Balkonkraftwerk-Programm „Sonnenstrom für Trittau“ galt nur im Gemeindegebiet Trittau und ist „zum 31.12.2025 eingestellt“."
+      },
+      {
+        "url": "https://www.kreis-stormarn.de/service/lvw/leistungen/index.php?bereich=0&lid=236",
+        "finding": "Am 16.10.2026 gelesen: „Informationen zur Energiespar-Förderung“ des Kreises verweist nur auf Bundesförderung (BEG bei BAFA und KfW, Förderwegweiser), das Landesförderprogramm und Stiftungen; kein eigener Zuschuss des Kreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 gelesen: Klimaschutzkonzept mit Empfehlung, aber ohne beschlossenes Förderprogramm der Gemeinde.",
+        "evidenceUrl": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09"
+      },
+      {
+        "url": "amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 gelesen: nur Hinweise auf Bundesförderung, kein Zuschuss des Amts.",
+        "evidenceUrl": "https://www.amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01062021",
+    "name": "Grönwohld",
+    "checkedAt": "2026-10-16T00:30:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Grönwohld (Amt Trittau) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderseite des Amts nennt nur Bundesprogramme, und das Balkonkraftwerk-Programm der Gemeinde Trittau galt nur dort und ist seit 31.12.2025 eingestellt. Das gemeinsame Klimaschutzkonzept (Juli 2024) empfiehlt ein solches Programm nur. Der Kreis Stormarn ist gesondert geprüft (kein eigener Zuschuss). Stand 16.10.2026.",
+    "searches": [
+      "groenwohld-stormarn.de: Startseite und Klimaschutzkonzept-Seite gelesen",
+      "amt-trittau.de: Startseite, Fördermöglichkeiten und Klimaschutzkonzept-Seite gelesen; Klimaschutzkonzept im Volltext nach Förder-/Zuschussbegriffen durchsucht",
+      "trittau.de: Balkonkraftwerk-Programm der Gemeinde Trittau gelesen (eingestellt, nur Gemeindegebiet Trittau)",
+      "Websuche „Grönwohld OR Lütjensee OR Hohenfelde OR Grande OR Rausdorf Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde Amt Trittau“ und „site:amt-trittau.de Förderung Zuschuss Photovoltaik Balkon“ am 16.10.2026 — nur das eingestellte Trittauer Programm und Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html",
+        "finding": "Am 16.10.2026 gelesen: „Fördermöglichkeiten“ des Amts Trittau nennt nur Bundesförderung (KfW, BAFA, Energieberatung), die Verbraucherzentrale, den Solardach-Check und die Bingo!-Projektförderung als „Hinweise … welche Fördermittel es überhaupt geben kann“; kein Zuschuss des Amts oder seiner Gemeinden."
+      },
+      {
+        "url": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09",
+        "finding": "Am 16.10.2026 gelesen (Volltext, 32.021 Wörter): Integriertes Klimaschutzkonzept für Grönwohld, Hohenfelde und Lütjensee (Abschlussbericht Juli 2024). Es empfiehlt eigene Förderprogramme etwa für Balkonkraftwerke und nennt als Vorbild nur das Trittauer Programm „Sonnenstrom für Trittau“; ein Programm dieser Gemeinden selbst beschließt es nicht."
+      },
+      {
+        "url": "https://www.amt-trittau.de/buergerservice-politik/klimaschutzkonzept-groenwohld-hohenfelde-und-luetjensee/",
+        "finding": "Am 16.10.2026 gelesen: Seite zum Klimaschutzkonzept- und -management der drei Gemeinden — „Das integrierte Klimaschutzkonzept … ist fertiggestellt“; kein Förderprogramm genannt."
+      },
+      {
+        "url": "https://www.groenwohld-stormarn.de/gemeinde-politik/allgemeines/klimaschutzkonzept/",
+        "finding": "Am 16.10.2026 gelesen: Seite der Gemeinde Grönwohld zum gemeinsamen Klimaschutzkonzept; kein Förderprogramm. Die Startseite hat sonst keine Klima-, Energie- oder Förderrubrik."
+      },
+      {
+        "url": "https://www.amt-trittau.de/",
+        "finding": "Am 16.10.2026 gelesen: Startseite des Amts; einzige Klimaschutz-Verlinkung ist das Klimaschutzkonzept Grönwohld, Hohenfelde und Lütjensee."
+      },
+      {
+        "url": "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html",
+        "finding": "Am 16.10.2026 gelesen: Das Balkonkraftwerk-Programm „Sonnenstrom für Trittau“ galt nur im Gemeindegebiet Trittau und ist „zum 31.12.2025 eingestellt“."
+      },
+      {
+        "url": "https://www.kreis-stormarn.de/service/lvw/leistungen/index.php?bereich=0&lid=236",
+        "finding": "Am 16.10.2026 gelesen: „Informationen zur Energiespar-Förderung“ des Kreises verweist nur auf Bundesförderung (BEG bei BAFA und KfW, Förderwegweiser), das Landesförderprogramm und Stiftungen; kein eigener Zuschuss des Kreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "groenwohld-stormarn.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 abgerufen: byte-gleiche Kopie des Klimaschutzkonzepts auf der Gemeindeseite; Empfehlung, kein beschlossenes Förderprogramm.",
+        "evidenceUrl": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09"
+      }
+    ]
+  },
+  {
+    "regionId": "01062045",
+    "name": "Lütjensee",
+    "checkedAt": "2026-10-16T00:30:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Lütjensee (Amt Trittau) bietet keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderseite des Amts nennt nur Bundesprogramme, und das Balkonkraftwerk-Programm der Gemeinde Trittau galt nur dort und ist seit 31.12.2025 eingestellt. Das gemeinsame Klimaschutzkonzept (Juli 2024) empfiehlt ein solches Programm nur. Der Kreis Stormarn ist gesondert geprüft (kein eigener Zuschuss). Stand 16.10.2026.",
+    "searches": [
+      "luetjensee.de: Startseite (Nachhaltigkeit) und Klimaschutzkonzept-Seite gelesen",
+      "amt-trittau.de: Startseite, Fördermöglichkeiten und Klimaschutzkonzept-Seite gelesen; Klimaschutzkonzept im Volltext nach Förder-/Zuschussbegriffen durchsucht",
+      "trittau.de: Balkonkraftwerk-Programm der Gemeinde Trittau gelesen (eingestellt, nur Gemeindegebiet Trittau)",
+      "Websuche „Grönwohld OR Lütjensee OR Hohenfelde OR Grande OR Rausdorf Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde Amt Trittau“ und „site:amt-trittau.de Förderung Zuschuss Photovoltaik Balkon“ am 16.10.2026 — nur das eingestellte Trittauer Programm und Programme anderer Orte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-trittau.de/portal/seiten/foerdermoeglichkeiten-900000190-27160.html",
+        "finding": "Am 16.10.2026 gelesen: „Fördermöglichkeiten“ des Amts Trittau nennt nur Bundesförderung (KfW, BAFA, Energieberatung), die Verbraucherzentrale, den Solardach-Check und die Bingo!-Projektförderung als „Hinweise … welche Fördermittel es überhaupt geben kann“; kein Zuschuss des Amts oder seiner Gemeinden."
+      },
+      {
+        "url": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09",
+        "finding": "Am 16.10.2026 gelesen (Volltext, 32.021 Wörter): Integriertes Klimaschutzkonzept für Grönwohld, Hohenfelde und Lütjensee (Abschlussbericht Juli 2024). Es empfiehlt eigene Förderprogramme etwa für Balkonkraftwerke und nennt als Vorbild nur das Trittauer Programm „Sonnenstrom für Trittau“; ein Programm dieser Gemeinden selbst beschließt es nicht."
+      },
+      {
+        "url": "https://www.amt-trittau.de/buergerservice-politik/klimaschutzkonzept-groenwohld-hohenfelde-und-luetjensee/",
+        "finding": "Am 16.10.2026 gelesen: Seite zum Klimaschutzkonzept- und -management der drei Gemeinden — „Das integrierte Klimaschutzkonzept … ist fertiggestellt“; kein Förderprogramm genannt."
+      },
+      {
+        "url": "https://www.luetjensee.de/unsere-gemeinde/nachhaltigkeit/klimaschutzkonzept/",
+        "finding": "Am 16.10.2026 gelesen: Seite „Klimaschutzkonzept Lütjensee“ mit dem Konzept als einzigem Dokument. Die Startseite verlinkt unter Nachhaltigkeit sonst nur Energiemonitor, ehrenamtliche Solarberatung (startlocal e. V.) und ein Gesundheitsportal; kein Zuschuss."
+      },
+      {
+        "url": "https://www.amt-trittau.de/",
+        "finding": "Am 16.10.2026 gelesen: Startseite des Amts; einzige Klimaschutz-Verlinkung ist das Klimaschutzkonzept Grönwohld, Hohenfelde und Lütjensee."
+      },
+      {
+        "url": "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html",
+        "finding": "Am 16.10.2026 gelesen: Das Balkonkraftwerk-Programm „Sonnenstrom für Trittau“ galt nur im Gemeindegebiet Trittau und ist „zum 31.12.2025 eingestellt“."
+      },
+      {
+        "url": "https://www.kreis-stormarn.de/service/lvw/leistungen/index.php?bereich=0&lid=236",
+        "finding": "Am 16.10.2026 gelesen: „Informationen zur Energiespar-Förderung“ des Kreises verweist nur auf Bundesförderung (BEG bei BAFA und KfW, Förderwegweiser), das Landesförderprogramm und Stiftungen; kein eigener Zuschuss des Kreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "luetjensee.de/downloads/datei/ZmJiZDhmMmFjMDhmM2E0N3ZzbjIyWlRYNUZ2alRPa1BJNTNGemhaV0Z5ZmRoVEw4eXNKa3JDZG1BdGNwTGRjdDVYQ3Z4cUd3VVNqTHU5UzlSZmlVSGRVS1Awd3NJVEtEaUtwejFibm1Xclcrajg1eGFSYlVLK2dycGQ5amZDbjFSQW5qNUtiQ3J6Rit3WE5KRWRwNzhCU21lWE9tS0VDcm9yNFFtUT09",
+        "disposition": "reviewed",
+        "reason": "Am 16.10.2026 abgerufen: byte-gleiche Kopie des Klimaschutzkonzepts auf der Gemeindeseite; Empfehlung, kein beschlossenes Förderprogramm.",
+        "evidenceUrl": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09"
+      }
+    ]
   }
 ]
