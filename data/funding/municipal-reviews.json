@@ -101672,6 +101672,10 @@
       {
         "url": "https://www.duesseldorf.de/umweltamt/umwelt-und-verbraucherthemen-von-a-z/luft/foerderprogramme",
         "finding": "Linkliste Förderprogramme Luft: Partikelfilter, Verweis auf Klimafreundliches Wohnen und Arbeiten."
+      },
+      {
+        "url": "https://www.duesseldorf.de/verkehrsmanagement/mobilitaet-neu-denken/elektromobilitaet/gewerbliche-nutzer/foerderprogramme",
+        "finding": "HTTP 404 am 16.10.2026 (Seite entfernt); betraf E-Mobilitäts-Förderung für gewerbliche Nutzer, am 20.09.2026 bereits gelesen."
       }
     ],
     "sources": [
@@ -101704,6 +101708,12 @@
         "disposition": "reviewed",
         "reason": "Linkliste, verweist auf das Katalogprogramm.",
         "evidenceUrl": "https://www.duesseldorf.de/umweltamt/umwelt-und-verbraucherthemen-von-a-z/luft/foerderprogramme"
+      },
+      {
+        "url": "duesseldorf.de/verkehrsmanagement/mobilitaet-neu-denken/elektromobilitaet/gewerbliche-nutzer/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gewerbliche E-Mobilität, kein Haushaltszuschuss; Seite inzwischen entfernt (404).",
+        "evidenceUrl": "https://www.duesseldorf.de/verkehrsmanagement/mobilitaet-neu-denken/elektromobilitaet/gewerbliche-nutzer/foerderprogramme"
       }
     ]
   },
