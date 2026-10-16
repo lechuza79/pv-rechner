@@ -16113,6 +16113,101 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // the other-programmes exclusion make any deduction a guess.
   },
 
+  "bargteheide-klimaschutzfonds-speicher": {
+    id: "bargteheide-klimaschutzfonds-speicher", name: "Klimaschutzfonds Bargteheide — Zuschuss für Energiespeicher",
+    traeger: "Stadt Bargteheide (Klimaschutzmanagement)", level: "kommune", region: "Bargteheide",
+    bundesland: "Schleswig-Holstein", agsCode: "01062006",
+    url: "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen/Klimaschutzfonds.php?object=tx,3489.2292.1&NavID=3489.26",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-01-01", beschlossenIso: "2025-06-05",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss für einen Energiespeicher, der Strom aus erneuerbaren Energien speichert — nicht für die Photovoltaikanlage selbst",
+    maxFoerderung: "100 € je Speicher",
+    rates: [{ label: "Energiespeicher für erneuerbar erzeugten Strom", value: "100 € pauschal" }],
+    conditions: [
+      "Gefördert wird nur der Speicher; Powerbanks sind ausdrücklich ausgeschlossen. Den Zuschuss für Anlagen zur Stromerzeugung sieht die Förder-Tabelle nur für Vereine mit Sitz in Bargteheide vor",
+      "Antragsberechtigt sind Personen, die in Bargteheide wohnen",
+      "Begonnen werden darf erst nach der schriftlichen Bewilligung; die Stadt entscheidet in der Regel binnen vier Wochen",
+      "Antrag mit Antragsformular und Fragebogen per E-Mail an das Klimaschutzmanagement oder per Post, ganzjährig möglich",
+      "Umsetzung und Abrechnung im selben Kalenderjahr; spätestens zwei Monate nach Projektende Ergebnisbericht, Rechnung und Foto einreichen",
+      "Im Antrag ist kurz darzulegen, was die Maßnahme zum Klimaschutz beiträgt (Fragebogen)",
+      "Gefördert wird höchstens eine Maßnahme je Kalenderjahr im Stadtgebiet; der Fonds läuft im Rahmen der jährlichen Haushaltsmittel, ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // Read 16.10.2026 in the original (and 16.10.2026 02Z in a browser): fund
+    // page "Die Förderhöhe für Energiespeicher (keine Powerbanks!) liegt bei
+    // 100 Euro", "Erneuerbare Energien: u.a. Energiespeicher", "Energetische
+    // Sanierungsmaßnahmen zum privaten Gebrauch fallen nicht in das
+    // Förderprofil"; guideline Teil A (media/custom/3489_2251_1.PDF, UKE
+    // decision 05.06.2025, in force 01.01.2025): start only after approval, one
+    // measure per calendar year, implemented and settled within the calendar
+    // year, proof within two months, term set with each year's budget; Teil B
+    // table (media/custom/3489_1622_1.PDF): "Energiespeicher (für die von
+    // Erneuerbare Energien gewonnene Energie)", private and clubs, 100 €,
+    // "Wohnhaft in Bargteheide", proof report, invoice, photo. "Regenerative
+    // Energien 90 % max. 1000 €" and "Energiesparmaßnahmen" are for clubs
+    // only (no "Privat" mark, condition "Sitz in Bargteheide").
+    // A storage-only programme, filed like schlierbach-energiespeicher under
+    // "pv" with no calculation field: the flat 100 € hangs on the storage, and
+    // the calculator does not know whether a storage is planned.
+    // Council 16.10.2026 3/3 incl. adversarial reviewer: confirmed; the town's
+    // newsletter (May-Sep 2025) "seit 2025 werden über den Klimaschutzfonds nun
+    // Energiespeicher mit 100€ gefördert", issue Jan-Jun 2026 still invites
+    // private applicants. "No roof/balcony" reworded as the table's club-only
+    // generation item; one-measure rule worded as in guideline no. 2.
+  },
+
+  "oldenburg-altbau-waermepumpe": {
+    id: "oldenburg-altbau-waermepumpe", name: "Förderprogramm Klimaschutzmaßnahmen im Altbau — Wärmepumpen",
+    traeger: "Stadt Oldenburg (Fachdienst Klimaschutz)", level: "kommune", region: "Oldenburg (Oldb)",
+    bundesland: "Niedersachsen", agsCode: "03403",
+    url: "https://serviceportal.oldenburg.de/buergerservice/dienstleistungen/foerderprogramm-klimaschutzmassnahmen-im-altbau-900000983-0.html",
+    stand: "Oktober 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beschlossenIso: "2024-12-16",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Rechnungssumme einer Wärmepumpe im Altbau, nachrangig zur Bundesförderung (Mittel 2026 gebunden)",
+    maxFoerderung: "max. 7.500 € für alle Maßnahmen je Gebäude und Jahr",
+    rates: [
+      { label: "Luft/Wasser- und Luft/Luft-Wärmepumpe", value: "10 % der Rechnungssumme — Mittel 2026 vergeben", nur: ["waermepumpe"] },
+      { label: "Sole/Wasser-Wärmepumpe (auch mit PVT-Kollektoren)", value: "15 % der Rechnungssumme — Mittel 2026 vergeben", nur: ["waermepumpe"] },
+      { label: "Wasser/Wasser-Wärmepumpe", value: "10 % der Rechnungssumme — Mittel 2026 vergeben", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Die Mittel für 2026 sind vollständig gebunden, der Antrag im Serviceportal ist gesperrt; die Stadt plant eine Fortführung 2027, ohne Termin und Bedingungen schon zu nennen",
+      "Ohne Antrag durchgeführte Maßnahmen werden nicht rückwirkend gefördert: Antrag online vor Beginn der Arbeiten, Beginn erst nach Zusage oder wenn die Stadt dem vorzeitigen Beginn in Textform zugestimmt hat",
+      "Das Gebäude muss älter als zehn Jahre sein; gefördert werden Wohngebäude bis zwölf Wohneinheiten",
+      "Natürliche Personen sind nur bis zu einem zu versteuernden Haushaltseinkommen von 120.000 € im Jahr antragsberechtigt; wer Rente oder Pension bezieht, ist von der Grenze ausgenommen",
+      "Gefördert werden Wärmepumpen bis 100 kW; sie müssen auf der Anlagenliste des BAFA stehen und eine Jahresarbeitszahl von mindestens 3,5 (Luft) bzw. 3,8 (Erdwärme, Wasser) erreichen; Einbau durch einen Fachbetrieb",
+      "Mit aktueller Wohngeldbescheinigung erhöhen sich die Fördersummen um 30 %",
+      "Die städtische Förderung ist nachrangig: Bundesmittel sind zuerst zu nutzen. Laut Stadt dürfen KfW-Förderung und städtische Förderung kumuliert höchstens 60 Prozent betragen, deshalb kann der städtische Zuschuss gekürzt werden oder entfallen",
+      "Bei Hybridanlagen wird nur der nicht fossil betriebene Teil gefördert; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // Read 16.10.2026: service page in a real browser (script fetch returns the
+    // portal shell): "Die Fördermittel für das Jahr 2026 für das Förderprogramm
+    // „Klimaschutzmaßnahmen im Altbau" sind vollständig gebunden und
+    // reserviert", "Für das Jahr 2027 in die Fortführung des Förderprogramms
+    // geplant", and the KfW note "dürfen kumuliert maximal 60 Prozent
+    // betragen". Guideline of 16.12.2024 read in full
+    // (oldenburg.de/fileadmin/oldenburg/Benutzer/Dateien/22_Rechtsamt/
+    // Zuwendungsrichtlinien/20241217-Foerderrichtlinie_Klimaschutzmassnahmen_im_Altbau_2025_16.12.2024.pdf):
+    // § 1 h heat pumps up to 100 kW, JAZ table, 10/15/10 %; § 2 (2) income cap
+    // 120,000 EUR, (3) pensioners exempt; § 3 (1) building older than ten
+    // years, (2) start only after approval, (4) specialist firms; § 4 (4)
+    // 7,500 EUR per year per applicant and building; § 5 subordinate to KfW/
+    // BAFA; § 6 online application before work starts. Insulation, solar
+    // thermal, biomass and heating-network items are out of our scope; roof PV
+    // itself is not funded (only a roof renovation with the NBauO PV duty).
+    // Exhausted, so informs only and deducts nothing.
+    // Council 16.10.2026: neutral and adversarial reviewers confirmed (both
+    // read the service page); a second neutral one could not load it (portal
+    // shell) and confirmed everything else. Taken over: housing-benefit +30 %
+    // (§ 1 m), 100 kW limit, "in Textform", the 60 % sentence quoted as the
+    // city words it (service page only, not the guideline).
+  },
+
   // ─── Aufgenommen am 26.09.2026: Stadt Celle, Klimaschutzfonds ────────────────
   "celle-klimaschutzfonds": {
     id: "celle-klimaschutzfonds", name: "Klimaschutzfonds Celle",

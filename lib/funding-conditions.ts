@@ -803,6 +803,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 14 Oct 2026: Klimafonds der Stadt Schenefeld (committee discretion,
   // budget reservation, other-programmes exclusion); deducts nothing.
   "schenefeld-klimafonds",
+  // Added 16 Oct 2026: Bargteheide climate fund, flat 100 EUR for a storage
+  // only; the calculator does not know whether a storage is planned.
+  "bargteheide-klimaschutzfonds-speicher",
+  // Added 16 Oct 2026: Oldenburg heat-pump part of the Altbau programme,
+  // 2026 funds bound; income cap and KfW 60 % ceiling have no test form.
+  "oldenburg-altbau-waermepumpe",
 ];
 
 /**

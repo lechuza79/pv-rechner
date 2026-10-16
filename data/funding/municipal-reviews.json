@@ -100112,80 +100112,6 @@
     ]
   },
   {
-    "regionId": "01062006",
-    "name": "Bargteheide",
-    "checkedAt": "2026-10-16T02:35:00Z",
-    "recheckAt": "2026-11-15T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "klaerung",
-    "conclusion": "Bargteheide fördert über seinen Klimaschutzfonds (Richtlinie vom 05.06.2025) Energiespeicher für Strom aus erneuerbaren Energien mit 100 € pauschal für Personen, die in Bargteheide wohnen; Antrag vor Beginn, Nachweis per Rechnung und Foto. Andere Energie-Fördergegenstände (erneuerbare Energien, Energiesparen) richten sich an Vereine; private energetische Sanierung ist ausdrücklich ausgeschlossen. Offen ist nur die Aufnahme: Der Katalog kennt keine eigene Technik „Speicher“, und als Photovoltaik eingetragen würde das Programm eine Dachförderung versprechen. Stand 16.10.2026.",
-    "searches": [
-      "bargteheide.de: Förderungen, Klimaschutzfonds (Browser), Richtlinie Teil A, Tabelle Teil B, Antragsformular und Prämienblatt am 16.10.2026 im Volltext gelesen",
-      "Erfasste Meldungen (Baumpflanzungen, Landesprogramm 2020) am 16.10.2026 gelesen"
-    ],
-    "evidence": [
-      {
-        "url": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen/Klimaschutzfonds.php?object=tx,3489.2292.1&NavID=3489.26",
-        "finding": "16.10.2026 im Browser gelesen: Klimaschutzfonds, Anträge ganzjährig; „Erneuerbare Energien: u.a. Energiespeicher“, „Die Förderhöhe für Energiespeicher (keine Powerbanks!) liegt bei 100 Euro“; „Energetische Sanierungsmaßnahmen zum privaten Gebrauch fallen nicht in das Förderprofil“."
-      },
-      {
-        "url": "https://www.bargteheide.de/media/custom/3489_2251_1.PDF?1749811747",
-        "finding": "16.10.2026 im Volltext gelesen: Richtlinie nach Beschluss des UKE vom 05.06.2025, in Kraft zum 01.01.2025; natürliche Personen in den Förderbereichen 1, 2, 3 und 5; Beginn erst nach Bewilligung; höchstens eine Maßnahme je Kalenderjahr, max. 2.000 € je Antragsteller und Jahr; kombinierbar; Laufzeit wird mit den Haushaltsmitteln je Jahr beschlossen."
-      },
-      {
-        "url": "https://www.bargteheide.de/media/custom/3489_1622_1.PDF?1712920561",
-        "finding": "16.10.2026 im Volltext gelesen: Teil B, Förderbereich 03 Energie — „Energiespeicher (für die von Erneuerbare Energien gewonnene Energie)“, Privat und Verein angekreuzt, 100 €, „Wohnhaft in Bargteheide“, Nachweis Ergebnisbericht, Rechnung, Foto; „Regenerative Energien 90 % max. 1000 €“ und „Energiesparmaßnahmen“ mit Bedingung „Sitz in Bargteheide“ (Vereine)."
-      },
-      {
-        "url": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen",
-        "finding": "16.10.2026 gelesen: Übersicht „Förderungen“ der Stadt: Klimaschutzfonds und private Baumpflanzungen; Dokument „Heizungsförderung für alle“ (Bundesförderung)."
-      }
-    ],
-    "sources": [
-      {
-        "url": "bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen",
-        "disposition": "open",
-        "reason": "16.10.2026 gelesen: führt zum Klimaschutzfonds mit Speicherzuschuss; Aufnahme offen.",
-        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
-      },
-      {
-        "url": "bargteheide.de/Rathaus-Politik/Anliegen-Formulare/Anliegen-von-A-Z/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
-        "disposition": "open",
-        "reason": "16.10.2026 gelesen: Dienstleistungseintrag „Kommunale Förderung für den Klimaschutz beantragen“ = Klimaschutzfonds; Aufnahme offen.",
-        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen/Klimaschutzfonds.php?object=tx,3489.2292.1&NavID=3489.26"
-      },
-      {
-        "url": "bargteheide.de/Aktuelles/Aktuelle-Meldungen-/F%C3%B6rderrichtlinie-private-Baumpflanzungen-Bargteheide.php",
-        "disposition": "reviewed",
-        "reason": "16.10.2026 gelesen: Baumpflanzungsförderung, anderes Thema.",
-        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
-      },
-      {
-        "url": "bargteheide.de/Aktuelles/Aktuelle-Meldungen-/Klimaschutzf%C3%B6rderprogramm-Schleswig-Holstein.php",
-        "disposition": "reviewed",
-        "reason": "16.10.2026 gelesen: Meldung von 2020 zum Landesprogramm, das im Katalog steht.",
-        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
-      },
-      {
-        "url": "bargteheide.de/Rathaus-Politik/Rathaus-Verwaltung/Kontaktm%C3%B6glichkeiten-und-Ansprechpersonen/Stiftung-zur-F%C3%B6rderung-der-Kinderh%C3%A4user-BLAUER-ELEFANT.php",
-        "disposition": "open",
-        "reason": "16.10.2026 abgerufen: Kontaktseite einer Kita-Stiftung; Inhalt per Skript nicht ausgeliefert, nächster Lauf im Browser.",
-        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
-      },
-      {
-        "url": "bargteheide.de/Rathaus-Politik/Rathaus-Verwaltung/Kontaktm%C3%B6glichkeiten-und-Ansprechpersonen/Vergabe-F%C3%B6rdermittel-und-Beteiligungsmanagement.php",
-        "disposition": "open",
-        "reason": "16.10.2026 abgerufen: Kontaktseite Vergabe/Fördermittelmanagement; Inhalt per Skript nicht ausgeliefert, nächster Lauf im Browser.",
-        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
-      }
-    ],
-    "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-10-17T12:00:00Z",
-      "detail": "Speicherzuschuss 100 € (Klimaschutzfonds) als laufendes Programm aufnehmen, sobald der Katalog Speicher als eigene Technik kennt: Technik ergänzen, Stadtseiten-Fall ohne Dachversprechen, Gegenprüfung durch zwei Prüfer; die beiden Kontaktseiten im Browser lesen. Spätestens im Tageslauf am 17.10.2026."
-    }
-  },
-  {
     "regionId": "01062001",
     "name": "Ahrensburg",
     "checkedAt": "2026-10-16T04:25:00Z",
@@ -100494,6 +100420,386 @@
         "disposition": "reviewed",
         "reason": "16.10.2026 abgerufen: Feuerwehr-Führerschein, anderes Thema.",
         "evidenceUrl": "https://www.ammersbek.de/wpfd_file/foerderrichtlinie-fuehrerschein-feuerwehr"
+      }
+    ]
+  },
+  {
+    "regionId": "01062006",
+    "name": "Bargteheide",
+    "checkedAt": "2026-10-16T08:13:15Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bargteheide fördert über seinen Klimaschutzfonds (Richtlinie vom 05.06.2025, in Kraft 01.01.2025) Energiespeicher für erneuerbar erzeugten Strom mit 100 € pauschal für Personen, die in Bargteheide wohnen; Antrag vor Beginn, Nachweis per Bericht, Rechnung und Foto. Am 16.10.2026 als bargteheide-klimaschutzfonds-speicher aufgenommen (reines Speicherprogramm wie Schlierbach, ohne Rechenwert), gegengeprüft 3/3 mit widersprechendem Prüfer. Zuschüsse für Stromerzeugungsanlagen und Energiesparmaßnahmen gelten nur für Vereine; private energetische Sanierung ist ausgeschlossen. Wärmepumpen fördert die Stadt nicht. Stand 16.10.2026.",
+    "searches": [
+      "bargteheide.de: Förderungen, Klimaschutzfonds (Browser), Richtlinie Teil A, Tabelle Teil B, Antragsformular und Prämienblatt am 16.10.2026 im Volltext gelesen",
+      "Erfasste Meldungen (Baumpflanzungen, Landesprogramm 2020) am 16.10.2026 gelesen",
+      "Kontaktverzeichnis-Einträge (Kita-Stiftung, Vergabe/Fördermittelmanagement) am 16.10.2026 im Browser gelesen; Fondsseite, Teil A und Teil B am 16.10.2026 erneut im Volltext gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen/Klimaschutzfonds.php?object=tx,3489.2292.1&NavID=3489.26",
+        "finding": "16.10.2026 im Browser gelesen: Klimaschutzfonds, Anträge ganzjährig; „Erneuerbare Energien: u.a. Energiespeicher“, „Die Förderhöhe für Energiespeicher (keine Powerbanks!) liegt bei 100 Euro“; „Energetische Sanierungsmaßnahmen zum privaten Gebrauch fallen nicht in das Förderprofil“."
+      },
+      {
+        "url": "https://www.bargteheide.de/media/custom/3489_2251_1.PDF?1749811747",
+        "finding": "16.10.2026 im Volltext gelesen: Richtlinie nach Beschluss des UKE vom 05.06.2025, in Kraft zum 01.01.2025; natürliche Personen in den Förderbereichen 1, 2, 3 und 5; Beginn erst nach Bewilligung; höchstens eine Maßnahme je Kalenderjahr, max. 2.000 € je Antragsteller und Jahr; kombinierbar; Laufzeit wird mit den Haushaltsmitteln je Jahr beschlossen."
+      },
+      {
+        "url": "https://www.bargteheide.de/media/custom/3489_1622_1.PDF?1712920561",
+        "finding": "16.10.2026 im Volltext gelesen: Teil B, Förderbereich 03 Energie — „Energiespeicher (für die von Erneuerbare Energien gewonnene Energie)“, Privat und Verein angekreuzt, 100 €, „Wohnhaft in Bargteheide“, Nachweis Ergebnisbericht, Rechnung, Foto; „Regenerative Energien 90 % max. 1000 €“ und „Energiesparmaßnahmen“ mit Bedingung „Sitz in Bargteheide“ (Vereine)."
+      },
+      {
+        "url": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen",
+        "finding": "16.10.2026 gelesen: Übersicht „Förderungen“ der Stadt: Klimaschutzfonds und private Baumpflanzungen; Dokument „Heizungsförderung für alle“ (Bundesförderung)."
+      },
+      {
+        "url": "https://www.bargteheide.de/Rathaus-Politik/Rathaus-Verwaltung/Kontaktm%C3%B6glichkeiten-und-Ansprechpersonen/Vergabe-F%C3%B6rdermittel-und-Beteiligungsmanagement.php",
+        "finding": "16.10.2026 im Browser gelesen: Adressverzeichnis „Kontaktmöglichkeiten und Ansprechpersonen“ mit „Es wurden leider keine Adressen gefunden.“ — ebenso der Eintrag der Kita-Stiftung BLAUER ELEFANT; Kontaktstellen, kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: führt zum Klimaschutzfonds; Speicherzuschuss als bargteheide-klimaschutzfonds-speicher aufgenommen.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen/Klimaschutzfonds.php?object=tx,3489.2292.1&NavID=3489.26"
+      },
+      {
+        "url": "bargteheide.de/Rathaus-Politik/Anliegen-Formulare/Anliegen-von-A-Z/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: führt zum Klimaschutzfonds; Speicherzuschuss als bargteheide-klimaschutzfonds-speicher aufgenommen.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen/Klimaschutzfonds.php?object=tx,3489.2292.1&NavID=3489.26"
+      },
+      {
+        "url": "bargteheide.de/Aktuelles/Aktuelle-Meldungen-/F%C3%B6rderrichtlinie-private-Baumpflanzungen-Bargteheide.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Baumpflanzungsförderung, anderes Thema.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
+      },
+      {
+        "url": "bargteheide.de/Aktuelles/Aktuelle-Meldungen-/Klimaschutzf%C3%B6rderprogramm-Schleswig-Holstein.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Meldung von 2020 zum Landesprogramm, das im Katalog steht.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
+      },
+      {
+        "url": "bargteheide.de/Rathaus-Politik/Rathaus-Verwaltung/Kontaktm%C3%B6glichkeiten-und-Ansprechpersonen/Stiftung-zur-F%C3%B6rderung-der-Kinderh%C3%A4user-BLAUER-ELEFANT.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 im Browser gelesen: leerer Kontaktverzeichnis-Eintrag, kein Förderprogramm.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Rathaus-Verwaltung/Kontaktm%C3%B6glichkeiten-und-Ansprechpersonen/Vergabe-F%C3%B6rdermittel-und-Beteiligungsmanagement.php"
+      },
+      {
+        "url": "bargteheide.de/Rathaus-Politik/Rathaus-Verwaltung/Kontaktm%C3%B6glichkeiten-und-Ansprechpersonen/Vergabe-F%C3%B6rdermittel-und-Beteiligungsmanagement.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 im Browser gelesen: leerer Kontaktverzeichnis-Eintrag, kein Förderprogramm.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Rathaus-Verwaltung/Kontaktm%C3%B6glichkeiten-und-Ansprechpersonen/Vergabe-F%C3%B6rdermittel-und-Beteiligungsmanagement.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03103000",
+    "name": "Wolfsburg",
+    "checkedAt": "2026-10-16T08:13:15Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Wolfsburg fördert Photovoltaik, Solarstromspeicher und Balkonkraftwerke (Förderbedingungen Stand 16.03.2026; 700/1.000/1.500 € je Anlagengröße, Speicher ab 3 kWh 500 €, Stecker-PV 200 €, höchstens 50 % der Kosten, Losverfahren). Das Antragsfenster 2026 (14.05.–14.06.) ist abgelaufen; der Katalogeintrag wolfsburg-pv steht deshalb auf „pausiert“ und stimmt mit den Bedingungen überein. Wärmepumpen fördert die Stadt nicht. Stand 16.10.2026.",
+    "searches": [
+      "wolfsburg.de Themenseite Erneuerbare Energien und Förderbedingungen (PDF) am 16.10.2026 im Volltext gelesen",
+      "Bauherrenratgeber (Baufibel) am 16.10.2026 gelesen: Wohnraumförderung, keine Solar- oder Wärmepumpenförderung",
+      "Ortssuche „Balkonkraftwerk“ auf wolfsburg.de am 16.10.2026: Suchseite antwortet 404"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wolfsburg.de/umweltnaturschutz/klimaschutz/erneuerbare_energien",
+        "finding": "16.10.2026 gelesen: „Das Zeitfenster für die Antragstellung zur Förderung von Investitionen zur Solarstromerzeugung ist am 14.06.2026 um 24 Uhr abgelaufen.“"
+      },
+      {
+        "url": "https://www.wolfsburg.de/-/media/wolfsburg/statistik_daten_fakten/umwelt/klimaschutz/foerderbedingungen_pv_anlagen.pdf",
+        "finding": "16.10.2026 im Volltext gelesen: 5.1 „PV-Anlagen: < 6 kWp 700 €“, „≥ 6 – 12 kWp 1.000 €“, „≥ 12 kWp 1.500 €“, „Solarstromspeicher: ≥ 3 kWh 500 €“, „Steckerfertige PV-Anlagen 200 €“; 5.2 höchstens 50 %; 7.1 Antragsfenster 14.05.–14.06.2026."
+      },
+      {
+        "url": "https://www.wolfsburg.de/-/media/wolfsburg/statistik_daten_fakten/11_grundstuecks_-und-gebaeudemanagement/baufibel_bauherrenratgeber.pdf",
+        "finding": "16.10.2026 gelesen: Bauherrenratgeber; Förderkapitel nennt Wohnraumförderung von Stadt und Land und KfW, keine Solar- oder Wärmepumpenförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wolfsburg.de/-/media/wolfsburg/statistik_daten_fakten/11_grundstuecks_-und-gebaeudemanagement/baufibel_bauherrenratgeber.pdf",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Bauherrenratgeber mit Wohnraumförderung, kein Zuschuss für Solar oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wolfsburg.de/-/media/wolfsburg/statistik_daten_fakten/11_grundstuecks_-und-gebaeudemanagement/baufibel_bauherrenratgeber.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03401000",
+    "name": "Delmenhorst",
+    "checkedAt": "2026-10-16T08:13:15Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Delmenhorst fördert Balkon-Solaranlagen mit 100/200/300 € je nach Kaufpreis (katalogisiert als delmenhorst-balkon-solar, „ausgeschöpft“). Die Mittel 2026 sind seit August vergeben, eine Fortsetzung 2027 nach Genehmigung des Haushalts (voraussichtlich 2. Quartal 2027) ist angekündigt; der Katalogeintrag stimmt. Dach-Photovoltaik, Speicher und Wärmepumpen fördert die Stadt nicht; „Resiliente Innenstädte“ ist Städtebauförderung. Stand 16.10.2026.",
+    "searches": [
+      "delmenhorst.de Programmseite Balkon-Solaranlagen und Pressemitteilung 02.09.2026 am 16.10.2026 gelesen",
+      "Ortssuche „Förderprogramm“ (Seiten 1–2), „Photovoltaik“, „Speicher“ am 16.10.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://delmenhorst.de/leben/umwelt/klimaschutz/foerderung-balkon-solaranlagen.php",
+        "finding": "16.10.2026 gelesen: „Aktuell ist keine Antragstellung möglich.“; Fortführung 2027 nach Haushaltsgenehmigung; 100 € bis 299,99 €, 200 € bis 599,99 €, 300 € darüber; bis 800 W."
+      },
+      {
+        "url": "https://www.delmenhorst.de/aktuelles/pressemitteilungen-2026/260902-foerderprogramm-balkon-solaranlagen.php",
+        "finding": "16.10.2026 gelesen: „Mit der Fördersumme von 70.000 Euro konnten insgesamt 270 Stecker-Solargeräte bezuschusst werden.“"
+      },
+      {
+        "url": "https://www.delmenhorst.de/leben/bauen/staedtebauliche-sanierung/resiliente-innenstaedte.php",
+        "finding": "16.10.2026 gelesen: Städtebauförderung „Resiliente Innenstädte“, keine Aussage zu Haushaltszuschüssen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "delmenhorst.de/index.php?sp-formname=search&amp;q=f%C3%B6rderprogramm&amp;sp-mode=search&amp;sp-search=solr&amp;p=2",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Ortssuche bzw. Meldung zum Balkonprogramm 2023; kein weiteres Programm, maßgeblich ist die Programmseite.",
+        "evidenceUrl": "https://delmenhorst.de/leben/umwelt/klimaschutz/foerderung-balkon-solaranlagen.php"
+      },
+      {
+        "url": "delmenhorst.de/leben/umwelt/klimaschutz/foerderung-balkon-solaranlagen.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Programmseite des katalogisierten Balkonprogramms (delmenhorst-balkon-solar).",
+        "evidenceUrl": "https://delmenhorst.de/leben/umwelt/klimaschutz/foerderung-balkon-solaranlagen.php"
+      },
+      {
+        "url": "delmenhorst.de/index.php?sp-mode=search&amp;sp-search=solr&amp;sp-searchmode=advanced&amp;sp-formname=search&amp;q=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Ortssuche bzw. Meldung zum Balkonprogramm 2023; kein weiteres Programm, maßgeblich ist die Programmseite.",
+        "evidenceUrl": "https://delmenhorst.de/leben/umwelt/klimaschutz/foerderung-balkon-solaranlagen.php"
+      },
+      {
+        "url": "delmenhorst.de/aktuelles/pressemitteilungen-2023/230710-balkon-solaranlagen-foerderprogramm.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Ortssuche bzw. Meldung zum Balkonprogramm 2023; kein weiteres Programm, maßgeblich ist die Programmseite.",
+        "evidenceUrl": "https://delmenhorst.de/leben/umwelt/klimaschutz/foerderung-balkon-solaranlagen.php"
+      },
+      {
+        "url": "delmenhorst.de/index.php?sp-formname=search&amp;q=f%C3%B6rderprogramm&amp;sp-mode=search&amp;sp-search=solr&amp;p=1",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Ortssuche bzw. Meldung zum Balkonprogramm 2023; kein weiteres Programm, maßgeblich ist die Programmseite.",
+        "evidenceUrl": "https://delmenhorst.de/leben/umwelt/klimaschutz/foerderung-balkon-solaranlagen.php"
+      },
+      {
+        "url": "delmenhorst.de/leben/bauen/staedtebauliche-sanierung/resiliente-innenstaedte.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Städtebauförderprogramm „Resiliente Innenstädte“, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.delmenhorst.de/leben/bauen/staedtebauliche-sanierung/resiliente-innenstaedte.php"
+      },
+      {
+        "url": "delmenhorst.de/aktuelles/pressemitteilungen-2026/260902-foerderprogramm-balkon-solaranlagen.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Mittel 2026 (70.000 €, 270 Geräte) vergeben, Fortsetzung 2027 angestrebt.",
+        "evidenceUrl": "https://www.delmenhorst.de/aktuelles/pressemitteilungen-2026/260902-foerderprogramm-balkon-solaranlagen.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03402000",
+    "name": "Emden",
+    "checkedAt": "2026-10-16T08:13:15Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Emden hat keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Ortssuche zeigt für „Photovoltaik“ nur Klimaschutz-Seite und Schulbauten, für „Balkonkraftwerk“ keinen Treffer, für „Wärmepumpe“ Wärmeplanung und eine kostenlose Energiesparberatung; die Solar-Kampagnen verweisen auf Land und Bund. Die erfassten Fundstellen betreffen Demokratieförderung und Bestattungskosten. Stand 16.10.2026.",
+    "searches": [
+      "emden.de Suche „Photovoltaik“, „Balkonkraftwerk“, „Klimaschutz Förderung“, „Wärmepumpe“ und die erfassten Suchseiten „förderprogramm“ 1–5 am 16.10.2026",
+      "Websuche „Stadtwerke Emden Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss“ am 16.10.2026 ohne Treffer zu Emden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.emden.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=Photovoltaik",
+        "finding": "16.10.2026 abgerufen: 15 Treffer — „Klimaschutz in Emden“, Schulbauten mit Photovoltaik; „Balkonkraftwerk“: „Leider konnten wir kein Suchergebnis finden“."
+      },
+      {
+        "url": "https://www.emden.de/aktuell/foerderantraege-koennen-gestellt-werden",
+        "finding": "16.10.2026 gelesen: „Emder Partnerschaft für Demokratie 2026“ für Vereine und gemeinnützige Organisationen."
+      },
+      {
+        "url": "https://www.emden.de/rathaus/verwaltung/fb-500-gesundheit-und-soziales/fd-5504-sozialhilfe/bestattungskostenzuschuss",
+        "finding": "16.10.2026 gelesen: Bestattungskostenzuschuss der Sozialhilfe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "emden.de/suchergebnis?tx_kesearch_pi1%5Bpage%5D=4&amp;tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm&amp;cHash=d877edb181f63c1adb44068daf3ed40e",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Suchergebnisse „förderprogramm“; Solar-Treffer sind Beratungskampagnen (Eignungs-Check Solar) und Schulbauten, kein Zuschuss.",
+        "evidenceUrl": "https://www.emden.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=Photovoltaik"
+      },
+      {
+        "url": "emden.de/suchergebnis?tx_kesearch_pi1%5Bpage%5D=5&amp;tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm&amp;cHash=c4c4a928f51ee3f04a1c8474d1669021",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Suchergebnisse „förderprogramm“; Solar-Treffer sind Beratungskampagnen (Eignungs-Check Solar) und Schulbauten, kein Zuschuss.",
+        "evidenceUrl": "https://www.emden.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=Photovoltaik"
+      },
+      {
+        "url": "emden.de/suchergebnis?tx_kesearch_pi1%5Bpage%5D=3&amp;tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm&amp;cHash=d20bae1d74a535f16e6ccac814bfc0f0",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Suchergebnisse „förderprogramm“; Solar-Treffer sind Beratungskampagnen (Eignungs-Check Solar) und Schulbauten, kein Zuschuss.",
+        "evidenceUrl": "https://www.emden.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=Photovoltaik"
+      },
+      {
+        "url": "emden.de/suchergebnis?tx_kesearch_pi1%5Bpage%5D=2&amp;tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm&amp;cHash=d0042c6c9dba1ccfdb76f89416c7fe7f",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Suchergebnisse „förderprogramm“; Solar-Treffer sind Beratungskampagnen (Eignungs-Check Solar) und Schulbauten, kein Zuschuss.",
+        "evidenceUrl": "https://www.emden.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=Photovoltaik"
+      },
+      {
+        "url": "emden.de/rathaus/verwaltung/fb-500-gesundheit-und-soziales/fd-5504-sozialhilfe/bestattungskostenzuschuss",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Bestattungskostenzuschuss, anderes Thema.",
+        "evidenceUrl": "https://www.emden.de/rathaus/verwaltung/fb-500-gesundheit-und-soziales/fd-5504-sozialhilfe/bestattungskostenzuschuss"
+      },
+      {
+        "url": "emden.de/suchergebnis?tx_kesearch_pi1%5Bpage%5D=1&amp;tx_kesearch_pi1%5Bsword%5D=f%C3%B6rderprogramm&amp;cHash=66adffbfc63392dfd8f4f56616190897",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Suchergebnisse „förderprogramm“; Solar-Treffer sind Beratungskampagnen (Eignungs-Check Solar) und Schulbauten, kein Zuschuss.",
+        "evidenceUrl": "https://www.emden.de/suchergebnis?tx_kesearch_pi1%5Bsword%5D=Photovoltaik"
+      },
+      {
+        "url": "emden.de/aktuell/foerderantraege-koennen-gestellt-werden",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Programm „Emder Partnerschaft für Demokratie 2026“ für Vereine, anderes Thema.",
+        "evidenceUrl": "https://www.emden.de/aktuell/foerderantraege-koennen-gestellt-werden"
+      }
+    ]
+  },
+  {
+    "regionId": "03403000",
+    "name": "Oldenburg (Oldb)",
+    "checkedAt": "2026-10-16T08:13:15Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Oldenburg fördert im „Förderprogramm Klimaschutzmaßnahmen im Altbau“ (Richtlinie 16.12.2024) Wärmepumpen mit 10 %, Erdwärme 15 % der Rechnungssumme, höchstens 7.500 € je Gebäude und Jahr, mit Einkommensgrenze 120.000 €. Die Mittel 2026 sind gebunden, 2027 ist geplant; am 16.10.2026 als oldenburg-altbau-waermepumpe aufgenommen (ausgeschöpft, ohne Rechenwert), gegengeprüft mit widersprechendem Prüfer. Photovoltaik, Speicher und Balkonkraftwerke fördert die Stadt nicht (nur Dachsanierung bei PV-Pflicht, nicht die Anlage); der PV-Check ist eine bezuschusste Beratung. Stand 16.10.2026.",
+    "searches": [
+      "oldenburg.de Übersicht „Beratung & Förderung“ am 16.10.2026 gelesen",
+      "Serviceportal Altbau-Programm am 16.10.2026 im Browser gelesen; Richtlinie 16.12.2024 im Volltext",
+      "Satzungs-/Stadtrechtsliste auf neuere Fassung geprüft (keine)",
+      "Alle sieben erfassten Seiten am 16.10.2026 abgerufen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oldenburg.de/startseite/stadtraum/umwelt/klima/beratung-und-foerderung.html",
+        "finding": "16.10.2026 gelesen: „Förderprogramm „Klimaschutzmaßnahmen im Altbau“ für energetische Sanierung und Heizungstausch“; PV-Check als bezuschusste Beratung."
+      },
+      {
+        "url": "https://serviceportal.oldenburg.de/buergerservice/dienstleistungen/foerderprogramm-klimaschutzmassnahmen-im-altbau-900000983-0.html",
+        "finding": "16.10.2026 im Browser gelesen: „Die Fördermittel für das Jahr 2026 … sind vollständig gebunden und reserviert.“; „9. Austausch der Heizungsanlage (Wärmepumpe, Biomasseanlage) … 10 Prozent“."
+      },
+      {
+        "url": "https://www.oldenburg.de/fileadmin/oldenburg/Benutzer/Dateien/22_Rechtsamt/Zuwendungsrichtlinien/20241217-Foerderrichtlinie_Klimaschutzmassnahmen_im_Altbau_2025_16.12.2024.pdf",
+        "finding": "16.10.2026 im Volltext gelesen: § 1 h Wärmepumpen 10/15/10 %; § 4 (4) „7.500 Euro pro Jahr pro Antragstellenden und Gebäude“; § 2 (2) Einkommensgrenze 120.000 €."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oldenburg.de/startseite/stadtraum/planen-bauen/stadterneuerung-gestaltung-bau/foerderprogramm-perspektive-innenstadt.html",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Innenstadt-Förderprogramm für Gewerbe/Leerstand, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.oldenburg.de/startseite/stadtraum/umwelt/klima/beratung-und-foerderung.html"
+      },
+      {
+        "url": "oldenburg.de/startseite/rathaus/internationales/zuschuesse-fuer-partnerschaftsprojekte.html",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Zuschüsse für Städtepartnerschaftsprojekte, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.oldenburg.de/startseite/stadtraum/umwelt/klima/beratung-und-foerderung.html"
+      },
+      {
+        "url": "oldenburg.de/startseite/stadtraum/umwelt/klima/beratung-und-foerderung.html",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Übersicht; führt zum Altbau-Programm, dessen Wärmepumpenteil als oldenburg-altbau-waermepumpe aufgenommen ist.",
+        "evidenceUrl": "https://www.oldenburg.de/startseite/stadtraum/umwelt/klima/beratung-und-foerderung.html"
+      },
+      {
+        "url": "oldenburg.de/startseite/stadtraum/planen-bauen/stadterneuerung-gestaltung-bau/stadterneuerung/rahmenbedingungen/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Städtebauförderung/Stadterneuerung, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.oldenburg.de/startseite/stadtraum/umwelt/klima/beratung-und-foerderung.html"
+      },
+      {
+        "url": "oldenburg.de/startseite/leben-in-oldenburg/gesellschaft-soziales/gleichstellung/chancengleichheit/zuschuss-fuer-verhuetungsmittel-schwangerschaftsberatung.html",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Zuschuss für Verhütungsmittel, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.oldenburg.de/startseite/stadtraum/umwelt/klima/beratung-und-foerderung.html"
+      },
+      {
+        "url": "oldenburg.de/startseite/stadtraum/umwelt/gruenes-oldenburg/oldenburg-gartengrossstadt/foerderung-von-gebaeudebegruenungen.html",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Förderung von Gebäudebegrünungen, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.oldenburg.de/startseite/stadtraum/umwelt/klima/beratung-und-foerderung.html"
+      },
+      {
+        "url": "oldenburg.de/startseite/stadtraum/zentrale-projekte/fliegerhorst/stadtsanierung/erste-foerdergelder.html",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Städtebauförderung Fliegerhorst, kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.oldenburg.de/startseite/stadtraum/umwelt/klima/beratung-und-foerderung.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03405000",
+    "name": "Wilhelmshaven",
+    "checkedAt": "2026-10-16T08:13:15Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wilhelmshaven hat keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Klimaschutz-Seite des Fachbereichs nennt Solardachkataster, Wärmeplanung und die frühere Bundesförderung des Klimaschutzmanagements, aber kein Programm für Haushalte; die erfassten Fundstellen betreffen Radwege. Die Strukturhilfen Wilhelmshaven richten sich an Kommunen und gemeinnützige Träger. Stand 16.10.2026.",
+    "searches": [
+      "wilhelmshaven.de Klimaschutz-Seite und Umwelt-Übersicht am 16.10.2026 gelesen",
+      "Ortssuche wilhelmshaven.de (antwortet 404); Websuchen „Wilhelmshaven Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss Stadt 2026“ und „GEW Wilhelmshaven Förderprogramm Wärmepumpe Photovoltaik“ am 16.10.2026 ohne städtisches Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Klimaschutz.php",
+        "finding": "16.10.2026 gelesen: „Förderung Klimaschutzmanagement … durch das Bundesministerium … gefördert“; Unterseiten Solardachkataster, Gründachkataster, Wärmeplanung; kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Stadt-und-Land.php",
+        "finding": "16.10.2026 gelesen: „Sonderprogramm Stadt und Land“ des Bundes für Radverkehrsnetze, 90 % Förderung städtischer Projekte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Stadt-und-Land.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Bundesprogramm „Stadt und Land“ für Radwege, anderes Thema.",
+        "evidenceUrl": "https://www.wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Stadt-und-Land.php"
+      },
+      {
+        "url": "wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Fortfuehrung_Kirchreihe.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Radwege-/Straßenbauprojekt, anderes Thema.",
+        "evidenceUrl": "https://www.wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Stadt-und-Land.php"
+      },
+      {
+        "url": "wilhelmshaven.de/Buergerservice/Lebenslagen/Bauen.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Lebenslage Bauen ohne Zuschuss für Solar oder Wärmepumpen, anderes Thema.",
+        "evidenceUrl": "https://www.wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Klimaschutz.php"
+      },
+      {
+        "url": "wilhelmshaven.de/Aktuelles/52755-Arbeiten-zum-F%C3%B6rderprogramm-Stadt--Land-gehen-seitens-TBW-gut-.html",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Meldung zum Radwegeprogramm „Stadt und Land“, anderes Thema.",
+        "evidenceUrl": "https://www.wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Stadt-und-Land.php"
+      },
+      {
+        "url": "wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Radstation.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Radstation, anderes Thema.",
+        "evidenceUrl": "https://www.wilhelmshaven.de/Stadtverwaltung/Dienststellen/36_Fachbereich_Umwelt-_und_Klimaschutz/36-04/Stadt-und-Land.php"
       }
     ]
   }
