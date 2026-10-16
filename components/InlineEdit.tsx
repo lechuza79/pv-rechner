@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { v } from "../lib/theme";
+import { KEINE_VORSCHLAEGE } from "../lib/keine-vorschlaege";
 
 // Parses German-formatted number input. Comma is the decimal separator; dots
 // are thousand separators ("1.400,5"). Without a comma, a lone dot is only a
@@ -61,7 +62,7 @@ export default function InlineEdit({ value, onCommit, unit, step: _step = 1, min
     <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
       <input
         autoFocus
-        inputMode="decimal"
+        inputMode="decimal" {...KEINE_VORSCHLAEGE}
         value={draft}
         onChange={e => setDraft(e.target.value)}
         onBlur={commit}

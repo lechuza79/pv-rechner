@@ -24,6 +24,7 @@ import {
 } from "../lib/simulation";
 import { EA_DEFAULT_KM, calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2 } from "../lib/consumption";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../lib/heatpump";
+import { KEINE_VORSCHLAEGE } from "../lib/keine-vorschlaege";
 
 const SITE_URL = "https://solar-check.io";
 
@@ -222,7 +223,7 @@ export default function SimulationPanel({
         <form onSubmit={e => { e.preventDefault(); submitPlz(); }} style={{ position: "relative" }}>
           <input
             type="text"
-            inputMode="numeric"
+            inputMode="numeric" {...KEINE_VORSCHLAEGE}
             aria-label="Postleitzahl eingeben"
             placeholder="PLZ eingeben (z.B. 80331)"
             value={plz}

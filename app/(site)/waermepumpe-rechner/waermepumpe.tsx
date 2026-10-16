@@ -71,6 +71,7 @@ import { trackEvent } from "../../../lib/analytics";
 import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
 import Switch from "../../../components/Switch";
 import SelectField from "../../../components/SelectField";
+import { KEINE_VORSCHLAEGE } from "../../../lib/keine-vorschlaege";
 
 /** Einheit, in der ein Nutzer seinen Jahresverbrauch von der Abrechnung abliest. */
 type VerbrauchEinheit = "gas" | "oel";
@@ -867,7 +868,7 @@ export default function Waermepumpe({
                 </div>
                 <div className="wp-custom-area">
                   <label htmlFor="wp-custom-area">Eigene Wohnfläche</label>
-                  <input id="wp-custom-area" type="number" min={WP_M2_MIN} max={WP_M2_MAX} value={customFlaecheDraft} placeholder="m²" onChange={e => {
+                  <input id="wp-custom-area" type="number" {...KEINE_VORSCHLAEGE} min={WP_M2_MIN} max={WP_M2_MAX} value={customFlaecheDraft} placeholder="m²" onChange={e => {
                     const raw = e.target.value;
                     setCustomFlaecheDraft(raw);
                     const value = Number(raw);
@@ -908,7 +909,7 @@ export default function Waermepumpe({
                     <p className="wp-bill-description">Mit deinem Jahresverbrauch rechnen wir genauer. Einschließlich Warmwasser, wenn es über deine Heizung läuft.</p>
                     <div className="wp-bill-fields">
                       <input
-                        id="wp-annual-consumption" type="text" inputMode="numeric"
+                        id="wp-annual-consumption" type="text" inputMode="numeric" {...KEINE_VORSCHLAEGE}
                         placeholder={verbrauchEinheit === "oel" ? "z. B. 2000" : "z. B. 18000"}
                         value={verbrauchDraft}
                         onChange={e => {

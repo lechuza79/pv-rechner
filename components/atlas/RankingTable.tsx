@@ -33,6 +33,7 @@ import {
 } from "../../lib/atlas-impact";
 import { FREIFLAECHE_ZUSCHLAG_AB } from "../../lib/freiflaeche-config";
 import InfoTooltip from "../InfoTooltip";
+import { KEINE_VORSCHLAEGE } from "../../lib/keine-vorschlaege";
 
 type Owner = "alle" | "privat" | "gewerbe";
 type Metric = "count" | "kwp" | "perCapita" | "co2" | "wert" | "eigenverbrauch" | "speicher";
@@ -1741,7 +1742,7 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
             id="home-plz"
             value={plz}
             onChange={(e) => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
-            inputMode="numeric"
+            inputMode="numeric" {...KEINE_VORSCHLAEGE}
             placeholder="z. B. 97204"
             style={S.input}
           />

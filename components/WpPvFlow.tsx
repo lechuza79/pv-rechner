@@ -10,6 +10,7 @@ import DachField from "./DachField";
 import OptionCard from "./OptionCard";
 import { wpPvRecommendation, type WpPvContext } from "../lib/wp-pv-recommend";
 import type { TiltOrientation } from "../lib/tilt-config";
+import { KEINE_VORSCHLAEGE } from "../lib/keine-vorschlaege";
 
 export default function WpPvFlow({ context, initial, onApply, onCancel }: { context: WpPvContext; initial?: { kwp: number; storage: number }; onApply: (values: { kwp: number; storage: number }) => void; onCancel: () => void }) {
   const [roofSkipped, setRoofSkipped] = useState(false);
@@ -45,7 +46,7 @@ export default function WpPvFlow({ context, initial, onApply, onCancel }: { cont
       <DachField karten dachartIdx={roof} setDachartIdx={setRoof} ausrichtung={orientation} setAusrichtung={setOrientation} neigungGrad={tilt} setNeigungGrad={setTilt} beantwortet={answered} markiereBeantwortet={key => setAnswered(previous => new Set(previous).add(key))} nimmZurueck={key => setAnswered(previous => { const next = new Set(previous); next.delete(key); return next; })} bearbeitet={editing} setBearbeitet={setEditing} onWeissNicht={() => { if (roofM2 && !(Number(roofM2) >= 5 && Number(roofM2) <= 500)) return; setRoof(null); setOrientation(null); setTilt(null); setAnswered(new Set()); setEditing(null); if (!roofM2 || (Number(roofM2) >= 5 && Number(roofM2) <= 500)) { setRoofSkipped(true); setStep(1); } }} />
       <div className="wp-pv-roof-area">
         <label htmlFor="wp-pv-roof-m2">Nutzbare Dachfläche <span>optional</span></label>
-        <div className="wp-pv-roof-input"><input id="wp-pv-roof-m2" type="number" inputMode="decimal" min="5" max="500" step="any" value={roofM2} onChange={event => setRoofM2(event.target.value)} aria-label="Nutzbare Dachfläche in Quadratmetern (optional)" aria-describedby="wp-pv-roof-help" aria-invalid={!!roofM2 && !(Number(roofM2) >= 5 && Number(roofM2) <= 500)} placeholder="z. B. 50" /><span aria-hidden="true">m²</span></div>
+        <div className="wp-pv-roof-input"><input id="wp-pv-roof-m2" type="number" inputMode="decimal" {...KEINE_VORSCHLAEGE} min="5" max="500" step="any" value={roofM2} onChange={event => setRoofM2(event.target.value)} aria-label="Nutzbare Dachfläche in Quadratmetern (optional)" aria-describedby="wp-pv-roof-help" aria-invalid={!!roofM2 && !(Number(roofM2) >= 5 && Number(roofM2) <= 500)} placeholder="z. B. 50" /><span aria-hidden="true">m²</span></div>
         <p id="wp-pv-roof-help">{roofM2 && !(Number(roofM2) >= 5 && Number(roofM2) <= 500) ? "Bitte 5 bis 500 m² eintragen oder das Feld leer lassen." : "Nur die Fläche für Module, ohne Fenster und andere Hindernisse. Ohne Angabe schätzen wir nach deinem Haustyp."}</p>
       </div>
     </>}

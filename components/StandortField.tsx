@@ -4,6 +4,7 @@ import type { SuchErgebnis } from "../lib/suche";
 import styles from "./StandortField.module.css";
 import { v, iconSizes } from "../lib/theme";
 import { IconArrowRight, IconCheck, IconClose } from "./Icons";
+import { KEINE_VORSCHLAEGE } from "../lib/keine-vorschlaege";
 
 // Kompaktes „Standort"-Feld für die Ergebnisseite: PLZ eingeben → standortgenauer
 // Ertrag (PVGIS). Geteilt zwischen PV-Rechner (ResultHeroCard) und
@@ -39,7 +40,7 @@ export default function StandortField({
   const checked = valid && confirmed && !loading;
   if (variant === "flow") return <div className={`${styles.field} ${styles.flow}`}>
     <form onSubmit={async event => { event.preventDefault(); if (!valid || loading || checked) return; setFailed(false); const request = ++submission.current; try { const result = await onSubmit(); if (request === submission.current) setFailed(result === false); } catch { if (request === submission.current) setFailed(true); } }}>
-      <input aria-label={label} value={plz} placeholder="PLZ (z. B. 80331)" inputMode="numeric" maxLength={5}
+      <input aria-label={label} value={plz} placeholder="PLZ (z. B. 80331)" inputMode="numeric" {...KEINE_VORSCHLAEGE} maxLength={5}
         onChange={event => onPlzChange(event.target.value.replace(/\D/g, "").slice(0, 5))} />
       <button type="submit" disabled={!valid || loading || checked}>{loading ? "Wird geprüft …" : checked ? "Geprüft" : "Standort prüfen"}</button>
     </form>
@@ -57,7 +58,7 @@ export default function StandortField({
           value={plz}
           placeholder="PLZ"
           aria-label="Postleitzahl eingeben"
-          inputMode="numeric"
+          inputMode="numeric" {...KEINE_VORSCHLAEGE}
           maxLength={5}
           className={!confirmed && !loading ? "sc-plz-pulse" : undefined}
           onChange={e => onPlzChange(e.target.value.replace(/\D/g, "").slice(0, 5))}
@@ -134,7 +135,7 @@ function PlaceField({ plz, loading, onPick, onSearchChange, checkedPlace, submit
       finally { setChecking(false); }
     }}>
       <div className={styles.inputWrap}>
-      <input id={id} type="text" autoComplete="off" placeholder={compact ? "PLZ / Ort" : "z. B. 27793 oder Wildeshausen"} value={query}
+      <input id={id} type="text" {...KEINE_VORSCHLAEGE} placeholder={compact ? "PLZ / Ort" : "z. B. 27793 oder Wildeshausen"} value={query}
         readOnly={checked} disabled={checking || loading} onChange={event => reset(event.target.value)} />
       {query && <button className={styles.clear} type="button" aria-label="Standort löschen" disabled={checking || loading} onClick={() => { reset(""); document.getElementById(id)?.focus(); }}><IconClose size={iconSizes.sm} /></button>}
       </div>
