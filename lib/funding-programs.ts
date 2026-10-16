@@ -2692,15 +2692,24 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.duesseldorf.de/stadtrecht/1/19/19-303", stand: "Juni 2026",
     status: "pausiert", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Sockel + je kWp + je kWh Speicher, max. 50 % der Kosten",
+    coveredCosts: "Sockel + je kWp + je kWh Speicher, max. 50 % der Kosten; Balkonkraftwerk als Anteil der Kosten, Wärmepumpe als Pauschale nach Heizleistung",
+    // Richtlinie 19-303 read in full on 16.10.2026: besides rooftop PV (5.7.3) and
+    // storage (5.7.4) it also funds plug-in PV (5.7.2) and heat pumps (5.9). The whole
+    // programme is closed to new applications (saga/klimafreundliches-wohnen-und-arbeiten,
+    // 16.10.2026), so the two added parts are information only, without deduction fields.
+    foerdert: ["pv", "balkon", "waermepumpe"],
     rates: [
-      { label: "PV-Anlage", value: "1.000 € + 200 €/kWp, max. 10.000 €" },
-      { label: "Batteriespeicher", value: "250 €/kWh, max. 10.000 €" },
+      { label: "PV-Anlage", value: "1.000 € + 200 €/kWp, max. 10.000 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "250 €/kWh, max. 10.000 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "50 % der förderfähigen Kosten, max. 600 € (mit Cradle-to-Cradle-Modulen bis 720 €)", nur: ["balkon"] },
+      { label: "Wärmepumpe", value: "4.250 € bis 25 kW Heizleistung, 4.750 € bis 50 kW, 5.500 € bis 75 kW, 6.500 € darüber; +1.000 € Bonus bei gleichzeitig beantragter Kombination mit PV-Anlage und Speicher", nur: ["waermepumpe"] },
     ],
     conditions: [
-      "Aktuell keine neuen Anträge — Programm wird überarbeitet (Stand Juni 2026)",
-      "Speicher max. das 1,5-fache der kWp, mit 10-Jahres-Garantie",
-      "Förderung max. 50 % der Gesamtkosten",
+      "Aktuell keine neuen Anträge — Programm wird überarbeitet (Stand Oktober 2026); bereits bewilligte oder eingereichte Anträge sind nicht betroffen",
+      { text: "Speicher max. das 1,5-fache der kWp, mit 10-Jahres-Garantie", nur: ["pv"] },
+      { text: "Förderung max. 50 % der Gesamtkosten", nur: ["pv"] },
+      { text: "Balkonkraftwerk: neue, netzgekoppelte Geräte bis 600 W Wechselrichterleistung (bzw. der jeweils geltenden EEG-Grenze), mindestens 5 Jahre zu nutzen; Montage in Eigenleistung zulässig; Mieter mit Einverständnis des Eigentümers antragsberechtigt; beantragt der Eigentümer eines Mehrfamilienhauses für alle Wohneinheiten zugleich, +10 % (Erträge müssen den Mietern zugutekommen); die Sonderförderung für Düsselpass-Inhaber (80 %, max. 800 €) war bis 31.03.2026 befristet", nur: ["balkon"] },
+      { text: "Wärmepumpe: nur im Bestand, Betrieb mit eigenem Solarstrom oder 100 % zertifiziertem Ökostrom, Jahresarbeitszahl mindestens 3,5 (Luft/Wasser) bzw. 3,8 (Sole/Wasser), BAFA-gelistet mit SG-Ready-Schnittstelle, Vorlauftemperatur höchstens 55 °C, mindestens 65 % erneuerbare Wärme, hydraulischer Abgleich nach Verfahren B; ausgeschlossen bei bestehendem Nah-/Fernwärmeanschluss und im Fernwärme-Vorranggebiet (außer die Stadtwerke bescheinigen, dass binnen zwei Jahren kein Anschluss möglich ist)", nur: ["waermepumpe"] },
     ],
     combinableWith: BUND,
     pvSockel: 1000, pvPerKwp: 200, speicherPerKwh: 250, pvCap: 10000, speicherCap: 10000,

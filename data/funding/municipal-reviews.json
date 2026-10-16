@@ -101582,6 +101582,10 @@
       {
         "url": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt",
         "finding": "Jahresbericht Fördermittelakquise 2025: Mittel, die die Stadt selbst erhielt, kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.krefeld.de/angebote-der-beschaeftigungsfoerderung-mit-24000-teilnehmenden",
+        "finding": "Pressemitteilung: rund 24.000 Teilnehmende der Kommunalen Zentralstelle für Beschäftigungsförderung 2023 (Jugendsozialarbeit, Schulsozialarbeit), kein Energiezuschuss (16.10.2026 gelesen)."
       }
     ],
     "sources": [
@@ -101624,14 +101628,147 @@
       {
         "url": "krefeld.de/angebote-der-beschaeftigungsfoerderung-mit-24000-teilnehmenden",
         "disposition": "reviewed",
-        "reason": "Beschäftigungsförderung, kein Energiezuschuss.",
-        "evidenceUrl": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt"
+        "reason": "Pressemitteilung Beschäftigungsförderung/Jugendsozialarbeit (16.10.2026 gelesen), kein Energiezuschuss.",
+        "evidenceUrl": "https://www.krefeld.de/angebote-der-beschaeftigungsfoerderung-mit-24000-teilnehmenden"
       },
       {
         "url": "krefeld.de/eu-foerderung",
         "disposition": "reviewed",
         "reason": "EU-finanzierte Projekte der Stadt, kein Haushaltsprogramm.",
         "evidenceUrl": "https://www.krefeld.de/foerdermittel-158-millionen-euro-fuer-die-stadt"
+      }
+    ]
+  },
+  {
+    "regionId": "05111000",
+    "name": "Düsseldorf",
+    "checkedAt": "2026-10-16T16:20:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Düsseldorf hat das städtische Programm „Klimafreundliches Wohnen und Arbeiten“ (Richtlinie 19-303): Dach-PV, Speicher, Balkonkraftwerk (50 %, max. 600 €) und Wärmepumpe (4.250–6.500 € nach Heizleistung, +1.000 € Kombibonus). Das ganze Programm nimmt derzeit keine neuen Anträge an, es wird überarbeitet; im Katalog als duesseldorf-klimafreundlich (pausiert, ohne Abzug), am 16.10.2026 um Balkonkraftwerk und Wärmepumpe ergänzt (Council 3/3). Die Düsselpass-Sonderförderung für Balkonkraftwerke war bis 31.03.2026 befristet. Weitere erfasste Seiten: Ehrenamtsförderung, Heizenergie-Check, Linkliste Luftreinhaltung. Wiederprüfung zum Jahresende wegen der angekündigten Überarbeitung.",
+    "searches": [
+      "Programmseite saga/klimafreundliches-wohnen-und-arbeiten und Richtlinie 19-303 am 16.10.2026 vollständig gelesen",
+      "Websuche 16.10.2026: „Düsseldorf Förderung Balkonkraftwerk Photovoltaik Speicher 2026 Zuschuss Stadt“ — nur Händler-/Ratgeberseiten, die dasselbe Stadtprogramm referieren",
+      "Alle erfassten Fundstellen geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.duesseldorf.de/saga/klimafreundliches-wohnen-und-arbeiten",
+        "finding": "„Neue Förderanträge im Programm … können daher aktuell nicht gestellt werden. Bereits bewilligte oder eingereichte Förderanträge sind davon jedoch nicht betroffen.“ (16.10.2026)"
+      },
+      {
+        "url": "https://www.duesseldorf.de/stadtrecht/1/19/19-303",
+        "finding": "Richtlinie 5.7.2 Stecker-PV 50 %, max. 600 € (C2C bis 720 €), Düsselpass 80 %/800 € befristet bis 31.03.2026; 5.7.3 PV 1.000 € + 200 €/kWp, max. 10.000 €; 5.7.4 Speicher 250 €/kWh, max. 10.000 €; 5.9 Wärmepumpe 4.250/4.750/5.500/6.500 €; 5.9.1 Bonus 1.000 €."
+      },
+      {
+        "url": "https://www.duesseldorf.de/freiwillig/foerderprogramm",
+        "finding": "Förderprogramm „2.000 x 1.000 Euro für das Engagement“ (Ehrenamt, Digitalisierung/KI), kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.duesseldorf.de/umweltamt/umwelt-und-verbraucherthemen-von-a-z/klimaschutz/beratung-und-foerderung/energie/heizenergie-check",
+        "finding": "Online-Heizenergie-Check, Beratungswerkzeug ohne Zuschuss."
+      },
+      {
+        "url": "https://www.duesseldorf.de/umweltamt/umwelt-und-verbraucherthemen-von-a-z/luft/foerderprogramme",
+        "finding": "Linkliste Förderprogramme Luft: Partikelfilter, Verweis auf Klimafreundliches Wohnen und Arbeiten."
+      }
+    ],
+    "sources": [
+      {
+        "url": "duesseldorf.de/stadtrecht/1/19/19-303",
+        "disposition": "reviewed",
+        "reason": "Richtlinie des Katalogprogramms, vollständig gelesen; Katalog ergänzt.",
+        "evidenceUrl": "https://www.duesseldorf.de/stadtrecht/1/19/19-303"
+      },
+      {
+        "url": "duesseldorf.de/saga/klimafreundliches-wohnen-und-arbeiten",
+        "disposition": "reviewed",
+        "reason": "Programmseite: derzeit keine neuen Anträge (Katalog pausiert).",
+        "evidenceUrl": "https://www.duesseldorf.de/saga/klimafreundliches-wohnen-und-arbeiten"
+      },
+      {
+        "url": "duesseldorf.de/freiwillig/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Ehrenamtsförderung, kein Energiezuschuss.",
+        "evidenceUrl": "https://www.duesseldorf.de/freiwillig/foerderprogramm"
+      },
+      {
+        "url": "duesseldorf.de/umweltamt/umwelt-und-verbraucherthemen-von-a-z/klimaschutz/beratung-und-foerderung/energie/heizenergie-check",
+        "disposition": "reviewed",
+        "reason": "Beratungswerkzeug, kein Zuschuss.",
+        "evidenceUrl": "https://www.duesseldorf.de/umweltamt/umwelt-und-verbraucherthemen-von-a-z/klimaschutz/beratung-und-foerderung/energie/heizenergie-check"
+      },
+      {
+        "url": "duesseldorf.de/umweltamt/umwelt-und-verbraucherthemen-von-a-z/luft/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Linkliste, verweist auf das Katalogprogramm.",
+        "evidenceUrl": "https://www.duesseldorf.de/umweltamt/umwelt-und-verbraucherthemen-von-a-z/luft/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "06413000",
+    "name": "Offenbach am Main",
+    "checkedAt": "2026-10-16T16:31:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Offenbach am Main hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die städtische Übersicht der Umwelt-/Klima-Förderprogramme nennt nur Baumförderung, Klimaanpassung (Dach-/Fassadenbegrünung, Entsiegelung, Zisternen) und gemeinwohlorientiertes Engagement. Ein Antrag der Freien Wähler von 2022 auf ein Balkonkraftwerk-Programm war nur ein Prüfauftrag; ein Programm ist nirgends veröffentlicht. Die Photovoltaik-Offensive der Stadtwerke betrifft städtische Dächer. Stand 16.10.2026.",
+    "searches": [
+      "Übersicht Förderprogramme Umwelt & Klima am 16.10.2026 gelesen",
+      "Websuche 16.10.2026: „Offenbach am Main Stadt Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss 2026“ — kein Stadtprogramm",
+      "Seitensuche offenbach.de 16.10.2026: „Offenbach Solar Photovoltaik Klimaschutz Förderung Bürger“ — nur Stadtwerke-PV auf städtischen Gebäuden, Begrünungsförderung und Antrag DS-I(A)0385",
+      "Antrag DS-I(A)0385 (Balkonkraftwerke, 01.11.2022) im Ratsinformationssystem gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.offenbach.de/buerger_innen/umwelt-klima/foerderprogramme-umwelt-klima.php",
+        "finding": "„Förderprogramme im Bereich Umwelt & Klima“: Baumförderrichtlinie, Förderrichtlinie Klimaanpassung, Förderrichtlinie Gemeinwohlorientiertes Engagement — kein Energiezuschuss (16.10.2026)."
+      },
+      {
+        "url": "https://pio.offenbach.de/index.php?aktiv=doc&docid=2022-00018820",
+        "finding": "Antrag Freie Wähler 01.11.2022: Magistrat soll „prüfen und berichten“, wie ein Balkonkraftwerk-Förderprogramm aussehen könnte — Prüfauftrag, kein Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "offenbach.de/buerger_innen/umwelt-klima/foerderprogramme-umwelt-klima.php",
+        "disposition": "reviewed",
+        "reason": "Städtische Förderübersicht Umwelt/Klima ohne Energiezuschuss.",
+        "evidenceUrl": "https://www.offenbach.de/buerger_innen/umwelt-klima/foerderprogramme-umwelt-klima.php"
+      }
+    ]
+  },
+  {
+    "regionId": "05117000",
+    "name": "Mülheim an der Ruhr",
+    "checkedAt": "2026-10-16T16:31:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Mülheim an der Ruhr hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Ihre Seite „Dein Dach kann mehr!“ sagt ausdrücklich, ein Förderprogramm für Photovoltaik und Dachbegrünung biete die Stadt aktuell nicht an; angeboten werden Solar- und Energiesprechstunde. Die einzige erfasste Fundstelle betrifft Zuschüsse für Städtepartnerschafts-Begegnungen. Stand 16.10.2026.",
+    "searches": [
+      "Seiten „Dein Dach kann mehr!“ und „Photovoltaik“ am 16.10.2026 gelesen",
+      "Websuche 16.10.2026: „Mülheim an der Ruhr Stadt Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss 2026“ — kein Stadtprogramm",
+      "Seitensuche muelheim-ruhr.de 16.10.2026: „Mülheim Klimaschutz Solar Photovoltaik Förderung Bürger“ — nur Beratung, Freiflächenstrategie, Förderung von 2010"
+    ],
+    "evidence": [
+      {
+        "url": "https://cms.muelheim-ruhr.de/stadtraum/klima-und-nachhaltigkeit/dein-dach-kann-mehr",
+        "finding": "„Ein Förderprogramm zur Errichtung einer Photovoltaikanlage und der Erichtung einer Dachbegrünung bietet die Stadt Mülheim an der Ruhr aktuell nicht an.“ (16.10.2026)"
+      },
+      {
+        "url": "https://cms.muelheim-ruhr.de/leben-in-muelheim/stadtportrait/staedtepartnerschaften-und-patenschaften/zuschuesse-fuer-den",
+        "finding": "Zuschüsse 2026 für Begegnungen mit Gruppen aus Partnerstädten, kein Energiezuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "cms.muelheim-ruhr.de/leben-in-muelheim/stadtportrait/staedtepartnerschaften-und-patenschaften/zuschuesse-fuer-den",
+        "disposition": "reviewed",
+        "reason": "Städtepartnerschafts-Zuschüsse, kein Energiezuschuss.",
+        "evidenceUrl": "https://cms.muelheim-ruhr.de/leben-in-muelheim/stadtportrait/staedtepartnerschaften-und-patenschaften/zuschuesse-fuer-den"
       }
     ]
   }
