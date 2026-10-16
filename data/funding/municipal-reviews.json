@@ -100184,5 +100184,311 @@
       "dueAt": "2026-10-17T12:00:00Z",
       "detail": "Speicherzuschuss 100 € (Klimaschutzfonds) als laufendes Programm aufnehmen, sobald der Katalog Speicher als eigene Technik kennt: Technik ergänzen, Stadtseiten-Fall ohne Dachversprechen, Gegenprüfung durch zwei Prüfer; die beiden Kontaktseiten im Browser lesen. Spätestens im Tageslauf am 17.10.2026."
     }
+  },
+  {
+    "regionId": "01062001",
+    "name": "Ahrensburg",
+    "checkedAt": "2026-10-16T04:25:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ahrensburg hat heute keinen städtischen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Das frühere Förderprogramm der Stadt für PV-Anlagen, Solarthermie und Wärmepumpen ist laut städtischer Klimaschutzseite Ende 2022 ausgelaufen und wird in absehbarer Zeit nicht fortgesetzt; verwiesen wird nur auf KfW- und Bundesförderung. Der Kreis Stormarn ist gesondert geprüft. Stand 16.10.2026.",
+    "searches": [
+      "klima.ahrensburg.de: Beratung/Förderung (Strom) und Förderung (Wärme) am 16.10.2026 im Browser gelesen",
+      "ahrensburg.de Volltextsuche „Energieerzeugung“, „Photovoltaik“, „Balkonkraftwerk“, „Förderprogramm“ am 16.10.2026: nur Landes-/Bundesdienste, Haushaltspläne, Klimaschutzkonzept und ein alter Begleitbogen zur ausgelaufenen Förderung",
+      "Websuche „Ahrensburg Förderprogramm private Energieerzeugung Antragsstopp“ am 16.10.2026 ohne Treffer zu einem laufenden Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://klima.ahrensburg.de/Erneuerbarer-Strom/Beratung-F%C3%B6rderung/",
+        "finding": "16.10.2026 im Browser gelesen: „Das Förderprogramm der Stadt Ahrensburg für die Installation von PV-Anlagen, Solarthermie und Wärmepumpen ist Ende 2022 ausgelaufen und wird in absehbarer Zeit nicht fortgesetzt. Es können keine Anträge mehr gestellt werden.“ Für PV sonst nur KfW-Kredit 270 und Beratung."
+      },
+      {
+        "url": "https://klima.ahrensburg.de/W%C3%A4rme-Heizen/F%C3%B6rderung/",
+        "finding": "16.10.2026 im Browser gelesen: Heizungsförderung nur über die Bundesförderung (BEG); derselbe Satz zum Ende 2022 ausgelaufenen städtischen Programm."
+      },
+      {
+        "url": "https://www.ahrensburg.de/B%C3%BCrger-Stadt/Aktuelles/Amtliche-Bekanntmachungen/Antragsstopp-f%C3%BCr-das-F%C3%B6rderprogramm-f%C3%BCr-die-private-Energieerzeugung.php",
+        "finding": "16.10.2026 im Browser gelesen: Die Bekanntmachung „Antragsstopp für das Förderprogramm für die private Energieerzeugung“ ist nicht mehr gelistet („Es wurden leider keine Mitteilungen gefunden.“); Inhalt durch die Klimaschutzseite geklärt."
+      },
+      {
+        "url": "https://www.ahrensburg.de/Bauen-Umwelt-Klimaschutz/Neubau-Schulzentrum-Am-Heimgarten-Campus-Ahrensburg/Baukonzept",
+        "finding": "16.10.2026 im Browser gelesen: Baukonzept des Schulcampus-Neubaus, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1",
+        "finding": "16.10.2026 im Browser gelesen: Landes-Dienstleistung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ — „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden … beschieden“; Programm »Klimaschutz für Bürgerinnen und Bürger«, zuständig Investitionsbank Schleswig-Holstein. Kein städtisches Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ahrensburg.de/B%C3%BCrger-Stadt/Service-und-Verwaltung/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bereits früher gelesen: Förderprogramm für Unternehmen des Güterkraftverkehrs (Bund), nicht private Haushalte.",
+        "evidenceUrl": "https://klima.ahrensburg.de/Erneuerbarer-Strom/Beratung-F%C3%B6rderung/"
+      },
+      {
+        "url": "ahrensburg.de/B%C3%BCrger-Stadt/Aktuelles/Amtliche-Bekanntmachungen/Antragsstopp-f%C3%BCr-das-F%C3%B6rderprogramm-f%C3%BCr-die-private-Energieerzeugung.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 im Browser gelesen: Bekanntmachung nicht mehr gelistet; städtisches Programm laut Klimaschutzseite Ende 2022 ausgelaufen.",
+        "evidenceUrl": "https://www.ahrensburg.de/B%C3%BCrger-Stadt/Aktuelles/Amtliche-Bekanntmachungen/Antragsstopp-f%C3%BCr-das-F%C3%B6rderprogramm-f%C3%BCr-die-private-Energieerzeugung.php"
+      },
+      {
+        "url": "ahrensburg.de/B%C3%BCrger-Stadt/Service-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=2603.24&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&kuo=1&ort=57.1&ModID=10&object=tx%7C2603.10202.1&amp;alpha=A",
+        "disposition": "replaced",
+        "reason": "Landes-Dienstleistungseintrag zum beendeten Landesprogramm (im Katalog als Landesprogramm geführt); die Ahrensburger Fassung liefert den Eintragstext nicht aus, der identische Landestext ist bei Bad Oldesloe am 16.10.2026 gelesen.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      },
+      {
+        "url": "ahrensburg.de/B%C3%BCrger-Stadt/Service-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=2603.24&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&kuo=1&ort=57.1&ModID=10&object=tx%7C2603.10202.1&amp;alpha=B",
+        "disposition": "replaced",
+        "reason": "Landes-Dienstleistungseintrag zum beendeten Landesprogramm (im Katalog als Landesprogramm geführt); die Ahrensburger Fassung liefert den Eintragstext nicht aus, der identische Landestext ist bei Bad Oldesloe am 16.10.2026 gelesen.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      },
+      {
+        "url": "ahrensburg.de/B%C3%BCrger-Stadt/Service-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=2603.24&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&kuo=1&ort=57.1&ModID=10&object=tx%7C2603.10202.1&amp;alpha=C",
+        "disposition": "replaced",
+        "reason": "Landes-Dienstleistungseintrag zum beendeten Landesprogramm (im Katalog als Landesprogramm geführt); die Ahrensburger Fassung liefert den Eintragstext nicht aus, der identische Landestext ist bei Bad Oldesloe am 16.10.2026 gelesen.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      },
+      {
+        "url": "ahrensburg.de/B%C3%BCrger-Stadt/Service-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=2603.24&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&kuo=1&ort=57.1&ModID=10&object=tx%7C2603.10202.1&amp;alpha=D",
+        "disposition": "replaced",
+        "reason": "Landes-Dienstleistungseintrag zum beendeten Landesprogramm (im Katalog als Landesprogramm geführt); die Ahrensburger Fassung liefert den Eintragstext nicht aus, der identische Landestext ist bei Bad Oldesloe am 16.10.2026 gelesen.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      },
+      {
+        "url": "ahrensburg.de/Bauen-Umwelt-Klimaschutz/Neubau-Schulzentrum-Am-Heimgarten-Campus-Ahrensburg/Baukonzept",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 im Browser gelesen: Schulneubau, kein Förderthema.",
+        "evidenceUrl": "https://www.ahrensburg.de/Bauen-Umwelt-Klimaschutz/Neubau-Schulzentrum-Am-Heimgarten-Campus-Ahrensburg/Baukonzept"
+      }
+    ]
+  },
+  {
+    "regionId": "01062004",
+    "name": "Bad Oldesloe",
+    "checkedAt": "2026-10-16T04:25:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bad Oldesloe hat keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Alle erfassten Fundstellen sind derselbe Dienstleistungseintrag zum beendeten Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Antragsstopp 16.11.2023). Die Volltextsuche der Stadt findet zu Photovoltaik, Balkonkraftwerk, Speicher, Förderprogramm und Wärmepumpe nur diesen Landeseintrag, Bebauungspläne und Veranstaltungen. Stand 16.10.2026.",
+    "searches": [
+      "badoldesloe.de Volltextsuche „Photovoltaik“, „Balkonkraftwerk“, „Speicher“, „Förderprogramm“, „Wärmepumpe“, „Klimaschutzfonds“ am 16.10.2026 im Browser",
+      "Websuche „Bad Oldesloe Förderung Balkonkraftwerk Stadt Zuschuss“ am 16.10.2026 ohne Treffer zur Stadt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1",
+        "finding": "16.10.2026 im Browser gelesen: Landes-Dienstleistung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ — „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden … beschieden“; Programm »Klimaschutz für Bürgerinnen und Bürger«, zuständig Investitionsbank Schleswig-Holstein. Kein städtisches Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 im Browser gelesen: Landes-Dienstleistung zum beendeten Landesprogramm, kein städtisches Programm.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      },
+      {
+        "url": "badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=2965.13&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&kuo=1&ModID=10&object=tx%7C2965.73568.1&amp;alpha=A",
+        "disposition": "replaced",
+        "reason": "Derselbe Dienstleistungseintrag mit Listen-Parametern; durch den gelesenen Eintrag erledigt.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      },
+      {
+        "url": "badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=2965.13&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&kuo=1&ModID=10&object=tx%7C2965.73568.1&amp;alpha=B",
+        "disposition": "replaced",
+        "reason": "Derselbe Dienstleistungseintrag mit Listen-Parametern; durch den gelesenen Eintrag erledigt.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      },
+      {
+        "url": "badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=2965.13&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&kuo=1&ModID=10&object=tx%7C2965.73568.1&amp;alpha=D",
+        "disposition": "replaced",
+        "reason": "Derselbe Dienstleistungseintrag mit Listen-Parametern; durch den gelesenen Eintrag erledigt.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      },
+      {
+        "url": "badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=2965.13&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&kuo=1&ModID=10&object=tx%7C2965.73568.1&amp;alpha=E",
+        "disposition": "replaced",
+        "reason": "Derselbe Dienstleistungseintrag mit Listen-Parametern; durch den gelesenen Eintrag erledigt.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      },
+      {
+        "url": "badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=2965.13&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&kuo=1&ModID=10&object=tx%7C2965.73568.1&amp;alpha=F",
+        "disposition": "replaced",
+        "reason": "Derselbe Dienstleistungseintrag mit Listen-Parametern; durch den gelesenen Eintrag erledigt.",
+        "evidenceUrl": "https://www.badoldesloe.de/Politik-und-Verwaltung/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2965.1365.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01062009",
+    "name": "Barsbüttel",
+    "checkedAt": "2026-10-16T04:25:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Barsbüttel hat keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Fundstelle ist ein Vortrag im Planungsausschuss vom 02.02.2023, der nur die damalige Landesförderung für Balkonanlagen nennt. Die Suche der Gemeinde findet zu Photovoltaik, Balkonkraftwerk und Wärmepumpe kein Förderprogramm; Treffer zu „Zuschuss“ betreffen Miet-/Lastenzuschuss und Vereine. Stand 16.10.2026.",
+    "searches": [
+      "barsbuettel.de Suche „Photovoltaik“, „Balkonkraftwerk“, „Speicher“, „Förderprogramm“, „Zuschuss“, „Wärmepumpe“, „Klimaschutz“ am 16.10.2026",
+      "Websuche „Barsbüttel Förderung Balkonkraftwerk Gemeinde Zuschuss“ am 16.10.2026 ohne Treffer zur Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.barsbuettel.de/downloads/datei/Mjk0Mjc0NTIyYjg1MTJlM1JTMFczNngrV3FWaThxdDJMZFNGS1p0aFhSN3NTWE4xRDhiY25nenlUQUlKdlNWZzRtTlZVamFYUWNXaGxUT0FFSkFBOXBUbXJNUElOZXJ4MFhYQ1dzSXRINjVnTWRYSmVNem1acDNTZFk3azdOZ2dGUXJjWm8yS3JqVDBEcXNCdEVPSGNhck8xUFg2V1pHSzY5WVhoZzUrQWN2WDlZaUgrVUN4QjlVTFBzOD0",
+        "finding": "16.10.2026 im Volltext gelesen: „Rahmenbedingungen für private Kleinst-Energieerzeugungsanlagen“, Planungsausschuss 02.02.2023; Abschnitt „Aktuelle Förderungen“ nennt nur „Land S-H - Richtlinie zur Förderung von Photovoltaik-Balkonanlagen“ und „Bund: Derzeit keine speziellen Förderprogramme“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "barsbuettel.de/downloads/datei/Mjk0Mjc0NTIyYjg1MTJlM1JTMFczNngrV3FWaThxdDJMZFNGS1p0aFhSN3NTWE4xRDhiY25nenlUQUlKdlNWZzRtTlZVamFYUWNXaGxUT0FFSkFBOXBUbXJNUElOZXJ4MFhYQ1dzSXRINjVnTWRYSmVNem1acDNTZFk3azdOZ2dGUXJjWm8yS3JqVDBEcXNCdEVPSGNhck8xUFg2V1pHSzY5WVhoZzUrQWN2WDlZaUgrVUN4QjlVTFBzOD0",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Ausschussvortrag, nennt nur Landesförderung.",
+        "evidenceUrl": "https://www.barsbuettel.de/downloads/datei/Mjk0Mjc0NTIyYjg1MTJlM1JTMFczNngrV3FWaThxdDJMZFNGS1p0aFhSN3NTWE4xRDhiY25nenlUQUlKdlNWZzRtTlZVamFYUWNXaGxUT0FFSkFBOXBUbXJNUElOZXJ4MFhYQ1dzSXRINjVnTWRYSmVNem1acDNTZFk3azdOZ2dGUXJjWm8yS3JqVDBEcXNCdEVPSGNhck8xUFg2V1pHSzY5WVhoZzUrQWN2WDlZaUgrVUN4QjlVTFBzOD0"
+      }
+    ]
+  },
+  {
+    "regionId": "01062053",
+    "name": "Oststeinbek",
+    "checkedAt": "2026-10-16T04:25:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oststeinbek hat keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Seite „Fördermöglichkeiten für Privatpersonen“ nennt nur Landes- und Bundesprogramme; das kommunale Förderprogramm der Gemeinde betrifft Starkregenvorsorge (Entsiegelung, Regenwasser, Begrünung). Die Ortssuche findet zu Balkonkraftwerk nur Vorträge und Gemeindeblätter ohne Zuschuss. Stand 16.10.2026.",
+    "searches": [
+      "oststeinbek.de Suche „Photovoltaik“, „Balkonkraftwerk“, „Speicher“, „Solar“ am 16.10.2026",
+      "Gemeindeblätter „Oststeinbek Aktuell“ Februar 2025 und Dezember 2025 (Treffer zu Balkonkraftwerk) am 16.10.2026 gelesen: Infoabend und Verlosung, Starkregen-Förderung erhöht, kein Energie-Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oststeinbek.de/umwelt-und-klimaschutz/beratung/foerdermoeglichkeiten-fuer-privatpersonen",
+        "finding": "16.10.2026 gelesen: Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wird „nicht fortzuführen“, sonst IB.SH, BAFA-Energieberatung, BEG und Förderdatenbank; kein Gemeindeprogramm."
+      },
+      {
+        "url": "https://www.oststeinbek.de/umwelt-klimaschutz/starkregenvorsorge/foerderprogramm",
+        "finding": "16.10.2026 gelesen: kommunales Förderprogramm seit 01.01.2024 für Entsiegelung, Regenwassernutzung, Dach- und Fassadenbegrünung, Bäume, Schottergärten und Gräben."
+      },
+      {
+        "url": "https://www.oststeinbek.de/umwelt-und-klimaschutz/beratung/foerdermoeglichkeiten-fuer-unternehmen",
+        "finding": "16.10.2026 abgerufen: Fördermöglichkeiten für Unternehmen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oststeinbek.de/umwelt-und-klimaschutz/beratung/foerdermoeglichkeiten-fuer-privatpersonen",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: nur Landes- und Bundesförderung.",
+        "evidenceUrl": "https://www.oststeinbek.de/umwelt-und-klimaschutz/beratung/foerdermoeglichkeiten-fuer-privatpersonen"
+      },
+      {
+        "url": "oststeinbek.de/umwelt-und-klimaschutz/beratung/foerdermoeglichkeiten-fuer-unternehmen",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Förderung für Unternehmen, nicht Haushalte.",
+        "evidenceUrl": "https://www.oststeinbek.de/umwelt-und-klimaschutz/beratung/foerdermoeglichkeiten-fuer-unternehmen"
+      },
+      {
+        "url": "oststeinbek.de/umwelt-und-klimaschutz/starkregenvorsorge/foerderprogramm",
+        "disposition": "replaced",
+        "reason": "Alte Adresse liefert 404; die Seite steht jetzt unter umwelt-klimaschutz/starkregenvorsorge/foerderprogramm und ist am 16.10.2026 gelesen: Starkregenvorsorge, kein Energiethema.",
+        "evidenceUrl": "https://www.oststeinbek.de/umwelt-klimaschutz/starkregenvorsorge/foerderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "01062060",
+    "name": "Reinbek",
+    "checkedAt": "2026-10-16T04:25:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Reinbek hat keinen städtischen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Stadt bezahlt 100 Energiechecks der Verbraucherzentrale (Beratung, kein Anlagenzuschuss). Die Ortssuche findet zu Förderprogramm und Zuschuss nur Landesprogramme von 2020/2023, E-Fahrzeug-Förderung für Gewerbe und städtische Dachanlagen; zu Balkonkraftwerk keinen Treffer. Stand 16.10.2026.",
+    "searches": [
+      "reinbek.de Suche „Balkonkraftwerk“, „Photovoltaik“, „Förderprogramm“, „Zuschuss“, „Speicher“, „Wärmepumpe“ am 16.10.2026",
+      "Websuche „Reinbek Stadt Förderung Balkonkraftwerk Photovoltaik Zuschuss“ am 16.10.2026 ohne Treffer zur Stadt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.reinbek.de/unsere-umwelt/energiewende-zu-hause/kostenlose-energieberatung",
+        "finding": "16.10.2026 gelesen: „fördert die Stadt Reinbek dieses Jahr 100 kostenpflichtige Energiechecks bei der Verbraucherzentrale“; sonst Verweise auf Beratung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "reinbek.de/unsere-umwelt/energiewende-zu-hause/kostenlose-energieberatung",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Beratungsförderung, kein Anlagenzuschuss.",
+        "evidenceUrl": "https://www.reinbek.de/unsere-umwelt/energiewende-zu-hause/kostenlose-energieberatung"
+      }
+    ]
+  },
+  {
+    "regionId": "01062061",
+    "name": "Reinfeld (Holstein)",
+    "checkedAt": "2026-10-16T04:25:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Reinfeld hat keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Fundstelle ist der Dienstleistungseintrag zum beendeten Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“. Die Volltextsuche der Stadt findet zu Photovoltaik, Balkonkraftwerk, Speicher und Klimaschutz nur diesen Eintrag, das Klimaschutzkonzept, Bebauungspläne und Stadtradeln. Stand 16.10.2026.",
+    "searches": [
+      "reinfeld.de Volltextsuche „Photovoltaik“ (16 Treffer), „Balkonkraftwerk“ (1), „Speicher“ (5), „Förderung“, „Klimaschutz“ am 16.10.2026",
+      "Websuche „Reinfeld Holstein Förderprogramm Photovoltaik Balkonkraftwerk Stadt“ am 16.10.2026 ohne Treffer zur Stadt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.reinfeld.de/output/vt_stats.php?query=eyJzZWFyY2giOiJjR2h2ZEc5MmIyeDBZV2xyIiwidGFyZ2V0IjoiXC9pbmRleC5waHA%2Fb2JqZWN0PXR4LDMxNDUuMiZhbXA7TW9kSUQ9MTAmYW1wO0ZJRD0zMTQ1LjEzMzYuMSIsIk1vZElEIjoiMTAiLCJWVExhIjoxfQ%3D%3D",
+        "finding": "16.10.2026 gelesen: Landes-Dienstleistung „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“, Antragsstopp 16.11.2023, „PV-Balkon-Anlage: max. Förderung 200 Euro“ im Landesprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "reinfeld.de/output/vt_stats.php?query=eyJzZWFyY2giOiJjR2h2ZEc5MmIyeDBZV2xyIiwidGFyZ2V0IjoiXC9pbmRleC5waHA%2Fb2JqZWN0PXR4LDMxNDUuMiZhbXA7TW9kSUQ9MTAmYW1wO0ZJRD0zMTQ1LjEzMzYuMSIsIk1vZElEIjoiMTAiLCJWVExhIjoxfQ%3D%3D",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Landesprogramm, im Katalog geführt.",
+        "evidenceUrl": "https://www.reinfeld.de/output/vt_stats.php?query=eyJzZWFyY2giOiJjR2h2ZEc5MmIyeDBZV2xyIiwidGFyZ2V0IjoiXC9pbmRleC5waHA%2Fb2JqZWN0PXR4LDMxNDUuMiZhbXA7TW9kSUQ9MTAmYW1wO0ZJRD0zMTQ1LjEzMzYuMSIsIk1vZElEIjoiMTAiLCJWVExhIjoxfQ%3D%3D"
+      }
+    ]
+  },
+  {
+    "regionId": "01062090",
+    "name": "Ammersbek",
+    "checkedAt": "2026-10-16T04:25:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ammersbek hat keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Suche der Gemeinde ergibt für „Photovoltaik“ und „Förderprogramm“ keine Treffer, für „Balkonkraftwerk“ und „Solar“ nur einen Vortrag von 2023, für „Förderung“ und „Zuschuss“ nur Schülerbeförderung und Krankenversicherung. Die beiden erfassten Fundstellen betreffen Kita-Finanzierung und Feuerwehr-Führerscheine. Stand 16.10.2026.",
+    "searches": [
+      "ammersbek.de Suche „Photovoltaik“, „Balkonkraftwerk“, „Speicher“, „Förderprogramm“, „Förderung“, „Klimaschutz“, „Zuschuss“, „Solar“ am 16.10.2026",
+      "Websuche „Ammersbek Förderung Photovoltaik Balkonkraftwerk Gemeinde“ am 16.10.2026 ohne Treffer zur Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ammersbek.de/?s=Photovoltaik",
+        "finding": "16.10.2026 abgerufen: „0 Treffer“; ebenso „Förderprogramm“; „Balkonkraftwerk“ nur „Balkonkraftwerke Vortrag 2023“."
+      },
+      {
+        "url": "https://www.ammersbek.de/aeltere-beitraege/kindertagsfoerderungsgesetz-pruefergebnis-der-ueberleitungsbilanz",
+        "finding": "16.10.2026 gelesen: Kita-Finanzierung."
+      },
+      {
+        "url": "https://www.ammersbek.de/wpfd_file/foerderrichtlinie-fuehrerschein-feuerwehr",
+        "finding": "16.10.2026 abgerufen: Dateititel „Foerderrichtlinie-Fuehrerschein-Feuerwehr“, Förderung von Feuerwehr-Führerscheinen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ammersbek.de/aeltere-beitraege/kindertagsfoerderungsgesetz-pruefergebnis-der-ueberleitungsbilanz",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Kita-Finanzierung, anderes Thema.",
+        "evidenceUrl": "https://www.ammersbek.de/aeltere-beitraege/kindertagsfoerderungsgesetz-pruefergebnis-der-ueberleitungsbilanz"
+      },
+      {
+        "url": "ammersbek.de/wpfd_file/foerderrichtlinie-fuehrerschein-feuerwehr",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Feuerwehr-Führerschein, anderes Thema.",
+        "evidenceUrl": "https://www.ammersbek.de/wpfd_file/foerderrichtlinie-fuehrerschein-feuerwehr"
+      }
+    ]
   }
 ]
