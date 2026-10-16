@@ -105,6 +105,54 @@ describe("Spaltenabgleich: Code gegen Tabelle", () => {
   });
 });
 
+// Gemessen am 16.10.2026 gegen die Produktion (Formate aus der Selbstauskunft
+// von PostgREST), nachdem eine eigene Anlage mit 6,5 kWp nicht zu speichern war.
+const FORMATE_VORHER: Record<string, string> = {
+  anlage: "smallint", custom_kwp: "smallint", speicher: "smallint",
+  personen: "smallint", nutzung: "smallint", ea_km: "integer",
+  o_kosten: "integer", o_ev: "smallint", o_strom: "real", o_einsp: "real",
+  o_ertrag: "smallint", kwp: "real", amortisation_jahre: "smallint",
+  rendite_25j: "integer", haustyp: "integer", dachart: "integer",
+  budget_limit: "integer",
+};
+const FORMATE_NACHHER: Record<string, string> = {
+  ...FORMATE_VORHER,
+  custom_kwp: "real", o_ev: "real",
+  o_kosten: "double precision", budget_limit: "double precision",
+};
+
+/** Eine eigene Anlage, alles frei Eingetippte mit Nachkommastelle. */
+const MIT_KOMMA = {
+  ...GESCHRIEBEN,
+  anlage: 4,
+  custom_kwp: 6.5,
+  o_kosten: 14999.5,
+  o_ev: 32.5,
+  o_strom: 0.345,
+  o_einsp: 7.86,
+  budget_limit: 19999.5,
+  kwp: 6.5,
+};
+
+describe("Spaltenabgleich: Kommazahl in Ganzzahl-Spalte", () => {
+  it("findet den echten Vorfall und die drei Geschwister-Spalten", () => {
+    const b = spaltenAbgleich(MIT_KOMMA, SPALTEN_NACHHER, PFLICHT_NACHHER, FORMATE_VORHER);
+    expect(b.ganzzahlKollision).toEqual(["custom_kwp", "o_kosten", "o_ev", "budget_limit"]);
+  });
+
+  it("ist nach der Erweiterung still", () => {
+    const b = spaltenAbgleich(MIT_KOMMA, SPALTEN_NACHHER, PFLICHT_NACHHER, FORMATE_NACHHER);
+    expect(b.ganzzahlKollision).toEqual([]);
+  });
+
+  it("schweigt bei ganzen Zahlen in Ganzzahl-Spalten", () => {
+    // Negativprobe: der Normalfall (10 kWp) darf nicht anschlagen, sonst
+    // meldet der Waechter jede Nacht Rot und niemand glaubt ihm.
+    const b = spaltenAbgleich(GESCHRIEBEN, SPALTEN_NACHHER, PFLICHT_NACHHER, FORMATE_VORHER);
+    expect(b.ganzzahlKollision).toEqual([]);
+  });
+});
+
 describe("Gegenprobe: der Abgleich ist wirklich verdrahtet", () => {
   // Ein Waechter, der zwar existiert, aber nirgends aufgerufen wird, meldet
   // fuer immer Gruen — genau die Sorte Sicherheitsnetz, vor der das Projekt
@@ -129,6 +177,8 @@ describe("Gegenprobe: der Abgleich ist wirklich verdrahtet", () => {
     expect(bisNaechsterAbschnitt).toContain("spalten.nullKollision.length");
     expect(bisNaechsterAbschnitt).toContain('technical("calculation-columns", true,');
     expect(bisNaechsterAbschnitt).toContain('technical("calculation-nullability", true,');
+    expect(bisNaechsterAbschnitt).toContain("spalten.ganzzahlKollision.length");
+    expect(bisNaechsterAbschnitt).toContain('technical("calculation-integer-columns", true,');
     expect(bisNaechsterAbschnitt).toContain('technical("calculation-measurement", true,');
     expect(bisNaechsterAbschnitt).not.toContain("warnings.push");
   });

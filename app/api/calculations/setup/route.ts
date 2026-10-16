@@ -91,6 +91,33 @@ export async function GET(req: NextRequest) {
         --    auch die eines Nutzers, der sie ausgeschaltet hat.
         ALTER TABLE public.calculations ALTER COLUMN einspeisung_an DROP NOT NULL;
         ALTER TABLE public.calculations ALTER COLUMN einspeisung_an DROP DEFAULT;
+
+        -- 5) Kommazahlen (16.10.2026). Die Eingaben erlauben sie seit jeher,
+        --    vier Spalten kannten nur ganze Zahlen: Eine eigene Anlage mit
+        --    6,5 kWp scheiterte am 14.10.2026 mit HTTP 500. Erweitern
+        --    verliert nichts, jede ganze Zahl bleibt dieselbe. Bedingt, damit
+        --    ein zweiter Lauf die Tabelle nicht erneut umschreibt.
+        IF (SELECT data_type FROM information_schema.columns
+             WHERE table_schema = 'public' AND table_name = 'calculations'
+               AND column_name = 'custom_kwp') IN ('smallint', 'integer') THEN
+          ALTER TABLE public.calculations ALTER COLUMN custom_kwp TYPE real;
+        END IF;
+        IF (SELECT data_type FROM information_schema.columns
+             WHERE table_schema = 'public' AND table_name = 'calculations'
+               AND column_name = 'o_ev') IN ('smallint', 'integer') THEN
+          ALTER TABLE public.calculations ALTER COLUMN o_ev TYPE real;
+        END IF;
+        -- Euro-Betraege bis 500.000 mit Cent: real haette nur sieben Stellen.
+        IF (SELECT data_type FROM information_schema.columns
+             WHERE table_schema = 'public' AND table_name = 'calculations'
+               AND column_name = 'o_kosten') IN ('smallint', 'integer') THEN
+          ALTER TABLE public.calculations ALTER COLUMN o_kosten TYPE double precision;
+        END IF;
+        IF (SELECT data_type FROM information_schema.columns
+             WHERE table_schema = 'public' AND table_name = 'calculations'
+               AND column_name = 'budget_limit') IN ('smallint', 'integer') THEN
+          ALTER TABLE public.calculations ALTER COLUMN budget_limit TYPE double precision;
+        END IF;
       END
       $calculations_migration$;
 
@@ -102,7 +129,7 @@ export async function GET(req: NextRequest) {
   });
 
   return NextResponse.json({
-    step: "calculations: einspeisung_modus + Nullbarkeit",
+    step: "calculations: einspeisung_modus + Nullbarkeit + Kommazahlen",
     status: error ? "error" : "ok",
     error: error?.message,
   });

@@ -107,7 +107,8 @@ export async function POST(req: NextRequest) {
       name: optStr(body.name, 100) || "Meine Berechnung",
       description: optStr(body.description, 500) || null,
       anlage,
-      custom_kwp: int(body.custom_kwp, 1, 50) ?? kwp,
+      // Kommazahlen erlaubt (6,5 kWp) — die Spalte ist seit 16.10.2026 real.
+      custom_kwp: float(body.custom_kwp, 1, 50) ?? kwp,
       speicher,
       personen,
       nutzung,
