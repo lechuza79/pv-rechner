@@ -100026,7 +100026,7 @@
   {
     "regionId": "01062082",
     "name": "Trittau",
-    "checkedAt": "2026-10-16T02:20:00Z",
+    "checkedAt": "2026-10-16T02:23:00Z",
     "recheckAt": "2027-01-14T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -100102,7 +100102,87 @@
         "disposition": "reviewed",
         "reason": "16.10.2026 gelesen: Verwaltungsgliederung, keine Förderung.",
         "evidenceUrl": "https://www.trittau.de/verwaltung-service/buergerservice"
+      },
+      {
+        "url": "trittau.de/freizeit-kultur/klimaschutz/foerderung-mini-photovoltaik-balkonanlagen",
+        "disposition": "replaced",
+        "reason": "Ältere, nicht mehr erreichbare Adresse derselben Balkonförderung; durch die am 16.10.2026 gelesene Programmseite (eingestellt zum 31.12.2025) erledigt.",
+        "evidenceUrl": "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html"
       }
     ]
+  },
+  {
+    "regionId": "01062006",
+    "name": "Bargteheide",
+    "checkedAt": "2026-10-16T02:35:00Z",
+    "recheckAt": "2026-11-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Bargteheide fördert über seinen Klimaschutzfonds (Richtlinie vom 05.06.2025) Energiespeicher für Strom aus erneuerbaren Energien mit 100 € pauschal für Personen, die in Bargteheide wohnen; Antrag vor Beginn, Nachweis per Rechnung und Foto. Andere Energie-Fördergegenstände (erneuerbare Energien, Energiesparen) richten sich an Vereine; private energetische Sanierung ist ausdrücklich ausgeschlossen. Offen ist nur die Aufnahme: Der Katalog kennt keine eigene Technik „Speicher“, und als Photovoltaik eingetragen würde das Programm eine Dachförderung versprechen. Stand 16.10.2026.",
+    "searches": [
+      "bargteheide.de: Förderungen, Klimaschutzfonds (Browser), Richtlinie Teil A, Tabelle Teil B, Antragsformular und Prämienblatt am 16.10.2026 im Volltext gelesen",
+      "Erfasste Meldungen (Baumpflanzungen, Landesprogramm 2020) am 16.10.2026 gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen/Klimaschutzfonds.php?object=tx,3489.2292.1&NavID=3489.26",
+        "finding": "16.10.2026 im Browser gelesen: Klimaschutzfonds, Anträge ganzjährig; „Erneuerbare Energien: u.a. Energiespeicher“, „Die Förderhöhe für Energiespeicher (keine Powerbanks!) liegt bei 100 Euro“; „Energetische Sanierungsmaßnahmen zum privaten Gebrauch fallen nicht in das Förderprofil“."
+      },
+      {
+        "url": "https://www.bargteheide.de/media/custom/3489_2251_1.PDF?1749811747",
+        "finding": "16.10.2026 im Volltext gelesen: Richtlinie nach Beschluss des UKE vom 05.06.2025, in Kraft zum 01.01.2025; natürliche Personen in den Förderbereichen 1, 2, 3 und 5; Beginn erst nach Bewilligung; höchstens eine Maßnahme je Kalenderjahr, max. 2.000 € je Antragsteller und Jahr; kombinierbar; Laufzeit wird mit den Haushaltsmitteln je Jahr beschlossen."
+      },
+      {
+        "url": "https://www.bargteheide.de/media/custom/3489_1622_1.PDF?1712920561",
+        "finding": "16.10.2026 im Volltext gelesen: Teil B, Förderbereich 03 Energie — „Energiespeicher (für die von Erneuerbare Energien gewonnene Energie)“, Privat und Verein angekreuzt, 100 €, „Wohnhaft in Bargteheide“, Nachweis Ergebnisbericht, Rechnung, Foto; „Regenerative Energien 90 % max. 1000 €“ und „Energiesparmaßnahmen“ mit Bedingung „Sitz in Bargteheide“ (Vereine)."
+      },
+      {
+        "url": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen",
+        "finding": "16.10.2026 gelesen: Übersicht „Förderungen“ der Stadt: Klimaschutzfonds und private Baumpflanzungen; Dokument „Heizungsförderung für alle“ (Bundesförderung)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen",
+        "disposition": "open",
+        "reason": "16.10.2026 gelesen: führt zum Klimaschutzfonds mit Speicherzuschuss; Aufnahme offen.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
+      },
+      {
+        "url": "bargteheide.de/Rathaus-Politik/Anliegen-Formulare/Anliegen-von-A-Z/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "open",
+        "reason": "16.10.2026 gelesen: Dienstleistungseintrag „Kommunale Förderung für den Klimaschutz beantragen“ = Klimaschutzfonds; Aufnahme offen.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen/Klimaschutzfonds.php?object=tx,3489.2292.1&NavID=3489.26"
+      },
+      {
+        "url": "bargteheide.de/Aktuelles/Aktuelle-Meldungen-/F%C3%B6rderrichtlinie-private-Baumpflanzungen-Bargteheide.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Baumpflanzungsförderung, anderes Thema.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
+      },
+      {
+        "url": "bargteheide.de/Aktuelles/Aktuelle-Meldungen-/Klimaschutzf%C3%B6rderprogramm-Schleswig-Holstein.php",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Meldung von 2020 zum Landesprogramm, das im Katalog steht.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
+      },
+      {
+        "url": "bargteheide.de/Rathaus-Politik/Rathaus-Verwaltung/Kontaktm%C3%B6glichkeiten-und-Ansprechpersonen/Stiftung-zur-F%C3%B6rderung-der-Kinderh%C3%A4user-BLAUER-ELEFANT.php",
+        "disposition": "open",
+        "reason": "16.10.2026 abgerufen: Kontaktseite einer Kita-Stiftung; Inhalt per Skript nicht ausgeliefert, nächster Lauf im Browser.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
+      },
+      {
+        "url": "bargteheide.de/Rathaus-Politik/Rathaus-Verwaltung/Kontaktm%C3%B6glichkeiten-und-Ansprechpersonen/Vergabe-F%C3%B6rdermittel-und-Beteiligungsmanagement.php",
+        "disposition": "open",
+        "reason": "16.10.2026 abgerufen: Kontaktseite Vergabe/Fördermittelmanagement; Inhalt per Skript nicht ausgeliefert, nächster Lauf im Browser.",
+        "evidenceUrl": "https://www.bargteheide.de/Rathaus-Politik/Klima-und-Umweltschutz/F%C3%B6rderungen"
+      }
+    ],
+    "nextAction": {
+      "kind": "manual",
+      "dueAt": "2026-10-17T12:00:00Z",
+      "detail": "Speicherzuschuss 100 € (Klimaschutzfonds) als laufendes Programm aufnehmen, sobald der Katalog Speicher als eigene Technik kennt: Technik ergänzen, Stadtseiten-Fall ohne Dachversprechen, Gegenprüfung durch zwei Prüfer; die beiden Kontaktseiten im Browser lesen. Spätestens im Tageslauf am 17.10.2026."
+    }
   }
 ]
