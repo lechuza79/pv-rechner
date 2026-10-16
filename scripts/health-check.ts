@@ -978,6 +978,11 @@ export type MastrFrische = {
 //                   (`o_einsp`, „kein eigener Einspeisesatz gesetzt") und der
 //                   teurere: Er wäre erst NACH der Reparatur des ersten
 //                   sichtbar geworden, also beim nächsten Lauf noch einmal.
+//   ganzzahlKollision — der Code schreibt eine Kommazahl in eine Spalte, die
+//                   nur ganze Zahlen kennt. Eingetreten am 14.10.2026: eine
+//                   eigene Anlagengröße von 6,5 kWp scheiterte an
+//                   `custom_kwp smallint` — die Eingabe erlaubt seit jeher
+//                   Kommazahlen, nur die Tabelle nicht.
 //
 // Reine Funktion mit hereingereichten Listen — sie soll ohne Netz prüfbar sein.
 
@@ -1029,11 +1034,13 @@ export function spaltenAbgleich(
   geschrieben: Record<string, unknown>,
   vorhandeneSpalten: readonly string[],
   pflichtSpalten: readonly string[],
-): { fehlend: string[]; nullKollision: string[] } {
+  spaltenFormate: Readonly<Record<string, string | undefined>> = {},
+): { fehlend: string[]; nullKollision: string[]; ganzzahlKollision: string[] } {
   const vorhanden = new Set(vorhandeneSpalten);
   const pflicht = new Set(pflichtSpalten);
   const fehlend: string[] = [];
   const nullKollision: string[] = [];
+  const ganzzahlKollision: string[] = [];
 
   for (const [feld, wert] of Object.entries(geschrieben)) {
     if (!vorhanden.has(feld)) {
@@ -1041,12 +1048,26 @@ export function spaltenAbgleich(
       continue; // Was fehlt, kann nicht zusätzlich kollidieren — sonst zweimal gemeldet.
     }
     if ((wert === null || wert === undefined) && pflicht.has(feld)) nullKollision.push(feld);
+    if (
+      typeof wert === "number" &&
+      !Number.isInteger(wert) &&
+      GANZZAHL_FORMATE.has(spaltenFormate[feld] ?? "")
+    ) {
+      ganzzahlKollision.push(feld);
+    }
   }
 
-  return { fehlend, nullKollision };
+  return { fehlend, nullKollision, ganzzahlKollision };
 }
 
-export type SpaltenBefund = { tabelle: string; fehlend: string[]; nullKollision: string[] };
+const GANZZAHL_FORMATE = new Set(["smallint", "integer", "bigint"]);
+
+export type SpaltenBefund = {
+  tabelle: string;
+  fehlend: string[];
+  nullKollision: string[];
+  ganzzahlKollision: string[];
+};
 
 /**
  * Holt die echten Spalten der Berechnungs-Tabelle und hält die Feldliste
@@ -1073,7 +1094,10 @@ async function messeSpaltenAbgleich(): Promise<SpaltenBefund | null> {
     });
     if (!r.ok) return null;
     const spec = (await r.json()) as {
-      definitions?: Record<string, { properties?: Record<string, unknown>; required?: string[] }>;
+      definitions?: Record<
+        string,
+        { properties?: Record<string, { format?: string }>; required?: string[] }
+      >;
     };
     const def = spec.definitions?.calculations;
     if (!def?.properties) return null;
@@ -1112,12 +1136,43 @@ async function messeSpaltenAbgleich(): Promise<SpaltenBefund | null> {
       description: null,
     };
 
-    const { fehlend, nullKollision } = spaltenAbgleich(
-      geschrieben,
-      Object.keys(def.properties),
-      def.required ?? [],
+    // Der zweite ungünstige Fall: alles, was der Nutzer frei eintippen kann,
+    // mit Nachkommastelle. Eine eigene Anlage (anlage 4), damit die eigene
+    // Größe überhaupt geschrieben wird.
+    const mitKomma = paramsToRow(
+      {
+        anlage: 4,
+        customKwp: 6.5,
+        speicher: 1,
+        personen: 1,
+        nutzung: 1,
+        wp: "nein",
+        ea: "ja",
+        eaKm: 15000,
+        oKosten: 14999.5,
+        oEv: 32.5,
+        oStrom: 0.345,
+        oEinsp: 7.86,
+        einspeisungModus: "teil",
+        oErtrag: 950,
+        plz: "",
+        fuelType: "gas",
+        flowType: "manual",
+        haustyp: null,
+        dachart: null,
+        budgetLimit: 19999.5,
+      },
+      { kwp: 6.5, amortisationJahre: null, rendite25j: null },
     );
-    return { tabelle: "calculations", fehlend, nullKollision };
+
+    const formate = Object.fromEntries(
+      Object.entries(def.properties).map(([name, p]) => [name, p.format]),
+    );
+    const spalten = Object.keys(def.properties);
+    const pflicht = def.required ?? [];
+    const { fehlend, nullKollision } = spaltenAbgleich(geschrieben, spalten, pflicht, formate);
+    const { ganzzahlKollision } = spaltenAbgleich(mitKomma, spalten, pflicht, formate);
+    return { tabelle: "calculations", fehlend, nullKollision, ganzzahlKollision };
   } catch {
     return null;
   }
@@ -2444,7 +2499,8 @@ async function main() {
   // ── Schreibt der Code in Spalten, die es gibt? ────────────────────────────
   const spalten = await messeSpaltenAbgleich();
   if (spalten) {
-    const summe = spalten.fehlend.length + spalten.nullKollision.length;
+    const summe =
+      spalten.fehlend.length + spalten.nullKollision.length + spalten.ganzzahlKollision.length;
     lines.push(
       summe === 0
         ? `Gespeicherte Berechnungen: Code und Tabelle passen zusammen.`
@@ -2468,9 +2524,17 @@ async function main() {
           `liefern — was von beidem stimmt, entscheidet die Bedeutung des Feldes, nicht die Bequemlichkeit.`,
       );
     }
+    if (spalten.ganzzahlKollision.length) {
+      technical("calculation-integer-columns", true,
+        `Beim Speichern einer Berechnung kann der Code Kommazahlen in Spalten schreiben, die nur ganze Zahlen ` +
+          `kennen: ${spalten.ganzzahlKollision.join(", ")}. Wer dort z. B. 6,5 eingibt, kann nicht speichern ` +
+          `(HTTP 500). Zu tun: Spaltentyp über /api/calculations/setup erweitern — nicht die Eingabe runden, ` +
+          `sonst lädt der Nutzer später eine andere Zahl, als er gespeichert hat.`,
+      );
+    }
   }
 
-  if (!spalten) { unknown.push("calculation-columns", "calculation-nullability"); technical("calculation-measurement", true, "Prüfung gespeicherter Berechnungen nicht erreichbar."); }
+  if (!spalten) { unknown.push("calculation-columns", "calculation-nullability", "calculation-integer-columns"); technical("calculation-measurement", true, "Prüfung gespeicherter Berechnungen nicht erreichbar."); }
 
   // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
   const social = await messeSocialAblauf();
