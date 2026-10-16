@@ -98213,16 +98213,17 @@
   {
     "regionId": "01057025",
     "name": "Heikendorf",
-    "checkedAt": "2026-10-15T06:11:55Z",
+    "checkedAt": "2026-10-16T13:05:00Z",
     "recheckAt": "2027-01-13T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Heikendorf (Amt Schrevenborn) hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche des Amtes findet kein Gemeindeprogramm, das Ortsrecht enthält nur die Satzung eines Klimaschutzbeirates, der Produktplan 2026 keinen Förderansatz. Stand 15.10.2026.",
+    "conclusion": "Heikendorf (Amt Schrevenborn) hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche des Amtes findet kein Gemeindeprogramm, das Ortsrecht enthält nur die Satzung eines Klimaschutzbeirates, der Produktplan 2026 keinen Förderansatz. Die zwei neuen Suchtreffer auf heikendorf.de führen zu bekannten Landesmeldungen von 2020 (Klimaschutzprogramm, Ladeinfrastruktur). Stand 16.10.2026.",
     "searches": [
       "amt-schrevenborn.de Volltextsuche (15.10.2026), elf Begriffe",
       "Ortsrecht Heikendorf (59 Satzungen/Ordnungen) gesichtet",
       "Produktplan Haushalt 2026 Heikendorf (PDF) durchsucht",
-      "heikendorf.de löst nicht auf"
+      "heikendorf.de löst nicht auf",
+      "16.10.2026: zwei heikendorf.de-Suchtreffer dekodiert (Zählweiterleitung) und ihre Ziele auf amt-schrevenborn.de gelesen"
     ],
     "evidence": [
       {
@@ -98240,6 +98241,14 @@
       {
         "url": "https://www.kreis-ploen.de/index.php?object=tx,3932.2.1&ModID=10&FID=2156.2080.1",
         "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Balkon-PV max. 200 €, Wärmepumpe max. 2.000 €): „Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden aktuell bearbeitet“ — Landesprogramm, seit 16.11.2023 gestoppt, kein kommunales Programm."
+      },
+      {
+        "url": "https://www.amt-schrevenborn.de/index.php?object=tx,4157.5.1&ModID=255&FID=2782.1790.1",
+        "finding": "Ziel des heikendorf.de-Suchtreffers FID 2782.1790.1 (Weiterleitung aus der Suchstatistik, Ziel im Abfrageteil kodiert), am 16.10.2026 auf dem gemeinsamen Amtsserver gelesen: Meldung vom 19.06.2020 „Klimaschutzförderprogramm des Landes um weitere 2 Millionen Euro aufgestockt“ — Landesprogramm, seit 16.11.2023 gestoppt."
+      },
+      {
+        "url": "https://www.amt-schrevenborn.de/index.php?object=tx,4157.5.1&ModID=255&FID=2782.1843.1",
+        "finding": "Ziel des heikendorf.de-Suchtreffers FID 2782.1843.1, am 16.10.2026 gelesen: Meldung vom 11.08.2020 „Förderprogramm Ladeinfrastruktur für Elektrofahrzeuge“ (Landesprogramm Ladeinfrastruktur) — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
       }
     ],
     "sources": [
@@ -101265,6 +101274,161 @@
         "disposition": "replaced",
         "reason": "Alte Adresse vor dem Relaunch, nicht mehr erreichbar; dieselbe Förderübersicht steht jetzt unter bauen-umwelt/foerdermittel-angebote und ist am 16.10.2026 gelesen.",
         "evidenceUrl": "https://www.bellheim.de/bauen-umwelt/foerdermittel-angebote/"
+      }
+    ]
+  },
+  {
+    "regionId": "03101000",
+    "name": "Braunschweig",
+    "checkedAt": "2026-10-16T13:20:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Braunschweig hat ein städtisches Programm für regenerative Energien (Balkonkraftwerk 200 €, Balkonspeicher 150 €, Wärmepumpe 1.000/4.000 €, höchstens 4.900 € je Liegenschaft; im Katalog als braunschweig-regenerative-energien). Der Topf 2026 ist ausgeschöpft, Anträge sind nicht mehr möglich; Dach-PV wird nicht gefördert (nur vertikale Fassaden-/Zaunanlagen und Gemeinschaftsprojekte). Stand 16.10.2026; Wiederprüfung zum Jahresende wegen der angekündigten Förderung 2027.",
+    "searches": [
+      "Programmseite, FAQ, Übersicht Förderprogramme Umwelt und Richtlinie 2026 der Stadt am 16.10.2026 im Volltext gelesen",
+      "Alle sieben erfassten Fundstellen geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.braunschweig.de/vv/produkte/VI/68/68_3/foerderprogramm-fuer-regenerative-energien-und-effizienzmassnahmen.php",
+        "finding": "„Das Förderprogramm der Stadt Braunschweig für regenerative Energien und Energieeffizienzmaßnahmen ist bereits ausgeschöpft. Eine Antragstellung ist leider nicht mehr möglich.“ (16.10.2026)"
+      },
+      {
+        "url": "https://www.braunschweig.de/leben/umwelt/foerderprogramme/pdf/2026_Richtlinie_1.pdf",
+        "finding": "Richtlinie zur Förderung der Solarstromerzeugung 2026: steckerfertige PV 200 € (+150 € bei Sozialleistungsbezug), Speicher dafür 150 €, vertikale PV 3–20 kWp 100 €/kWp, Gemeinschaftsprojekte ab 10 kWp 4.000 €; höchstens 4.900 € je Liegenschaft."
+      },
+      {
+        "url": "https://www.braunschweig.de/leben/umwelt/foerderprogramme/faq-regenerative-energien.php",
+        "finding": "FAQ zum Programm 2026 (Antrag ab 15.04.2026 über das Service-Portal) — keine abweichenden Beträge."
+      },
+      {
+        "url": "https://www.braunschweig.de/leben/umwelt/foerderprogramme/index.php",
+        "finding": "Übersicht Förderprogramme Umwelt: Zuschüsse für Umweltvereine/-initiativen, Begrünung und das Programm für regenerative Energien — kein weiteres Energieprogramm für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "braunschweig.de/vv/produkte/VI/68/68_3/foerderprogramm-fuer-regenerative-energien-und-effizienzmassnahmen.php",
+        "disposition": "reviewed",
+        "reason": "Programmseite: ausgeschöpft, im Katalog als braunschweig-regenerative-energien.",
+        "evidenceUrl": "https://www.braunschweig.de/vv/produkte/VI/68/68_3/foerderprogramm-fuer-regenerative-energien-und-effizienzmassnahmen.php"
+      },
+      {
+        "url": "braunschweig.de/leben/umwelt/foerderprogramme/pdf/2026_Richtlinie_1.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie 2026 des Katalogprogramms, Beträge unverändert.",
+        "evidenceUrl": "https://www.braunschweig.de/leben/umwelt/foerderprogramme/pdf/2026_Richtlinie_1.pdf"
+      },
+      {
+        "url": "braunschweig.de/leben/umwelt/foerderprogramme/faq-regenerative-energien.php",
+        "disposition": "reviewed",
+        "reason": "FAQ des Katalogprogramms, keine abweichenden Angaben.",
+        "evidenceUrl": "https://www.braunschweig.de/leben/umwelt/foerderprogramme/faq-regenerative-energien.php"
+      },
+      {
+        "url": "braunschweig.de/leben/umwelt/foerderprogramme/index.php",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite; einziges Energieprogramm ist das Katalogprogramm.",
+        "evidenceUrl": "https://www.braunschweig.de/leben/umwelt/foerderprogramme/index.php"
+      },
+      {
+        "url": "braunschweig.de/vv/produkte/VI/67/67_2/67_22/foerderprogramm-zur-privaten-und-gewerblichen-dach-fassaden-und-grundstuecksbegruenung.php",
+        "disposition": "reviewed",
+        "reason": "„Gartenreich(es) Braunschweig“: Dach-, Fassaden- und Grundstücksbegrünung, kein PV-/Speicher-/WP-Zuschuss.",
+        "evidenceUrl": "https://www.braunschweig.de/leben/umwelt/foerderprogramme/index.php"
+      },
+      {
+        "url": "braunschweig.de/vv/produkte/VI/68/zuschuesse-an-umweltorganisationen.php",
+        "disposition": "reviewed",
+        "reason": "Zuschüsse an Umweltvereine und Initiativen, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.braunschweig.de/leben/umwelt/foerderprogramme/index.php"
+      },
+      {
+        "url": "braunschweig.de/leben/stadtplanung_bauen/stadterneuerung/soziale-stadt-westl-ringgebiet/Foerderprogramme.php",
+        "disposition": "reviewed",
+        "reason": "Städtebauförderung „Soziale Stadt“ im Sanierungsgebiet Westliches Ringgebiet (Bund-/Land-/EU-Programme der Stadterneuerung), kein Energiezuschuss für Haushalte.",
+        "evidenceUrl": "https://www.braunschweig.de/leben/umwelt/foerderprogramme/index.php"
+      }
+    ]
+  },
+  {
+    "regionId": "04012000",
+    "name": "Bremerhaven",
+    "checkedAt": "2026-10-16T13:20:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bremerhaven hat keinen städtischen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Das Programm „Kommunaler Klimaschutz“ (Bingo-Umweltlotterie) fördert Klimaschutzprojekte mit Konzeption, Sachkosten und Öffentlichkeitsarbeit nach Vorstellung vor einer Steuerungsgruppe, keine Anlagen einzelner Haushalte; KliFF betraf Fernwärmeanschlüsse (2012). Landesprogramme Bremens (BAB) gelten auch hier und stehen getrennt im Katalog. Stand 16.10.2026.",
+    "searches": [
+      "bremerhaven.de-Seitensuche 16.10.2026: Photovoltaik, Balkonkraftwerk, Wärmepumpe, Batteriespeicher, Zuschuss Solar",
+      "Förderrichtlinie „Kommunaler Klimaschutz für die Stadt Bremerhaven“ (Amtsblatt 09.06.2020) im Volltext gelesen",
+      "Alle sieben erfassten Fundstellen geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bremerhaven.de/de/verwaltung-politik-sicherheit/buergerservice/dienstleistungen/foerderung-fuer-klimaschutz-in-bremerhaven-beantragen.150703.html",
+        "finding": "Dienstleistung „Förderung für Klimaschutz in Bremerhaven beantragen“: Projekte zur lokalen Treibhausgasminderung; förderfähig Konzeption/Planung, Sachkosten, Öffentlichkeitsarbeit; Eigenanteil nötig."
+      },
+      {
+        "url": "https://www.bremerhaven.de/sixcms/media.php/94/F%C3%B6rderrichtline_2022.pdf",
+        "finding": "Richtlinie Kommunaler Klimaschutz: Nr. 2.1 „Es werden Klimaschutzprojekte gefördert“; Nr. 2.2 ausgeschlossen u. a. „Investitionskosten, deren Abschreibung über den Projektzeitraum hinausgehen“; Antrag mit Vorstellung vor der klimapolitischen Steuerungsgruppe — kein Haushaltszuschuss für Anlagen."
+      },
+      {
+        "url": "https://www.bremerhaven.de/de/verwaltung-politik-sicherheit/klimastadt/beratungsangebote-und-weitere-foerderprogramme.135165.html",
+        "finding": "Übersicht Beratungsangebote/weitere Förderprogramme: Bremer Förderlotse, Bremer Umwelt Beratung (Klimafolgenanpassung bis 6.000 €), energiekonsens, Verbraucherzentrale — kein städtischer PV-/Speicher-/WP-Zuschuss."
+      },
+      {
+        "url": "https://www.bremerhaven.de/de/suchergebnisse.5565.html?search=Photovoltaik",
+        "finding": "Seitensuche 16.10.2026: Photovoltaik nur „Solardach-Website neu aufgelegt“; Balkonkraftwerk nur Projektliste/Programm Kommunaler Klimaschutz; Wärmepumpe, Batteriespeicher, Zuschuss Solar ohne Förderbezug."
+      },
+      {
+        "url": "https://www.bremerhaven.de/de/aktuelles/gemeinsame-initiative-neues-klimaschutz-foerderprogramm-kliff-soll.10153.html",
+        "finding": "Meldung KliFF: Klimaschutz-Förderprogramm Fernwärme der Stadt und swb (Fernwärmeanschlüsse), kein PV-/Speicher-/WP-Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bremerhaven.de/de/verwaltung-politik-sicherheit/buergerservice/dienstleistungen/foerderung-fuer-klimaschutz-in-bremerhaven-beantragen.150703.html",
+        "disposition": "reviewed",
+        "reason": "Projektförderung Kommunaler Klimaschutz (Konzeption, Sachkosten, Öffentlichkeitsarbeit), kein Haushaltszuschuss für Anlagen.",
+        "evidenceUrl": "https://www.bremerhaven.de/sixcms/media.php/94/F%C3%B6rderrichtline_2022.pdf"
+      },
+      {
+        "url": "bremerhaven.de/de/verwaltung-politik-sicherheit/klimastadt/foerderprogramm-kommunaler-klimaschutz-fuer-bremerhaven.132378.html",
+        "disposition": "reviewed",
+        "reason": "Programmseite desselben Projektförderprogramms (Bingo-Umweltlotterie, Projekte der Zivilgesellschaft), kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.bremerhaven.de/sixcms/media.php/94/F%C3%B6rderrichtline_2022.pdf"
+      },
+      {
+        "url": "bremerhaven.de/de/aktuelles/kommunale-klimaschutzprojekte-foerderprogramm-geht-in-die-naechste-runde.141897.html",
+        "disposition": "reviewed",
+        "reason": "Meldung zur Förderrunde September 2023 desselben Projektförderprogramms; einzelne Balkonkraftwerk-Projekte wurden als Projekte gefördert, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.bremerhaven.de/sixcms/media.php/94/F%C3%B6rderrichtline_2022.pdf"
+      },
+      {
+        "url": "bremerhaven.de/de/verwaltung-politik-sicherheit/klimastadt/beratungsangebote-und-weitere-foerderprogramme.135165.html",
+        "disposition": "reviewed",
+        "reason": "Verweisliste auf Beratung und Landes-/Bundesprogramme, kein städtischer Zuschuss.",
+        "evidenceUrl": "https://www.bremerhaven.de/de/verwaltung-politik-sicherheit/klimastadt/beratungsangebote-und-weitere-foerderprogramme.135165.html"
+      },
+      {
+        "url": "bremerhaven.de/de/aktuelles/gemeinsame-initiative-neues-klimaschutz-foerderprogramm-kliff-soll.10153.html",
+        "disposition": "reviewed",
+        "reason": "KliFF: Fernwärmeanschlüsse, kein PV-/Speicher-/WP-Zuschuss.",
+        "evidenceUrl": "https://www.bremerhaven.de/de/aktuelles/gemeinsame-initiative-neues-klimaschutz-foerderprogramm-kliff-soll.10153.html"
+      },
+      {
+        "url": "bremerhaven.de/de/aktuelles/aktiver-klimaschutz-magistrat-beschliesst-teilnahme-an-foerderprogramm.10538.html",
+        "disposition": "reviewed",
+        "reason": "Meldung zum Förderprogramm Fernwärmeabsatz (ab 2012, zunächst zwei Jahre), kein PV-/Speicher-/WP-Zuschuss.",
+        "evidenceUrl": "https://www.bremerhaven.de/de/aktuelles/gemeinsame-initiative-neues-klimaschutz-foerderprogramm-kliff-soll.10153.html"
+      },
+      {
+        "url": "bremerhaven.de/de/verwaltung-politik-sicherheit/bremerhaven-in-der-eu/eu-foerderprogramme/eu-finanzhilfeprogramme.23088.html",
+        "disposition": "reviewed",
+        "reason": "Übersicht EU-Finanzhilfeprogramme für Projektträger, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.bremerhaven.de/de/verwaltung-politik-sicherheit/klimastadt/beratungsangebote-und-weitere-foerderprogramme.135165.html"
       }
     ]
   }

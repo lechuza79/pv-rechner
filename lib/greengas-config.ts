@@ -649,7 +649,7 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //   Text unverändert (Stufen 10/15/30/60 %, § 42a nur Ankündigung bis
   //   01.12.2026); Bundestag 14.–16.10. (Tagesordnung komplett) ohne
   //   Heizungs- oder Quotengesetz; keine Bioheizöl-Preisreihe einer Trägerquelle.
-  geprueftRechtIso: "2026-10-15",
+  geprueftRechtIso: "2026-10-16",
   reviewBy: "2027-07-25",
 };
 
