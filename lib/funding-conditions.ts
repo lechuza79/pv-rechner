@@ -700,6 +700,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // expired 30.04.2026); owner rule, specialist-firm rule and the 50 % cost
   // cap have no test form.
   "geesthacht-solar",
+  // Added 16 Oct 2026 as closed historical programme (no calculation fields).
+  "trittau-sonnenstrom-balkon",
   // Added 27 Sep 2026: guideline read in full (scanned pages); the owner rule,
   // the energy check and the unregulated balcony eligibility have no test form yet.
   "bubach-energiespar",

@@ -100022,5 +100022,87 @@
         "evidenceUrl": "https://www.amt-trittau.de/downloads/datei/MDhiNjJhNjU4ZjVlZjVjZGQwVXU3NlJia1crNDFrbFRod2JVTWs3YklITzNObWZMcmJSQldZNlVFSGZ3RUgvT2IxOVM1ZFRDbXFiRlkwVzVVekdwUWJlbHBtdm9vTXRCU1E1Ym9UUnBxbEdsVkhnR21EOUsxb2lNRmdVU1dQZjF1WjN1cGMrWlpTdUw5REhHcndBVnhZZmQ1Y3FhckJENXh2dXpwUT09"
       }
     ]
+  },
+  {
+    "regionId": "01062082",
+    "name": "Trittau",
+    "checkedAt": "2026-10-16T02:20:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Trittau hat heute keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Balkonkraftwerk-Förderung „Sonnenstrom für Trittau“ (Richtlinie 2023: 50 € bis 300 W, 150 € bis 600 W) hat die Gemeinde zum 31.12.2025 eingestellt; sie steht als beendetes Programm im Katalog (trittau-sonnenstrom-balkon). Die Seite „Fördermöglichkeiten“ nennt nur Bundes- und externe Programme. Der Kreis Stormarn ist gesondert geprüft (kein eigener Zuschuss). Stand 16.10.2026.",
+    "searches": [
+      "trittau.de: Programmseite, Richtlinie (Volltext), Fördermöglichkeiten und alle erfassten Navigationsseiten am 16.10.2026 gelesen",
+      "Websuche „Sonnenstrom für Trittau“ und „site:trittau.de Förderung Zuschuss Photovoltaik Speicher Wärmepumpe Balkonkraftwerk“ am 16.10.2026 — keine Neuauflage, Hinweis auf Verlängerung 2025 nur in Suchausschnitten einer gelöschten Meldung",
+      "Gegenprüfung durch zwei unabhängige Prüfer (einer adversarial) am 16.10.2026: Einstellung und Werte der Richtlinie 2023 bestätigt; kein laufendes Nachfolgeprogramm gefunden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html",
+        "finding": "16.10.2026 gelesen: Überschrift „Förderung zum 31.12.2025 eingestellt“; „Sonnenstrom für Trittau“, Beschluss der Gemeindevertretung vom 09.02.2023; „Die Gemeinde Trittau gewährte eine Förderung für die Anschaffung von steckerfertigen Photovoltaikanlagen“."
+      },
+      {
+        "url": "https://trittau.de/downloads/datei/MDQwZmQwZTE0YzQzMTcwNkRuOVJxdjdsb0F2MVpGZ0ZqcjRFaWpNaUhnUEZPVGQxaTh1bWpoYm5nNWpUSlc5UG9EcG56b2psOS9nRmZIU01sSEJxZTJWcDM4UGJRc0dBV0h0T2RuYWlEWHI3UkxZZXE3dS9vWlFaVFFOZ2hqRVNSYnRYaHJvZHVoTFMrdS9LVU1XcEdocWxlNldVMXdwSjhqV0U5QnA0cWRveUREVzkyS2JjSENzRDFqaTNORk9lK0xBNFlsbFBzZTRudDRYSg",
+        "finding": "16.10.2026 im Volltext gelesen (4 Seiten): 5.2 „max. 300 Watt Wechselrichter … 50 Euro“, „max. 600 Watt Wechselrichter … 150 Euro“; Ziffer 3 300–600 W; Ziffer 10 Laufzeit bis 31.12.2023 mit möglicher Verlängerung; nur Balkonanlagen."
+      },
+      {
+        "url": "https://www.trittau.de/freizeit-kultur/klimaschutz/foerdermoeglichkeiten",
+        "finding": "16.10.2026 gelesen: „Fördermöglichkeiten“ der Gemeinde nennt nur Hinweise auf KfW, BAFA, Energieberatung, Verbraucherzentrale, SolardachCheck und Bingo-Projektförderung — „welche Fördermittel es überhaupt geben kann“; kein eigenes laufendes Programm."
+      },
+      {
+        "url": "https://www.trittau.de/verwaltung-service/buergerservice",
+        "finding": "16.10.2026 gelesen: Navigations- und Verwaltungsseiten der Gemeinde (Bürgerservice, Verwaltungsgliederung, Fachbereich 1, Weihnachtsschließung) enthalten keine Förderangabe außer dem Link auf die eingestellte Balkonförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html?brotID=900000332&naviID=900000332&rubrik=900000005",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: eingestellte Balkonförderung, als beendetes Programm aufgenommen.",
+        "evidenceUrl": "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html"
+      },
+      {
+        "url": "trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html?naviID=900000332&amp;brotID=900000332&amp;rubrik=900000005",
+        "disposition": "replaced",
+        "reason": "Dieselbe Programmseite mit anderen Navigationsparametern; durch die gelesene Seite erledigt.",
+        "evidenceUrl": "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html"
+      },
+      {
+        "url": "trittau.de/freizeit-kultur/klimaschutz/foerdermoeglichkeiten",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: nur Hinweise auf Bundes- und externe Förderung.",
+        "evidenceUrl": "https://www.trittau.de/freizeit-kultur/klimaschutz/foerdermoeglichkeiten"
+      },
+      {
+        "url": "trittau.de/buergerservice/verwaltung/fachbereich-1-innere-verwaltung-und-it-900000001-27160.html?titel=Fachbereich+1+Innere+Verwaltung+und+IT",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Organisationsseite, keine Förderung.",
+        "evidenceUrl": "https://www.trittau.de/verwaltung-service/buergerservice"
+      },
+      {
+        "url": "trittau.de/portal/meldungen/schliessung-der-verwaltung-zwischen-weihnachten-und-neujahr-900002293-27160.html?rubrik=900000002",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Mitteilung zu Öffnungszeiten, keine Förderung.",
+        "evidenceUrl": "https://www.trittau.de/verwaltung-service/buergerservice"
+      },
+      {
+        "url": "trittau.de/verwaltung-service",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 abgerufen: Adresse liefert „Datei nicht gefunden“; die Unterseite Bürgerservice ist gelesen und enthält keine Förderung.",
+        "evidenceUrl": "https://www.trittau.de/verwaltung-service/buergerservice"
+      },
+      {
+        "url": "trittau.de/verwaltung-service/buergerservice",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Navigationsseite, keine Förderung.",
+        "evidenceUrl": "https://www.trittau.de/verwaltung-service/buergerservice"
+      },
+      {
+        "url": "trittau.de/verwaltung-service/verwaltung/verwaltungsgliederung",
+        "disposition": "reviewed",
+        "reason": "16.10.2026 gelesen: Verwaltungsgliederung, keine Förderung.",
+        "evidenceUrl": "https://www.trittau.de/verwaltung-service/buergerservice"
+      }
+    ]
   }
 ]

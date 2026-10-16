@@ -8226,6 +8226,44 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Photovoltaikanlagen" is the state programme, already catalogued.
   },
 
+  "trittau-sonnenstrom-balkon": {
+    id: "trittau-sonnenstrom-balkon", name: "Sonnenstrom für Trittau — Förderung von Mini-Photovoltaik-Balkonanlagen",
+    traeger: "Gemeinde Trittau", level: "kommune", region: "Trittau",
+    bundesland: "Schleswig-Holstein", agsCode: "01062082",
+    url: "https://www.trittau.de/portal/seiten/foerderung-mini-photovoltaik-balkonanlagen-900000294-27160.html",
+    stand: "Oktober 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-02-09", beschlossenIso: "2023-02-09", endetIso: "2025-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Wechselrichterleistung für ein neues Balkonkraftwerk",
+    maxFoerderung: "max. 150 € je Haushalt (Richtlinie 2023)",
+    rates: [
+      { label: "Balkonkraftwerk bis 300 W Wechselrichter", value: "ausgelaufen — zuvor 50 € pauschal (Richtlinie 2023)", nur: ["balkon"] },
+      { label: "Balkonkraftwerk bis 600 W Wechselrichter", value: "ausgelaufen — zuvor 150 € pauschal (Richtlinie 2023)", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Die Gemeinde hat die Förderung zum 31. Dezember 2025 eingestellt; eine Neuauflage ist nicht bekannt",
+      "Die Richtlinie von 2023 lief zunächst bis Ende 2023 und wurde danach verlängert; die Bedingungen der späteren Jahre veröffentlicht die Gemeinde nicht mehr",
+      "Gefördert wurden neue steckerfertige Anlagen mit 300 bis 600 W Wechselrichterleistung, höchstens eine je Haushalt",
+      "Antragsberechtigt waren Personen mit Erstwohnsitz in Trittau sowie Eigentümer, Pächter und Mieter eines Wohngebäudes dort; Mietende brauchten die schriftliche Erlaubnis der Vermieterseite",
+      "Die Anlage musste beim Netzbetreiber angemeldet und im Marktstammdatenregister eingetragen sein; ausgezahlt wurde erst nach nachgewiesener Inbetriebnahme",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // TAKEN IN AS ENDED 16.10.2026 (operator 17.08.2026: "gab es, ist beendet"
+    // is a real answer). Programme page read in full 16.10.2026: heading
+    // "Förderung zum 31.12.2025 eingestellt", council decision 09.02.2023
+    // ("Sonnenstrom für Trittau"), only the municipality of Trittau. Guideline
+    // read in full 16.10.2026 (text PDF, 4 pages,
+    // https://trittau.de/downloads/datei/MDQwZmQwZTE0YzQzMTcwNkRuOVJxdjdsb0F2MVpGZ0ZqcjRFaWpNaUhnUEZPVGQxaTh1bWpoYm5nNWpUSlc5UG9EcG56b2psOS9nRmZIU01sSEJxZTJWcDM4UGJRc0dBV0h0T2RuYWlEWHI3UkxZZXE3dS9vWlFaVFFOZ2hqRVNSYnRYaHJvZHVoTFMrdS9LVU1XcEdocWxlNldVMXdwSjhqV0U5QnA0cWRveUREVzkyS2JjSENzRDFqaTNORk9lK0xBNFlsbFBzZTRudDRYSg):
+    // 5.2 "max. 300 Watt … 50 Euro", "max. 600 Watt … 150 Euro"; 3. 300–600 W;
+    // 10. term until 31.12.2023, extension through the budget. The page's
+    // end date 31.12.2025 shows it was extended; later rates are not
+    // published, hence the rates are labelled as the 2023 guideline (search
+    // snippets of a since-deleted 15.04.2025 news item suggest the 150 EUR tier
+    // was widened to 800 W in 2025; not taken over without the original). No
+    // storage, roof-PV or heat-pump part. Informs only, deducts nothing.
+  },
+
   "hillscheid-energie": {
     id: "hillscheid-energie", name: "Förderung privater Energiegewinnung",
     traeger: "Ortsgemeinde Hillscheid", level: "kommune", region: "Hillscheid",
