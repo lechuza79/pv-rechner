@@ -33,6 +33,7 @@ import { IconArrowRight, IconChevronDown, IconRefresh } from "../../../component
 import FlowNav, { FlowFooter } from "../../../components/FlowNav";
 import FlowSchritte from "../../../components/FlowSchritte";
 import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN } from "../../../components/KlebenderKnopf";
+import { KEINE_VORSCHLAEGE } from "../../../lib/keine-vorschlaege";
 
 // ─── URL slug mappings (sprechende Werte statt Indizes) ─────────────────────
 // Reihenfolge MUSS mit den Arrays in lib/constants.ts übereinstimmen
@@ -623,7 +624,7 @@ function EmpfehlungContent({
                     <p style={{ margin: `0 0 ${space.xl}px`, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>Wie viel Dachfläche steht für Solarmodule zur Verfügung? Freie Flächen ohne Fenster, Schornsteine und andere Hindernisse zählen.</p>
                     <div className="wp-custom-area">
                       <label htmlFor="pv-known-roof">Nutzbare Dachfläche</label>
-                      <input id="pv-known-roof" type="number" min={5} max={500} step={1} value={roofDraft} placeholder="m²"
+                      <input id="pv-known-roof" type="number" {...KEINE_VORSCHLAEGE} min={5} max={500} step={1} value={roofDraft} placeholder="m²"
                         onFocus={() => setGvEditing("haustyp")}
                         onChange={event => {
                           const raw = event.target.value;
@@ -822,7 +823,7 @@ function EmpfehlungContent({
                 <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                   <input
                     type="text"
-                    inputMode="numeric"
+                    inputMode="numeric" {...KEINE_VORSCHLAEGE}
                     placeholder="PLZ"
                     value={plzInput}
                     onChange={e => {

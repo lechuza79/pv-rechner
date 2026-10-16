@@ -26,6 +26,7 @@ import { useFeedInRates } from "../../../lib/feedin";
 import { useSharedPlz } from "../../../lib/location";
 import { TILT_ORIENTATIONS, type TiltOrientation } from "../../../lib/tilt-config";
 import { iconSizes, space, v } from "../../../lib/theme";
+import { KEINE_VORSCHLAEGE } from "../../../lib/keine-vorschlaege";
 
 const KWP_PRESETS = [
   { kwp: 5, sub: "Kleines Dach" },
@@ -374,7 +375,7 @@ export default function EinspeiseRechner() {
           <div style={{ display: "flex", alignItems: "center", gap: space.md, marginBottom: space.lg }}>
             <input
               type="text"
-              inputMode="decimal"
+              inputMode="decimal" {...KEINE_VORSCHLAEGE}
               placeholder="eigener Wert in kWp"
               value={customKwp}
               onChange={(e) => setCustomKwp(e.target.value)}

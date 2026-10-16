@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { v } from "../lib/theme";
+import { KEINE_VORSCHLAEGE } from "../lib/keine-vorschlaege";
 
 interface PresetNumberInputProps {
   /** Current committed value. */
@@ -71,7 +72,7 @@ export default function PresetNumberInput({
       <input
         value={text}
         placeholder={placeholder}
-        inputMode="numeric"
+        inputMode="numeric" {...KEINE_VORSCHLAEGE}
         onFocus={() => {
           focused.current = true;
           onFocus?.();
