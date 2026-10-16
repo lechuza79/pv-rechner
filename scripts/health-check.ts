@@ -50,6 +50,7 @@ import {
   kaltaufbauHerkunft,
   neuesteProduktionsAuslieferung,
 } from "../lib/auslieferungs-alter";
+import { atlasAufbauZeilen } from "../lib/laufzeitprotokoll";
 import { SOLAR_CHECK_PROJEKT_ID } from "../lib/vercel-budget";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
@@ -1453,6 +1454,55 @@ function vercelToken(): string | null {
 }
 
 /**
+ * Die [atlas-aufbau]-Zeilen der laufenden Produktions-Auslieferung aus dem
+ * Laufzeitprotokoll (lib/laufzeitprotokoll.ts), oder `null` wenn nicht abrufbar.
+ * Der Endpunkt liefert einen Datenstrom; gelesen wird hoechstens 20 s lang und
+ * mit dem gehalten, was bis dahin da war. Nur Kontext fuer einen roten Kaltaufbau.
+ */
+async function atlasAufbauAusProtokoll(): Promise<string[] | null> {
+  const token = vercelToken();
+  if (!token) return null;
+  try {
+    const kopf = { Authorization: `Bearer ${token}` };
+    const liste = await fetch(
+      `https://api.vercel.com/v6/deployments?projectId=${SOLAR_CHECK_PROJEKT_ID}&teamId=${KOSTEN_TEAM_ID}`,
+      { headers: kopf, signal: AbortSignal.timeout(15000) },
+    );
+    if (!liste.ok) return null;
+    const ds = ((await liste.json()) as { deployments?: (Auslieferung & { uid?: string })[] }).deployments ?? [];
+    const live = ds
+      .filter((d) => d.state === "READY" && d.target === "production" && d.uid && typeof d.created === "number")
+      .sort((a, b) => (b.created ?? 0) - (a.created ?? 0))[0];
+    if (!live?.uid) return null;
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 20000);
+    let text = "";
+    try {
+      const res = await fetch(
+        `https://api.vercel.com/v1/projects/${SOLAR_CHECK_PROJEKT_ID}/deployments/${live.uid}/runtime-logs?teamId=${KOSTEN_TEAM_ID}`,
+        { headers: kopf, signal: ctl.signal },
+      );
+      if (!res.ok || !res.body) return null;
+      const dec = new TextDecoder();
+      const reader = res.body.getReader();
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        text += dec.decode(value, { stream: true });
+        if (text.length > 20_000_000) break;
+      }
+    } catch {
+      // Abort by the timer: keep what arrived.
+    } finally {
+      clearTimeout(timer);
+    }
+    return atlasAufbauZeilen(text);
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Alter der laufenden Produktions-Auslieferung in Minuten, oder `null`.
  *
  * Reiner Kontext fuer den Kaltaufbau-Befund (siehe lib/auslieferungs-alter.ts).
@@ -2211,6 +2261,12 @@ async function main() {
           `Ausfall — auch wenn gerade noch alles mit 200 antwortet. ` +
           kaltaufbauHerkunft(auslieferungsAlter),
       );
+      // Where the time went: the page's own breakdown from the runtime log, so
+      // a repair run does not need log access of its own (16.10.2026).
+      const aufbau = await atlasAufbauAusProtokoll();
+      if (aufbau === null) lines.push("Aufschlüsselung [atlas-aufbau]: Laufzeitprotokoll nicht abrufbar.");
+      else if (!aufbau.length) lines.push("Aufschlüsselung [atlas-aufbau]: keine langsame Aufbauzeile im abrufbaren Protokoll.");
+      else for (const z of aufbau) lines.push(`Aufschlüsselung ${z}`);
       // Independent confirmation is outside the model budget. Never revisit
       // the first URL or its district; HIT/STALE cannot clear a fresh slow build.
       const excluded = new Set(coldResult.all.map(p => new URL(p.url).pathname.split("/").slice(0, 4).join("/")));
