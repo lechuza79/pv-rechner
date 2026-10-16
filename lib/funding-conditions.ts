@@ -809,6 +809,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 16 Oct 2026: Oldenburg heat-pump part of the Altbau programme,
   // 2026 funds bound; income cap and KfW 60 % ceiling have no test form.
   "oldenburg-altbau-waermepumpe",
+  // Added 16 Oct 2026: Bellheim balcony grant; residence, after-commissioning
+  // six-month window, five-year holding and unknown remaining KIPKI budget
+  // have no test form.
+  "bellheim-stecker-solar",
 ];
 
 /**

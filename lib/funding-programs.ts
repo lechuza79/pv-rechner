@@ -11141,8 +11141,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // council draft ("in der heutigen Sitzung", unsigned) — the amount is
     // confirmed independently by the page, so NO decision date is entered.
     // Balcony: Nr. 2 excludes Balkonkraftwerke and points to a time-limited
-    // KIPKI grant of 100 €; that grant no longer appears on the relaunched
-    // page, so it is not recorded (unconfirmed state, nothing to claim).
+    // KIPKI grant of 100 €; it is not on this overview page but on its own
+    // page, recorded separately as bellheim-stecker-solar (16.10.2026).
     url: "https://www.bellheim.de/bauen-umwelt/foerdermittel-angebote/",
     stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -11163,6 +11163,46 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["pv"],
     pvTiers: [{ upTo: 999999, amount: 500 }],
+  },
+
+  // Added 16.10.2026. Own page of the Verbandsgemeinde site, read live
+  // (metadata: last changed 02.10.2026): "Die Förderung beträgt 100 € pro
+  // Antragsteller und Haushalt und gilt für Geräte, die ausschließlich privat
+  // genutzt und nach dem 01.05.2024 beschafft worden sind", "innerhalb der
+  // Ortsgemeinde Bellheim", online form on antrag-kommunal.service.rlp.de.
+  // Guideline (scan, read in full, signed 25.06.2024): KIPKI budget 20,000 €,
+  // afterwards "soll das Programm möglichst aus eigenen Mitteln weitergeführt
+  // werden"; no. 2 residents of Bellheim, owner-occupiers or tenants, no
+  // landlords/companies; no. 3 devices up to 800 W, new, private use; no. 4.2
+  // 100 € per applicant and household; no. 5 apply after commissioning, claim
+  // lapses six months after it; invoice, MaStR proof, landlord consent; no. 5.4
+  // first come within available funds; no. 6 five-year holding period; no. 8
+  // in force 01.07.2024, "zunächst nicht befristet".
+  // Council 16.10.2026: two verifiers "aktiv"; adversarial reviewer found no
+  // sign of exhaustion or stop but called a plain "aktiv" exaggerated because
+  // the remaining budget is unknown — hence the explicit budget condition.
+  // Balcony-only programme on a place that already has a city page
+  // (bellheim-erneuerbare-energien): it shows as its own card. No calc field.
+  "bellheim-stecker-solar": {
+    id: "bellheim-stecker-solar", name: "Förderung von Stecker-Solargeräten",
+    traeger: "Ortsgemeinde Bellheim", level: "kommune", region: "Bellheim",
+    bundesland: "Rheinland-Pfalz", agsCode: "07334001",
+    url: "https://www.bellheim.de/bauen-umwelt/klimaschutz/balkonkraftwerke/",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-07-01",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk",
+    maxFoerderung: "100 € je Antragsteller und Haushalt",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "100 € pauschal je Haushalt" }],
+    conditions: [
+      "Antragsberechtigt sind nur Privatpersonen mit Wohnsitz in der Ortsgemeinde Bellheim, die ihr Haus selbst bewohnen oder zur Miete wohnen; Vermieter und Unternehmen sind ausgeschlossen, die Nachbargemeinden der Verbandsgemeinde fördern nicht",
+      "Gefördert werden neue Geräte bis 800 W, die ab dem 01.05.2024 gekauft und ausschließlich privat genutzt werden; nicht gefördert werden Eigenbauten, gebrauchte Anlagen und Anlagen an gewerblich genutzten Gebäuden",
+      "Beantragt wird online erst nach der Inbetriebnahme, spätestens sechs Monate danach; beizulegen sind Rechnung, Nachweis der Anmeldung im Marktstammdatenregister und bei Mietern die Einwilligung des Vermieters",
+      "Startbudget 20.000 € aus dem Landesprogramm KIPKI; danach soll das Programm laut Richtlinie möglichst aus eigenen Mitteln weiterlaufen. Ob noch Mittel übrig sind, nennt die Gemeinde nicht; vergeben wird nach Eingang, solange Mittel da sind, ein Rechtsanspruch besteht nicht",
+      "Das Gerät muss fünf Jahre behalten werden; jedes Vorhaben wird nur einmal gefördert",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
   },
 
   "recklinghausen-stecker-solar": {
