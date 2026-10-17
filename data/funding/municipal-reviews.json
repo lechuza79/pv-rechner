@@ -101861,5 +101861,120 @@
         "evidenceUrl": "https://www.stadt-koeln.de/service/produkte/00926/index.html"
       }
     ]
+  },
+  {
+    "regionId": "05515000",
+    "name": "Münster",
+    "checkedAt": "2026-10-17T07:10:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Münster hat mit „Klimafreundliche Wohngebäude“ kein Photovoltaik-Programm (im Katalog als muenster-klimafreundlich, eingestellt). Zum Baustein energetische Sanierung gehörte der Heizungstausch auf Wärmepumpe oder Wärmenetz mit 3.000 € pauschal (Gebäude vor 2002, iSFP, Dämmung oder H'T ≤ 0,91); Anträge für die Sanierung nur bis 30.07.2026, seitdem nicht mehr. Dachbegrünung läuft weiter, PV-Aufbau wird ausdrücklich nicht gefördert. Für 2027 kündigt die Stadt eine vereinfachte Richtlinie mit rund 2,3 Mio. € an, Antragsstart offen. Stand 17.10.2026; Wiederprüfung im Januar.",
+    "searches": [
+      "Programmübersicht, Seite energetische Sanierung, FAQ und Förderrichtlinie 1/2024 am 17.10.2026 im Rohtext gelesen",
+      "Einzige erfasste Fundstelle geöffnet",
+      "Council 3/3 am 17.10.2026 (adversarialer Prüfer: Frist gilt auch für den Heizungstausch; Hinweis auf Runde 2027 ergänzt)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadt-muenster.de/klima/foerderprogramm/energetische-sanierung",
+        "finding": "„Aufgrund der hohen Nachfrage können vollständige Anträge nur noch bis zum 30. Juli 2026 … eingereicht werden.“ „1.6 Heizungsaustausch … 3.000 € pauschal“ (17.10.2026)."
+      },
+      {
+        "url": "https://www.stadt-muenster.de/klima/foerderprogramm",
+        "finding": "Programmübersicht mit Förderrichtlinien 2024; Bausteine energetische Sanierung und Dachbegrünung, kein PV-Baustein."
+      },
+      {
+        "url": "https://www.stadt-muenster.de/klima/foerderprogramm/faq-haeufige-fragen",
+        "finding": "„Der Photovoltaik-Aufbau wird über das Förderprogramm nicht gefördert.“"
+      },
+      {
+        "url": "https://www.stadt-muenster.de/rathaus/online-services/engagement-und-foerderung",
+        "finding": "Online-Dienste zu Engagement und Vereinsförderung; keine Energieförderung für Haushalte (17.10.2026)."
+      },
+      {
+        "url": "https://www.stadt-muenster.de/aktuelles/newsdetail/hohe-nachfrage-nach-foerderung-fuer-energetische-sanierungen",
+        "finding": "„Für 2027 ist eine Überarbeitung und Vereinfachung der Förderrichtlinie geplant … Auch 2027 stehen für das Förderprogramm rund 2,3 Millionen Euro zur Verfügung.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-muenster.de/rathaus/online-services/engagement-und-foerderung",
+        "disposition": "reviewed",
+        "reason": "Übersicht Engagement- und Vereinsförderung, kein PV-/Speicher-/WP-Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.stadt-muenster.de/rathaus/online-services/engagement-und-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "09463000",
+    "name": "Coburg",
+    "checkedAt": "2026-10-17T07:10:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Coburg hatte eine städtische Richtlinie zur Förderung regenerativer Energien (Balkonkraftwerke, Batteriespeicher, Planung von PV-Sonderformen bis 20.000 € je Objekt). Der Stadtrat hat sie am 26.09.2024 im Zuge der Haushaltskonsolidierung zum 31.12.2024 aufgehoben (im Katalog als coburg-regenerative-energien, eingestellt). Die Klimaseite der Stadt nennt heute keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; die Richtlinien-Adresse liefert 404. Die Initiative „VEREINSklima“ fördert nur Vereine, keine Privathaushalte. Stand 17.10.2026; Wiederprüfung im Januar (Haushalt 2027).",
+    "searches": [
+      "Stadtratsbericht 26.09.2024, Tätigkeitsbericht Stabsstelle Klimaschutz 2023-24 (Abschnitt 2.10) und Klimaseite am 17.10.2026 im Rohtext gelesen",
+      "Seitensuche coburg.de (Browser) „Balkonkraftwerk“ am 17.10.2026: 8 Treffer, darunter der Aufhebungsbeschluss, kein laufendes Programm",
+      "Websuche 17.10.2026: „site:coburg.de Förderung Photovoltaik Klimaschutz“, „Coburg Stadt Förderrichtlinie regenerative Energien Balkonkraftwerk“",
+      "coburg.de/foerderrichtlinie-pv: 404, kein Archiv-Eintrag",
+      "Einzige erfasste Fundstelle geöffnet",
+      "Council am 17.10.2026: zwei Prüfer bestätigen Ende und Umfang laut Tätigkeitsbericht; adversarialer Prüfer bestätigt das Ende, fand keine neue Förderung (2025/2026), Umfang nur über den Tätigkeitsbericht belegt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.coburg.de/mein-coburg/artikel/september/aus-dem-stadtrat-septemberg-2024.php",
+        "finding": "„Aufhebung Förderung Balkonkraftwerke … wird im Zuge der Haushaltskonsolidierung diese Förderung zum 1. Januar 2025 eingestellt.“"
+      },
+      {
+        "url": "https://www.coburg.de/medien/dokumente/mein-coburg/themen/klimaschutz/A1_Taetigkeitsbericht_Klimaschutz_und_Nachhaltigkeit.pdf",
+        "finding": "Abschnitt 2.10, BV 503/2024: „Die Richtlinie zur Förderung regenerativer Energien wird zum 31.12.2024 aufgehoben. Für das Haushaltsjahr 2025 findet keine Mittelanmeldung statt.“ PV-Sonderformen „mit bis zu 20.000 Euro pro Objekt“."
+      },
+      {
+        "url": "https://www.coburg.de/mein-coburg/themen/nachhaltigkeit-und-klimaschutz/Nachhaltigkeit-und-Klimaschutz.php",
+        "finding": "Klimaseite: Streuobst-Förderung, Beratung, Wärmeplanung, Denkmalkonzept — keine Energieförderung für Haushalte (17.10.2026)."
+      },
+      {
+        "url": "https://www.coburg.de/vv/leistungen/dienstleistungen/Wohngeld-Beantragung-eines-Miet-oder-Lastenzuschusses.php",
+        "finding": "Wohngeld-Antrag (Miet- oder Lastenzuschuss), kein Energiezuschuss (17.10.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "coburg.de/vv/leistungen/dienstleistungen/Wohngeld-Beantragung-eines-Miet-oder-Lastenzuschusses.php",
+        "disposition": "reviewed",
+        "reason": "Wohngeld (Miet-/Lastenzuschuss), kein Energiezuschuss.",
+        "evidenceUrl": "https://www.coburg.de/vv/leistungen/dienstleistungen/Wohngeld-Beantragung-eines-Miet-oder-Lastenzuschusses.php"
+      }
+    ]
+  },
+  {
+    "regionId": "07314000",
+    "name": "Ludwigshafen am Rhein",
+    "checkedAt": "2026-10-17T07:10:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Ludwigshafen hat seine aus Landesmitteln (KIPKI) finanzierten Bürgerprogramme beendet; das Balkonkraftwerk-Programm (200 € je Anlage, 750 Anlagen) ist seit Mitte März 2026 ausgeschöpft (im Katalog als ludwigshafen-kipki, eingestellt). Eine städtische Förderung für Dach-PV, Speicher oder Wärmepumpen gibt es nicht; die Seite nennt nur noch Solarberatung und Solarkataster. Stand 17.10.2026.",
+    "searches": [
+      "Seite „Förderprogramme für Bürger*innen beendet“ am 17.10.2026 im Rohtext gelesen (Quelle wieder erreichbar)",
+      "Websuche 17.10.2026: „Ludwigshafen Stadt Förderung Photovoltaik Speicher Wärmepumpe Zuschuss 2026“ — nur Anbieter-Ratgeber, keine amtliche Förderung",
+      "Einzige erfasste Fundstelle geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme",
+        "finding": "Titel „Förderprogramme für Bürger*innen beendet“; „Die Fördermittel sind nun - Mitte März 2026 - ausgeschöpft. Das heißt, dass keine neuen Anträge mehr gestellt werden können.“ (17.10.2026)"
+      }
+    ],
+    "sources": [
+      {
+        "url": "ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Programmseite der beendeten KIPKI-Förderung; deckt sich mit dem Katalogeintrag ludwigshafen-kipki.",
+        "evidenceUrl": "https://ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme"
+      }
+    ]
   }
 ]

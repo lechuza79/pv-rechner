@@ -3019,18 +3019,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "muenster-klimafreundlich": {
     id: "muenster-klimafreundlich", name: "Klimafreundliche Wohngebäude (ohne Photovoltaik)",
     traeger: "Stadt Münster", level: "kommune", region: "Münster", bundesland: "Nordrhein-Westfalen", agsCode: "05515",
-    url: "https://www.stadt-muenster.de/klima/foerderprogramm", stand: "August 2026",
+    url: "https://www.stadt-muenster.de/klima/foerderprogramm", stand: "Oktober 2026",
     status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Keine Photovoltaik-Förderung — das Programm fördert Dämmung, Fenster, Heizungstausch und Dachbegrünung",
     rates: [
       { label: "Photovoltaik", value: "wird nicht gefördert" },
       { label: "Dachbegrünung (mit PV kombinierbar)", value: "50 % der Kosten, max. 40 €/m², max. 10.000 €" },
+      { label: "Heizungstausch auf Wärmepumpe (Anträge nur bis 30.07.2026)", value: "3.000 € pauschal" },
     ],
     conditions: [
       "Das Förderprogramm der Stadt Münster enthält keine Photovoltaik-Förderung",
       "Eine Dachbegrünung lässt sich mit einer PV-Anlage kombinieren, gefördert wird aber allein die Begrünung",
       "Für die energetische Sanierung nimmt die Stadt seit dem 30. Juli 2026 keine Anträge mehr an",
+      "Zur energetischen Sanierung gehörte der Ersatz einer fossilen Heizung oder Nachtspeicherheizung durch eine Wärmepumpe oder einen Wärmenetz-Anschluss mit 3.000 € pauschal — nur für Wohngebäude, die vor 2002 gebaut wurden, mit individuellem Sanierungsfahrplan oder Energieberatungsbericht, und nur, wenn eine Dämmmaßnahme umgesetzt wird oder der Wärmeverlust des Gebäudes (H'T) höchstens 0,91 W/m²K beträgt; Hybridheizungen mit Gas oder Öl waren ausgeschlossen",
+      "Für 2027 kündigt die Stadt eine überarbeitete, vereinfachte Förderrichtlinie mit rund 2,3 Millionen Euro an; der Start der Antragstellung steht noch nicht fest",
     ],
     combinableWith: BUND,
   },
@@ -4261,6 +4264,32 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // erfährt so „gab es, ist geschlossen" statt gar nichts — und der Seiten-
   // Wächter bemerkt es, wenn die Stadt neu auflegt. Sie tragen bewusst KEINEN
   // strukturierten Satz: Es gibt nichts abzuziehen.
+  "coburg-regenerative-energien": {
+    id: "coburg-regenerative-energien", name: "Förderung regenerativer Energien",
+    traeger: "Stadt Coburg", level: "kommune", region: "Coburg",
+    bundesland: "Bayern", agsCode: "09463",
+    // Read 17.10.2026 in the raw text: the city council resolution of
+    // 26.09.2024 ("Aufhebung Förderung Balkonkraftwerke … zum 1. Januar 2025
+    // eingestellt") and the activity report of the climate office 2023-24,
+    // section 2.10 (BV 503/2024: "Die Richtlinie zur Förderung regenerativer
+    // Energien wird zum 31.12.2024 aufgehoben"). The guideline itself
+    // (coburg.de/foerderrichtlinie-pv) now returns 404 and has no archive
+    // copy, so no per-measure amount is recorded except the one the report
+    // states (PV special forms up to 20.000 € per property).
+    url: "https://www.coburg.de/mein-coburg/artikel/september/aus-dem-stadtrat-septemberg-2024.php",
+    stand: "Oktober 2026", status: "eingestellt", capped: true, verified: true,
+    endetIso: "2025-01-01",
+    eligibility: ["privat"],
+    coveredCosts: "Die Stadt hat ihre Förderrichtlinie für regenerative Energien zum 31.12.2024 aufgehoben — gefördert wurden zuletzt vor allem Balkonkraftwerke und Batteriespeicher",
+    rates: [{ label: "Balkonkraftwerke und Batteriespeicher", value: "Programm zum 31.12.2024 beendet" }],
+    conditions: [
+      "Der Stadtrat hat am 26.09.2024 beschlossen, die Förderung im Zuge der Haushaltskonsolidierung zum 1. Januar 2025 einzustellen; für 2025 wurden keine Mittel angemeldet",
+      "Gefördert wurden unter anderem die Anschaffung von Balkonkraftwerken und Batteriespeichern sowie die Planung von PV-Sonderformen mit bis zu 20.000 € je Objekt",
+      "Neue Anträge sind nicht möglich",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon", "pv"],
+  },
   "ludwigshafen-kipki": {
     id: "ludwigshafen-kipki", name: "Förderprogramme für Bürger (KIPKI)",
     traeger: "Stadt Ludwigshafen am Rhein", level: "kommune", region: "Ludwigshafen am Rhein",
