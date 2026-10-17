@@ -4,6 +4,8 @@ Verbindliches Fachkapitel zu [CLAUDE.md](../../CLAUDE.md). Nur die für den Auft
 
 ## Charts: gemeinsame Grundlage und Ausprägungen — Betreiberregel, 08.10.2026
 
+Der [Zulieferungsablauf](widget-zulieferung.md) ist der verbindliche Einstieg für Umsetzung und Übergabe. Historische Bestands- und Prüfberichte belegen nur ihren datierten Stand; sie ersetzen weder den aktuellen Codebestand noch den Nachweis eines neuen Arbeitspakets.
+
 **Vor jeder Chart-Änderung gilt die Entscheidung in `docs/zentrale-visuals-konzept.md`, Abschnitt „Verbindliche Systemregel“.** Die Widgetgalerie sammelt den Chartbestand mit seinen verfügbaren Ausprägungen. Vollständige Onsite-Ansicht, Whitelabel-Embed, Hero-Teaser und Storyvisual sind Anwendungen desselben Charts, keine unabhängig nachgebauten Charts.
 
 Jede Ansage zuerst einordnen: gemeinsame Grundlage, wiederverwendbare Ausprägung oder begründete Instanz-Einstellung. Daten, Berechnung, Einheiten, Farben, Typografie, Quellen, Datenstand und Exportkonventionen gemeinsam pflegen. Sinnvoll standardisieren, keine erzwungene Universal-Komponente. Nicht jedes Chart braucht jede Ausprägung.
@@ -18,7 +20,7 @@ Explorative Einzelentwicklung ist erlaubt. Sie ist erst abgeschlossen, wenn sie 
 Partner embeds: `/embed/partner/[partner]/[widget]/[full|title|none]` reuse the municipal widget adapter and shared export frame. Trusted presets live in `lib/widget-brand.ts`; header mode never suppresses chart titles or attribution. Generate responsive customer HTML through `partnerEmbedCode`. See `docs/partner-widgets.md`.
 
 
-Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Simulation, Kennzahl, EE-Ampel, PV-Zubau, Einspeisevergütungs-Verlauf, **Förder-Check**, Stromkosten-Rennen). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Alle Widgets sind auf einem Stand — beim Bauen eines neuen dieselbe Konvention einhalten:**
+Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Simulation, Kennzahl, EE-Ampel, PV-Zubau, Einspeisevergütungs-Verlauf, **Förder-Check**, Stromkosten-Rennen). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Beim Bauen eines neuen Widgets dieselben Konventionen einhalten; der aktuelle Integrationsstand muss je Arbeitspaket nachgewiesen werden:**
 
 **Geteilte Bausteine (nicht neu erfinden, keine Inline-Kopien):**
 - `lib/useWidgetTheme.ts` — **einziger** Theming-Weg (`useWidgetTheme({ onSettings })`): wendet das Theme aus URL-Param + same-origin postMessage auf `--widget-*` an; `onSettings` liefert die funktionalen Flags.
