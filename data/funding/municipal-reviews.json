@@ -103382,5 +103382,389 @@
         "evidenceUrl": "https://www.hohenbrunn.de/leben-in-hohenbrunn/umwelt-und-klimaschutz/foerderprogramm"
       }
     ]
+  },
+  {
+    "regionId": "08222000",
+    "name": "Mannheim",
+    "checkedAt": "2026-10-17T16:10:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Mannheim fördert private Wärmepumpen über die Richtlinie „effiziente Heizungsanlagen 2026“ (in Kraft 11.03.2026, offen): Lücke zum Bundeszuschuss bis 30 % bzw. 50 % der Kosten, max. 3.000/4.000 €; neu im Katalog als mannheim-heizungserneuerung (nur Hinweis, kein Abzug). PV über den bereits geführten SolarBonus. Das Programm energetische Sanierung nimmt 2026 keine Anträge mehr an und fördert keine der vier Techniken.",
+    "searches": [
+      "17.10.2026: alle erfassten Fundstellen der Stadt im Original gelesen",
+      "17.10.2026: Programmliste der Klimaschutzagentur (Datenschnittstelle) und Richtlinie Heizungserneuerung im Volltext; Websuche nach Wärmepumpenförderung Mannheim"
+    ],
+    "evidence": [
+      {
+        "url": "https://api.klima-ma.de/api/subsidy-downloads/260917-richtlinie-heizungserneuerung-2026.pdf",
+        "finding": "17.10.2026: „30 % der Investitionskosten, abzüglich der BEG-Förderung, maximal 3.000 EUR“; „tritt am 11.03.2026 in Kraft“."
+      },
+      {
+        "url": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme",
+        "finding": "17.10.2026: Liste der Förderprogramme der Stadt inkl. Heizungsoptimierung und SolarBonus."
+      }
+    ],
+    "sources": [
+      {
+        "url": "mannheim.de/de/mediathek/beitrag/biocyclesrn-im-rahmen-des-foerderprogramms-initiativen-zur-weiterentwicklung-der-leitregion",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressebeitrag, Veranstaltung oder Wohnprojekt-Förderung ohne Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/mediathek/beitrag/foerdermittel-fuer-hundehaus-sanierung-des-tierheims",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressebeitrag, Veranstaltung oder Wohnprojekt-Förderung ohne Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/mediathek/beitrag/foerdermittel-fuer-hundehaus-sanierung-des-tierheims-0",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressebeitrag, Veranstaltung oder Wohnprojekt-Förderung ohne Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/mediathek/beitrag/mannheim-fuer-klimabilanzierung-und-klimaschutzmassnahmen-praemiert",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressebeitrag, Veranstaltung oder Wohnprojekt-Förderung ohne Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/service-bieten/bauen-und-wohnen/gemeinschaftliche-wohnprojekte/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressebeitrag, Veranstaltung oder Wohnprojekt-Förderung ohne Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Übersicht der städtischen Programme (Heizungserneuerung, SolarBonus, energetische Sanierung u. a.); Wärmepumpenprogramm aus der Richtlinie aufgenommen.",
+        "evidenceUrl": "https://api.klima-ma.de/api/subsidy-downloads/260917-richtlinie-heizungserneuerung-2026.pdf"
+      },
+      {
+        "url": "mannheim.de/de/service-bieten/zuschuesse-mit-zuma2",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Zuschussportal für Vereine und Institutionen (Klima/Umwelt, Wohnen, Fristen), keine Förderung privater Energieanlagen.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/service-bieten/zuschuesse-mit-zuma2/fragen-und-fristen",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Zuschussportal für Vereine und Institutionen (Klima/Umwelt, Wohnen, Fristen), keine Förderung privater Energieanlagen.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/service-bieten/zuschuesse-mit-zuma2/klima-und-umweltschutz",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Zuschussportal für Vereine und Institutionen (Klima/Umwelt, Wohnen, Fristen), keine Förderung privater Energieanlagen.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/service-bieten/zuschuesse-mit-zuma2/wohnen-in-mannheim",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Zuschussportal für Vereine und Institutionen (Klima/Umwelt, Wohnen, Fristen), keine Förderung privater Energieanlagen.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/veranstaltung/fuer-eltern-lesefoerderung-fuer-leseanfaenger",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressebeitrag, Veranstaltung oder Wohnprojekt-Förderung ohne Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      },
+      {
+        "url": "mannheim.de/de/veranstaltung/fuer-eltern-lesefoerderung-fuer-leseanfaenger-0",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressebeitrag, Veranstaltung oder Wohnprojekt-Förderung ohne Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.mannheim.de/de/service-bieten/mannheim-auf-klimakurs/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "09174136",
+    "name": "Petershausen",
+    "checkedAt": "2026-10-17T16:10:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Petershausen förderte PV und Balkonkraftwerke vom 01.10.2022 bis 31.01.2024; nicht verlängert, im Katalog als beendet geführt. Keine weitere Gemeindeförderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden.",
+    "searches": [
+      "17.10.2026: Programmseite der Gemeinde im Original gelesen",
+      "17.10.2026: Unterpfade der erfassten Fundstellen abgeglichen"
+    ],
+    "evidence": [
+      {
+        "url": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/",
+        "finding": "17.10.2026: „die Förderung der PV-Anlagen durch die Gemeinde Petershausen wurde zum 31.01.2024 nicht verlängert“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "petershausen.de/leben/foerderprogramm-fuer-solarstrom",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: „Förderung der PV-Anlagen … wurde zum 31.01.2024 nicht verlängert“; im Katalog als petershausen-photovoltaik (eingestellt).",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/leben/foerderprogramm-fuer-solarstrom/amtliche-bekanntmachungen/bekanntmachungen",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/leben/foerderprogramm-fuer-solarstrom/buerger-service/buergerbuero",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/leben/foerderprogramm-fuer-solarstrom/buerger-service/buergerservice-von-a-z/was-erledige-ich-wo",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/leben/foerderprogramm-fuer-solarstrom/startseite",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/leben/foerderprogramm-fuer-solarstrom/startseite/buergermeister-blog",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/startseite/leben/foerderprogramm-fuer-solarstrom",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/startseite/leben/foerderprogramm-fuer-solarstrom/amtliche-bekanntmachungen/bekanntmachungen",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/startseite/leben/foerderprogramm-fuer-solarstrom/buerger-service/buergerbuero",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/startseite/leben/foerderprogramm-fuer-solarstrom/startseite",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/startseite/leben/foerderprogramm-fuer-solarstrom/startseite/aktuelles",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      },
+      {
+        "url": "petershausen.de/startseite/leben/foerderprogramm-fuer-solarstrom/startseite/buergermeister-blog",
+        "disposition": "replaced",
+        "reason": "Unterpfad bzw. Navigationsvariante derselben Programmseite (Gemeindenavigation unter dem Programmpfad); der Sachstand steht vollständig auf der gelesenen Hauptseite.",
+        "evidenceUrl": "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/"
+      }
+    ]
+  },
+  {
+    "regionId": "09279115",
+    "name": "Frontenhausen",
+    "checkedAt": "2026-10-17T16:10:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Markt Frontenhausen hat nur ein kommunales Förderprogramm zur Ortsbild- und Fassadensanierung im Ortskern (Beschlüsse 27.07./23.10.2023); Photovoltaik und Solaranlagen sind darin ausdrücklich nicht gefördert. Keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden.",
+    "searches": [
+      "17.10.2026: alle erfassten Fundstellen im Original gelesen (Richtlinie als Scan Seite für Seite)",
+      "17.10.2026: Websuche nach kommunaler Energieförderung Frontenhausen (keine Treffer der Gemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.markt-frontenhausen.de/kommunales-foerderprogramm-2",
+        "finding": "17.10.2026: „Nicht gefördert werden … Neubaumaßnahmen (u. a. Sonnenkollektoren, Solarzellen, Photovoltaikanlagen …)“."
+      },
+      {
+        "url": "https://www.markt-frontenhausen.de/foerderprogramme",
+        "finding": "17.10.2026: einziges genanntes Programm ist das Ortsbild-/Fassadenprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "frontenhausen.de/antrag-zur-aufnahme-in-das-kommunale-foerderprogramm-2",
+        "disposition": "replaced",
+        "reason": "Alte Domain frontenhausen.de löst nicht mehr auf; dieselben Pfade unter markt-frontenhausen.de gelesen.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/kommunales-foerderprogramm-2"
+      },
+      {
+        "url": "frontenhausen.de/foerderprogramme",
+        "disposition": "replaced",
+        "reason": "Alte Domain frontenhausen.de löst nicht mehr auf; dieselben Pfade unter markt-frontenhausen.de gelesen.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/kommunales-foerderprogramm-2"
+      },
+      {
+        "url": "frontenhausen.de/foerderprogramme?o2c_fs=-2",
+        "disposition": "replaced",
+        "reason": "Alte Domain frontenhausen.de löst nicht mehr auf; dieselben Pfade unter markt-frontenhausen.de gelesen.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/kommunales-foerderprogramm-2"
+      },
+      {
+        "url": "frontenhausen.de/foerderprogramme?o2c_fs=0",
+        "disposition": "replaced",
+        "reason": "Alte Domain frontenhausen.de löst nicht mehr auf; dieselben Pfade unter markt-frontenhausen.de gelesen.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/kommunales-foerderprogramm-2"
+      },
+      {
+        "url": "frontenhausen.de/foerderprogramme?o2c_fs=2",
+        "disposition": "replaced",
+        "reason": "Alte Domain frontenhausen.de löst nicht mehr auf; dieselben Pfade unter markt-frontenhausen.de gelesen.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/kommunales-foerderprogramm-2"
+      },
+      {
+        "url": "frontenhausen.de/kommunales-foerderprogramm-2",
+        "disposition": "replaced",
+        "reason": "Alte Domain frontenhausen.de löst nicht mehr auf; dieselben Pfade unter markt-frontenhausen.de gelesen.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/kommunales-foerderprogramm-2"
+      },
+      {
+        "url": "markt-frontenhausen.de/antrag-zur-aufnahme-in-das-kommunale-foerderprogramm-2",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Fassaden-/Ortskernprogramm der Städtebauförderung; Nr. 2.2 schließt „Sonnenkollektoren, Solarzellen, Photovoltaikanlagen“ ausdrücklich aus.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/kommunales-foerderprogramm-2"
+      },
+      {
+        "url": "markt-frontenhausen.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Seite „Kommunales Förderprogramm“ (Ortsbild, Fassaden); Parametervarianten zeigen dieselbe Seite.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/foerderprogramme"
+      },
+      {
+        "url": "markt-frontenhausen.de/foerderprogramme?o2c_fs=-2",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Seite „Kommunales Förderprogramm“ (Ortsbild, Fassaden); Parametervarianten zeigen dieselbe Seite.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/foerderprogramme"
+      },
+      {
+        "url": "markt-frontenhausen.de/foerderprogramme?o2c_fs=0",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Seite „Kommunales Förderprogramm“ (Ortsbild, Fassaden); Parametervarianten zeigen dieselbe Seite.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/foerderprogramme"
+      },
+      {
+        "url": "markt-frontenhausen.de/foerderprogramme?o2c_fs=2",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Seite „Kommunales Förderprogramm“ (Ortsbild, Fassaden); Parametervarianten zeigen dieselbe Seite.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/foerderprogramme"
+      },
+      {
+        "url": "markt-frontenhausen.de/kommunales-foerderprogramm-2",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Fassaden-/Ortskernprogramm der Städtebauförderung; Nr. 2.2 schließt „Sonnenkollektoren, Solarzellen, Photovoltaikanlagen“ ausdrücklich aus.",
+        "evidenceUrl": "https://www.markt-frontenhausen.de/kommunales-foerderprogramm-2"
+      }
+    ]
+  },
+  {
+    "regionId": "08317116",
+    "name": "Sasbach",
+    "checkedAt": "2026-10-17T16:10:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Sasbach (Ortenaukreis) nennt keinen eigenen Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; alle Fundstellen sind Landesportal-Texte zur Bundes- und Landesförderung. Die Umweltschutzseite der Gemeinde enthält keine Förderung.",
+    "searches": [
+      "17.10.2026: alle erfassten Fundstellen im Original gelesen",
+      "17.10.2026: Umweltschutz- und Wirtschaftsseiten der Gemeinde und Websuche nach Sasbacher Zuschuss (keine Treffer der Gemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475",
+        "finding": "17.10.2026: Service-BW-Text „Maßnahmen zur Nutzung erneuerbarer Energien – Förderung beantragen“ beschreibt die Bundesförderung."
+      },
+      {
+        "url": "https://www.sasbach.de/wirtschaft-umwelt-und-digitalisierung/umweltschutz",
+        "finding": "17.10.2026: Umweltschutzseite ohne Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sasbach-ortenau.de/-/buergerservice+a-z/vbid1475",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach-ortenau.de/-/buergerservice+a-z/vbid6001927",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach-ortenau.de/-/buergerservice+a-z/vbid6007739",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach-ortenau.de/-/lebenslagen/leb5000372",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach-ortenau.de/-/lebenslagen/leb5000550",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach-ortenau.de/-/lebenslagen/leb5001819",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach.de/-/buergerservice+a-z/vbid1475",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach.de/-/buergerservice+a-z/vbid6001927",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach.de/-/buergerservice+a-z/vbid6007739",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach.de/-/lebenslagen/leb5000372",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach.de/-/lebenslagen/leb5000550",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      },
+      {
+        "url": "sasbach.de/-/lebenslagen/leb5001819",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Leistungsbeschreibung bzw. Lebenslage aus dem Landesportal Service-BW (Bundes-/Landesförderung, Energieberatung, Digitallotsen, Auslandsaufenthalte, E-Mobilität), keine Gemeindeförderung; sasbach-ortenau.de liefert dieselben Seiten.",
+        "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
+      }
+    ]
   }
 ]

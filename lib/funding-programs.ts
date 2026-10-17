@@ -2998,6 +2998,55 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+
+  // AUFGENOMMEN 17.10.2026 — "Richtlinie der Stadt Mannheim zur Förderung
+  // effizienter Heizungsanlagen 2026" (Stand 11.12.2025, "tritt am 11.03.2026 in
+  // Kraft", change of 17.09.2026: bonus evidence with the application) read in
+  // full, plus the agency's programme feed (api.klima-ma.de/api/subsidies,
+  // "Heizungserneuerung 2026", status open; the stopped renovation programme of
+  // the same feed is titled "KEINE ANTRÄGE FÜR 2026 MEHR"). Council 3/3 incl.
+  // adversarial. Information only, no deduction: the grant is "30 % der
+  // gesamten, förderfähigen Investitionskosten, abzüglich des gewährten
+  // Zuschusses der BEG" and "Wird durch die BEG bereits ein Anteil von 30 % oder
+  // mehr … gezahlt, entfällt die Förderung" — it pays only where costs exceed
+  // the BEG cost cap, which the model cannot express. The adversarial reviewer
+  // required that this be said in the conditions, plus the 60 % ceiling, the
+  // fossil/electric heating requirement and the order of steps.
+  "mannheim-heizungserneuerung": {
+    id: "mannheim-heizungserneuerung", name: "Heizungserneuerung 2026",
+    traeger: "Stadt Mannheim / Klimaschutzagentur", level: "kommune", region: "Mannheim",
+    bundesland: "Baden-Württemberg", agsCode: "08222",
+    // The agency's programme page is one script application for all its
+    // programmes (shared with the SolarBonus); the guideline itself is the
+    // programme-specific original.
+    url: "https://api.klima-ma.de/api/subsidy-downloads/260917-richtlinie-heizungserneuerung-2026.pdf",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-03-11",
+    eligibility: ["privat"],
+    coveredCosts: "Ergänzung zum Bundeszuschuss für eine Wärmepumpe (oder den Erstanschluss an die Fernwärme): die Stadt zahlt die Lücke bis zu einem festen Anteil der Kosten",
+    maxFoerderung: "3.000 € im Ein- und Zweifamilienhaus, mit Einkommensnachweis 4.000 €, im Mehrfamilienhaus 5.000 € — jeweils plus Boni",
+    rates: [
+      { label: "Ein- und Zweifamilienhaus", value: "30 % der Kosten abzüglich des Bundeszuschusses, max. 3.000 €", nur: ["waermepumpe"] },
+      { label: "Ein- und Zweifamilienhaus mit Einkommensnachweis", value: "50 % der Kosten abzüglich des Bundeszuschusses, max. 4.000 €", nur: ["waermepumpe"] },
+      { label: "Mehrfamilienhaus, Eigentümergemeinschaft, Verein", value: "40 % der Kosten abzüglich des Bundeszuschusses, max. 5.000 €", nur: ["waermepumpe"] },
+      { label: "PV-Bonus zur Wärmepumpe (Ein- und Zweifamilienhaus)", value: "700 € pauschal für eine gleichzeitig neu beauftragte PV-Anlage ab 3 kWp", nur: ["waermepumpe"] },
+      { label: "Finanzierungsbonus", value: "500 € pauschal bei Finanzierung über ein Darlehen", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Die Stadt zahlt nur die Lücke zwischen dem Bundeszuschuss und 30 % (mit Einkommensnachweis 50 %) der Kosten — deckt der Bundeszuschuss diesen Anteil schon, gibt es von der Stadt nichts; in der Regel bleibt erst bei Kosten über der Obergrenze der Bundesförderung etwas übrig",
+      "Bundes- und Stadtzuschuss zusammen dürfen höchstens 60 % der nach Bundesregeln förderfähigen Kosten erreichen; die Boni zählen nicht mit",
+      "Gefördert wird nur, wo das Haus bisher mit Öl, Gas, Kohle oder Strom (Nachtspeicher, Direktheizung) beheizt wird, in Mannheim steht und überwiegend Wohngebäude ist",
+      "Die Wärmepumpe wird nur außerhalb der Fernwärmegebiete gefördert — dort nur, wenn die alte Heizung nachweislich defekt oder mindestens 15 Jahre alt ist und der Fernwärmeausbau mindestens fünf Jahre entfernt liegt",
+      "Reihenfolge: erst die Online-Vorprüfung, dann ein Liefervertrag mit Rücktrittsklausel, dann die Bundeszusage, dann der Antrag bei der Klimaschutzagentur — alles vor Beginn der Arbeiten vor Ort",
+      "Der Bundeszuschuss muss in Anspruch genommen werden; wer stattdessen die Steuerermäßigung nutzt, bekommt nichts von der Stadt",
+      "Für die Wärmepumpe ist ein Ökostromtarif Pflicht; reine Warmwasser-Wärmepumpen sind ausgeschlossen, ausführen muss ein Fachbetrieb",
+      "Fertigstellung und Auszahlungsunterlagen binnen zwölf Monaten nach der Zusage, mit Nachweis des hydraulischen Abgleichs",
+      "Der PV-Bonus schließt den SolarBonus der Stadt aus, und die PV-Anlage darf bei Antragstellung noch nicht beauftragt sein",
+      "Gefördert wird im Rahmen der Haushaltsmittel; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+  },
   // Geprüft am 16.08.2026 an der Trägerquelle — Befund: Das Programm fördert
   // KEINE Photovoltaik. Hinterlegt waren 300 €/kWp für Gründach-/MFH-/Fassaden-PV
   // bei status "aktiv", also ein Abzug im Rechner. Gegengeprüft an drei Stellen

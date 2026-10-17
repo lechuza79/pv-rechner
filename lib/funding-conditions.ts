@@ -1025,6 +1025,59 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
     ],
   },
 
+  // Added 17 Oct 2026 with the programme (guideline "effiziente Heizungsanlagen 2026" read in full).
+  "mannheim-heizungserneuerung": {
+    pruefungen: [
+      {
+        ausBedingung: "Reihenfolge: erst die Online-Vorprüfung, dann ein Liefervertrag mit Rücktrittsklausel, dann die Bundeszusage, dann der Antrag bei der Klimaschutzagentur — alles vor Beginn der Arbeiten vor Ort",
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "vor-auftrag" },
+      },
+      {
+        ausBedingung: "Reihenfolge: erst die Online-Vorprüfung, dann ein Liefervertrag mit Rücktrittsklausel, dann die Bundeszusage, dann der Antrag bei der Klimaschutzagentur — alles vor Beginn der Arbeiten vor Ort",
+        pruefung: { art: "antragsweg", weg: "zweistufig" },
+      },
+    ],
+    durchRegion: [],
+    hinweise: [
+      {
+        ausBedingung: "Die Stadt zahlt nur die Lücke zwischen dem Bundeszuschuss und 30 % (mit Einkommensnachweis 50 %) der Kosten — deckt der Bundeszuschuss diesen Anteil schon, gibt es von der Stadt nichts; in der Regel bleibt erst bei Kosten über der Obergrenze der Bundesförderung etwas übrig",
+        warum: "Bemessung als Lücke zum Bundeszuschuss kann das Modell nicht ausdrücken; der Eintrag zieht nichts ab.",
+      },
+      {
+        ausBedingung: "Bundes- und Stadtzuschuss zusammen dürfen höchstens 60 % der nach Bundesregeln förderfähigen Kosten erreichen; die Boni zählen nicht mit",
+        warum: "Gesamtgrenze über mehrere Geber; der Eintrag zieht ohnehin nichts ab.",
+      },
+      {
+        ausBedingung: "Gefördert wird nur, wo das Haus bisher mit Öl, Gas, Kohle oder Strom (Nachtspeicher, Direktheizung) beheizt wird, in Mannheim steht und überwiegend Wohngebäude ist",
+        warum: "Den Ort deckt die Ortsauswahl ab; die bisherige Heizung und die Nutzung des Gebäudes prüft der Eintrag nicht, er zieht nichts ab.",
+      },
+      {
+        ausBedingung: "Die Wärmepumpe wird nur außerhalb der Fernwärmegebiete gefördert — dort nur, wenn die alte Heizung nachweislich defekt oder mindestens 15 Jahre alt ist und der Fernwärmeausbau mindestens fünf Jahre entfernt liegt",
+        warum: "Fernwärmegebiete kennt der Rechner nicht; geprüft wird das im Verfügbarkeitswerkzeug des Versorgers.",
+      },
+      {
+        ausBedingung: "Der Bundeszuschuss muss in Anspruch genommen werden; wer stattdessen die Steuerermäßigung nutzt, bekommt nichts von der Stadt",
+        warum: "Wahl zwischen Zuschuss und Steuerermäßigung trifft der Rechner nicht.",
+      },
+      {
+        ausBedingung: "Für die Wärmepumpe ist ein Ökostromtarif Pflicht; reine Warmwasser-Wärmepumpen sind ausgeschlossen, ausführen muss ein Fachbetrieb",
+        warum: "Stromtarif und Ausführung sind keine Eingaben des Rechners.",
+      },
+      {
+        ausBedingung: "Fertigstellung und Auszahlungsunterlagen binnen zwölf Monaten nach der Zusage, mit Nachweis des hydraulischen Abgleichs",
+        warum: "Frist und Auszahlung nach der Zusage, keine Eigenschaft der Anlage.",
+      },
+      {
+        ausBedingung: "Der PV-Bonus schließt den SolarBonus der Stadt aus, und die PV-Anlage darf bei Antragstellung noch nicht beauftragt sein",
+        warum: "Boni rechnet der Eintrag nicht; er zieht nichts ab.",
+      },
+      {
+        ausBedingung: "Gefördert wird im Rahmen der Haushaltsmittel; ein Rechtsanspruch besteht nicht",
+        warum: "Restmittel kennt nur die Klimaschutzagentur.",
+      },
+    ],
+  },
+
   // Added 17 Oct 2026 with the programme (guideline 01.07.2026 read in full).
   "hohenbrunn-waermeerzeugung": {
     pruefungen: [
