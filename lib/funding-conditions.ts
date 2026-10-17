@@ -974,6 +974,48 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
     hinweise: [],
   },
 
+  // Added 17 Oct 2026 with the programme (guideline Stand August 2024, read in
+  // full). Standard order: application and approval before purchase.
+  "kassel-balkonkraftwerk": {
+    pruefungen: [
+      {
+        ausBedingung: "Erst den Antrag stellen und den Bewilligungsbescheid abwarten, dann kaufen — ein vorher gekauftes Gerät wird nicht gefördert",
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "bescheid-vor-start" },
+      },
+      {
+        ausBedingung: "Erst den Antrag stellen und den Bewilligungsbescheid abwarten, dann kaufen — ein vorher gekauftes Gerät wird nicht gefördert",
+        pruefung: { art: "antragsweg", weg: "online" },
+      },
+    ],
+    durchRegion: [],
+    hinweise: [
+      {
+        ausBedingung: "Antragsberechtigt sind volljährige Eigentümer oder Mieter mit Erstwohnsitz in der Stadt Kassel; gefördert wird einmal je Haushalt und nur, wenn dort noch kein Balkonkraftwerk installiert ist",
+        warum: "Den Wohnsitz deckt die Ortsauswahl nur teilweise ab (Erstwohnsitz), ein schon vorhandenes Gerät fragt der Rechner nicht ab.",
+      },
+      {
+        ausBedingung: "Höchstens 2.000 Wp Modulleistung und 800 VA Wechselrichterleistung; das Gerät muss im Marktstammdatenregister angemeldet werden",
+        warum: "Gerätegrenzen und Registerpflicht gelten für jedes zulässige Balkonkraftwerk ohnehin; der Rechner fragt die Modulleistung nicht gegen die Obergrenze ab.",
+      },
+      {
+        ausBedingung: "Nicht gefördert werden fest montierte Anlagen, Inselanlagen mit Akku, gebrauchte Geräte sowie Kauf auf Raten oder Leasing",
+        warum: "Kauf- und Montageart kennt der Rechner nicht; der Hinweis muss beim Kauf beachtet werden.",
+      },
+      {
+        ausBedingung: "Rechnung, Zahlungsbeleg und Registernachweis sind spätestens vier Monate nach Eingang des Bescheids einzureichen",
+        warum: "Frist nach der Bewilligung, nicht aus den Eingaben ableitbar.",
+      },
+      {
+        ausBedingung: "Bewilligt wird nach Eingang der Anträge im Rahmen der Haushaltsmittel; einen Rechtsanspruch gibt es nicht. Laut Stadt läuft das Programm bis Ende 2026",
+        warum: "Mittel- und Laufzeitvorbehalt, keine Eigenschaft der Anlage.",
+      },
+      {
+        ausBedingung: "Haushalte mit niedrigem Einkommen (z. B. Bürgergeld, Sozialhilfe, Wohngeld) können über den Stromspar-Check ein Balkonkraftwerk mit einem Modul ohne Speicher kostenlos installiert bekommen",
+        warum: "Hängt am Einkommen, das der Rechner nicht abfragt; gerechnet wird mit den 150 €, die jeder Haushalt bekommt.",
+      },
+    ],
+  },
+
   "frankfurt-klimabonus": {
     pruefungen: [
       {

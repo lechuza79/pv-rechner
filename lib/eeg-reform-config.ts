@@ -689,7 +689,12 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   13.10.2026), tagesaktuelle Tagesordnung Donnerstag und Ablaufplan (Stand
   //   14.10.2026, 12:22 Uhr) im Original gelesen: kein Tagesordnungspunkt zu
   //   21/7867, keine 2./3. Lesung in dieser Sitzungswoche. Zustand unverändert.
-  geprueftIso: "2026-10-16",
+  // 17.10.2026: Vorgangsseite des Bundesrates zu 470/26 im Original gelesen:
+  //   weiter nur der erste Durchgang (25.09.26, 1068. Sitzung, TOP 56:
+  //   Stellungnahme), kein Gesetzesbeschluss des Bundestages; die Tagesordnung
+  //   der 1069. Sitzung (16.10.2026) führt keinen EEG-Punkt, nächste Sitzung
+  //   20.11.2026. Zustand unverändert: Regierungsentwurf, im Ausschuss.
+  geprueftIso: "2026-10-17",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

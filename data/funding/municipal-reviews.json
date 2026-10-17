@@ -101781,5 +101781,85 @@
         "evidenceUrl": "https://cms.muelheim-ruhr.de/leben-in-muelheim/stadtportrait/staedtepartnerschaften-und-patenschaften/zuschuesse-fuer-den"
       }
     ]
+  },
+  {
+    "regionId": "06611000",
+    "name": "Kassel",
+    "checkedAt": "2026-10-17T05:59:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Kassel fördert Balkonkraftwerke mit pauschal 150 € je Haushalt (Richtlinie in Kraft seit 14.10.2024, laut Stadt bis Ende 2026; im Katalog als kassel-balkonkraftwerk, aktiv). Haushalte mit niedrigem Einkommen bekommen über den Stromspar-Check ein Gerät kostenlos. Eigene städtische Zuschüsse für Dach-PV, Speicher oder Wärmepumpen gibt es nicht; die Übersicht der Stadt nennt sonst nur Begrünungs- und Städtebauprogramme. Stand 17.10.2026; Wiederprüfung zum Jahresende wegen des angekündigten Programmendes.",
+    "searches": [
+      "Programmseite Balkonkraftwerke, Förderrichtlinie (Stand August 2024) und Übersicht „Energie und Klimaschutz“ am 17.10.2026 im Rohtext gelesen",
+      "Websuche 17.10.2026: „kassel.de Förderung Balkonkraftwerk Photovoltaik Zuschuss Stadt Kassel 2026“, „site:kassel.de Förderprogramm Balkonkraftwerke Antrag“",
+      "Council 3/3 am 17.10.2026 (zwei bestätigend, adversarialer Prüfer: kein Antragsstopp, Antragsportal geöffnet)",
+      "Einzige erfasste Fundstelle geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kassel.de/buerger/umwelt_und_klima/klimaschutz/energie-und-klimaschutz/balkonkraftwerke.php",
+        "finding": "„Die Stadt Kassel fördert den Kauf eines Balkonkraftwerks mit 150 Euro.“ „Das Förderprogramm läuft von 2024-2026.“ Antrag digital vor dem Kauf (17.10.2026)."
+      },
+      {
+        "url": "https://www.kassel.de/bilder/umweltundklima/2024-08-14-Foerderrichtlinie-Balkonkraftwerke.pdf",
+        "finding": "Richtlinie: „Die Förderhöhe beträgt pauschal 150 € pro Balkonkraftwerk.“ In Kraft am 14.10.2024; Kauf erst nach Bewilligungsbescheid."
+      },
+      {
+        "url": "https://www.kassel.de/buerger/umwelt_und_klima/klimaschutz/Energie-und-Klimaschutz.php",
+        "finding": "„Neben bestehenden Fördermöglichkeiten von Land und Bund bietet die Stadt Kassel derzeit folgende Förderungen an“: Balkonkraftwerk, Städtebauförderung, Begrünung, Bäume — keine Dach-PV-, Speicher- oder Wärmepumpenförderung."
+      },
+      {
+        "url": "https://www.kassel.de/buerger/verkehr_und_mobilitaet/mit-dem-fahrrad/foerderprogramm-lastenraeder.php",
+        "finding": "Lastenrad-Verleihkonzept der Stadt, kein Energiezuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kassel.de/buerger/verkehr_und_mobilitaet/mit-dem-fahrrad/foerderprogramm-lastenraeder.php",
+        "disposition": "reviewed",
+        "reason": "Lastenrad-Förderprogramm (Verleihkonzept), kein PV-/Speicher-/WP-Zuschuss.",
+        "evidenceUrl": "https://www.kassel.de/buerger/verkehr_und_mobilitaet/mit-dem-fahrrad/foerderprogramm-lastenraeder.php"
+      }
+    ]
+  },
+  {
+    "regionId": "05315000",
+    "name": "Köln",
+    "checkedAt": "2026-10-17T05:59:00Z",
+    "recheckAt": "2027-01-14T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Köln hat das städtische Programm „Photovoltaik – klimafreundliches Wohnen“ (Dachanlage, Speicher, Balkonkraftwerk; im Katalog als koeln-pv, ausgeschöpft). Seit dem 28.09.2026 werden keine Neuanträge mehr angenommen; eine Fortsetzung mit neuen Förderprogrammen ist wegen der Haushaltslage derzeit nicht geplant. Die früheren Programme (Gebäudesanierung, Altbausanierung) sind seit 2022–2024 geschlossen. Stand 17.10.2026; Wiederprüfung im Januar wegen eines möglichen Haushalts 2027.",
+    "searches": [
+      "Programmseite PV, Übersicht „Förderprogramme Klimafreundliches Wohnen und Arbeiten“ und Klima-Übersicht der Stadt am 17.10.2026 gelesen",
+      "Einzige erfasste Fundstelle geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/photovoltaik-klimafreundliches-wohnen",
+        "finding": "„Das für Neuanträge im Jahr 2026 zur Verfügung stehende Fördermittelbudget ist vollständig ausgeschöpft.“ (17.10.2026)"
+      },
+      {
+        "url": "https://www.stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/klimafreundliches-wohnen-arbeiten",
+        "finding": "„Seit dem 28. September 2026 können keine Neuanträge mehr eingereicht werden.“ „Trotz des großen Erfolgs ist eine Fortsetzung mit neuen Förderprogrammen aufgrund der Haushaltslage derzeit nicht geplant.“ Gebäudesanierung seit 27.08.2024 bzw. 01.10.2023, Altbausanierung seit 04.04.2022 ohne Neuanträge."
+      },
+      {
+        "url": "https://www.stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima",
+        "finding": "Klima-Übersicht: Förderprogramme nur „Klimafreundliches Wohnen und Arbeiten“ und Dach-/Fassadenbegrünung „Grün Hoch 3“."
+      },
+      {
+        "url": "https://www.stadt-koeln.de/service/produkte/00926/index.html",
+        "finding": "Einschulungshilfe für Kinder mit Köln-Pass (bis 100 €), kein Energiezuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-koeln.de/service/produkte/00926/index.html",
+        "disposition": "reviewed",
+        "reason": "Einschulungshilfe (Schulbedarf), kein PV-/Speicher-/WP-Zuschuss.",
+        "evidenceUrl": "https://www.stadt-koeln.de/service/produkte/00926/index.html"
+      }
+    ]
   }
 ]

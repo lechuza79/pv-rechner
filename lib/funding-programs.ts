@@ -2596,6 +2596,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       },
     ],
     conditions: [
+      "Seit dem 28. September 2026 können keine Neuanträge mehr eingereicht werden; eine Fortsetzung mit neuen Förderprogrammen ist wegen der Haushaltslage derzeit nicht geplant",
       "Bewilligt wird im Rahmen der verfügbaren Haushaltsmittel; einen Rechtsanspruch gibt es nicht",
       "Nur Bestandsgebäude: die Baufertigstellung liegt bei Antragstellung mindestens fünf Jahre zurück",
       { text: "Der Zuschuss für Dachanlage und Speicher beträgt höchstens 60 % der förderfähigen Kosten", nur: ["pv"] },
@@ -12215,6 +12216,57 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPauschale: 100,
+  },
+
+  // AUFGENOMMEN 17.10.2026 — programme page and guideline (Stand August 2024,
+  // in force 14.10.2024) read in raw text; Council 3/3 (two confirming, the
+  // adversarial reviewer found no stop, no exhausted budget and an open
+  // application portal). "Läuft von 2024-2026" is the city's own statement on the
+  // page and in its press release of 30.03.2026; the guideline itself has no end
+  // date, hence no `endetIso`. The low-income route (Stromspar-Check, device
+  // installed free of charge) depends on income and is information only.
+  "kassel-balkonkraftwerk": {
+    id: "kassel-balkonkraftwerk", name: "Förderprogramm Balkonkraftwerke",
+    traeger: "Stadt Kassel", level: "kommune", region: "Kassel",
+    bundesland: "Hessen", agsCode: "06611",
+    url: "https://www.kassel.de/buerger/umwelt_und_klima/klimaschutz/energie-und-klimaschutz/balkonkraftwerke.php",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-10-14",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk",
+    maxFoerderung: "150 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk", value: "150 € pauschal" },
+    ],
+    conditions: [
+      "Erst den Antrag stellen und den Bewilligungsbescheid abwarten, dann kaufen — ein vorher gekauftes Gerät wird nicht gefördert",
+      "Antragsberechtigt sind volljährige Eigentümer oder Mieter mit Erstwohnsitz in der Stadt Kassel; gefördert wird einmal je Haushalt und nur, wenn dort noch kein Balkonkraftwerk installiert ist",
+      "Höchstens 2.000 Wp Modulleistung und 800 VA Wechselrichterleistung; das Gerät muss im Marktstammdatenregister angemeldet werden",
+      "Nicht gefördert werden fest montierte Anlagen, Inselanlagen mit Akku, gebrauchte Geräte sowie Kauf auf Raten oder Leasing",
+      "Rechnung, Zahlungsbeleg und Registernachweis sind spätestens vier Monate nach Eingang des Bescheids einzureichen",
+      "Bewilligt wird nach Eingang der Anträge im Rahmen der Haushaltsmittel; einen Rechtsanspruch gibt es nicht. Laut Stadt läuft das Programm bis Ende 2026",
+      "Haushalte mit niedrigem Einkommen (z. B. Bürgergeld, Sozialhilfe, Wohngeld) können über den Stromspar-Check ein Balkonkraftwerk mit einem Modul ohne Speicher kostenlos installiert bekommen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 150,
+    application: {
+      checkedAt: "2026-10-17T05:58:00Z",
+      sources: [
+        { url: "https://www.kassel.de/buerger/umwelt_und_klima/klimaschutz/energie-und-klimaschutz/balkonkraftwerke.php", title: "Stadt Kassel: Förderung von Balkonkraftwerken", quote: "Sie erwerben ein Balkonkraftwerk und reichen über das Antragsportal die Rechnung und den Nachweis der Anmeldung beim Marktstammdatenregister ein." },
+        { url: "https://www.kassel.de/bilder/umweltundklima/2024-08-14-Foerderrichtlinie-Balkonkraftwerke.pdf", title: "Richtlinie der Stadt Kassel zum Förderprogramm Balkonkraftwerke (Stand August 2024)", quote: "Der Erwerb des Fördergegenstandes darf erst nach Erlass des Bewilligungsbescheides erfolgen" },
+      ],
+      steps: [
+        { title: "Antrag online stellen", text: "Den Antrag im Antragsportal der Stadt stellen, bevor das Gerät gekauft wird.", kind: "application", evidenceUrls: ["https://www.kassel.de/buerger/umwelt_und_klima/klimaschutz/energie-und-klimaschutz/balkonkraftwerke.php", "https://www.kassel.de/bilder/umweltundklima/2024-08-14-Foerderrichtlinie-Balkonkraftwerke.pdf"] },
+        { title: "Bescheid abwarten", text: "Erst nach dem Bewilligungsbescheid das Balkonkraftwerk kaufen; sonst wird nicht gefördert.", kind: "approval", evidenceUrls: ["https://www.kassel.de/bilder/umweltundklima/2024-08-14-Foerderrichtlinie-Balkonkraftwerke.pdf"] },
+        { title: "Kaufen und anmelden", text: "Das Gerät kaufen und im Marktstammdatenregister anmelden.", kind: "implementation", evidenceUrls: ["https://www.kassel.de/buerger/umwelt_und_klima/klimaschutz/energie-und-klimaschutz/balkonkraftwerke.php", "https://www.kassel.de/bilder/umweltundklima/2024-08-14-Foerderrichtlinie-Balkonkraftwerke.pdf"] },
+        { title: "Nachweis einreichen", text: "Spätestens vier Monate nach Eingang des Bescheids Rechnung, Zahlungsbeleg und Registernachweis über das Portal einreichen; danach werden 150 € überwiesen.", kind: "payment", evidenceUrls: ["https://www.kassel.de/buerger/umwelt_und_klima/klimaschutz/energie-und-klimaschutz/balkonkraftwerke.php", "https://www.kassel.de/bilder/umweltundklima/2024-08-14-Foerderrichtlinie-Balkonkraftwerke.pdf"] },
+      ],
+      documents: [
+        { text: "Rechnung oder Kaufvertrag auf den Antragsteller mit Modul- und Wechselrichterleistung, Quittung oder Kontoauszug, Nachweis der Anmeldung im Marktstammdatenregister", evidenceUrls: ["https://www.kassel.de/bilder/umweltundklima/2024-08-14-Foerderrichtlinie-Balkonkraftwerke.pdf"] },
+      ],
+      portal: { url: "https://antragsportal.stadt-kassel.de/civ.public/start.html?oe=00.00.KS.D6.67.40.41&mode=cc&cc_key=BalkonkraftwerkeFoerderung", label: "Antragsportal der Stadt Kassel", evidenceUrls: ["https://www.kassel.de/buerger/umwelt_und_klima/klimaschutz/energie-und-klimaschutz/balkonkraftwerke.php"] },
+    },
   },
 
   "feldkirchen-westerham-klimaschutz": {

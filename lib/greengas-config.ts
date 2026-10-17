@@ -649,7 +649,14 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //   Text unverändert (Stufen 10/15/30/60 %, § 42a nur Ankündigung bis
   //   01.12.2026); Bundestag 14.–16.10. (Tagesordnung komplett) ohne
   //   Heizungs- oder Quotengesetz; keine Bioheizöl-Preisreihe einer Trägerquelle.
-  geprueftRechtIso: "2026-10-16",
+  // 17.10.2026: §§ 42a/43 auf gesetze-im-internet.de/geg/ erneut gelesen —
+  //   Text unverändert (Stufen 10/15/30/60 %, § 42a nur Ankündigung bis
+  //   01.12.2026); kein Quotengesetz-Entwurf, keine Bioheizöl-Preisreihe einer
+  //   Trägerquelle. Beschlussdatum geklärt: gmodg.bund.de nennt im Teaser den
+  //   „9. Juli 2026", der Gesetzesbeschluss selbst (BR-Drs. 409/26 vom
+  //   10.07.2026, docs/gmodg/BR-Drs-409-26_GModG-Gesetzesbeschluss-2026-07-10.pdf)
+  //   sagt „in seiner 90. Sitzung am 10. Juli 2026" — `beschlossenAm` bleibt.
+  geprueftRechtIso: "2026-10-17",
   reviewBy: "2027-07-25",
 };
 
