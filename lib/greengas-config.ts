@@ -656,7 +656,18 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //   „9. Juli 2026", der Gesetzesbeschluss selbst (BR-Drs. 409/26 vom
   //   10.07.2026, docs/gmodg/BR-Drs-409-26_GModG-Gesetzesbeschluss-2026-07-10.pdf)
   //   sagt „in seiner 90. Sitzung am 10. Juli 2026" — `beschlossenAm` bleibt.
-  geprueftRechtIso: "2026-10-17",
+  // 18.10.2026: §§ 42a/43 auf gesetze-im-internet.de/geg/ erneut gelesen —
+  //   Text unverändert (Stufen 10/15/30/60 %, § 42a nur Ankündigung bis
+  //   01.12.2026). NEU, aber KEIN Zustand: Das BMWE hat Mitte Oktober ein
+  //   zweiseitiges, undatiertes Eckpunktepapier zur Grüngas-/Grünheizölquote an
+  //   Verbände verschickt (Runder Tisch 16.10.2026; berichtet von topagrar
+  //   15.10. und Tagesspiegel Background, amtlich nicht veröffentlicht): Quote
+  //   ab 2028 mit 1 %, stetig steigend auf 100 % 2045, bei Heizöl über das
+  //   Energiesteuerrecht auf Haushalte begrenzt, Anrechnung auf die Bio-Treppe
+  //   offen, keine Kostenangaben. Eckpunkte stehen unter einem Referentenentwurf
+  //   (Gate-Regel 1) — nichts übernommen. Bioheizöl: keine Preisreihe einer
+  //   Trägerquelle; die Lücke im Öl-Ergebnis bleibt.
+  geprueftRechtIso: "2026-10-18",
   reviewBy: "2027-07-25",
 };
 

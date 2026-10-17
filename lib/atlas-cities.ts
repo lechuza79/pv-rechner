@@ -667,6 +667,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "fritzlar", name: "Fritzlar", ags: "06634005", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1046 },
   { slug: "barleben", name: "Barleben", ags: "15083040", kreis: "Landkreis Börde", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1072 },
   { slug: "bebra", name: "Bebra", ags: "06632003", kreis: "Landkreis Hersfeld-Rotenburg", bundesland: "Hessen", yieldKwhKwp: 1015 },
+  { slug: "muggensturm", name: "Muggensturm", ags: "08216033", kreis: "Landkreis Rastatt", bundesland: "Baden-Württemberg", yieldKwhKwp: 1121 },
   { slug: "ehningen", name: "Ehningen", ags: "08115013", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1134 },
   { slug: "mauer", name: "Mauer", ags: "08226048", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1115 },
   { slug: "rauschenberg", name: "Rauschenberg", ags: "06534017", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1038 },

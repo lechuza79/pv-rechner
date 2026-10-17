@@ -8084,7 +8084,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "karlshuld-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerke",
     traeger: "Gemeinde Karlshuld", level: "kommune", region: "Karlshuld",
     bundesland: "Bayern", agsCode: "09185139",
-    url: "http://www.karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen",
+    url: "https://www.karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Anlage, gestaffelt nach Leistung",
@@ -12666,6 +12666,68 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
         { text: "Förderantrag; für den Verwendungsnachweis Rechnung, Zahlungsbeleg, Foto, Nachweis aus dem Marktstammdatenregister, beim Speicher die Fachunternehmererklärung; bei Miete die Zustimmung des Eigentümers", evidenceUrls: ["https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw"] },
       ],
       portal: { url: "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher", label: "Online-Antrag auf der Programmseite der Stadt Bebra", evidenceUrls: ["https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher"] },
+    },
+  },
+
+  // AUFGENOMMEN 18.10.2026 — programme page, the scanned guideline (six pages,
+  // signed 08.01.2024, in force 01.01.2024, valid "längstens bis zum
+  // 31.12.2026") read as images, and both application forms. § 1: PV "100 € pro
+  // Kilowatt-Peak (kWp) … maximale Fördersumme beträgt 1.000 € pro Projekt";
+  // storage "100 € pro kWh nutzbarer Kapazität … 500 €"; plug-in "pauschal
+  // 150 € je Wohneinheit". § 2 excludes households with an average income
+  // "über 80.000 €" over three years.
+  // INFORMATION ONLY, NO DEDUCTION FIELDS: eligibility hangs on household
+  // income, building age (PV only on existing buildings, >= 2 years) and, for
+  // the plug-in device, installation by an electrician — none of which the
+  // calculators ask. Same restraint as the other income-limited entries.
+  // No exhaustion notice and no stop on the page; budget per year, no legal
+  // claim. Council 18.10.2026: adversarial reviewer confirmed all three rates,
+  // called "accepts applications" unproven beyond "valid until 31.12.2026 while
+  // funds last" — that is how the condition reads. No endetIso: the guideline
+  // expiring is not a proven application stop. beschlossenIso: council meeting
+  // 05.02.2024 (Vorlage 08/24, 50.000 € planned per year). Reviewer 1 confirmed
+  // all rates and the income limit independently.
+  "muggensturm-photovoltaik": {
+    id: "muggensturm-photovoltaik", name: "Förderprogramm „Photovoltaik an Wohngebäuden“",
+    traeger: "Gemeinde Muggensturm", level: "kommune", region: "Muggensturm",
+    bundesland: "Baden-Württemberg", agsCode: "08216033",
+    url: "https://www.muggensturm.de/leben-wohnen/klimaschutz/solar-energie/foerderprogramm-photovoltaik",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-01-01", beschlossenIso: "2024-02-05",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für eine Dachanlage, je kWh für einen Batteriespeicher und Pauschale für ein Balkonkraftwerk",
+    maxFoerderung: "PV bis 1.000 €, Speicher bis 500 €, Balkonkraftwerk 150 €",
+    rates: [
+      { label: "Photovoltaikanlage auf einem Bestandswohngebäude", value: "100 € je kWp, höchstens 1.000 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "100 € je kWh nutzbarer Kapazität, höchstens 500 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "150 € pauschal je Wohneinheit", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Nicht antragsberechtigt ist, wer in den drei Jahren vor dem Antrag ein durchschnittliches Haushaltseinkommen über 80.000 € im Jahr hatte (laut Steuerbescheid) — deshalb rechnet der Rechner den Zuschuss nicht ein",
+      "Erst beantragen und die Bewilligung abwarten, dann beauftragen: Schon die Bestellung gilt als Beginn",
+      { text: "Die Dachanlage wird nur auf Bestandswohngebäuden ohne Gewerbeanteil gefördert (mindestens zwei Jahre nach Fertigstellung oder Erstbezug), nicht auf Neubauten mit Solarpflicht; nur Eigenverbrauchsanlagen, keine Erweiterung einer bestehenden Anlage", nur: ["pv"] },
+      { text: "Gefördert wird ein Speicher je Antrag und nur, wenn im Gebäude noch keiner verbaut ist; zu einem Neubau ist er förderfähig; ein Speicher zu einer bestehenden Anlage lässt sich nicht mit einer neuen Anlage im selben Antrag kombinieren", nur: ["pv"] },
+      { text: "Das Balkonkraftwerk muss ein Elektrofachbetrieb installieren und in Betrieb nehmen; eine Anlage je Wohneinheit an deren eigenem Zähler; Mieter brauchen die schriftliche Erlaubnis des Eigentümers; wer vor Ablauf von fünf Jahren verkauft, zahlt anteilig zurück", nur: ["balkon"] },
+      "Je Gebäude und Antragsteller ist in drei Jahren nur ein Antrag möglich; im Mehrfamilienhaus können Eigentümer und Mieter je einen stellen",
+      "Inbetriebnahme binnen 15 Monaten nach der Bewilligung, Auszahlungsantrag spätestens zwei Monate danach, mit Nachweis der Anmeldung im Marktstammdatenregister und beim Netzbetreiber",
+      "Die Richtlinie gilt längstens bis 31.12.2026; gefördert wird im Rahmen der jährlichen Haushaltsmittel nach Eingang der Anträge, ohne Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    application: {
+      checkedAt: "2026-10-17T23:00:00Z",
+      sources: [
+        { url: "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Forderrichtlinien_Photovoltaik_an_Wohngebauden-1708497980.pdf", title: "Gemeinde Muggensturm: Förderrichtlinien Photovoltaik an Wohngebäuden", quote: "Anträge müssen vor Durchführung einer Maßnahme gestellt werden." },
+        { url: "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Forderung_-_Forderprogramm_Photovoltaik_an_Wohngebauen.pdf", title: "Gemeinde Muggensturm: Antrag auf Förderung", quote: "einzureichen VOR Beauftragung der Maßnahmen" },
+      ],
+      steps: [
+        { title: "Antrag stellen", text: "Vor der Beauftragung den unterschriebenen Förderantrag mit Angebot per E-Mail an energie@muggensturm.de oder per Post an das Hauptamt schicken.", kind: "application", evidenceUrls: ["https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Forderrichtlinien_Photovoltaik_an_Wohngebauden-1708497980.pdf", "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Forderung_-_Forderprogramm_Photovoltaik_an_Wohngebauen.pdf"] },
+        { title: "Bewilligung abwarten, dann umsetzen", text: "Erst nach der Bewilligung beauftragen; die Anlage binnen 15 Monaten in Betrieb nehmen und im Marktstammdatenregister sowie beim Netzbetreiber anmelden.", kind: "implementation", evidenceUrls: ["https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Forderrichtlinien_Photovoltaik_an_Wohngebauden-1708497980.pdf"] },
+        { title: "Auszahlung beantragen", text: "Spätestens zwei Monate nach der Inbetriebnahme den Antrag auf Auszahlung mit den Nachweisen einreichen.", kind: "payment", evidenceUrls: ["https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Forderrichtlinien_Photovoltaik_an_Wohngebauden-1708497980.pdf"] },
+      ],
+      documents: [
+        { text: "Förderantrag mit Angebot; bei Miete die Einverständniserklärung des Eigentümers; beim Speicher zu einer bestehenden Anlage deren Nachweis; ggf. denkmalschutzrechtliche Genehmigung; Steuerbescheid als Einkommensnachweis", evidenceUrls: ["https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Forderrichtlinien_Photovoltaik_an_Wohngebauden-1708497980.pdf", "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Forderung_-_Forderprogramm_Photovoltaik_an_Wohngebauen.pdf"] },
+      ],
     },
   },
 

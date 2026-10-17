@@ -104063,5 +104063,195 @@
         "evidenceUrl": "https://www.bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-modernisierung-und-erwerb-von-leerstand"
       }
     ]
+  },
+  {
+    "regionId": "09185139",
+    "name": "Karlshuld",
+    "checkedAt": "2026-10-17T22:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Karlshuld fördert Balkonkraftwerke mit 100 € (ab 600 W) bzw. 50 € (darunter), Antrag vor dem Kauf, jährlich 5.000 € Budget; das entspricht dem Katalogeintrag karlshuld-balkonkraftwerke (aktiv). Die Förderübersicht der Gemeinde nennt keine weitere Förderung für Dach-PV, Speicher oder Wärmepumpen; das Straßenbeleuchtungsprojekt betrifft die Gemeinde selbst.",
+    "searches": [
+      "18.10.2026: alle 11 erfassten Fundstellen der Gemeinde (4 Dokumente, übrige mit Anzeige-/Suchparametern) im Original gelesen bzw. zugeordnet",
+      "18.10.2026: Förderübersicht karlshuld.de/foerderungen auf weitere Programme durchgesehen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.karlshuld.de/foerderrichtlinien-mini-pv-anlagen-balkonkraftwerke-der-gemeinde-karlshuld",
+        "finding": "18.10.2026 vollständig gelesen (PDF): „pro Anlage einmalig 100,00 €, sofern die Anlage eine Leistung von 600 Watt oder mehr … vorweisen kann“, „einmalig 50,00 €“ darunter; „ab dem Haushaltsjahr 2024 jährlich 5.000 € Fördermittel“; „Die Antragstellung muss vor Kauf … erfolgen“."
+      },
+      {
+        "url": "https://www.karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen",
+        "finding": "18.10.2026 gelesen: Programmseite „Neues Förderprogramm für Balkonkraftwerke / Mini-PV-Anlagen“ mit derselben Richtlinie, kein Hinweis auf Ende oder Ausschöpfung."
+      },
+      {
+        "url": "https://www.karlshuld.de/foerderungen",
+        "finding": "18.10.2026 gelesen: Förderübersicht der Gemeinde nennt nur das Balkonkraftwerk-Programm und ein Straßenbeleuchtungsprojekt der Gemeinde selbst; keine PV-, Speicher- oder Wärmepumpenförderung für Haushalte."
+      },
+      {
+        "url": "https://www.karlshuld.de/foerderantrag-balkonkraftwerk",
+        "finding": "18.10.2026 gelesen (PDF): Antragsformular zum Förderprogramm Balkonkraftwerke / Mini-PV-Anlagen, Nachweise Hauptwohnsitz bzw. WEG-Beschluss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 gelesen: Programmseite, Katalogeintrag karlshuld-balkonkraftwerke bestätigt.",
+        "evidenceUrl": "https://www.karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen"
+      },
+      {
+        "url": "karlshuld.de/foerderrichtlinien-mini-pv-anlagen-balkonkraftwerke-der-gemeinde-karlshuld",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 vollständig gelesen: Richtlinie, Sätze und Bedingungen decken den Katalogeintrag.",
+        "evidenceUrl": "https://www.karlshuld.de/foerderrichtlinien-mini-pv-anlagen-balkonkraftwerke-der-gemeinde-karlshuld"
+      },
+      {
+        "url": "karlshuld.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 gelesen: Übersicht ohne weitere Haushaltsförderung.",
+        "evidenceUrl": "https://www.karlshuld.de/foerderungen"
+      },
+      {
+        "url": "karlshuld.de/foerderantrag-balkonkraftwerk",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 gelesen: Antragsformular zum selben Programm.",
+        "evidenceUrl": "https://www.karlshuld.de/foerderantrag-balkonkraftwerk"
+      },
+      {
+        "url": "karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen?o2c_fs=-2",
+        "disposition": "replaced",
+        "reason": "Dieselbe Programmseite mit Anzeige-/Suchparameter; durch die am 18.10.2026 gelesene Programmseite erledigt.",
+        "evidenceUrl": "https://www.karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen"
+      },
+      {
+        "url": "karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen?o2c_fs=0",
+        "disposition": "replaced",
+        "reason": "Dieselbe Programmseite mit Anzeige-/Suchparameter; durch die am 18.10.2026 gelesene Programmseite erledigt.",
+        "evidenceUrl": "https://www.karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen"
+      },
+      {
+        "url": "karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen?o2c_fs=2",
+        "disposition": "replaced",
+        "reason": "Dieselbe Programmseite mit Anzeige-/Suchparameter; durch die am 18.10.2026 gelesene Programmseite erledigt.",
+        "evidenceUrl": "https://www.karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen"
+      },
+      {
+        "url": "karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen?suche=",
+        "disposition": "replaced",
+        "reason": "Dieselbe Programmseite mit Anzeige-/Suchparameter; durch die am 18.10.2026 gelesene Programmseite erledigt.",
+        "evidenceUrl": "https://www.karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen"
+      },
+      {
+        "url": "karlshuld.de/foerderungen?o2c_fs=-2",
+        "disposition": "replaced",
+        "reason": "Dieselbe Förderübersicht mit Anzeigeparameter; durch die am 18.10.2026 gelesene Übersicht erledigt.",
+        "evidenceUrl": "https://www.karlshuld.de/foerderungen"
+      },
+      {
+        "url": "karlshuld.de/foerderungen?o2c_fs=0",
+        "disposition": "replaced",
+        "reason": "Dieselbe Förderübersicht mit Anzeigeparameter; durch die am 18.10.2026 gelesene Übersicht erledigt.",
+        "evidenceUrl": "https://www.karlshuld.de/foerderungen"
+      },
+      {
+        "url": "karlshuld.de/foerderungen?o2c_fs=2",
+        "disposition": "replaced",
+        "reason": "Dieselbe Förderübersicht mit Anzeigeparameter; durch die am 18.10.2026 gelesene Übersicht erledigt.",
+        "evidenceUrl": "https://www.karlshuld.de/foerderungen"
+      }
+    ]
+  },
+  {
+    "regionId": "08216033",
+    "name": "Muggensturm",
+    "checkedAt": "2026-10-17T23:05:00Z",
+    "recheckAt": "2026-12-31T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Muggensturm fördert nach der Richtlinie „Photovoltaik an Wohngebäuden“ (in Kraft 01.01.2024, längstens bis 31.12.2026) Dachanlagen auf Bestandswohngebäuden mit 100 €/kWp bis 1.000 €, Batteriespeicher mit 100 €/kWh bis 500 € und Balkonkraftwerke (Installation durch Elektrofachbetrieb) mit 150 € je Wohneinheit; ausgeschlossen sind Haushalte mit über 80.000 € Durchschnittseinkommen. Neu im Katalog als muggensturm-photovoltaik, nur als Hinweis ohne Rechenwert, mit Stadtseite. Keine eigene Wärmepumpenförderung der Gemeinde; das Sanierungsgebiet „Am Bahnhof“ ist Städtebauförderung nur in diesem Gebiet. Gegenprüfung 3/3 (Sätze bestätigt, Mittelstand 2026 nicht belegt). Wiedervorlage zum Jahreswechsel, weil die Richtlinie ausläuft.",
+    "searches": [
+      "18.10.2026: alle 7 erfassten Fundstellen der Gemeinde im Original gelesen bzw. durchsucht",
+      "18.10.2026: Klimaschutz-Rubrik der Gemeinde (Solar & Energie, Weitere Maßnahmen) auf weitere Haushaltsförderung durchgesehen; Gegenprüfer suchten zusätzlich Ratsinformation (Vorlage 08/24 vom 05.02.2024)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Forderrichtlinien_Photovoltaik_an_Wohngebauden-1708497980.pdf",
+        "finding": "18.10.2026 alle sechs Seiten (Scan) gelesen: „100 € pro Kilowatt-Peak (kWp)“, „maximale Fördersumme beträgt 1.000 € pro Projekt“; Speicher „100 € pro kWh nutzbarer Kapazität“, höchstens 500 €; Stecker-Solarmodul „pauschal 150 € je Wohneinheit“; § 2 Einkommensgrenze 80.000 €; § 11 „längstens bis zum 31.12.2026“."
+      },
+      {
+        "url": "https://www.muggensturm.de/leben-wohnen/klimaschutz/solar-energie/foerderprogramm-photovoltaik",
+        "finding": "18.10.2026 gelesen: Programmseite „rückwirkend zum 01.01.2024 in Kraft und gelten längstens bis zum 31.12.2026“, Richtlinie und Anträge zum Download, kein Hinweis auf Ausschöpfung."
+      },
+      {
+        "url": "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Forderung_-_Forderprogramm_Photovoltaik_an_Wohngebauen.pdf",
+        "finding": "18.10.2026 gelesen: Antrag auf Förderung „einzureichen VOR Beauftragung der Maßnahmen“, Positionen PV, PV mit Speicher, Speicher einzeln, Stecker-Solarmodul."
+      },
+      {
+        "url": "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Auszahlung_-_Forderprogramm_Photovoltaik_an_Wohngebauden.pdf",
+        "finding": "18.10.2026 zugeordnet: Antrag auf Auszahlung zum selben Programm."
+      },
+      {
+        "url": "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Kommunale_Warmeplanung/Kommunaler_Warmeplan_Muggensturm.pdf",
+        "finding": "18.10.2026 nach Förderhinweisen durchsucht: verweist auf das PV-Förderprogramm der Gemeinde und auf das Sanierungsgebiet „Am Bahnhof“ (2016–2026, Landessanierungsprogramm, nur in diesem Gebiet); kein weiteres Gemeindeprogramm für Wärmepumpen."
+      },
+      {
+        "url": "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Kommunale_Warmeplanung/Folienvortrag_Gemeinderat_12-05-2025.pdf",
+        "finding": "18.10.2026 gelesen: Folienvortrag zur Wärmeplanung (Gemeinderat 12.05.2025); Förderung nur für die Wärmeplanung der Gemeinde selbst."
+      },
+      {
+        "url": "https://www.muggensturm.de/leben-wohnen/klimaschutz/solar-energie/windkraft",
+        "finding": "18.10.2026 gelesen: Sachstand Windkraft-Flächenplanung, keine Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.muggensturm.de/leben-wohnen/klimaschutz/weitere-massnahmen/gefoerderte-massnahmen",
+        "finding": "18.10.2026 gelesen: Bundesgeförderte Projekte der Gemeinde (Schulpumpe, Beleuchtung), keine Förderung für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Auszahlung_-_Forderprogramm_Photovoltaik_an_Wohngebauden.pdf",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 zugeordnet: Auszahlungsantrag des aufgenommenen Programms muggensturm-photovoltaik.",
+        "evidenceUrl": "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Auszahlung_-_Forderprogramm_Photovoltaik_an_Wohngebauden.pdf"
+      },
+      {
+        "url": "muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Forderung_-_Forderprogramm_Photovoltaik_an_Wohngebauen.pdf",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 gelesen: Förderantrag des aufgenommenen Programms.",
+        "evidenceUrl": "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Forderung_-_Forderprogramm_Photovoltaik_an_Wohngebauen.pdf"
+      },
+      {
+        "url": "muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Kommunale_Warmeplanung/Folienvortrag_Gemeinderat_12-05-2025.pdf",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 gelesen: Wärmeplanung der Gemeinde, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Kommunale_Warmeplanung/Folienvortrag_Gemeinderat_12-05-2025.pdf"
+      },
+      {
+        "url": "muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Kommunale_Warmeplanung/Kommunaler_Warmeplan_Muggensturm.pdf",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 durchsucht: Wärmeplan, nur Verweis auf das PV-Programm und das Sanierungsgebiet.",
+        "evidenceUrl": "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Kommunale_Warmeplanung/Kommunaler_Warmeplan_Muggensturm.pdf"
+      },
+      {
+        "url": "muggensturm.de/leben-wohnen/klimaschutz/solar-energie/foerderprogramm-photovoltaik",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 gelesen: Programmseite, aufgenommen als muggensturm-photovoltaik.",
+        "evidenceUrl": "https://www.muggensturm.de/leben-wohnen/klimaschutz/solar-energie/foerderprogramm-photovoltaik"
+      },
+      {
+        "url": "muggensturm.de/leben-wohnen/klimaschutz/solar-energie/windkraft",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 gelesen: Windkraft-Sachstand, keine Förderung.",
+        "evidenceUrl": "https://www.muggensturm.de/leben-wohnen/klimaschutz/solar-energie/windkraft"
+      },
+      {
+        "url": "muggensturm.de/leben-wohnen/klimaschutz/weitere-massnahmen/gefoerderte-massnahmen",
+        "disposition": "reviewed",
+        "reason": "18.10.2026 gelesen: Projekte der Gemeinde selbst, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.muggensturm.de/leben-wohnen/klimaschutz/weitere-massnahmen/gefoerderte-massnahmen"
+      }
+    ]
   }
 ]

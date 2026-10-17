@@ -206,6 +206,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/fritzlar", destination: "/photovoltaik-foerderung/hessen/fritzlar", permanent: true },
       { source: "/photovoltaik-foerderung/barleben", destination: "/photovoltaik-foerderung/sachsen-anhalt/barleben", permanent: true },
       { source: "/photovoltaik-foerderung/bebra", destination: "/photovoltaik-foerderung/hessen/bebra", permanent: true },
+      { source: "/photovoltaik-foerderung/muggensturm", destination: "/photovoltaik-foerderung/baden-wuerttemberg/muggensturm", permanent: true },
       { source: "/photovoltaik-foerderung/ehningen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/ehningen", permanent: true },
       { source: "/photovoltaik-foerderung/mauer", destination: "/photovoltaik-foerderung/baden-wuerttemberg/mauer", permanent: true },
       { source: "/photovoltaik-foerderung/rauschenberg", destination: "/photovoltaik-foerderung/hessen/rauschenberg", permanent: true },

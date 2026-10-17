@@ -404,6 +404,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "bergkamen-solardach", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",
+  // Added 18.10.2026, guideline read in full; information only (income limit, building age, specialist install), so no check forms.
+  "muggensturm-photovoltaik",
   // Die beiden Landesprogramme für Balkonkraftwerke, aufgenommen am 02.09.2026.
   // Ihre Bedingungen hängen an Mieter/Eigentümer — eine Unterscheidung, die das
   // Modell (privat/gewerblich) nicht kennt. Erfassbar erst, wenn es sie kennt.
