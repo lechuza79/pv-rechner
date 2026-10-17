@@ -128,14 +128,15 @@ export function aboBestaetigungsMail(o: {
   ortName: string;
   bestaetigenUrl: string;
   einstellungenUrl?: string;
+  auswahlText?: string;
 }): { subject: string; html: string; text: string } {
-  const ort = escapeHtml(o.ortName);
   const subject = `Bitte bestätigen: Meldungen zu ${o.ortName}`;
+  const anliegen = o.auswahlText ?? `Du möchtest Bescheid bekommen, wenn sich bei den Solaranlagen in ${o.ortName} etwas tut.`;
 
   const inhalt = `
     <p style="margin:0 0 14px;font-size:${T.titel};font-weight:800;line-height:1.25;color:${C.text};letter-spacing:-0.02em">Noch ein Klick</p>
     <p style="margin:0 0 14px">
-      Du möchtest Bescheid bekommen, wenn sich bei den Solaranlagen in ${ort} etwas tut.
+      ${escapeHtml(anliegen)}
       Bestätige das bitte einmal — danach hörst du von uns nur, wenn es wirklich etwas zu
       berichten gibt.
     </p>
@@ -158,7 +159,7 @@ export function aboBestaetigungsMail(o: {
   const text = [
     `Noch ein Klick.`,
     ``,
-    `Du möchtest Bescheid bekommen, wenn sich bei den Solaranlagen in ${o.ortName} etwas tut.`,
+    anliegen,
     `Bitte bestätige das einmal:`,
     o.bestaetigenUrl,
     ``,
@@ -190,6 +191,7 @@ export function aboMeldungsMail(o: {
   einstellungenUrl?: string;
   /** Datenstand des Anlagenregisters, ausgeschrieben. */
   standLabel: string;
+  foerderung?: boolean;
 }): { subject: string; html: string; text: string } {
   if (o.meldungen.length === 0) {
     throw new Error("Eine Meldungsmail ohne Meldung wird nicht gebaut — der Versand entscheidet vorher.");
@@ -197,7 +199,12 @@ export function aboMeldungsMail(o: {
 
   const erste = o.meldungen[0];
   const weitere = o.meldungen.slice(1);
-  const ort = escapeHtml(o.ortName);
+  const linkLabel = o.foerderung ? "Förderübersicht ansehen" : `Alle Zahlen zu ${o.ortName} ansehen`;
+  const basis = o.foerderung
+    ? "Grundlage ist unser Förderkatalog mit aufgezeichneten Änderungen. Verbindlich sind die aktuellen Angaben des jeweiligen Fördergebers."
+    : `Grundlage ist das Marktstammdatenregister der Bundesnetzagentur, Stand ${o.standLabel}. Erzeugungs- und CO₂-Angaben sind gerechnet, nicht gemessen.`;
+  const source = (m: Meldung) => m.quelleUrl && /^https?:\/\//.test(m.quelleUrl)
+    ? `<br><a href="${escapeHtml(m.quelleUrl)}" style="color:${C.akzent}">Programmseite des Fördergebers</a>` : "";
 
   const subject = erste.titel;
 
@@ -208,22 +215,21 @@ export function aboMeldungsMail(o: {
          .map(
            (m) =>
              `<p style="margin:0 0 12px"><strong style="color:${C.text}">${escapeHtml(m.titel)}</strong><br>
-              <span style="font-size:${T.text}">${escapeHtml(m.text)}</span></p>`,
+              <span style="font-size:${T.text}">${escapeHtml(m.text)}</span>${source(m)}</p>`,
          )
          .join("")}`
     : "";
 
   const inhalt = `
     <p style="margin:0 0 14px;font-size:${T.titel};font-weight:800;line-height:1.25;color:${C.text};letter-spacing:-0.02em">${escapeHtml(erste.titel)}</p>
-    <p style="margin:0 0 16px">${escapeHtml(erste.text)}</p>
+    <p style="margin:0 0 16px">${escapeHtml(erste.text)}${source(erste)}</p>
     ${weitereHtml}
     <hr style="border:0;border-top:1px solid ${C.linie};margin:22px 0">
     <p style="margin:0 0 6px">
-      <a href="${o.ortUrl}" style="color:${C.akzent};font-weight:700">Alle Zahlen zu ${ort} ansehen</a>
+      <a href="${o.ortUrl}" style="color:${C.akzent};font-weight:700">${escapeHtml(linkLabel)}</a>
     </p>
     <p style="margin:0;font-size:${T.klein};color:${C.leise}">
-      Grundlage ist das Marktstammdatenregister der Bundesnetzagentur, Stand ${escapeHtml(o.standLabel)}.
-      Erzeugungs- und CO₂-Angaben sind gerechnet, nicht gemessen.
+      ${escapeHtml(basis)}
     </p>`;
 
   const html = huelle({
@@ -238,11 +244,12 @@ export function aboMeldungsMail(o: {
     erste.titel,
     "",
     erste.text,
-    ...weitere.flatMap((m) => ["", m.titel, m.text]),
+    ...(erste.quelleUrl ? [`Programmseite: ${erste.quelleUrl}`] : []),
+    ...weitere.flatMap((m) => ["", m.titel, m.text, ...(m.quelleUrl ? [`Programmseite: ${m.quelleUrl}`] : [])]),
     "",
-    `Alle Zahlen zu ${o.ortName}: ${o.ortUrl}`,
+    `${o.foerderung ? "Förderübersicht" : `Alle Zahlen zu ${o.ortName}`}: ${o.ortUrl}`,
     "",
-    `Grundlage: Marktstammdatenregister der Bundesnetzagentur, Stand ${o.standLabel}.`,
+    o.foerderung ? basis : `Grundlage: Marktstammdatenregister der Bundesnetzagentur, Stand ${o.standLabel}.`,
     ...(o.einstellungenUrl ? [`Deine Meldungen einstellen: ${o.einstellungenUrl}`] : []),
     `Abbestellen: ${o.abmeldeUrl}`,
     `Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`,

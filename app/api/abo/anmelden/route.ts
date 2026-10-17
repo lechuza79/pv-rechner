@@ -6,7 +6,7 @@ import {
   versandBelegSetzen,
   type AboQuelle,
 } from "../../../../lib/gemeinde-abo";
-import { techniken } from "../../../../lib/abo-technik";
+import { techniken, ABO_TECHNIK_LABEL } from "../../../../lib/abo-technik";
 import { bestaetigungsToken, einstellungenLink } from "../../../../lib/abo-token";
 import { aboBestaetigungsMail } from "../../../../lib/abo-mail";
 import { sendeAboMail } from "../../../../lib/abo-versand";
@@ -188,6 +188,9 @@ export async function POST(req: NextRequest) {
   const token = bestaetigungsToken(ergebnis.abo.id, jetzt);
   const mail = aboBestaetigungsMail({
     ortName: region.name,
+    auswahlText: fundingScope
+      ? `${region.name} · ${technikenGewaehlt.map(t => ABO_TECHNIK_LABEL[t]).join(", ")}. ${einwilligungsFassung(einwilligungVersion)!.foerderung}`
+      : undefined,
     bestaetigenUrl: `${basis}/abo/bestaetigen?t=${encodeURIComponent(token)}`,
     // Auch hier schon: Bis zur ersten Meldung können Monate vergehen, und bis
     // dahin gäbe es sonst keinen Weg zu den eigenen Einstellungen.

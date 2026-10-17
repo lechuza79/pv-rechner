@@ -6,6 +6,7 @@ import { aboBestaetigen } from "../../../../lib/gemeinde-abo";
 import { aboRegionPath } from "../../../../lib/abo-region";
 import { ATLAS_CITIES, cityPath, isCityPublished } from "../../../../lib/atlas-cities";
 import { ABO_BESTAETIGT_PARAM } from "../../../../lib/abo-bestaetigt";
+import type { AboTechnik } from "../../../../lib/abo-technik";
 
 // Der zweite Schritt der Anmeldung: Der Klick aus der Bestätigungsmail landet
 // hier.
@@ -36,7 +37,7 @@ async function bestaetigen(formData: FormData) {
   const ergebnis = await aboBestaetigen(befund.aboId, new Date().toISOString()).catch(() => null);
   if (!ergebnis || !ergebnis.ok) redirect(`${zurueck}&fehler=1`);
   // Back to the town page of the kind the person signed up on (see zielPfad).
-  const ziel = await zielPfad(ergebnis.abo.regionId, ergebnis.abo.quelle);
+  const ziel = await zielPfad(ergebnis.abo.regionId, ergebnis.abo.quelle, ergebnis.abo.technikenGewaehlt);
   redirect(ziel ? `${ziel}?${ABO_BESTAETIGT_PARAM}=1` : `${zurueck}&fertig=1`);
 }
 
@@ -107,10 +108,10 @@ export default async function Seite(props: {
  * Weiterleitung auf eine Adresse, die 404 wirft, wäre schlimmer als die
  * Quittungsseite.
  */
-async function zielPfad(regionId: string, quelle: "gemeinde" | "foerderung"): Promise<string | null> {
+async function zielPfad(regionId: string, quelle: "gemeinde" | "foerderung", techniken?: AboTechnik[]): Promise<string | null> {
   if (quelle === "foerderung") {
     const stadt = ATLAS_CITIES.find((c) => c.ags === regionId);
     if (stadt && isCityPublished(stadt)) return cityPath(stadt);
   }
-  return aboRegionPath(regionId);
+  return aboRegionPath(regionId, techniken);
 }

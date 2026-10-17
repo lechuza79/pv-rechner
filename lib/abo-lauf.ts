@@ -49,6 +49,8 @@ import { getFundingPrograms } from "./funding-data";
 import { getFundingHistory, wiederOffenSeit } from "./funding-history";
 import { deckt, fundingZaehlt, technikenVon } from "./funding-programs";
 import { jahrInBerlin, heuteInBerlin } from "./zeit";
+import { aboRegion, aboRegionPath } from "./abo-region";
+import { fundingAboMeldungen } from "./funding-abo-meldungen";
 
 export type LaufErgebnis = {
   /** Orte, für die es überhaupt Abonnenten gibt. */
@@ -72,7 +74,21 @@ export type LaufErgebnis = {
 export async function meldungenFuerOrt(
   regionId: string,
   heuteJahr: number,
+  jetzt?: Date,
 ): Promise<{ meldungen: Meldung[]; ortName: string; ortUrl: string | null; standIso: string } | null> {
+  // Funding scopes do not depend on installed solar capacity or an Atlas package.
+  if (regionId.startsWith("funding:")) {
+    if (!jetzt) throw new Error("Funding notifications require an explicit observation cutoff");
+    const region = await aboRegion(regionId);
+    if (!region) return null;
+    const [programmes, history, ortUrl] = await Promise.all([
+      getFundingPrograms(), getFundingHistory(), aboRegionPath(regionId),
+    ]);
+    return {
+      meldungen: fundingAboMeldungen(regionId, programmes, history, jetzt),
+      ortName: region.name, ortUrl, standIso: jetzt.toISOString(),
+    };
+  }
   const region = await getRegionById(regionId);
   if (!region) return null;
 
@@ -157,7 +173,7 @@ export async function aboLauf(o: {
 
     let stoff: Awaited<ReturnType<typeof meldungenFuerOrt>>;
     try {
-      stoff = await meldungenFuerOrt(regionId, heuteJahr);
+      stoff = await meldungenFuerOrt(regionId, heuteJahr, o.jetzt);
     } catch (e) {
       erg.fehler.push(`${regionId}: Daten nicht ladbar — ${e instanceof Error ? e.message : String(e)}`);
       continue;
@@ -222,11 +238,12 @@ export async function aboLauf(o: {
     const einstellungenUrl = einstellungenLink(o.basisUrl, abo.id);
     const mail = aboMeldungsMail({
       ortName: stoff.ortName,
-      ortUrl: `${o.basisUrl}${stoff.ortUrl}`,
+      ortUrl: `${o.basisUrl}${abo.regionId.startsWith("funding:") && abo.technikenGewaehlt.length === 1 && abo.technikenGewaehlt[0] === "balkon" ? "/balkonkraftwerk/foerderung" : stoff.ortUrl}`,
       einstellungenUrl,
       meldungen: stoff.meldungen,
       abmeldeUrl,
       standLabel: tagMonatJahr(stoff.standIso.slice(0, 10)),
+      foerderung: abo.regionId.startsWith("funding:"),
     });
 
     const versand = await sendeAboMail({

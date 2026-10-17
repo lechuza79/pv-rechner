@@ -100,7 +100,15 @@ export const FOERDER_ABO_EINWILLIGUNG: EinwilligungsFassung = {
 };
 
 /** Den Wortlaut zu einer gespeicherten Version nachschlagen. */
+export const FOERDER_NEU_ABO_EINWILLIGUNG: EinwilligungsFassung = {
+  ...FOERDER_ABO_EINWILLIGUNG,
+  version: "2026-10-17-foerderneu",
+  seit: "2026-10-17",
+  foerderung: "Ich möchte per E-Mail über neu erfasste Förderprogramme und aufgezeichnete Änderungen für den gewählten Ort und die ausgewählten Techniken informiert werden, etwa zu Fördersätzen, Voraussetzungen oder verfügbaren Mitteln. Jederzeit abmeldbar.",
+};
+
 export function einwilligungsFassung(version: string | null): EinwilligungsFassung | null {
+  if (version === FOERDER_NEU_ABO_EINWILLIGUNG.version) return FOERDER_NEU_ABO_EINWILLIGUNG;
   if (!version) return null;
   if (version === FOERDER_ABO_EINWILLIGUNG.version) return FOERDER_ABO_EINWILLIGUNG;
   if (version === VIDEO_ABO_EINWILLIGUNG.version) return VIDEO_ABO_EINWILLIGUNG;

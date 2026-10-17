@@ -4,6 +4,7 @@ import {getFundingPrograms} from './funding-data';
 import {getRegionById,atlasPathForRegionId} from './atlas';
 import {RELEASED_ASSOCIATIONS,associationPath,type AssociationSlug} from './verband-reference';
 import {readAssociationReference} from './verband-reference-server';
+import type { AboTechnik } from './abo-technik';
 
 /** Subscription identity is independent of update scheduling and aggregation. */
 export async function aboRegion(regionId:string): Promise<{name: string; districtId?: string; slug?: string | null} | null> {
@@ -20,10 +21,11 @@ export async function aboRegion(regionId:string): Promise<{name: string; distric
   return slug?readAssociationReference(slug):null;
 }
 
-export async function aboRegionPath(regionId:string):Promise<string|null> {
+export async function aboRegionPath(regionId:string, techniken?: AboTechnik[]):Promise<string|null> {
   if (regionId === "de") return await aboRegion(regionId) ? "/solar-atlas" : null;
   if (regionId.startsWith('funding:')) {
     if (!await aboRegion(regionId)) return null;
+    if (techniken?.length === 1 && techniken[0] === 'balkon') return '/balkonkraftwerk/foerderung';
     if (regionId.startsWith('funding:region:')) {
       const id = regionId.slice('funding:region:'.length);
       const city = ATLAS_CITIES.find(city => city.ags === id && isCityPublished(city));

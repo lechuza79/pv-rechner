@@ -102,7 +102,7 @@ describe("Die Oberfläche liefert genau diesen Wortlaut aus", () => {
   });
 
   it("schickt die Version mit der Anmeldung mit", () => {
-    expect(box).toContain("einwilligung: scoped ? FOERDER_ABO_EINWILLIGUNG.version : AKTUELLE_EINWILLIGUNG.version");
+    expect(box).toContain("einwilligung: consent.version");
     expect(box).toContain("intro: scoped ? consent.foerderung : TEXTE[quelle].intro");
   });
 });
