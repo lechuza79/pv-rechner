@@ -665,6 +665,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "wuerselen", name: "Würselen", ags: "05334036", kreis: "StädteRegion Aachen", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1070, fundingId: "wuerselen-balkonkraftwerke" },
   { slug: "eckental", name: "Eckental", ags: "09572121", kreis: "Landkreis Erlangen-Höchstadt", bundesland: "Bayern", yieldKwhKwp: 1065 },
   { slug: "fritzlar", name: "Fritzlar", ags: "06634005", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1046 },
+  { slug: "barleben", name: "Barleben", ags: "15083040", kreis: "Landkreis Börde", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1072 },
   { slug: "ehningen", name: "Ehningen", ags: "08115013", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1134 },
   { slug: "mauer", name: "Mauer", ags: "08226048", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1115 },
   { slug: "rauschenberg", name: "Rauschenberg", ags: "06534017", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1038 },

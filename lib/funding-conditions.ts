@@ -216,6 +216,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Was es an Bedingungen gab, steht vollständig auf der Karte. Wird das
   // Programm je neu aufgelegt, gehört die Prüfform mit der Neuauflage dazu.
   "bremen-heizungstausch",
+  // Hohenbrunn storage part, added 17.10.2026 as ended: the version of
+  // 01.07.2026 dropped it. A check form would hold a user's project against a
+  // procedure nobody can enter any more; the former conditions stand on the card.
+  "hohenbrunn-batteriespeicher",
   // Kaufungen Sondervermögen, aufgenommen am 23.09.2026. Es ist ein zinsloses
   // DARLEHEN; die Prüfformen bilden Zuschussverfahren ab. Die eine Bedingung,
   // die ein Modell hier tragen könnte — Antrag vor Beginn der Baumaßnahme —
@@ -1017,6 +1021,93 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
       {
         ausBedingung: "Haushalte mit niedrigem Einkommen (z. B. Bürgergeld, Sozialhilfe, Wohngeld) können über den Stromspar-Check ein Balkonkraftwerk mit einem Modul ohne Speicher kostenlos installiert bekommen",
         warum: "Hängt am Einkommen, das der Rechner nicht abfragt; gerechnet wird mit den 150 €, die jeder Haushalt bekommt.",
+      },
+    ],
+  },
+
+  // Added 17 Oct 2026 with the programme (guideline 01.07.2026 read in full).
+  "hohenbrunn-waermeerzeugung": {
+    pruefungen: [
+      {
+        ausBedingung: "Der Antrag ist vor Maßnahmenbeginn zu stellen, mit dem Bewilligungsbescheid des Bundes und einem Angebot; eine Angebotsannahme mit Aufhebungsklausel für den Fall der Ablehnung gilt nicht als Beginn",
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "vor-auftrag" },
+      },
+      {
+        ausBedingung: "Der Antrag ist vor Maßnahmenbeginn zu stellen, mit dem Bewilligungsbescheid des Bundes und einem Angebot; eine Angebotsannahme mit Aufhebungsklausel für den Fall der Ablehnung gilt nicht als Beginn",
+        pruefung: { art: "antragsweg", weg: "formular" },
+      },
+    ],
+    durchRegion: [],
+    hinweise: [
+      {
+        ausBedingung: "Der Zuschuss bemisst sich am bewilligten Bundeszuschuss (BEG Einzelmaßnahmen), nicht an den Kosten — ohne Bundesbewilligung gibt es keinen Gemeindezuschuss",
+        warum: "Bemessung am Bundeszuschuss kann das Modell nicht ausdrücken; der Eintrag zieht nichts ab.",
+      },
+      {
+        ausBedingung: "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz und Unternehmen (nur KMU) mit Sitz in Hohenbrunn, außerdem Eigentümergemeinschaften und Vereine; das Gebäude muss im Gemeindegebiet stehen",
+        warum: "Den Ort deckt die Ortsauswahl ab; Wohnsitz und Unternehmensgröße fragt der Rechner nicht ab.",
+      },
+      {
+        ausBedingung: "Bund und Gemeinde zusammen dürfen höchstens 60 % der förderfähigen Kosten der Wärmeerzeugungsanlage erreichen",
+        warum: "Gesamtgrenze über mehrere Geber; der Eintrag zieht ohnehin nichts ab.",
+      },
+      {
+        ausBedingung: "Je privatem Antragsteller sind in fünf Jahren höchstens 8.000 € Zuschuss aus dem ganzen Programm möglich, je Unternehmen 5.000 €",
+        warum: "Frühere Zuschüsse kennt der Rechner nicht.",
+      },
+      {
+        ausBedingung: "Die Umsetzung muss innerhalb von zwei Jahren erfolgen; ausgezahlt wird nach Auszahlungsbescheid des Bundes und Rechnung",
+        warum: "Frist und Auszahlung nach der Bewilligung, keine Eigenschaft der Anlage.",
+      },
+      {
+        ausBedingung: "Für 2026 stehen 90.000 € für Investitionszuschüsse bereit, vergeben nach Eingang der vollständigen Anträge; ein Rechtsanspruch besteht nicht",
+        warum: "Mittelvorbehalt, keine Eigenschaft der Anlage.",
+      },
+    ],
+  },
+
+  // Added 17 Oct 2026 with the programme (statute read in full). Order: buy
+  // and install, then apply within six months.
+  "barleben-balkonkraftwerke-speicher": {
+    pruefungen: [
+      {
+        ausBedingung: "Erst kaufen und anbauen, dann beantragen: Der Antrag geht schriftlich mit dem Formular der Gemeinde ein, spätestens sechs Monate nach dem Kauf; maßgeblich sind das Datum des Kaufbelegs und der Eingang in der Poststelle",
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "nach-inbetriebnahme", fristMonate: 6 },
+      },
+      {
+        ausBedingung: "Erst kaufen und anbauen, dann beantragen: Der Antrag geht schriftlich mit dem Formular der Gemeinde ein, spätestens sechs Monate nach dem Kauf; maßgeblich sind das Datum des Kaufbelegs und der Eingang in der Poststelle",
+        pruefung: { art: "antragsweg", weg: "formular" },
+      },
+    ],
+    durchRegion: [],
+    hinweise: [
+      {
+        ausBedingung: "Gefördert wird nur ein steckerfertiges Balkonkraftwerk zusammen mit einem Speicher — ohne Speicher gibt es nichts; das Balkonkraftwerk muss mindestens 300 Watt leisten",
+        warum: "Die Rechnung zieht den Zuschuss nur bei Sets mit Speicher ab (balkonNurMitSpeicher); die 300-Watt-Untergrenze unterschreitet keines der Rechner-Sets.",
+      },
+      {
+        ausBedingung: "Gefördert werden nur Käufe nach Veröffentlichung der Fördersatzung",
+        warum: "Stichtag in der Vergangenheit (Satzung von 2024), für heutige Käufe ohnehin erfüllt.",
+      },
+      {
+        ausBedingung: "Antragsberechtigt sind natürliche Personen, die Mieter oder Eigentümer eines Wohngebäudes in Barleben sind; vollständig gewerblich genutzte Gebäude sind ausgeschlossen. Je Wohneinheit oder Haus ist ein Antrag möglich",
+        warum: "Den Ort deckt die Ortsauswahl ab; Miet- oder Eigentumsverhältnis und frühere Anträge fragt der Rechner nicht ab.",
+      },
+      {
+        ausBedingung: "Mieter brauchen die Erlaubnis des Eigentümers; Wohnungseigentümergemeinschaften einen bestandskräftigen Beschluss und eine bevollmächtigte Vertretung",
+        warum: "Zustimmungen Dritter kennt der Rechner nicht.",
+      },
+      {
+        ausBedingung: "Zum Antrag gehören Eigentums- oder Wohnsitznachweis, die Rechnung mit Leistung und Modell, ein Foto der angebauten Anlage und das Inbetriebnahmeprotokoll des Netzbetreibers oder ein Auszug aus dem Marktstammdatenregister",
+        warum: "Nachweise zum Antrag, keine Eigenschaft der Anlage.",
+      },
+      {
+        ausBedingung: "Liegt der Kaufpreis unter 300 €, wird höchstens der Kaufpreis erstattet",
+        warum: "Kein Rechner-Set kostet unter 300 €; die Kappung greift dort nie.",
+      },
+      {
+        ausBedingung: "Gezahlt wird im Rahmen der Haushaltslage, freiwillig und ohne Rechtsanspruch; fehlen gerade Mittel, wird die Auszahlung aufgeschoben, bei einer Haushaltskonsolidierung wird der Antrag abgelehnt",
+        warum: "Haushaltsvorbehalt, keine Eigenschaft der Anlage.",
       },
     ],
   },

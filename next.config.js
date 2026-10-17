@@ -204,6 +204,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/wuerselen", destination: "/photovoltaik-foerderung/nordrhein-westfalen/wuerselen", permanent: true },
       { source: "/photovoltaik-foerderung/eckental", destination: "/photovoltaik-foerderung/bayern/eckental", permanent: true },
       { source: "/photovoltaik-foerderung/fritzlar", destination: "/photovoltaik-foerderung/hessen/fritzlar", permanent: true },
+      { source: "/photovoltaik-foerderung/barleben", destination: "/photovoltaik-foerderung/sachsen-anhalt/barleben", permanent: true },
       { source: "/photovoltaik-foerderung/ehningen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/ehningen", permanent: true },
       { source: "/photovoltaik-foerderung/mauer", destination: "/photovoltaik-foerderung/baden-wuerttemberg/mauer", permanent: true },
       { source: "/photovoltaik-foerderung/rauschenberg", destination: "/photovoltaik-foerderung/hessen/rauschenberg", permanent: true },

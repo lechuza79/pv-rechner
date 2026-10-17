@@ -102969,5 +102969,418 @@
         "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
       }
     ]
+  },
+  {
+    "regionId": "15083040",
+    "name": "Barleben",
+    "checkedAt": "2026-10-17T14:20:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Barleben zahlt nach der Balkonkraftwerkfördersatzung (Gemeinderat 24.09.2024) pauschal 300 € je Balkonkraftwerk mit Speicher (mindestens 300 Watt), höchstens den Kaufpreis; ohne Speicher gibt es nichts. Antrag nach dem Anbau, binnen sechs Monaten nach Kauf, im Rahmen der Haushaltslage. Im Katalog als barleben-balkonkraftwerke-speicher (aktiv, Council 3/3). Weitere kommunale Zuschüsse der Satzungsliste betreffen Wohneigentum, Wohnbau und Regenwasserzisternen, nicht PV oder Wärmepumpen.",
+    "searches": [
+      "17.10.2026: Satzungsliste der Gemeinde vollständig gelesen",
+      "17.10.2026: Seitensuche nach Balkonkraftwerk und Fördersatzung",
+      "17.10.2026: alle erfassten Fundstellen abgerufen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/",
+        "finding": "17.10.2026: Satzungsliste führt die Balkonkraftwerkfördersatzung mit Antrag; übrige Zuschusssatzungen: Wohnbau, Wohnraum, Zisternen."
+      },
+      {
+        "url": "https://www.barleben.de/media/custom/2276_4165_1.PDF",
+        "finding": "17.10.2026: „Die Höhe der Fördersumme beträgt für jede Anlage mit Speicher pauschal 300,00 €.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rdermittel-f%C3%BCr-selbst-genutztes-Wohneigentum-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand selbst genutztes Wohneigentum (Wohnraum-/Wohnbaufördersatzung); kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rderung-f%C3%BCr-Dorferneuerung-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand Dorferneuerung; kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rderung-f%C3%BCr-gewerbliche-Investitionen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand gewerbliche Investitionen; kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rderung-f%C3%BCr-Ma%C3%9Fnahmen-zum-Hochwasserschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand Hochwasserschutz; kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/Fachkundige-Stellungnahme-der-IHK-f%C3%BCr-Gr%C3%BCndungszuschuss-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand IHK-Stellungnahme zum Gründungszuschuss; kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/Pr%C3%A4miengutschein-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand Prämiengutschein (Weiterbildung); kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/https:/www.barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rdermittel-f%C3%BCr-selbst-genutztes-Wohneigentum-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand selbst genutztes Wohneigentum (Wohnraum-/Wohnbaufördersatzung); kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/https:/www.barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rderung-f%C3%BCr-Dorferneuerung-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand Dorferneuerung; kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/https:/www.barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rderung-f%C3%BCr-gewerbliche-Investitionen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand gewerbliche Investitionen; kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/https:/www.barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rderung-f%C3%BCr-Ma%C3%9Fnahmen-zum-Hochwasserschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand Hochwasserschutz; kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/https:/www.barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/Pr%C3%A4miengutschein-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Dienstleistungsseite des Landesportals, Gegenstand Prämiengutschein (Weiterbildung); kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Satzungsliste der Gemeinde führt als Energieförderung allein die Balkonkraftwerkfördersatzung.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/https:/www.barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rderprogramme.php",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis keine Förderung): Übersicht Förderprogramme des Landesportals; 17.10.2026 durch die Satzungsliste der Gemeinde erledigt, deren einzige Energieförderung die Balkonkraftwerkfördersatzung ist.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      },
+      {
+        "url": "barleben.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Was-erledige-ich-wo/Dienstleistungen/F%C3%B6rderprogramme.php",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis keine Förderung): Übersicht Förderprogramme des Landesportals; 17.10.2026 durch die Satzungsliste der Gemeinde erledigt, deren einzige Energieförderung die Balkonkraftwerkfördersatzung ist.",
+        "evidenceUrl": "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "06633015",
+    "name": "Kaufungen",
+    "checkedAt": "2026-10-17T14:20:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Kaufungen fördert über das Sondervermögen mit zinslosen Darlehen (kein Zuschuss), u. a. für Solaranlagen und Heizungserneuerung; im Katalog als kaufungen-sondervermoegen (aktiv), Programmseite am 17.10.2026 unverändert („zinslose Darlehen von bis zu 30.000 €“, „Einbau von Solaranlagen“, „Heizungs- und Sanitärsanierungen“). Daneben Dorfentwicklung Niederkaufungen (historische Bausubstanz) — kein PV-/Wärmepumpenzuschuss. Kein eigener Zuschuss für Balkonkraftwerke oder Speicher gefunden.",
+    "searches": [
+      "17.10.2026: Programmseite Sondervermögen und Mitteilungen der Gemeinde gelesen",
+      "17.10.2026: Websuche nach Kaufunger Zuschuss für PV/Balkonkraftwerk (keine Treffer der Gemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/",
+        "finding": "17.10.2026: „zinslose Darlehen von bis zu 30.000 € … Einbau von Solaranlagen“."
+      },
+      {
+        "url": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Aktuelles/Mitteilungen/F%C3%B6rderprogramm-zur-Geb%C3%A4udesanierung.php",
+        "finding": "17.10.2026: Mitteilungsliste; Gebäudesanierung = Sondervermögen; Dorfentwicklung Niederkaufungen für historische Bausubstanz."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/Aktuelles/F%C3%B6rderprogramm-zur-Geb%C3%A4udesanierung.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Mitteilung zum Förderprogramm Gebäudesanierung (06.05.2021) = das Sondervermögen mit zinslosen Darlehen, im Katalog als kaufungen-sondervermoegen.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Aktuelles/Mitteilungen/F%C3%B6rderprogramm-zur-Geb%C3%A4udesanierung.php"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/Aktuelles/Mitteilungen/F%C3%B6rderprogramm-zur-Geb%C3%A4udesanierung.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Mitteilung zum Förderprogramm Gebäudesanierung (06.05.2021) = das Sondervermögen mit zinslosen Darlehen, im Katalog als kaufungen-sondervermoegen.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Aktuelles/Mitteilungen/F%C3%B6rderprogramm-zur-Geb%C3%A4udesanierung.php"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/B%C3%BCrgerservice/Dienstleistungen-von-A-Z/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Die Dienstleistungsseite zeigt nur noch die A–Z-Übersicht ohne eigenen Inhalt; die kommunale Förderung der Gemeinde für Solar und Heizung ist das Sondervermögen (Programmseite gelesen).",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/B%C3%BCrgerservice/Dienstleistungen-von-A-Z/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php?NavID=2655.20&such=Kommunale%25F%C3%B6rderung%25f%C3%BCr%25den%25Klimaschutz%25beantragen&sfwort=1&kuo=1&ort=417.1&ModID=10&object=tx%7C4182.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Die Dienstleistungsseite zeigt nur noch die A–Z-Übersicht ohne eigenen Inhalt; die kommunale Förderung der Gemeinde für Solar und Heizung ist das Sondervermögen (Programmseite gelesen).",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/B%C3%BCrgerservice/Dienstleistungen-von-A-Z/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php?NavID=2655.20&such=Kommunale%25F%C3%B6rderung%25f%C3%BCr%25den%25Klimaschutz%25beantragen&sfwort=1&kuo=1&ort=417.1&ModID=10&object=tx%7C4182.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Die Dienstleistungsseite zeigt nur noch die A–Z-Übersicht ohne eigenen Inhalt; die kommunale Förderung der Gemeinde für Solar und Heizung ist das Sondervermögen (Programmseite gelesen).",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/Aktuelles/Mitteilungen/F%C3%B6rderprogramm-zur-Geb%C3%A4udesanierung.php?object=tx,4182.5.1&amp;ModID=7&amp;FID=4182.1372.1&amp;NavID=2655.23&amp;text=F%C3%B6rderprogramm%25zur%25Geb%C3%A4udesanierung&amp;kat=1.218&amp;startkat=1.218",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis vorhanden): Fundstelle zum Sondervermögen, 17.10.2026 an der Programmseite erneut bestätigt.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/Aktuelles/Mitteilungen/F%C3%B6rderprogramm-zur-Geb%C3%A4udesanierung.php?object=tx,4182.5.1&amp;ModID=7&amp;FID=4182.1939.1&amp;NavID=2655.23&amp;text=F%C3%B6rderprogramm%25zur%25Geb%C3%A4udesanierung&amp;kat=1.218&amp;startkat=1.218",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis vorhanden): Fundstelle zum Sondervermögen, 17.10.2026 an der Programmseite erneut bestätigt.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/Aktuelles/Mitteilungen/F%C3%B6rderprogramm-zur-Geb%C3%A4udesanierung.php?object=tx,4182.5.1&amp;ModID=7&amp;FID=2655.55869.1&amp;NavID=2655.23&amp;text=F%C3%B6rderprogramm%25zur%25Geb%C3%A4udesanierung&amp;kat=1.218&amp;startkat=1.218",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis vorhanden): Fundstelle zum Sondervermögen, 17.10.2026 an der Programmseite erneut bestätigt.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/Aktuelles/Mitteilungen/F%C3%B6rderprogramm-zur-Geb%C3%A4udesanierung.php?object=tx,4182.5.1&amp;ModID=7&amp;FID=2655.12263.1&amp;NavID=2655.23&amp;text=F%C3%B6rderprogramm%25zur%25Geb%C3%A4udesanierung&amp;kat=1.218&amp;startkat=1.218",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis vorhanden): Fundstelle zum Sondervermögen, 17.10.2026 an der Programmseite erneut bestätigt.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis aufgenommen): Fundstelle zum Sondervermögen, 17.10.2026 an der Programmseite erneut bestätigt.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/B%C3%BCrgerservice/Dienstleistungen-von-A-Z/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php?NavID=2655.20&such=Kommunale%25F%C3%B6rderung%25f%C3%BCr%25den%25Klimaschutz%25beantragen&sfwort=1&kuo=1&ort=417.1&ModID=10&object=tx%7C4182.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis vorhanden): Fundstelle zum Sondervermögen, 17.10.2026 an der Programmseite erneut bestätigt.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/B%C3%BCrgerservice/Dienstleistungen-von-A-Z/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php?NavID=2655.20&such=Kommunale%25F%C3%B6rderung%25f%C3%BCr%25den%25Klimaschutz%25beantragen&sfwort=1&kuo=1&ort=417.1&ModID=10&object=tx%7C4182.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis vorhanden): Fundstelle zum Sondervermögen, 17.10.2026 an der Programmseite erneut bestätigt.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      },
+      {
+        "url": "kaufungen.eu/Rathaus-B%C3%BCrgerservice/B%C3%BCrgerservice/Dienstleistungen-von-A-Z/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php?NavID=2655.20&such=Kommunale%25F%C3%B6rderung%25f%C3%BCr%25den%25Klimaschutz%25beantragen&sfwort=1&kuo=1&ort=417.1&ModID=10&object=tx%7C4182.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Früher gelesen (Ergebnis vorhanden): Fundstelle zum Sondervermögen, 17.10.2026 an der Programmseite erneut bestätigt.",
+        "evidenceUrl": "https://www.kaufungen.eu/Rathaus-B%C3%BCrgerservice/Rathaus/Bauen-Wohnen/Wohnen-Fachwerk/F%C3%B6rderm%C3%B6glichkeiten/F%C3%B6rderprogramm-Sonderverm%C3%B6gen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07231502",
+    "name": "Morbach",
+    "checkedAt": "2026-10-17T14:20:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Für Morbach galt das Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, Anträge bis 01.04.2026), im Katalog als beendet geführt. Die Gemeinde Morbach selbst nennt keinen eigenen Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; die übrigen Fundstellen betreffen die Dorferneuerung.",
+    "searches": [
+      "17.10.2026: alle erfassten Fundstellen der Gemeinde im Original gelesen",
+      "17.10.2026: Websuche nach eigenem Morbacher Zuschuss (keine Treffer der Gemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke",
+        "finding": "17.10.2026: „Das Förderprogramm läuft noch bis zum 1. April 2026.“ (Kreisprogramm)"
+      },
+      {
+        "url": "https://www.morbach.de/zuschuesse-sichern-sanierung-und-umbau-von-gebaeuden",
+        "finding": "17.10.2026: Dorferneuerung, keine Energieförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke/?contrast=dark",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke/?contrast=light",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/foerderprogramm-fuer-private-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/foerderprogramm-fuer-private-balkonkraftwerke/?contrast=dark",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/foerderprogramm-fuer-private-balkonkraftwerke/?contrast=light",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/landkreis-startet-foerderprogramm-fuer-private-balkonkraftwerke-zum-1-april-2024",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/landkreis-startet-foerderprogramm-fuer-private-balkonkraftwerke-zum-1-april-2024/?contrast=dark",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/landkreis-startet-foerderprogramm-fuer-private-balkonkraftwerke-zum-1-april-2024/?contrast=light",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/landkreis-startet-foerderprogramm-fuer-private-balkonkraftwerke-zum-1-april-2024/?font=big",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/landkreis-startet-foerderprogramm-fuer-private-balkonkraftwerke-zum-1-april-2024/?lang=de",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/landkreis-startet-foerderprogramm-fuer-private-balkonkraftwerke-zum-1-april-2024/?lang=nl",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemeldung zum Balkonkraftwerk-Programm des Landkreises Bernkastel-Wittlich (150 € je Haushalt, bis 01.04.2026), im Katalog als bernkastel-wittlich-balkonkraftwerke (eingestellt); Varianten mit Darstellungsparametern sind dieselbe Seite.",
+        "evidenceUrl": "https://www.morbach.de/bis-zum-01-april-foerderung-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "morbach.de/zuschuesse-sichern-sanierung-und-umbau-von-gebaeuden",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Dorferneuerung (Bund/Land über die Kreisverwaltung, bis 35 %, max. 30.000 €) für ortsbildprägende Gebäude, keine Energieförderung.",
+        "evidenceUrl": "https://www.morbach.de/zuschuesse-sichern-sanierung-und-umbau-von-gebaeuden"
+      }
+    ]
+  },
+  {
+    "regionId": "09184129",
+    "name": "Hohenbrunn",
+    "checkedAt": "2026-10-17T14:20:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hohenbrunn fördert seit der Fassung vom 01.07.2026 Wärmepumpen als Aufstockung des Bundeszuschusses (Luft-Wärmepumpe 25 %, max. 2.000 €; Wasser-Wärmepumpe 30 %, max. 2.500 €), Budget 2026 90.000 € Investitionszuschüsse; im Katalog als hohenbrunn-waermeerzeugung (aktiv, informativ ohne Abzug). Die Speicherförderung (15 %, max. 500 €, seit 08/2024) entfiel mit dieser Fassung, im Katalog als hohenbrunn-batteriespeicher (beendet). PV-Dachanlagen förderte keine Fassung; Balkon-PV gab es nur 2022/23. Council 3/3 am 17.10.2026.",
+    "searches": [
+      "17.10.2026: Programmseite und geltende Richtlinie vollständig gelesen",
+      "17.10.2026: Vorfassung 06/2025 gelesen, ältere Fassungen im Council gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hohenbrunn.de/leben-in-hohenbrunn/umwelt-und-klimaschutz/foerderprogramm",
+        "finding": "17.10.2026: „Für das Jahr 2026 stellt die Gemeinde Hohenbrunn insgesamt 96.000 € bereit … 90.000 € als Zuschüsse für Investitionen“."
+      },
+      {
+        "url": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf",
+        "finding": "17.10.2026: „Luft-Wärmepumpen 25% (max. 2.000 €) - Wasser-Wärmepumpe 30% (max. 2.500 €)“, bezogen auf die Bewilligungssumme des ersten Fördermittelgebers; kein PV-/Speicherbaustein."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hohenbrunn.de/download/a3qqqv33oe15f6j66vsvaa5b064/20240801_v2_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf",
+        "disposition": "reviewed",
+        "reason": "Ältere Fassung bzw. Antragsformular des Programms; 17.10.2026 im Council gelesen (Fassungen 2021–2024: Speicher ab 08/2024, Balkon-PV 150 € nur 06/2022, keine PV-Dachanlage); überholt durch die geltende Fassung vom 01.07.2026.",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 vollständig gelesen: geltende Fassung, Wärmepumpen 25 %/30 % des Bundeszuschusses; im Katalog als hohenbrunn-waermeerzeugung.",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/download/a4tmf5mbhuejqp8bbuudjkr0o4s/20240801_foerderantrag-gemeinde-hohenbrunn.pdf",
+        "disposition": "reviewed",
+        "reason": "Ältere Fassung bzw. Antragsformular des Programms; 17.10.2026 im Council gelesen (Fassungen 2021–2024: Speicher ab 08/2024, Balkon-PV 150 € nur 06/2022, keine PV-Dachanlage); überholt durch die geltende Fassung vom 01.07.2026.",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/download/a8h5k9h9rshrpnmlntfg7vgcjsm/202206_foerderantrag_gemeinde-hohenbrunn.pdf",
+        "disposition": "reviewed",
+        "reason": "Ältere Fassung bzw. Antragsformular des Programms; 17.10.2026 im Council gelesen (Fassungen 2021–2024: Speicher ab 08/2024, Balkon-PV 150 € nur 06/2022, keine PV-Dachanlage); überholt durch die geltende Fassung vom 01.07.2026.",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/download/a8r9jle7qvpncvlvjkdkbinv6qi/202206_FoerderprogrammzurEnergiewendeundKlimaschutzinderGemeindeHohenbrunn.pdf",
+        "disposition": "reviewed",
+        "reason": "Ältere Fassung bzw. Antragsformular des Programms; 17.10.2026 im Council gelesen (Fassungen 2021–2024: Speicher ab 08/2024, Balkon-PV 150 € nur 06/2022, keine PV-Dachanlage); überholt durch die geltende Fassung vom 01.07.2026.",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/download/a98esdc0grvn73qramv45b2ndfn/foerderprogramm-energie-gemeinde-hohenbrunn_stand05-2021.pdf",
+        "disposition": "reviewed",
+        "reason": "Ältere Fassung bzw. Antragsformular des Programms; 17.10.2026 im Council gelesen (Fassungen 2021–2024: Speicher ab 08/2024, Balkon-PV 150 € nur 06/2022, keine PV-Dachanlage); überholt durch die geltende Fassung vom 01.07.2026.",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/download/adk5bqus95q4jikr79up6cno1ne/202305_foerderantrag_gemeinde-hohenbrunn.pdf",
+        "disposition": "reviewed",
+        "reason": "Ältere Fassung bzw. Antragsformular des Programms; 17.10.2026 im Council gelesen (Fassungen 2021–2024: Speicher ab 08/2024, Balkon-PV 150 € nur 06/2022, keine PV-Dachanlage); überholt durch die geltende Fassung vom 01.07.2026.",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/download/ae1c4amkgute4668n1rjulqqt1a/20250601_ueberarbeitet-foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Vorfassung mit Batteriespeicher 15 %, max. 500 €; im Katalog als hohenbrunn-batteriespeicher (beendet).",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/download/ae8nbohbg22j2men8uobjcc8pe2/20230504_FoerderprogrammzurEnergiewendeundKlimaschutzinderGemeindeHohenbrunn.pdf",
+        "disposition": "reviewed",
+        "reason": "Ältere Fassung bzw. Antragsformular des Programms; 17.10.2026 im Council gelesen (Fassungen 2021–2024: Speicher ab 08/2024, Balkon-PV 150 € nur 06/2022, keine PV-Dachanlage); überholt durch die geltende Fassung vom 01.07.2026.",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/download/alhk0mjhlfgek1an7fa9divag2m/20250601_ueberarbeitet-foerderantrag-gemeinde-hohenbrunn.pdf",
+        "disposition": "reviewed",
+        "reason": "Ältere Fassung bzw. Antragsformular des Programms; 17.10.2026 im Council gelesen (Fassungen 2021–2024: Speicher ab 08/2024, Balkon-PV 150 € nur 06/2022, keine PV-Dachanlage); überholt durch die geltende Fassung vom 01.07.2026.",
+        "evidenceUrl": "https://www.hohenbrunn.de/download/a4h626a7k8a6d48bddvl49vo408/20260701_foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf"
+      },
+      {
+        "url": "hohenbrunn.de/leben-in-hohenbrunn/bauen-und-wohnen/gefoerderte-wohnungen",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 abgerufen: Seite zu geförderten Mietwohnungen, keine Energieförderung.",
+        "evidenceUrl": "https://www.hohenbrunn.de/leben-in-hohenbrunn/umwelt-und-klimaschutz/foerderprogramm"
+      },
+      {
+        "url": "hohenbrunn.de/leben-in-hohenbrunn/umwelt-und-klimaschutz/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Programmseite, Budget 2026 und Fassungsübersicht.",
+        "evidenceUrl": "https://www.hohenbrunn.de/leben-in-hohenbrunn/umwelt-und-klimaschutz/foerderprogramm"
+      },
+      {
+        "url": "hohenbrunn.de/leben-in-hohenbrunn/umwelt-und-klimaschutz/foerderprogramm/bafa.de",
+        "disposition": "reviewed",
+        "reason": "Defekter relativer Link auf der Programmseite (Verweis auf das BAFA), keine Seite der Gemeinde; Inhalt durch die gelesene Programmseite erledigt.",
+        "evidenceUrl": "https://www.hohenbrunn.de/leben-in-hohenbrunn/umwelt-und-klimaschutz/foerderprogramm"
+      }
+    ]
   }
 ]

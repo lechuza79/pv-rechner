@@ -12389,6 +12389,124 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     },
   },
 
+  // AUFGENOMMEN 17.10.2026 — Balkonkraftwerkfördersatzung (Gemeinderat
+  // 24.09.2024, PDF erzeugt 12.11.2024) in the raw text, the application form
+  // and the home page link "Antrag Balkonkraftwerkförderung" read the same day.
+  // The statute lives in the municipality's statute list
+  // (Verwaltung/Bekanntmachungen/Satzungen); its file id changed from
+  // 2276_4162_1 (now "Datei nicht gefunden") to 2276_4165_1 — hence the list as
+  // `url`, not the file. § 2: "steckerfertigen Balkonkraftwerken mit einer
+  // Mindestleistung von 300 Watt in Verbindung mit einem Speicher … für jede
+  // Anlage mit Speicher pauschal 300,00 €". The 300 W are the plant, not the
+  // storage. No end date; § 5 budget reservation. Council 3/3 (incl.
+  // adversarial) 17.10.2026: confirmed, status aktiv; Haushaltssatzung 2026
+  // (23.06.2026) shows no separate line and no consolidation.
+  // `balkonNurMitSpeicher` is mandatory: without storage there is nothing.
+  "barleben-balkonkraftwerke-speicher": {
+    id: "barleben-balkonkraftwerke-speicher", name: "Balkonkraftwerkförderung (nur mit Speicher)",
+    traeger: "Gemeinde Barleben", level: "kommune", region: "Barleben",
+    bundesland: "Sachsen-Anhalt", agsCode: "15083040",
+    url: "https://www.barleben.de/Verwaltung/Bekanntmachungen/Satzungen/",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-09-24",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk mit Speicher, ein Antrag je Wohneinheit oder Haus",
+    maxFoerderung: "300 € je Anlage mit Speicher, höchstens der Kaufpreis",
+    rates: [{ label: "Balkonkraftwerk mit Speicher", value: "300 € pauschal, höchstens der Kaufpreis", nur: ["balkon"] }],
+    conditions: [
+      "Gefördert wird nur ein steckerfertiges Balkonkraftwerk zusammen mit einem Speicher — ohne Speicher gibt es nichts; das Balkonkraftwerk muss mindestens 300 Watt leisten",
+      "Erst kaufen und anbauen, dann beantragen: Der Antrag geht schriftlich mit dem Formular der Gemeinde ein, spätestens sechs Monate nach dem Kauf; maßgeblich sind das Datum des Kaufbelegs und der Eingang in der Poststelle",
+      "Gefördert werden nur Käufe nach Veröffentlichung der Fördersatzung",
+      "Antragsberechtigt sind natürliche Personen, die Mieter oder Eigentümer eines Wohngebäudes in Barleben sind; vollständig gewerblich genutzte Gebäude sind ausgeschlossen. Je Wohneinheit oder Haus ist ein Antrag möglich",
+      "Mieter brauchen die Erlaubnis des Eigentümers; Wohnungseigentümergemeinschaften einen bestandskräftigen Beschluss und eine bevollmächtigte Vertretung",
+      "Zum Antrag gehören Eigentums- oder Wohnsitznachweis, die Rechnung mit Leistung und Modell, ein Foto der angebauten Anlage und das Inbetriebnahmeprotokoll des Netzbetreibers oder ein Auszug aus dem Marktstammdatenregister",
+      "Liegt der Kaufpreis unter 300 €, wird höchstens der Kaufpreis erstattet",
+      "Gezahlt wird im Rahmen der Haushaltslage, freiwillig und ohne Rechtsanspruch; fehlen gerade Mittel, wird die Auszahlung aufgeschoben, bei einer Haushaltskonsolidierung wird der Antrag abgelehnt",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPauschale: 300, balkonNurMitSpeicher: true,
+    application: {
+      checkedAt: "2026-10-17T14:50:00Z",
+      sources: [
+        { url: "https://www.barleben.de/media/custom/2276_4165_1.PDF", title: "Gemeinde Barleben: Balkonkraftwerkfördersatzung", quote: "Die Höhe der Fördersumme beträgt für jede Anlage mit Speicher pauschal 300,00 €." },
+        { url: "https://www.barleben.de/output/download.php?fid=2276.4168.1.PDF", title: "Gemeinde Barleben: Antrag auf Balkonkraftwerkförderung", quote: "Antrag auf Balkonkraftwerkförderung der Gemeinde Barleben" },
+      ],
+      steps: [
+        { title: "Kaufen und anbauen", text: "Ein steckerfertiges Balkonkraftwerk (mindestens 300 Watt) zusammen mit einem Speicher kaufen und anbauen.", kind: "implementation", evidenceUrls: ["https://www.barleben.de/media/custom/2276_4165_1.PDF"] },
+        { title: "Antrag schriftlich stellen", text: "Das Antragsformular der Gemeinde ausfüllen und mit allen Nachweisen bei der Gemeinde einreichen — spätestens sechs Monate nach dem Kauf.", kind: "application", evidenceUrls: ["https://www.barleben.de/media/custom/2276_4165_1.PDF", "https://www.barleben.de/output/download.php?fid=2276.4168.1.PDF"] },
+        { title: "Auszahlung", text: "Nach Bewilligung überweist die Gemeinde 300 € auf das angegebene Konto, sofern Haushaltsmittel zur Verfügung stehen.", kind: "payment", evidenceUrls: ["https://www.barleben.de/media/custom/2276_4165_1.PDF"] },
+      ],
+      documents: [
+        { text: "Eigentumsnachweis (Grundbuch oder Kaufvertrag) bzw. bei Mietern Meldebescheinigung oder Mietvertrag, Rechnung mit Leistung und Modell, Foto der angebauten Anlage, Inbetriebnahmeprotokoll des Netzbetreibers oder Auszug aus dem Marktstammdatenregister; bei Miete die Erlaubnis des Eigentümers, bei Eigentümergemeinschaften deren Beschluss", evidenceUrls: ["https://www.barleben.de/media/custom/2276_4165_1.PDF"] },
+      ],
+      portal: { url: "https://www.barleben.de/output/download.php?fid=2276.4168.1.PDF", label: "Antragsformular der Gemeinde Barleben (PDF)", evidenceUrls: ["https://www.barleben.de/"] },
+    },
+  },
+
+  // AUFGENOMMEN 17.10.2026 — programme page and the guideline "Stand
+  // 01.07.2026" (committee decision 11.06.2026) read in raw text. Section
+  // "Anlagen zur Wärmeerzeugung": "Die festgesetzte Förderhöhe bezieht sich auf
+  // die Bewilligungssumme des ersten Fördermittelgebers: … Luft-Wärmepumpen 25%
+  // (max. 2.000 €) - Wasser-Wärmepumpe 30% (max. 2.500 €)". The percentage is
+  // of the federal BEG EM grant, not of the costs — the model cannot express
+  // that, so the entry informs and deducts nothing (no wp* fields). The 2026
+  // version has no PV, storage or balcony part (storage: see the next entry);
+  // solar thermal stays (25 %, max. 2.000 €). Budget 2026 per page: 90.000 €
+  // investment grants, first come. Heat-pump-only: no city page.
+  // Council 3/3 (incl. adversarial) 17.10.2026: confirmed; 60 % total cap and
+  // the federal approval as precondition added on the adversarial's advice.
+  "hohenbrunn-waermeerzeugung": {
+    id: "hohenbrunn-waermeerzeugung", name: "Förderprogramm zur Energiewende und Klimaschutz — Anlagen zur Wärmeerzeugung",
+    traeger: "Gemeinde Hohenbrunn", level: "kommune", region: "Hohenbrunn",
+    bundesland: "Bayern", agsCode: "09184129",
+    url: "https://www.hohenbrunn.de/leben-in-hohenbrunn/umwelt-und-klimaschutz/foerderprogramm",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2026-06-11",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Aufstockung des bewilligten Bundeszuschusses (BEG Einzelmaßnahmen) für eine Wärmepumpe",
+    maxFoerderung: "2.000 € für eine Luft-Wärmepumpe, 2.500 € für eine Wasser-Wärmepumpe",
+    rates: [
+      { label: "Luft-Wärmepumpe", value: "25 % des bewilligten Bundeszuschusses, max. 2.000 €", nur: ["waermepumpe"] },
+      { label: "Wasser-Wärmepumpe", value: "30 % des bewilligten Bundeszuschusses, max. 2.500 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Der Zuschuss bemisst sich am bewilligten Bundeszuschuss (BEG Einzelmaßnahmen), nicht an den Kosten — ohne Bundesbewilligung gibt es keinen Gemeindezuschuss",
+      "Der Antrag ist vor Maßnahmenbeginn zu stellen, mit dem Bewilligungsbescheid des Bundes und einem Angebot; eine Angebotsannahme mit Aufhebungsklausel für den Fall der Ablehnung gilt nicht als Beginn",
+      "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz und Unternehmen (nur KMU) mit Sitz in Hohenbrunn, außerdem Eigentümergemeinschaften und Vereine; das Gebäude muss im Gemeindegebiet stehen",
+      "Bund und Gemeinde zusammen dürfen höchstens 60 % der förderfähigen Kosten der Wärmeerzeugungsanlage erreichen",
+      "Je privatem Antragsteller sind in fünf Jahren höchstens 8.000 € Zuschuss aus dem ganzen Programm möglich, je Unternehmen 5.000 €",
+      "Die Umsetzung muss innerhalb von zwei Jahren erfolgen; ausgezahlt wird nach Auszahlungsbescheid des Bundes und Rechnung",
+      "Für 2026 stehen 90.000 € für Investitionszuschüsse bereit, vergeben nach Eingang der vollständigen Anträge; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+  },
+
+  // AUFGENOMMEN 17.10.2026 als beendet — the battery-storage part of the same
+  // programme ("Batteriespeicher": 15 % der Investitionskosten, max. 500 €),
+  // read in the versions 01.08.2024 and 01.06.2025; it is missing from the
+  // version 07/2026: "Für alle Fördermaßnahmen, die nach dem 01.07.2026
+  // begonnen wurden, gilt die Version 07/2026". End therefore 01.07.2026
+  // (adversarial reviewer: the cut-off is the start of the measure).
+  "hohenbrunn-batteriespeicher": {
+    id: "hohenbrunn-batteriespeicher", name: "Förderprogramm zur Energiewende und Klimaschutz — Batteriespeicher",
+    traeger: "Gemeinde Hohenbrunn", level: "kommune", region: "Hohenbrunn",
+    bundesland: "Bayern", agsCode: "09184129",
+    url: "https://www.hohenbrunn.de/download/ae1c4amkgute4668n1rjulqqt1a/20250601_ueberarbeitet-foerderprogramm-zur-energiewende-und-klimaschutz-in-der-gemeinde-hohenbrunn.pdf",
+    stand: "Oktober 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-08-01", endetIso: "2026-07-01",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Stationärer Batteriespeicher zu einer PV-Anlage, auch als Nachrüstung",
+    rates: [{ label: "Batteriespeicher", value: "beendet — für Vorhaben, die nach dem 1. Juli 2026 begonnen wurden, nicht mehr; zuvor 15 % der Investitionskosten, max. 500 €" }],
+    conditions: [
+      "Die geltende Fassung des Programms vom 1. Juli 2026 enthält keine Speicherförderung mehr",
+      "Zuvor: Antrag vor Maßnahmenbeginn, ein Speicher je PV-Anlage, nutzbare Kapazität in kWh höchstens das 1,5-Fache der PV-Leistung in kWp; antragsberechtigt waren Privatpersonen, Eigentümergemeinschaften und Wohnungsgenossenschaften",
+    ],
+    combinableWith: BUND,
+  },
+
   // AUFGENOMMEN 17.10.2026 — programme page, guideline (KIPKI, Stand April 2025)
   // and the city's press release of 30.03.2026 read in raw text. The guideline
   // and the KIPKI overview still say "bis 31.03.2026"; the programme page and
