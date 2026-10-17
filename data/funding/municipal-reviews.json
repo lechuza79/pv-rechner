@@ -101980,7 +101980,7 @@
   {
     "regionId": "16055000",
     "name": "Weimar",
-    "checkedAt": "2026-10-17T08:40:00Z",
+    "checkedAt": "2026-10-17T08:10:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -102012,7 +102012,7 @@
   {
     "regionId": "09763000",
     "name": "Kempten (Allgäu)",
-    "checkedAt": "2026-10-17T08:40:00Z",
+    "checkedAt": "2026-10-17T08:10:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -102053,7 +102053,7 @@
   {
     "regionId": "09261000",
     "name": "Landshut",
-    "checkedAt": "2026-10-17T08:40:00Z",
+    "checkedAt": "2026-10-17T08:10:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -102090,7 +102090,7 @@
   {
     "regionId": "09464000",
     "name": "Hof",
-    "checkedAt": "2026-10-17T08:40:00Z",
+    "checkedAt": "2026-10-17T08:10:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -102127,7 +102127,7 @@
   {
     "regionId": "07311000",
     "name": "Frankenthal (Pfalz)",
-    "checkedAt": "2026-10-17T08:50:00Z",
+    "checkedAt": "2026-10-17T08:10:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",

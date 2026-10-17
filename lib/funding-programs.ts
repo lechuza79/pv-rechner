@@ -12332,7 +12332,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
     balkonPauschale: 150,
     application: {
-      checkedAt: "2026-10-17T08:50:00Z",
+      checkedAt: "2026-10-17T08:10:00Z",
       sources: [
         { url: "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/", title: "Stadt Frankenthal: Balkon-PV-Anlagen", quote: "Förderanträge können bis zum 31. März 2027 oder bis zur Ausschöpfung der verfügbaren Mittel eingereicht werden." },
         { url: "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/foerderrichtlinie-balkon-pv-anlagen.pdf?cid=2aps", title: "Richtlinie der Stadt Frankenthal (Pfalz) zur Förderung privater Balkon-Photovoltaikanlagen", quote: "Der Antrag auf Zuwendung ist über das auf der Internetseite der Stadt Frankenthal (Pfalz) bereitgestellte Antragsformular … per E-Mail an klimaschutz@frankenthal.de zu richten." },
