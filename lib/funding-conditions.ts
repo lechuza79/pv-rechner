@@ -595,6 +595,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "berkenthin-balkon-solar",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
+  // Added 17 Oct 2026: status unsicher (no budget 2025/2026, application page
+  // gone); one plant per dwelling and the 12-month window have no test form.
+  "kirchen-sieg-stecker-pv", "mudersbach-stecker-pv",
   // Added 23 Sep 2026: Mueden (Aller). Guideline read in full. The usual
   // application-before-purchase rule does apply here, so a test form is possible
   // -- it just has not been written in this run, and half-recorded is not an

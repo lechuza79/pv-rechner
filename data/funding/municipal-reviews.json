@@ -16916,13 +16916,14 @@
   {
     "regionId": "07132006",
     "name": "Betzdorf",
-    "checkedAt": "2026-10-06T10:28:00Z",
-    "recheckAt": "2026-12-18T08:00:00Z",
+    "checkedAt": "2026-10-17T12:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
       "vg-bg.de: Seitenverzeichnis (Förder-, Klima-, Energie-, Solar-, Speicher-, Balkon-Seiten) gefiltert; Speicherprogramm-Seite und die Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld und Wallmenroth im Original gelesen (19.09.2026)",
       "betzdorf.de: Seitenverzeichnis (99 Seiten) gelesen; einzige Förderrichtlinie ist die Vereinsförderung vom 26.04.2023",
-      "Websuche „Betzdorf Wallmenroth Scheuerfeld Alsdorf Förderung Balkonkraftwerk Wärmepumpe Zuschuss“ und „Stadt Betzdorf Förderrichtlinie Balkonkraftwerk“ (19.09.2026)"
+      "Websuche „Betzdorf Wallmenroth Scheuerfeld Alsdorf Förderung Balkonkraftwerk Wärmepumpe Zuschuss“ und „Stadt Betzdorf Förderrichtlinie Balkonkraftwerk“ (19.09.2026)",
+      "17.10.2026: betzdorf.de-Suche „Balkonkraftwerk“ (0 Treffer) und „Förderung“ (8 Treffer, keiner zu Energie) erneut gelesen"
     ],
     "evidence": [
       {
@@ -16952,23 +16953,15 @@
       {
         "url": "https://www.betzdorf.de/suche.html?keywords=Balkonkraftwerk",
         "finding": "Nachprüfung 06.10.2026 (14 Tage ohne Antwort): Volltextsuche der Stadt Betzdorf nach „Balkonkraftwerk“ und „Photovoltaik“ ergibt keine Treffer; weiterhin keine Richtlinie für einen Technikzuschuss auffindbar."
+      },
+      {
+        "url": "https://www.betzdorf.de/suche.html?keywords=F%C3%B6rderung",
+        "finding": "17.10.2026: 8 Treffer (Wirtschaftsförderung, Citymanagement, Pumptrack u. a.), kein Energiezuschuss."
       }
     ],
     "sources": [],
-    "outcome": "klaerung",
-    "conclusion": "Die Stadt Betzdorf gehört zur Verbandsgemeinde Betzdorf-Gebhardshain. Eine Pressemeldung der Siegener Zeitung („Wer ein Balkonkraftwerk installiert, bekommt Geld von der Stadt“, Bezahlschranke) nennt einen Balkonkraftwerk-Zuschuss der Stadt; auf betzdorf.de und vg-bg.de ist keine Richtlinie dazu zu finden (einzige Förderrichtlinie: Vereinsförderung 2023). Ob es ihn gab und ob er läuft, ist nicht belegt — deshalb Rückfrage. Daneben EKM-Ermessensförderung und beendete VG-/Kreisprogramme.",
-    "nextAction": {
-      "kind": "enquiry",
-      "dueAt": "2026-10-20T08:00:00Z",
-      "detail": "Rückfrage vom 22.09.2026 zugestellt, nach 14 Tagen (06.10.2026) ohne Antwort; amtliche Seiten erneut geprüft, Stand unverändert (Richtlinie online, kein Antragsweg). Kein automatisches Nachfassen. Am 20.10.2026 erneut Amtsseiten prüfen und Antwort im Postfach lesen; bleibt es offen, als Anruf-Empfehlung im Bericht führen. Bis dahin kein Katalogeintrag mit Geldabzug."
-    },
-    "enquiry": {
-      "id": "klaerung-07132006",
-      "recipient": "info@betzdorf.de",
-      "recipientSource": "https://www.betzdorf.de/impressum.html",
-      "website": "https://www.betzdorf.de",
-      "question": "Laut Presse fördert bzw. förderte die Stadt Betzdorf die Installation von Balkonkraftwerken. Auf betzdorf.de und vg-bg.de finde ich dazu keine Richtlinie, nur die Vereinsförderung von 2023 und das beendete Speicherprogramm der Verbandsgemeinde. Gibt es derzeit einen beantragbaren Zuschuss der Stadt Betzdorf für Balkonkraftwerke, Photovoltaik, Speicher oder Wärmepumpen, und wo finde ich die Richtlinie? Falls die Förderung beendet ist, hilft mir auch diese kurze Auskunft mit dem Enddatum."
-    }
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Betzdorf gehört zur Verbandsgemeinde Betzdorf-Gebhardshain. Eine Pressemeldung der Siegener Zeitung („Wer ein Balkonkraftwerk installiert, bekommt Geld von der Stadt“, Bezahlschranke) nennt einen Balkonkraftwerk-Zuschuss der Stadt; auf betzdorf.de und vg-bg.de ist keine Richtlinie dazu zu finden (einzige Förderrichtlinie: Vereinsförderung 2023). Ob es ihn gab, ist nicht belegt. Daneben EKM-Ermessensförderung und beendete VG-/Kreisprogramme. Entscheidung 17.10.2026 (Rückfrage vom 22.09.2026 nach 14 Tagen unbeantwortet): Volltextsuche der Stadt erneut ohne Treffer zu Balkonkraftwerk/Photovoltaik, unter „Förderung“ nur Wirtschaftsförderung, Vereinsförderung und Freizeitprojekte; kein amtlicher Beleg für einen Technikzuschuss der Stadt → kein Programm. Wiederöffnen, sobald eine amtliche Richtlinie auftaucht."
   },
   {
     "regionId": "07132007",
@@ -20005,14 +19998,15 @@
   {
     "regionId": "07132063",
     "name": "Kirchen (Sieg)",
-    "checkedAt": "2026-10-06T10:28:00Z",
-    "recheckAt": "2026-12-18T08:00:00Z",
+    "checkedAt": "2026-10-17T12:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
       "kirchen-sieg.de: Startseite, Gemeindeseiten von Brachbach, Friesenhagen, Harbach, Mudersbach, Niederfischbach und Stadt Kirchen samt verlinkter Satzungen/Richtlinien gelesen (19.09.2026); Seitenverzeichnis liefert nichts",
       "Webarchiv-Index von kirchen-sieg.de nach Förderrichtlinien durchsucht: Stecker-PV-Richtlinien der Stadt Kirchen (2023) und der Ortsgemeinde Mudersbach (2024), Heizungspumpen-Richtlinie der VG (2019–2021), Breitband Friesenhagen",
       "gemeinde-harbach.de Suche „Förderung“ (16 Treffer) und „Balkonkraftwerk“; niederfischbach.de Suche „Förderprogramm“",
-      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)"
+      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)",
+      "17.10.2026: Richtlinie (4 Seiten, Scan) vollständig gelesen; Antragsseite erneut 404; Haushaltspläne 2024–2026 samt Nachträgen der Gemeinde nach dem Förderposten durchsucht; Webarchiv der Antragsseite (letzter Stand 10.10.2024)"
     ],
     "evidence": [
       {
@@ -20050,22 +20044,23 @@
       {
         "url": "https://www.kirchen-sieg.de/fileadmin/user_upload/Richtlinie_StadtKirchen_Foerderung_Stecker-PV-Anlagen_15062023.pdf",
         "finding": "Nachprüfung 06.10.2026 (14 Tage ohne Antwort): Richtlinie weiterhin abrufbar (HTTP 200); Suche der Verbandsgemeinde nach „steckerfertig“ und „Balkonkraftwerk“ ohne Treffer, keine Antragsseite. Laufender Antragsweg weiter nicht belegt."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/steckerphotovoltaik",
+        "finding": "17.10.2026: HTTP 404; einziger Antragsweg nach § 6 der Richtlinie."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de",
+        "finding": "17.10.2026: Haushaltsplan 2026 der Stadt: „Zuwendungen f. Balkonkraftwerke“ 3.900 € (Ergebnis 2024), 0 € für 2025 bis 2029; 2. Nachtrag 2026 (26.08.2026): 0 €."
       }
     ],
     "sources": [],
     "outcome": "klaerung",
-    "conclusion": "Die Stadt Kirchen (Sieg) hat eine Richtlinie vom 20.06.2023 zur Förderung steckerfertiger PV-Anlagen (100 € pauschal, solange Haushaltsmittel); die Antragsseite ist nur bis 06/2024 belegt. Ob die Förderung noch läuft, ist nicht belegt — deshalb Rückfrage und bis dahin kein Katalogeintrag mit Geldabzug. Daneben ISEK-Modernisierungsrichtlinie (Sanierungsgebiet), EKM-Ermessensförderung und beendete Kreisprogramme.",
+    "conclusion": "Die Stadt Kirchen (Sieg) hat eine Richtlinie vom 20.06.2023 zur Förderung steckerfertiger PV-Anlagen (100 € pauschal, solange Haushaltsmittel); die Antragsseite ist nur bis 06/2024 belegt. Ob die Förderung noch läuft, ist nicht belegt Entscheidung 17.10.2026 (Rückfrage vom 22.09.2026 nach 14 Tagen unbeantwortet, Entscheidung aus den Dokumenten): Richtlinie gilt nur „solange Haushaltsmittel hierfür zur Verfügung stehen“, im Haushalt sind seit 2025 keine Mittel mehr vorgesehen, die Antragsseite existiert nicht. Im Katalog als kirchen-sieg-stecker-pv mit Status unsicher (100 € als Hinweis, kein Abzug; Council 3/3 gegen Abzug).",
     "nextAction": {
-      "kind": "enquiry",
-      "dueAt": "2026-10-20T08:00:00Z",
-      "detail": "Rückfrage vom 22.09.2026 zugestellt, nach 14 Tagen (06.10.2026) ohne Antwort; amtliche Seiten erneut geprüft, Stand unverändert (Richtlinie online, kein Antragsweg). Kein automatisches Nachfassen. Am 20.10.2026 erneut Amtsseiten prüfen und Antwort im Postfach lesen; bleibt es offen, als Anruf-Empfehlung im Bericht führen. Bis dahin kein Katalogeintrag mit Geldabzug."
-    },
-    "enquiry": {
-      "id": "klaerung-07132063",
-      "recipient": "vg-kirchen@kirchen-sieg.de",
-      "recipientSource": "https://www.kirchen-sieg.de/impressum",
-      "website": "https://www.kirchen-sieg.de",
-      "question": "Auf Ihrer Website ist die Richtlinie der Stadt Kirchen (Sieg) zur Förderung steckerfertiger Photovoltaikanlagen (in Kraft seit 01.07.2023, 100 € je Anlage) weiterhin abrufbar, eine Antragsseite finde ich jedoch nicht mehr. Können Bürgerinnen und Bürger derzeit noch einen Zuschuss nach dieser Richtlinie beantragen? Falls die Förderung beendet ist, hilft mir auch diese kurze Auskunft mit dem Enddatum."
+      "kind": "manual",
+      "dueAt": "2027-01-15T08:00:00Z",
+      "detail": "Haushaltsplan 2027 und Amtsseiten der Verbandsgemeinde prüfen: Steht wieder ein Förderposten oder ein Antragsweg da, Status nach Gate wieder einschalten; nennt die Gemeinde das Ende, auf eingestellt setzen. Kein Nachfassen per Mail, kein Geldabzug bis dahin."
     }
   },
   {
@@ -20462,14 +20457,15 @@
   {
     "regionId": "07132072",
     "name": "Mudersbach",
-    "checkedAt": "2026-10-06T10:28:00Z",
-    "recheckAt": "2026-12-18T08:00:00Z",
+    "checkedAt": "2026-10-17T12:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
       "kirchen-sieg.de: Startseite, Gemeindeseiten von Brachbach, Friesenhagen, Harbach, Mudersbach, Niederfischbach und Stadt Kirchen samt verlinkter Satzungen/Richtlinien gelesen (19.09.2026); Seitenverzeichnis liefert nichts",
       "Webarchiv-Index von kirchen-sieg.de nach Förderrichtlinien durchsucht: Stecker-PV-Richtlinien der Stadt Kirchen (2023) und der Ortsgemeinde Mudersbach (2024), Heizungspumpen-Richtlinie der VG (2019–2021), Breitband Friesenhagen",
       "gemeinde-harbach.de Suche „Förderung“ (16 Treffer) und „Balkonkraftwerk“; niederfischbach.de Suche „Förderprogramm“",
-      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)"
+      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)",
+      "17.10.2026: Richtlinie (4 Seiten, Scan) vollständig gelesen; Antragsseite erneut 404; Haushaltspläne 2024–2026 samt Nachträgen der Gemeinde nach dem Förderposten durchsucht; Webarchiv der Antragsseite (letzter Stand 10.10.2024)"
     ],
     "evidence": [
       {
@@ -20507,22 +20503,23 @@
       {
         "url": "https://www.kirchen-sieg.de/fileadmin/dokumente/Alle/Richtlinie_OG_Mudersbach_Foerderung_Stecker_PV_Anlagen.pdf",
         "finding": "Nachprüfung 06.10.2026 (14 Tage ohne Antwort): Richtlinie weiterhin abrufbar (HTTP 200); Startseite mudersbach.net nennt die Balkonkraftwerk-Förderung nicht mehr; VG-Suche ohne Treffer, keine Antragsseite."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/steckerphotovoltaik",
+        "finding": "17.10.2026: HTTP 404; einziger Antragsweg nach § 6 der Richtlinie."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de",
+        "finding": "17.10.2026: Haushalt 2026 und 1. Nachtrag (24.06.2026) der Ortsgemeinde: kein Posten für die Förderung, nur eigene PV-Anlagen."
       }
     ],
     "sources": [],
     "outcome": "klaerung",
-    "conclusion": "Die Ortsgemeinde Mudersbach hat eine Richtlinie vom 08.05.2024 zur Förderung steckerfertiger PV-Anlagen (100 € pauschal, solange Haushaltsmittel); die Richtlinie ist noch abrufbar, die Antragsseite der Verbandsgemeinde existiert seit dem Relaunch nicht mehr. Ob Anträge derzeit möglich sind, ist nicht belegt — deshalb Rückfrage und bis dahin kein Katalogeintrag mit Geldabzug. Daneben EKM-Ermessensförderung (Wärmepumpe möglich) und beendete Kreisprogramme.",
+    "conclusion": "Die Ortsgemeinde Mudersbach hat eine Richtlinie vom 08.05.2024 zur Förderung steckerfertiger PV-Anlagen (100 € pauschal, solange Haushaltsmittel); die Richtlinie ist noch abrufbar, die Antragsseite der Verbandsgemeinde existiert seit dem Relaunch nicht mehr. Ob Anträge derzeit möglich sind, ist nicht belegt Entscheidung 17.10.2026 (Rückfrage vom 22.09.2026 nach 14 Tagen unbeantwortet, Entscheidung aus den Dokumenten): Richtlinie gilt nur „solange Haushaltsmittel hierfür zur Verfügung stehen“, im Haushalt sind seit 2025 keine Mittel mehr vorgesehen, die Antragsseite existiert nicht. Im Katalog als mudersbach-stecker-pv mit Status unsicher (100 € als Hinweis, kein Abzug; Council 3/3 gegen Abzug).",
     "nextAction": {
-      "kind": "enquiry",
-      "dueAt": "2026-10-20T08:00:00Z",
-      "detail": "Rückfrage vom 22.09.2026 zugestellt, nach 14 Tagen (06.10.2026) ohne Antwort; amtliche Seiten erneut geprüft, Stand unverändert (Richtlinie online, kein Antragsweg). Kein automatisches Nachfassen. Am 20.10.2026 erneut Amtsseiten prüfen und Antwort im Postfach lesen; bleibt es offen, als Anruf-Empfehlung im Bericht führen. Bis dahin kein Katalogeintrag mit Geldabzug."
-    },
-    "enquiry": {
-      "id": "klaerung-07132072",
-      "recipient": "vg-kirchen@kirchen-sieg.de",
-      "recipientSource": "https://www.kirchen-sieg.de/impressum",
-      "website": "https://www.kirchen-sieg.de",
-      "question": "Auf Ihrer Website ist die Richtlinie der Ortsgemeinde Mudersbach zur Förderung steckerfertiger Photovoltaikanlagen (08.05.2024, 100 € je Anlage) weiterhin abrufbar, die frühere Antragsseite „Steckerphotovoltaik“ ist nach der Umstellung Ihrer Website aber nicht mehr erreichbar. Können Bürgerinnen und Bürger derzeit noch einen Zuschuss nach dieser Richtlinie beantragen, und falls ja, auf welchem Weg? Falls die Förderung beendet ist, hilft mir auch diese kurze Auskunft mit dem Enddatum."
+      "kind": "manual",
+      "dueAt": "2027-01-15T08:00:00Z",
+      "detail": "Haushaltsplan 2027 und Amtsseiten der Verbandsgemeinde prüfen: Steht wieder ein Förderposten oder ein Antragsweg da, Status nach Gate wieder einschalten; nennt die Gemeinde das Ende, auf eingestellt setzen. Kein Nachfassen per Mail, kein Geldabzug bis dahin."
     }
   },
   {
@@ -102540,6 +102537,412 @@
         "disposition": "reviewed",
         "reason": "Programmseite gelesen: Förderfenster geschlossen.",
         "evidenceUrl": "https://www.werne.de/de/stadtentwicklung/klima-umwelt/klimaschutz/foerdermittel.php"
+      }
+    ]
+  },
+  {
+    "regionId": "12054000",
+    "name": "Potsdam",
+    "checkedAt": "2026-10-17T12:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Potsdam hat ein eigenes Programm in unserem Bereich: das Klimaschutzförderprogramm nach der Klimaschutzförderrichtlinie vom 26.03.2026 (PV je kWp, Speicher, Balkonkraftwerk, Wärmepumpe). Die Antragsseite sagt am 17.10.2026: „derzeit können keine Fördermittelanträge gestellt werden“ — im Katalog als potsdam-klimaschutz, Status pausiert, passt. Die übrigen Fundstellen sind Pressemeldungen früherer Förderjahre, KMU-Förderung und eine Schülerbeförderungssatzung.",
+    "searches": [
+      "17.10.2026: alle erfassten Fundstellen der Gemeinde im Original gelesen",
+      "17.10.2026: Förder-/Klimaseiten der Gemeinde und Websuche nach eigenem Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam",
+        "finding": "17.10.2026: „derzeit können keine Fördermittelanträge gestellt werden.“"
+      },
+      {
+        "url": "https://www.potsdam.de/system/files/document/Schlussfassung%20Potsdamer%20Klimaschutzf%C3%B6rderrichtlinie%20%20vom%2026.03.2026_1.pdf",
+        "finding": "Richtlinie vom 26.03.2026 abrufbar; Katalogwerte zuletzt am 25.08.2026 zellgleich geprüft."
+      }
+    ],
+    "sources": [
+      {
+        "url": "potsdam.de/de/101-neue-foerderrichtlinie-unterstuetzt-gezieltes-handeln-fuer-klimaschutz-und-klimafolgenanpassung",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/221-foerderung-fuer-klimaschutzmassnahmen-antraege-koennen-gestellt-werden",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/242-klima-foerderrichtlinie-unterstuetzt-auch-diesem-jahr-gezieltes-handeln-fuer-klimaschutz-und",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/310-neue-foerderrichtlinie-unterstuetzt-gezieltes-handeln-fuer-klimaschutz-und-klimafolgenanpassung",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/505-staedtisches-klimaschutzfoerderprogramm-2023-antragstellung-noch-bis-zum-15-dezember-2023",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/content/finanzierung-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/content/kmu-foerderung-verlaengert",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/foerdergelder-fuer-klimaschutz",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/kategorie/klimaschutzfoerderprogramm",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/de/schuelerfahrtkostenerstattungs-und-schuelerbefoerderungssatzung",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/system/files/document/Schlussfassung%20Potsdamer%20Klimaschutzf%C3%B6rderrichtlinie%20%20vom%2026.03.2026_1.pdf",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      }
+    ]
+  },
+  {
+    "regionId": "09186143",
+    "name": "Pfaffenhofen a.d.Ilm",
+    "checkedAt": "2026-10-17T12:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Pfaffenhofen hatte 2023 eine Balkonkraftwerk-Förderung („Die Förderung wird nicht weiter fortgeführt.“), im Katalog als pfaffenhofen-balkon (eingestellt). Heute gibt es nur eine kostenlose Fördermittelberatung mit dem VerbraucherService Bayern; die übrigen Fundstellen betreffen Breitband, Vereine, Kinderförderung und Bundesprogramme. Kein laufender städtischer Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+    "searches": [
+      "17.10.2026: alle erfassten Fundstellen der Gemeinde im Original gelesen",
+      "17.10.2026: Förder-/Klimaseiten der Gemeinde und Websuche nach eigenem Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://pfaffenhofen.de/artikel/balkonkraftwerke/",
+        "finding": "17.10.2026: „Die Förderung wird nicht weiter fortgeführt.“"
+      },
+      {
+        "url": "https://pfaffenhofen.de/artikel/kostenlose-foerdermittelberatung",
+        "finding": "17.10.2026: Beratungsangebot, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "pfaffenhofen.de/artikel/26-uebergabe-foerderbescheid-und-unterzeichnung-des-kooperationsvertrages",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/artikel/36-6-erhalt-foerderbescheid-und-unterzeichnung-des-kooperationsvertrages",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/artikel/foerderkindergarten-sve",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/artikel/foerderkreis-amateurfunk-pfaffenhofen-e-v",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/artikel/foerderkreis-fuer-volksmusik-lied-und-tanz-in-der-vhs",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/artikel/kostenlose-foerdermittelberatung",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/paf-und-du/veranstaltungen/frauen-cafe-was-ist-fruehfoerderung",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/paf-und-du/veranstaltungen/kommunales-forderprogramm-e-bike-testaktion-am-hauptplatz-13193",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/paf-und-du/veranstaltungen/online-seminar-laden-im-mehrparteienhaus-die-neue-bmv-foerderung",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/paf-und-du/veranstaltungen/rentamtsaal-hauptplatz-22-pfaffenhofen-infoabend-zuschussrichtlinien-5834",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/paf-und-du/veranstaltungen/vhs-vortrag-effizienzhausfoerderung-wenn-es-wie-neu-werden-soll",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      }
+    ]
+  },
+  {
+    "regionId": "09772147",
+    "name": "Gersthofen",
+    "checkedAt": "2026-10-17T12:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gersthofen förderte bis Mitte 2026 PV-Anlagen mit Batteriespeicher (bis 2.500 € je Antragsteller und Gebäude, seit 01.06.2024) und Mini-PV-Anlagen. Die Stadt schreibt am 17.10.2026: „Die Förderprogramme „PV-Anlagen und Batteriespeicher“, „Mini-PV-Anlagen“ sowie „Lastenräder und Fahrradanhänger“ sind ausgelaufen. Die Stadt nimmt keine neuen Förderanträge mehr an.“ (Stadtratsbeschluss vom 24.06.2026, Haushaltskonsolidierung). Derzeit kein Zuschuss; die beendeten Programme sind noch nicht als historische Einträge im Katalog (Beträge der Mini-PV-Förderung nicht mehr amtlich abrufbar).",
+    "searches": [
+      "17.10.2026: alle erfassten Fundstellen der Gemeinde im Original gelesen",
+      "17.10.2026: Förder-/Klimaseiten der Gemeinde und Websuche nach eigenem Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/",
+        "finding": "17.10.2026: Programme ausgelaufen, Stadtratsbeschluss vom 24.06.2026."
+      },
+      {
+        "url": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/foerderungen-klima-nachhaltigkeit/",
+        "finding": "17.10.2026: „Die Stadt nimmt momentan keine neuen Anträge … an.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gersthofen.de/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/?s=f%C3%B6rderprogramm&post-type=attachment",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/?s=f%C3%B6rderprogramm&post-type=b5_announcements",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/?s=f%C3%B6rderprogramm&post-type=b5_news",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/?s=f%C3%B6rderprogramm&post-type=page",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/?s=f%C3%B6rderprogramm&post-type=post",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/neuigkeiten/foerderprogramme-klimaschutz-und-nachhaltigkeit-2025",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/neuigkeiten/neue-pv-foerderung-ist-begehrt",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/neuigkeiten/stadt-gersthofen-erhaelt-lew-klimaschutzpraemie-fuer-photovoltaikanlage-auf-feuerwehrhaus",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/neuigkeiten/stadt-gersthofen-erhaelt-lew-klimaschutzpraemie-fuer-photovoltaikanlage-auf-pumpstation",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/foerderungen-klima-nachhaltigkeit",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/foerderungen-klima-nachhaltigkeit/der-ofenfuehrerschein",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/foerderungen-klima-nachhaltigkeit/magazin-fuer-klimaschutz-und-nachhaltigkeit",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      }
+    ]
+  },
+  {
+    "regionId": "08116076",
+    "name": "Aichwald",
+    "checkedAt": "2026-10-17T12:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein Zuschuss der Gemeinde Aichwald belegt. Die Gemeinde bietet eine kostenlose Photovoltaik-Beratung (Kurzberatung und Vor-Ort-Termin); die übrigen Fundstellen sind Landesleistungen aus dem Service-BW-Verzeichnis und ein Innungsflyer von 2020 zur Bundesförderung. Die alte Domain gemeinde-aichwald.de löst nicht mehr auf.",
+    "searches": [
+      "17.10.2026: alle erfassten Fundstellen der Gemeinde im Original gelesen",
+      "17.10.2026: Förder-/Klimaseiten der Gemeinde und Websuche nach eigenem Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html",
+        "finding": "17.10.2026: Beratungsangebot, kein Zuschuss."
+      },
+      {
+        "url": "https://www.aichwald.de/site/Aichwald-Responsive/get/params_E1263166206/24243264/Heizungssanierung.pdf",
+        "finding": "„Neue Förderung Heizungssanierung“: Flyer des Fachverbands SHK BW, Stand 20.01.2020, nur Bundesförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "aichwald.de/-/leistungen+-+service+bw/vbid1475",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "aichwald.de/-/leistungen+-+service+bw/vbid6001927",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "aichwald.de/-/leistungen+-+service+bw/vbid6006875",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "aichwald.de/-/leistungen+-+service+bw/vbid6006897",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "aichwald.de/-/leistungen+-+service+bw/vbid6007739",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "aichwald.de/-/leistungen+-+service+bw/vbid695",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "aichwald.de/site/Aichwald-Responsive/print/22180532/Lde/photovoltaik-beratung.html",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "gemeinde-aichwald.de/-/leistungen+-+service+bw/vbid1475",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "gemeinde-aichwald.de/-/leistungen+-+service+bw/vbid6001927",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "gemeinde-aichwald.de/-/leistungen+-+service+bw/vbid6006875",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "gemeinde-aichwald.de/-/leistungen+-+service+bw/vbid6006887",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "gemeinde-aichwald.de/-/leistungen+-+service+bw/vbid6006897",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
+      },
+      {
+        "url": "gemeinde-aichwald.de/-/leistungen+-+service+bw/vbid6007739",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
+        "evidenceUrl": "https://www.aichwald.de/start/natur+_+umwelt/photovoltaik-beratung.html"
       }
     ]
   }

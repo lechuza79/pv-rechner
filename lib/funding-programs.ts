@@ -4963,6 +4963,93 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // The form states no combination rule.
     combinableWith: null,
   },
+  // KIRCHEN (SIEG): ADDED 17.10.2026 WITH STATUS "UNSICHER" (no deduction).
+  // The guideline is still published and reads "gültig solange Haushaltsmittel
+  // hierfür zur Verfügung stehen" (§ 9); § 4 grants only if "Haushaltsmittel im
+  // Antragsjahr zur Verfügung stehen". Its only application route (§ 6,
+  // kirchen-sieg.de/steckerphotovoltaik) returns 404; the web archive last shows
+  // the form on 10.10.2024. Budget: Haushaltsplan 2026
+  // (Stand 18.12.2025) line 5.3.1.0/2000.781900 "Zuwendungen f. Balkonkraftwerke":
+  // 3.900 € paid in 2024, 0 € for 2025 to 2029; 2nd supplementary budget 2026
+  // (26.08.2026), "2000 Förderprogramm Balkonkraftwerke": 0.
+  // An enquiry to the Verbandsgemeinde of 22.09.2026 got no answer; silence
+  // ends the wait (funding-daily-review, 14-day rule). Council 17.10.2026:
+  // 3/3 against any deduction, 2/3 "unsicher", 1/3 (adversarial) "ended" on
+  // the budget finding. Status unsicher keeps the programme visible as a hint
+  // without money; switch to "eingestellt" once the authority states the end.
+  "kirchen-sieg-stecker-pv": {
+    id: "kirchen-sieg-stecker-pv", name: "Förderung von steckerfertigen Photovoltaikanlagen",
+    traeger: "Stadt Kirchen (Sieg)", level: "kommune", region: "Kirchen (Sieg)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07132063",
+    url: "https://www.kirchen-sieg.de/fileadmin/user_upload/Richtlinie_StadtKirchen_Foerderung_Stecker-PV-Anlagen_15062023.pdf",
+    stand: "Oktober 2026", status: "unsicher", capped: true, verified: true,
+    beginntIso: "2023-07-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung eines Balkonkraftwerks",
+    maxFoerderung: "100 € pauschal je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € pauschal je Anlage", nur: ["balkon"] }],
+    conditions: [
+      "DERZEIT VERMUTLICH NICHT BEANTRAGBAR: Die Richtlinie gilt nur, solange Haushaltsmittel bereitstehen. Im Haushalt sind für 2025 und 2026 keine Mittel mehr für dieses Programm vorgesehen, und die in der Richtlinie genannte Antragsseite gibt es nicht mehr. Wir rechnen deshalb keinen Betrag an",
+      "Gefördert wird der erstmalige Erwerb und die fachgerechte Installation einer steckerfertigen Anlage bis zur geltenden Bagatellgrenze an Wohngebäuden im Gebiet der Stadt Kirchen (Sieg); gebrauchte, gemietete oder geleaste Anlagen sind ausgeschlossen",
+      "Antragsberechtigt sind natürliche Personen als Eigentümer oder Mieter einer Wohnung oder eines Wohnhauses; das Einverständnis des Hauseigentümers bzw. der Hausgemeinschaft muss vorliegen",
+      "Module mit Prüfnachweis nach IEC 61215 und IEC 61730; die Anlage ist ordnungsgemäß anzumelden",
+      "Antrag innerhalb von zwölf Monaten nach Inbetriebnahme (maßgeblich ist das Datum der Anmeldung beim Netzbetreiber), mit Rechnung, Zahlungsbeleg, Marktstammdatenregister-Bestätigung und Foto",
+      "Eine Anlage je Antragsteller und Wohneinheit; die Anlage ist mindestens fünf Jahre zu betreiben",
+      "Freiwillige Leistung ohne Rechtsanspruch, in der Reihenfolge des Eingangs vollständiger Anträge",
+    ],
+    combinableWith: BUND,
+    // Guideline "vom 15.06.2023, signed 20.06.2023", in force 01.07.2023; read in full 17.10.2026 (scanned
+    // PDF, pages read as images). § 5: "beträgt pauschal 100 EUR"; "Es wird
+    // maximal nur eine Anlage eines Antragstellenden pro Wohneinheit gefördert."
+    // § 5: "Zuwendungen dieser Förderrichtlinie können mit anderen Förder- und
+    // Darlehensprogrammen des Bundes und des Landes ... kumuliert werden, falls
+    // dies nach den Bestimmungen der anderen ... Programme zulässig ist" -- the
+    // zero VAT rate and KfW 270 both allow it, hence BUND.
+  },
+  // MUDERSBACH: ADDED 17.10.2026 WITH STATUS "UNSICHER" (no deduction).
+  // The guideline is still published and reads "gültig solange Haushaltsmittel
+  // hierfür zur Verfügung stehen" (§ 9); § 4 grants only if "Haushaltsmittel im
+  // Antragsjahr zur Verfügung stehen". Its only application route (§ 6,
+  // kirchen-sieg.de/steckerphotovoltaik) returns 404; the web archive last shows
+  // the form on 10.10.2024. Budget: the 2026 budget and its
+  // supplement of 24.06.2026 carry no line for the programme (only the
+  // municipality's own PV); mudersbach.net still links the dead form page.
+  // An enquiry to the Verbandsgemeinde of 22.09.2026 got no answer; silence
+  // ends the wait (funding-daily-review, 14-day rule). Council 17.10.2026:
+  // 3/3 against any deduction, 2/3 "unsicher", 1/3 (adversarial) "ended" on
+  // the budget finding. Status unsicher keeps the programme visible as a hint
+  // without money; switch to "eingestellt" once the authority states the end.
+  "mudersbach-stecker-pv": {
+    id: "mudersbach-stecker-pv", name: "Förderung von steckerfertigen Photovoltaikanlagen",
+    traeger: "Ortsgemeinde Mudersbach", level: "kommune", region: "Mudersbach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07132072",
+    url: "https://www.kirchen-sieg.de/fileadmin/dokumente/Alle/Richtlinie_OG_Mudersbach_Foerderung_Stecker_PV_Anlagen.pdf",
+    stand: "Oktober 2026", status: "unsicher", capped: true, verified: true,
+    beginntIso: "2024-05-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung eines Balkonkraftwerks",
+    maxFoerderung: "100 € pauschal je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € pauschal je Anlage", nur: ["balkon"] }],
+    conditions: [
+      "DERZEIT VERMUTLICH NICHT BEANTRAGBAR: Die Richtlinie gilt nur, solange Haushaltsmittel bereitstehen. Im Haushalt sind für 2025 und 2026 keine Mittel mehr für dieses Programm vorgesehen, und die in der Richtlinie genannte Antragsseite gibt es nicht mehr. Wir rechnen deshalb keinen Betrag an",
+      "Gefördert wird der erstmalige Erwerb und die fachgerechte Installation einer steckerfertigen Anlage bis zur geltenden Bagatellgrenze an Wohngebäuden im Gebiet der Ortsgemeinde Mudersbach; gebrauchte, gemietete oder geleaste Anlagen sind ausgeschlossen",
+      "Antragsberechtigt sind natürliche Personen als Eigentümer oder Mieter einer Wohnung oder eines Wohnhauses; das Einverständnis des Hauseigentümers bzw. der Hausgemeinschaft muss vorliegen",
+      "Module mit Prüfnachweis nach IEC 61215 und IEC 61730; die Anlage ist ordnungsgemäß anzumelden",
+      "Antrag innerhalb von zwölf Monaten nach Inbetriebnahme (maßgeblich ist das Datum der Anmeldung beim Netzbetreiber), mit Rechnung, Zahlungsbeleg, Marktstammdatenregister-Bestätigung und Foto",
+      "Eine Anlage je Antragsteller und Wohneinheit; die Anlage ist mindestens fünf Jahre zu betreiben",
+      "Freiwillige Leistung ohne Rechtsanspruch, in der Reihenfolge des Eingangs vollständiger Anträge",
+    ],
+    combinableWith: BUND,
+    // Guideline "vom 08.05.2024, signed 15.01.2025", in force 01.05.2024; read in full 17.10.2026 (scanned
+    // PDF, pages read as images). § 5: "beträgt pauschal 100 EUR"; "Es wird
+    // maximal nur eine Anlage eines Antragstellenden pro Wohneinheit gefördert."
+    // § 5: "Zuwendungen dieser Förderrichtlinie können mit anderen Förder- und
+    // Darlehensprogrammen des Bundes und des Landes ... kumuliert werden, falls
+    // dies nach den Bestimmungen der anderen ... Programme zulässig ist" -- the
+    // zero VAT rate and KfW 270 both allow it, hence BUND.
+  },
   "mehren-balkonkraftwerke": {
     id: "mehren-balkonkraftwerke", name: "Richtlinie zur Förderung von Balkonkraftwerken in der Ortsgemeinde Mehren",
     traeger: "Ortsgemeinde Mehren", level: "kommune", region: "Mehren (Landkreis Altenkirchen)",
