@@ -1393,17 +1393,26 @@ async function getGemeindePfadeUncached(
   if (!gesucht.length) return raus;
 
   const supabase = await db();
+  // The database answers at most 1,000 rows per request and cuts off silently.
+  // On 17.10.2026 there were 1,199 contacted towns and the sitemap listed exactly
+  // 1,000 of them — ~200 released town pages (and their district pages) were
+  // indexable but missing from the sitemap. Batches of 500 stay well below the
+  // cap and keep the request URL short; still a handful of queries, not one per town.
+  const BATCH = 500;
   const hole = async (ids: string[], stufe: string) => {
-    if (!ids.length) return [] as Pick<AtlasRegion, "region_id" | "level" | "slug" | "parent_region_id">[];
-    const { data, error } = await withDbTimeout(
-      supabase
-        .from("mastr_regions")
-        .select("region_id, level, slug, parent_region_id")
-        .in("region_id", ids),
-      `getGemeindePfade/${stufe}`,
-    );
-    if (error) throw new Error(`getGemeindePfade failed: ${error.message}`);
-    return (data ?? []) as Pick<AtlasRegion, "region_id" | "level" | "slug" | "parent_region_id">[];
+    const rows: Pick<AtlasRegion, "region_id" | "level" | "slug" | "parent_region_id">[] = [];
+    for (let i = 0; i < ids.length; i += BATCH) {
+      const { data, error } = await withDbTimeout(
+        supabase
+          .from("mastr_regions")
+          .select("region_id, level, slug, parent_region_id")
+          .in("region_id", ids.slice(i, i + BATCH)),
+        `getGemeindePfade/${stufe}`,
+      );
+      if (error) throw new Error(`getGemeindePfade failed: ${error.message}`);
+      rows.push(...((data ?? []) as typeof rows));
+    }
+    return rows;
   };
 
   const gemeinden = (await hole(gesucht, "gemeinde")).filter(

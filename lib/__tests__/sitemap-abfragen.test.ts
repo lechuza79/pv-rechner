@@ -45,4 +45,18 @@ describe("Sitemap: die Kosten hängen nicht an der Zahl der Orte", () => {
     expect(koerper, "die Schlüssel gehen als Menge in EINE Abfrage").toMatch(/\.in\("region_id"/);
     expect(koerper).not.toMatch(/for\s*\([^)]*\)\s*{[^}]*await hole/);
   });
+
+  // 17.10.2026: 1,199 contacted towns, exactly 1,000 town pages in the live
+  // sitemap. The database returns at most 1,000 rows per request and truncates
+  // without an error — one unbatched `.in()` silently dropped ~200 released pages.
+  it("splits the key list into batches below the database's 1,000-row cap", () => {
+    const atlas = lies("lib/atlas.ts");
+    const stelle = atlas.slice(atlas.indexOf("async function getGemeindePfadeUncached"));
+    const koerper = stelle.slice(0, stelle.indexOf("\n}\n"));
+    expect(koerper, "the whole list in one request is cut off at 1,000").not.toMatch(/\.in\("region_id",\s*ids\)/);
+    expect(koerper).toMatch(/\.in\("region_id",\s*ids\.slice\(/);
+    const batch = Number(koerper.match(/const BATCH = (\d+)/)?.[1]);
+    expect(batch).toBeGreaterThan(0);
+    expect(batch).toBeLessThan(1000);
+  });
 });
