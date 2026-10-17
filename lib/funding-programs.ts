@@ -12610,6 +12610,65 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
   },
 
+  // AUFGENOMMEN 17.10.2026 — programme page, guideline (in force 01.08.2026,
+  // three pages) and the press release of 15.07.2026 read in raw text. A new
+  // edition of the town's 2022 rooftop "100-Dächer-Solarprogramm" (that one is
+  // not catalogued: no rates of it were read). Nr. 4a: "Pauschaler Zuschuss von
+  // 100 Euro pro Stecker-Solargerät"; Nr. 4b: "50 Euro pro kWh
+  // Speicherkapazität … höchstens jedoch 500 Euro"; Nr. 5: "insgesamt 600 Euro"
+  // per dwelling — 100 + 500, so the total cap never binds on its own. The
+  // storage grant is for rooftop PV (new or existing), installed by a
+  // specialist firm, owners only: hence `nur: ["pv"]`; a balcony battery does
+  // not qualify. The kWh figure is rounded commercially to one decimal
+  // (no `vollEinheiten`; the calculator's sizes are whole or half kWh). No end
+  // date and no exhaustion notice on the page; budget per year. The guideline
+  // neither bans nor permits combination, hence the default BUND.
+  // Council 3/3 (incl. adversarial) 17.10.2026: confirmed, status aktiv; the
+  // 350 Wp belong to the plant; one-month completeness rule added.
+  "bebra-stecker-solar-speicher": {
+    id: "bebra-stecker-solar-speicher", name: "100-Dächer-Solarprogramm: Stecker-Solaranlagen und Batteriespeicher",
+    traeger: "Stadt Bebra", level: "kommune", region: "Bebra",
+    bundesland: "Hessen", agsCode: "06632003",
+    url: "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-08-01",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk und Zuschuss je kWh für einen Batteriespeicher zu einer Dachanlage",
+    maxFoerderung: "600 € je Wohneinheit über das ganze Programm",
+    rates: [
+      { label: "Balkonkraftwerk", value: "100 € pauschal, ein Gerät je Wohnung", nur: ["balkon"] },
+      { label: "Batteriespeicher zu einer Dachanlage", value: "50 € je kWh, höchstens 500 € (gefördert bis 10 kWh)", nur: ["pv"] },
+    ],
+    conditions: [
+      "Erst beantragen, dann kaufen: Der Förderantrag geht vor dem Kauf digital bei der Stadt ein; als Beginn zählt schon der Abschluss eines Liefer- oder Leistungsvertrags, nur die Planung darf vorher liegen",
+      "Ein unvollständiger Antrag muss binnen eines Monats ergänzt sein, sonst kann er abgelehnt werden; binnen neun Monaten nach dem Antrag muss die Anlage in Betrieb sein und der Verwendungsnachweis vorliegen — mit Rechnung, Zahlungsbeleg, Foto und Nachweis der Pflichtanmeldung im Marktstammdatenregister",
+      { text: "Gefördert wird ein neues Balkonkraftwerk je Wohnung mit mindestens 350 Watt Modulleistung und höchstens 800 Watt Wechselrichterleistung; antragsberechtigt sind Eigentümer, Mieter und Pächter, Mieter brauchen die Zustimmung des Eigentümers; selbst montieren ist erlaubt", nur: ["balkon"] },
+      { text: "Den Speicherzuschuss gibt es nur für private Eigentümer, zu einer neuen oder vorhandenen Dachanlage und nur mit Einbau durch einen Fachbetrieb samt Fachunternehmererklärung; Kapazität über 10 kWh wird nicht gefördert", nur: ["pv"] },
+      "Anlage und Speicher müssen in Bebra stehen und betrieben werden; gefördert werden nur marktreife, geprüfte Neugeräte, keine Eigenbauten, Prototypen oder Anlagen überwiegend aus gebrauchten Teilen",
+      "Je Wohneinheit gibt es höchstens 600 € aus dem ganzen Programm; vergeben wird nach Eingang der vollständigen Anträge im Rahmen der Haushaltsmittel, ohne Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    speicherPerKwh: 50, speicherCap: 500,
+    balkonPauschale: 100,
+    application: {
+      checkedAt: "2026-10-17T20:40:00Z",
+      sources: [
+        { url: "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher", title: "Stadt Bebra: 100-Dächer-Solarprogramm: Stecker-Solaranlagen und Batteriespeicher", quote: "Der Förderantrag ist vor Maßnahmenbeginn einzureichen." },
+        { url: "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw", title: "Stadt Bebra: Förderrichtlinie 100-Dächer-Solarprogramm 2026", quote: "Das Formular \"Förderantrag\" ist vor Maßnahmenbeginn einzureichen." },
+      ],
+      steps: [
+        { title: "Antrag online stellen", text: "Vor dem Kauf den Förderantrag über das Online-Formular der Stadt Bebra einreichen.", kind: "application", evidenceUrls: ["https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher", "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw"] },
+        { title: "Kaufen und in Betrieb nehmen", text: "Erst nach Eingang des vollständigen Antrags kaufen; Balkonkraftwerk oder Speicher binnen neun Monaten in Betrieb nehmen und im Marktstammdatenregister anmelden.", kind: "implementation", evidenceUrls: ["https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw"] },
+        { title: "Verwendungsnachweis und Auszahlung", text: "Innerhalb derselben neun Monate den Verwendungsnachweis mit Rechnung und Zahlungsbeleg einreichen; danach zahlt die Stadt aus.", kind: "payment", evidenceUrls: ["https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw"] },
+      ],
+      documents: [
+        { text: "Förderantrag; für den Verwendungsnachweis Rechnung, Zahlungsbeleg, Foto, Nachweis aus dem Marktstammdatenregister, beim Speicher die Fachunternehmererklärung; bei Miete die Zustimmung des Eigentümers", evidenceUrls: ["https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw"] },
+      ],
+      portal: { url: "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher", label: "Online-Antrag auf der Programmseite der Stadt Bebra", evidenceUrls: ["https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher"] },
+    },
+  },
+
   // AUFGENOMMEN 17.10.2026 — programme page, guideline (KIPKI, Stand April 2025)
   // and the city's press release of 30.03.2026 read in raw text. The guideline
   // and the KIPKI overview still say "bis 31.03.2026"; the programme page and

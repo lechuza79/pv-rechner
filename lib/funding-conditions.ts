@@ -1170,6 +1170,41 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
 
   // Added 17 Oct 2026 with the programme (statute read in full). Order: buy
   // and install, then apply within six months.
+  // Added 17 Oct 2026 with the programme (guideline 01.08.2026 read in full).
+  "bebra-stecker-solar-speicher": {
+    pruefungen: [
+      {
+        ausBedingung: "Erst beantragen, dann kaufen: Der Förderantrag geht vor dem Kauf digital bei der Stadt ein; als Beginn zählt schon der Abschluss eines Liefer- oder Leistungsvertrags, nur die Planung darf vorher liegen",
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "vor-auftrag" },
+      },
+      {
+        ausBedingung: "Erst beantragen, dann kaufen: Der Förderantrag geht vor dem Kauf digital bei der Stadt ein; als Beginn zählt schon der Abschluss eines Liefer- oder Leistungsvertrags, nur die Planung darf vorher liegen",
+        pruefung: { art: "antragsweg", weg: "online" },
+      },
+    ],
+    durchRegion: [
+      "Anlage und Speicher müssen in Bebra stehen und betrieben werden; gefördert werden nur marktreife, geprüfte Neugeräte, keine Eigenbauten, Prototypen oder Anlagen überwiegend aus gebrauchten Teilen",
+    ],
+    hinweise: [
+      {
+        ausBedingung: "Ein unvollständiger Antrag muss binnen eines Monats ergänzt sein, sonst kann er abgelehnt werden; binnen neun Monaten nach dem Antrag muss die Anlage in Betrieb sein und der Verwendungsnachweis vorliegen — mit Rechnung, Zahlungsbeleg, Foto und Nachweis der Pflichtanmeldung im Marktstammdatenregister",
+        warum: "Frist und Nachweise nach der Bewilligung, keine Eigenschaft der Anlage.",
+      },
+      {
+        ausBedingung: "Gefördert wird ein neues Balkonkraftwerk je Wohnung mit mindestens 350 Watt Modulleistung und höchstens 800 Watt Wechselrichterleistung; antragsberechtigt sind Eigentümer, Mieter und Pächter, Mieter brauchen die Zustimmung des Eigentümers; selbst montieren ist erlaubt",
+        warum: "Die Rechner-Sets liegen innerhalb dieser Grenzen; Mietverhältnis, Zustimmung und frühere Anträge fragt der Rechner nicht ab.",
+      },
+      {
+        ausBedingung: "Den Speicherzuschuss gibt es nur für private Eigentümer, zu einer neuen oder vorhandenen Dachanlage und nur mit Einbau durch einen Fachbetrieb samt Fachunternehmererklärung; Kapazität über 10 kWh wird nicht gefördert",
+        warum: "Die 10-kWh-Grenze steckt im Deckel von 500 €; Eigentum und Fachbetrieb fragt der Rechner nicht ab, und die Pflicht gilt nur dem Speicher, nicht dem Balkonkraftwerk.",
+      },
+      {
+        ausBedingung: "Je Wohneinheit gibt es höchstens 600 € aus dem ganzen Programm; vergeben wird nach Eingang der vollständigen Anträge im Rahmen der Haushaltsmittel, ohne Rechtsanspruch",
+        warum: "100 € Balkon plus höchstens 500 € Speicher überschreiten die 600 € nie; Mittelvorbehalt ist keine Eigenschaft der Anlage.",
+      },
+    ],
+  },
+
   "barleben-balkonkraftwerke-speicher": {
     pruefungen: [
       {

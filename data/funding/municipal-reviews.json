@@ -103970,5 +103970,98 @@
         "evidenceUrl": "https://www.neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726"
       }
     ]
+  },
+  {
+    "regionId": "06632003",
+    "name": "Bebra",
+    "checkedAt": "2026-10-17T20:45:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bebra fördert seit 01.08.2026 mit der Neuauflage des „100-Dächer-Solarprogramms“ Balkonkraftwerke mit 100 € pauschal und Batteriespeicher zu einer Dachanlage mit 50 €/kWh bis 500 €, höchstens 600 € je Wohneinheit; Antrag vor dem Kauf, online. Neu im Katalog als bebra-stecker-solar-speicher, mit Stadtseite. Die Dachanlagen-Förderung von 2022 ist beendet und nicht katalogisiert (keine Sätze gelesen). Keine Wärmepumpenförderung; die Programme „Bebra baut um“, Dorfentwicklung und Modernisierung/Erwerb von Leerstand fördern keine der vier Techniken. Gegenprüfung 3/3 bestätigt.",
+    "searches": [
+      "17.10.2026: alle 8 erfassten Fundstellen der Stadt im Original gelesen",
+      "17.10.2026: Programmseite mit Förderrichtlinie 2026 und Pressemitteilung vom 15.07.2026; Websuche nach Ausschöpfungs- oder Stopp-Hinweis (Gegenprüfung) ohne Treffer"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw",
+        "finding": "17.10.2026: „Pauschaler Zuschuss von 100 Euro pro Stecker-Solargerät“; „50 Euro pro kWh Speicherkapazität gewährt, höchstens jedoch 500 Euro“; „insgesamt 600 Euro“ je Wohneinheit; „tritt am 01.08.2026 in Kraft“."
+      },
+      {
+        "url": "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher",
+        "finding": "17.10.2026: „Ab dem 1. August 2026 können … Zuschüsse … beantragt werden“; Online-Antrag verlinkt, kein Hinweis auf Ausschöpfung."
+      },
+      {
+        "url": "https://www.bebra.de/rathaus-politik/veroeffentlichungen/pressearchiv/neuauflage-100-daecher-solafoerderprogramm",
+        "finding": "17.10.2026: „Für Batteriespeicher sind private Eigentümerinnen und Eigentümer von Immobilien in Bebra antragsberechtigt.“"
+      },
+      {
+        "url": "https://www.bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-bebra-baut-um",
+        "finding": "17.10.2026 gelesen: Zuschüsse zur Sanierung leerstehender Häuser und Ladenlokale in Innenstadt und Göttinger Bogen; keine PV-, Speicher-, Balkon- oder Wärmepumpenförderung."
+      },
+      {
+        "url": "https://www.bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-dorfentwicklung",
+        "finding": "17.10.2026 gelesen: hessisches Dorfentwicklungsprogramm (Innenentwicklung, Daseinsvorsorge); keine der vier Techniken."
+      },
+      {
+        "url": "https://www.bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-dorfentwicklung/erfolge",
+        "finding": "17.10.2026 gelesen: Erfolgsübersicht der Dorfentwicklung; keine der vier Techniken."
+      },
+      {
+        "url": "https://www.bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-modernisierung-und-erwerb-von-leerstand",
+        "finding": "17.10.2026 gelesen: Zuschüsse zu Erwerb und Modernisierung älterer Wohnimmobilien; keine der vier Techniken."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Programmseite, aufgenommen als bebra-stecker-solar-speicher.",
+        "evidenceUrl": "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher"
+      },
+      {
+        "url": "bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 vollständig gelesen: Förderrichtlinie 2026, aufgenommen.",
+        "evidenceUrl": "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw"
+      },
+      {
+        "url": "bebra.de/rathaus-politik/veroeffentlichungen/pressearchiv/neuauflage-100-daecher-solafoerderprogramm",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Pressemitteilung 15.07.2026 zur Neuauflage, deckt sich mit der Richtlinie.",
+        "evidenceUrl": "https://www.bebra.de/rathaus-politik/veroeffentlichungen/pressearchiv/neuauflage-100-daecher-solafoerderprogramm"
+      },
+      {
+        "url": "bebra.de/rathaus-politik/veroeffentlichungen/pressearchiv/neuauflage-100-daecher-solafoerderprogramm/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jc",
+        "disposition": "replaced",
+        "reason": "17.10.2026 geladen: textgleich mit der gelesenen Richtlinie unter der Programmseite (cid=4jw).",
+        "evidenceUrl": "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw"
+      },
+      {
+        "url": "bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-bebra-baut-um",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Zuschüsse zur Sanierung leerstehender Häuser und Ladenlokale in Innenstadt und Göttinger Bogen; keine PV-, Speicher-, Balkon- oder Wärmepumpenförderung.",
+        "evidenceUrl": "https://www.bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-bebra-baut-um"
+      },
+      {
+        "url": "bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-dorfentwicklung",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: hessisches Dorfentwicklungsprogramm (Innenentwicklung, Daseinsvorsorge); keine der vier Techniken.",
+        "evidenceUrl": "https://www.bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-dorfentwicklung"
+      },
+      {
+        "url": "bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-dorfentwicklung/erfolge",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Erfolgsübersicht der Dorfentwicklung; keine der vier Techniken.",
+        "evidenceUrl": "https://www.bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-dorfentwicklung/erfolge"
+      },
+      {
+        "url": "bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-modernisierung-und-erwerb-von-leerstand",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Zuschüsse zu Erwerb und Modernisierung älterer Wohnimmobilien; keine der vier Techniken.",
+        "evidenceUrl": "https://www.bebra.de/leben-wohnen/bauen-wohnen/foerderprogramm-modernisierung-und-erwerb-von-leerstand"
+      }
+    ]
   }
 ]
