@@ -296,12 +296,26 @@ Findet die Prüfung bei einem Programm eine Abweichung (Satz geändert, Topf lee
 Status anders), zuerst das **Council** laufen lassen (`scripts/council-verify.md`)
 — drei unabhängige Verifizierer, einer mit Widerlegungs-Auftrag, prüfen genau
 diesen einen Befund gegen. Förderung ist im Kern ein **Ermessensfall**
-(Kleingedrucktes, „aktiv vs. unsicher", strukturierter Satz vs. kein Abzug) →
-für eine Erhöhung **bereits geführter Abzüge** (Satz rauf, Deckel rauf, neuer
-strukturierter Satz in einem vorhandenen Programm): kein Auto-Fix, auch bei Konsens.
-Diesen bestätigten Erhöhungsbefund als Vorschlag für `lib/funding-programs.ts`
-mailen; der Nutzer gibt frei. Die belegte Neuaufnahme eines Programms folgt
-dagegen der besonderen Aufnahmebefugnis im Wächter-Gate und dem gemeinsamen Tagesverfahren.
+(Kleingedrucktes, „aktiv vs. unsicher", strukturierter Satz vs. kein Abzug).
+
+**Eine Erhöhung bereits geführter Abzüge** (Satz rauf, Deckel rauf, Pauschale
+rauf) setzt der Wächter seit dem 17.10.2026 **selbst** um — keine Mail, keine
+Freigabe (Betreiber-Entscheidung 01.10.2026: welcher Betrag gilt, ist eine
+Sachfrage, nie seine). Bedingungen, alle zugleich:
+1. Der neue Betrag steht **wörtlich** in der geltenden Richtlinie oder auf der
+   Trägerseite, im Rohtext gelesen; ein Screening-Auszug ist nur der Anlass.
+2. **Council 3/3** mit adversarialem Prüfer, der ausdrücklich die Frage bekommt,
+   ob der höhere Betrag nur für einen Teil der Fälle gilt.
+3. Widersprechen sich zwei Angaben desselben Trägers, gilt die Regel
+   „Widersprüchliche Angaben desselben Trägers" in
+   `scripts/funding-daily-review.md`, Abschnitt 3.
+4. Die Sprunggrenze des Gates gilt hier nicht (Ausnahme Förderbeträge); die
+   Selbstkontrolle im Folgelauf gilt voll.
+
+**Bleibt Vorschlag:** ein neuer strukturierter Satz, den das Modell bisher nicht
+ausdrücken kann (neue Rechenformel), und jede Erhöhung, die sich nur auf eine
+Sekundärquelle stützt. Die belegte Neuaufnahme eines Programms folgt der
+besonderen Aufnahmebefugnis im Wächter-Gate und dem gemeinsamen Tagesverfahren.
 
 **Ein Programm EINSCHALTEN ist davon zu trennen** (Wächter-Gate, Teil 4:
 „Programm einschalten nach Träger-Beleg" steht in der Selbst-Ändern-Spalte, und

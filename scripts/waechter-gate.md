@@ -232,6 +232,15 @@ Ein Auto-Fix passiert nur, wenn **alle** erfüllt sind:
    „Set-Preise: Abgleich mit dem Partnerkatalog". Anlass: Ein echter Preisfall
    von 30–40 % stand eine Nacht lang als Entscheidungs-Mail beim Betreiber,
    obwohl der Partnerkatalog unter dem Ergebnis die neuen Preise schon zeigte.
+   **Ausnahme Förderbeträge (17.10.2026):** Ein Fördersatz, Deckel oder eine
+   Pauschale ist keine Messung, sondern eine abgeschriebene Zahl aus dem
+   Dokument des Trägers. Den Lesefehler, den die Grenze abfangen soll, fängt
+   hier das Council am Original ab. Steht der neue Betrag wörtlich in der
+   geltenden Richtlinie oder auf der Trägerseite und bestätigt das Council
+   3/3, gilt die Grenze nicht. Regel und Ablauf: `scripts/foerder-verify.md`,
+   „Council bei Abweichung". Anlass: Waldalgesheim (100 → 200 €) stand drei
+   Wochen als Entscheidungs-Mail beim Betreiber, obwohl Council und Quelle
+   längst übereinstimmten.
 5. **`npx tsc --noEmit` und `npx vitest run` grün**, inklusive der
    Realitäts-Anker aus Regel 7.
 
@@ -326,6 +335,15 @@ Claude (`audience: "claude"`), nicht ans Postfach. Erzwungen von der Schleuse in
 | Produkt/Priorität/Außenwirkung | „Quelle Z ist umgezogen" → selbst nachziehen |
 | Rechtsfolge mit mehreren vertretbaren Antworten | „Test W schlägt fehl" → beheben |
 | Die Automatik kommt seit mehreren Läufen nicht weiter | ein einzelner roter Lauf |
+| | Hauptlinie rot durch eine fremde Änderung → beheben, sonst `audience: "claude"` mit Ursache; der Autofix der Hauptlinie ist zuständig |
+| | „Bitte dort anrufen" / „bitte nachfassen" → nie; Telefon ist kein Weg der Automatik, die Sachfrage entscheidet das Council aus den Dokumenten |
+| | Zwei Angaben desselben Trägers widersprechen sich → Regel in `scripts/funding-daily-review.md`, Abschnitt 3 |
+| | Mehrdeutige Richtlinie, Darlehen statt Zuschuss → Hinweis ohne Abzug bzw. Darlehensseite, ohne zu fragen |
+
+**Entscheidungen aus früheren Mails sind kein Dauerzustand.** Was ein Lauf
+einmal als Entscheidung gemeldet hat und was inzwischen unter eine Regel dieser
+Tabelle fällt, setzt der nächste Lauf selbst um und nimmt es in `done` auf —
+er wartet nicht auf eine Antwort, die nach der neuen Regel nicht mehr nötig ist.
 
 **Faustregel:** Kann Claude es selbst? Dann ist es keine Entscheidung. Kostet es
 Geld, ändert es das Produkt oder gibt es mehrere vertretbare Antworten? Dann ist
@@ -345,7 +363,7 @@ es eine — und dann gehört sie in **einen** Satz plus Empfehlung.
 | Wärmepumpe (quartalsweise) | Investition (Basis, Steigung, Heizkörpertausch) | BEG-Sätze, WP-Tarif, Gaspreis |
 | Geräte-Config (quartalsweise) | Set-/Gerätepreise, Effizienzen **nach der Systematik**; Balkon-Set-Preise auch über 30 %, wenn Partnerkatalog und Markt übereinstimmen | neue Gerätekategorie, neue Effizienz-Systematik |
 | Freiflächen-Zuschlagswerte (3× jährlich) | veröffentlichte Ausschreibungsrunde ins gleitende Fenster, **vollständiges** Ausschreibungsjahr in die Jahresreihe | Fenstergröße, Gewichtungsregel, Versatz-Regel (§ 37e), unvollständiges Jahr |
-| Förderprogramme (täglich + quartalsweise) | Programm abschalten, Sätze senken, Programm einschalten nach Träger-Beleg, **Programm neu aufnehmen** (Bedingungen unten) | Aufnahme allein aus einer Sekundärquelle |
+| Förderprogramme (täglich + quartalsweise) | Programm abschalten, Sätze senken, Programm einschalten nach Träger-Beleg, **Programm neu aufnehmen** (Bedingungen unten), **Sätze erhöhen nach wörtlichem Träger-Beleg und Council 3/3** (seit 17.10.2026) | Aufnahme allein aus einer Sekundärquelle, neue Rechenformel |
 | Grüngas / GModG | Verkündungs-Flag, Stufenwerte nach Gesetzestext | Quotengesetz nach § 42a, neue Stufen |
 | Legal (quartalsweise) | faktische Rechtsstände in Texten, Tippfehler und tote Links, nachgeprüfter DPF-Status — dazu der Abgleich der Rechtstexte gegen den Code (`scripts/rechtstexte-verify.md`) | Struktur der Rechtstexte, jede neue oder geänderte Rechtsaussage, jede neue Empfängernennung |
 | Atlas-Index-Wellen | Sitemap-Einreichung, Regressionsbefunde | Welle freischalten |
