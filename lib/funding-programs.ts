@@ -12652,7 +12652,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     speicherPerKwh: 50, speicherCap: 500,
     balkonPauschale: 100,
     application: {
-      checkedAt: "2026-10-17T20:40:00Z",
+      checkedAt: "2026-10-17T20:12:00Z",
       sources: [
         { url: "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher", title: "Stadt Bebra: 100-Dächer-Solarprogramm: Stecker-Solaranlagen und Batteriespeicher", quote: "Der Förderantrag ist vor Maßnahmenbeginn einzureichen." },
         { url: "https://www.bebra.de/standort-wirtschaft/oekologie-umwelt/100-daecher-solarprogramm-stecker-solaranlagen-und-batteriespeicher/foerderrichtlinie-100-daecher-solarprgram-stecker-solaranlagen-und-batteriespeicher-2026.pdf?cid=4jw", title: "Stadt Bebra: Förderrichtlinie 100-Dächer-Solarprogramm 2026", quote: "Das Formular \"Förderantrag\" ist vor Maßnahmenbeginn einzureichen." },
