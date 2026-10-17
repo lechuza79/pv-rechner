@@ -1025,6 +1025,55 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
     ],
   },
 
+  // Added 17 Oct 2026 with the programme (Neumarkt guideline of January 2023 read in full).
+  "neumarkt-opf-faktor10": {
+    pruefungen: [
+      {
+        ausBedingung: "Der Antrag ist vor Beginn der Maßnahme schriftlich zu stellen (Originalunterschrift); die Unterlagen folgen binnen eines Jahres",
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "vor-auftrag" },
+      },
+      {
+        ausBedingung: "Der Antrag ist vor Beginn der Maßnahme schriftlich zu stellen (Originalunterschrift); die Unterlagen folgen binnen eines Jahres",
+        pruefung: { art: "antragsweg", weg: "formular" },
+      },
+    ],
+    durchRegion: [],
+    hinweise: [
+      {
+        ausBedingung: "Gefördert werden nur Sole/Wasser-, Wasser/Wasser- und gasbetriebene Wärmepumpen, die die technischen Anforderungen der Bundesförderung erfüllen — Luft-Wasser-Wärmepumpen nennt die Richtlinie nicht",
+        warum: "Die Bauart der Wärmepumpe fragt der Rechner nicht ab; deshalb zieht der Eintrag nichts ab.",
+      },
+      {
+        ausBedingung: "Photovoltaik fördert die Stadt nur als Ergänzung einer Komplettsanierung auf Effizienzhaus 85 bis 40 oder eines Neubaus als Effizienzhaus 40: 150 € je kWp bis 10 kWp (also bis 1.500 € je Gebäude), darüber je weiteres kWp 50 €",
+        warum: "Photovoltaik nur zusammen mit einer Komplettsanierung oder einem Effizienzhaus-40-Neubau kann das Modell nicht ausdrücken; der Eintrag fördert im Rechner keine Photovoltaik.",
+      },
+      {
+        ausBedingung: "Eine Heizungsanlage wird je Gebäude nur einmal bezuschusst",
+        warum: "Frühere Zuschüsse für dasselbe Gebäude kennt der Rechner nicht.",
+      },
+      {
+        ausBedingung: "Wärmemengen- und Stromzähler sind Pflicht; die Monatswerte werden zwei Jahre lang an die Stadt gemeldet",
+        warum: "Messpflicht nach dem Einbau, keine Eigenschaft der Anlage.",
+      },
+      {
+        ausBedingung: "Antragsberechtigt sind Eigentümer von Gebäuden in Neumarkt i.d.OPf., Eigentümergemeinschaften, Bewohner mit lebenslangem Nutzungsrecht und Vereine mit Sitz in der Stadt",
+        warum: "Den Ort deckt die Ortsauswahl ab; Eigentum und Vereinssitz fragt der Rechner nicht ab.",
+      },
+      {
+        ausBedingung: "Die geförderte Anlage muss mindestens fünf Jahre am selben Ort betrieben werden, sonst kann die Stadt zurückfordern",
+        warum: "Bindungsfrist nach der Auszahlung, nicht aus den Eingaben ableitbar.",
+      },
+      {
+        ausBedingung: "Kombinierbar mit Bundesförderung, soweit deren Regeln es zulassen; die Energieberatung der Stadt ist vom 1. Juli 2023 bis 31. Dezember 2026 nicht mit der Bundesförderung für Energieberatung kombinierbar",
+        warum: "Kombinationsregel für andere Geber; der Eintrag zieht ohnehin nichts ab.",
+      },
+      {
+        ausBedingung: "Kein Rechtsanspruch; gefördert wird im Rahmen der verfügbaren Haushaltsmittel",
+        warum: "Mittelvorbehalt, keine Eigenschaft der Anlage.",
+      },
+    ],
+  },
+
   // Added 17 Oct 2026 with the programme (guideline "effiziente Heizungsanlagen 2026" read in full).
   "mannheim-heizungserneuerung": {
     pruefungen: [

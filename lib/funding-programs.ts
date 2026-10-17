@@ -3047,6 +3047,60 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["waermepumpe"],
   },
+  // Added 17.10.2026 from the city's guideline "Förderrichtlinie … zur Förderung
+  // von Energieeinsparung und Klimaschutz im Gebäudebereich (Januar 2023)",
+  // read in full, and the programme page "Faktor 10" (both live). Table 1:
+  // "2.3 Wärmepumpen  Pauschal  750" in level C; section 2.3 limits it to
+  // brine/water, water/water and gas-driven heat pumps — air-source pumps are
+  // not covered, so this stays a hint without deduction. Photovoltaics is only
+  // funded as a supplement to a deep renovation (level A, KfW 85–40) or a
+  // KfW EH 40 new build (150 €/kWp, max. 1.500 €), which the PV calculator
+  // cannot express — therefore no "pv" in `foerdert`. The city presented the
+  // programme as running at its funding info stand on 02.07.2026.
+  // Register key 09373147 (Neumarkt i.d.OPf., Gemeinde, 41.103 inhabitants).
+  "neumarkt-opf-faktor10": {
+    id: "neumarkt-opf-faktor10", name: "Faktor 10 — Energieeinsparung und Klimaschutz im Gebäudebereich",
+    traeger: "Stadt Neumarkt i.d.OPf.", level: "kommune", region: "Neumarkt i.d.OPf.",
+    bundesland: "Bayern", agsCode: "09373147",
+    url: "https://www.neumarkt.de/planen-bauen/ihr-bauvorhaben/fachstelle-nachhaltiges-bauen/foerderprogramm-faktor-10",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-01-01",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Pauschale für eine Erd- oder Grundwasser-Wärmepumpe als Einzelmaßnahme; Photovoltaik nur als Ergänzung einer Komplettsanierung oder eines Effizienzhaus-40-Neubaus",
+    maxFoerderung: "750 € für die Wärmepumpe",
+    rates: [
+      { label: "Erd- oder Grundwasser-Wärmepumpe (Einzelmaßnahme)", value: "750 € pauschal", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert werden nur Sole/Wasser-, Wasser/Wasser- und gasbetriebene Wärmepumpen, die die technischen Anforderungen der Bundesförderung erfüllen — Luft-Wasser-Wärmepumpen nennt die Richtlinie nicht",
+      "Photovoltaik fördert die Stadt nur als Ergänzung einer Komplettsanierung auf Effizienzhaus 85 bis 40 oder eines Neubaus als Effizienzhaus 40: 150 € je kWp bis 10 kWp (also bis 1.500 € je Gebäude), darüber je weiteres kWp 50 €",
+      "Eine Heizungsanlage wird je Gebäude nur einmal bezuschusst",
+      "Wärmemengen- und Stromzähler sind Pflicht; die Monatswerte werden zwei Jahre lang an die Stadt gemeldet",
+      "Antragsberechtigt sind Eigentümer von Gebäuden in Neumarkt i.d.OPf., Eigentümergemeinschaften, Bewohner mit lebenslangem Nutzungsrecht und Vereine mit Sitz in der Stadt",
+      "Der Antrag ist vor Beginn der Maßnahme schriftlich zu stellen (Originalunterschrift); die Unterlagen folgen binnen eines Jahres",
+      "Die geförderte Anlage muss mindestens fünf Jahre am selben Ort betrieben werden, sonst kann die Stadt zurückfordern",
+      "Kombinierbar mit Bundesförderung, soweit deren Regeln es zulassen; die Energieberatung der Stadt ist vom 1. Juli 2023 bis 31. Dezember 2026 nicht mit der Bundesförderung für Energieberatung kombinierbar",
+      "Kein Rechtsanspruch; gefördert wird im Rahmen der verfügbaren Haushaltsmittel",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    application: {
+      checkedAt: "2026-10-17T18:10:00Z",
+      sources: [
+        { url: "https://www.neumarkt.de/planen-bauen/ihr-bauvorhaben/fachstelle-nachhaltiges-bauen/foerderprogramm-faktor-10", title: "Stadt Neumarkt i.d.OPf.: Förderprogramm \"Faktor 10\"", quote: "Bitte beachten Sie, dass die Antragsstellung vor Beginn Ihrer Maßnahmen erfolgen muss." },
+        { url: "https://www.neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf", title: "Förderrichtlinie der Stadt Neumarkt i. d. OPf. zur Förderung von Energieeinsparung und Klimaschutz im Gebäudebereich (Januar 2023)", quote: "Der Antrag auf Gewährung einer Zuwendung ist vor Beginn der Maßnahme zu stellen." },
+      ],
+      steps: [
+        { title: "Antrag vor Beginn stellen", text: "Das Antragsformular der Stadt ausfüllen, unterschreiben und mit den Anlagen auf Papier bei der Stadt Neumarkt einreichen, bevor die Arbeiten beginnen.", kind: "application", evidenceUrls: ["https://www.neumarkt.de/planen-bauen/ihr-bauvorhaben/fachstelle-nachhaltiges-bauen/foerderprogramm-faktor-10", "https://www.neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf"] },
+        { title: "Einbauen und nachweisen", text: "Die Wärmepumpe mit Wärmemengen- und Stromzähler einbauen lassen; die Unterlagen binnen eines Jahres nach dem Antrag vorlegen.", kind: "implementation", evidenceUrls: ["https://www.neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf"] },
+        { title: "Auszahlung", text: "Nach Fertigstellung und Vorlage der Rechnungen zahlt die Stadt aus; danach zwei Jahre lang die Monatswerte der Zähler melden.", kind: "payment", evidenceUrls: ["https://www.neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf"] },
+      ],
+      documents: [
+        { text: "Unterschriebenes Antragsformular mit Anlagen, Rechnungen und die Qualitätsnachweise nach den Regeln der Bundesförderung", evidenceUrls: ["https://www.neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf"] },
+      ],
+      portal: { url: "https://www.neumarkt.de/media/7398/2_5_antragsformular_2023.pdf", label: "Antragsformular der Stadt Neumarkt (PDF)", evidenceUrls: ["https://www.neumarkt.de/planen-bauen/ihr-bauvorhaben/fachstelle-nachhaltiges-bauen/foerderprogramm-faktor-10"] },
+    },
+  },
   // Geprüft am 16.08.2026 an der Trägerquelle — Befund: Das Programm fördert
   // KEINE Photovoltaik. Hinterlegt waren 300 €/kWp für Gründach-/MFH-/Fassaden-PV
   // bei status "aktiv", also ein Abzug im Rechner. Gegengeprüft an drei Stellen
@@ -10872,7 +10926,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "edewecht-klimabonus", name: "Edewechter Klimabonus, Fördergegenstand Ia",
     traeger: "Gemeinde Edewecht", level: "kommune", region: "Edewecht",
     bundesland: "Niedersachsen", agsCode: "03451004",
-    url: "https://edewecht.de/klimabonus/",
+    url: "https://gemeinde-edewecht.de/klimabonus/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
     beginntIso: "2026-01-01",
     eligibility: ["privat"],

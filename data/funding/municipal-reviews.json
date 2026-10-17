@@ -103766,5 +103766,209 @@
         "evidenceUrl": "https://www.sasbach.de/-/buergerservice+a-z/vbid1475"
       }
     ]
+  },
+  {
+    "regionId": "03451004",
+    "name": "Edewecht",
+    "checkedAt": "2026-10-17T18:12:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Edewecht fördert über den Klimabonus 2026 (in Kraft 1.1.2026) Balkonkraftwerke für Mieter und Vermieter mit bis zu 200 €, höchstens 50 % (Fördergegenstand Ia) — deckungsgleich mit edewecht-klimabonus; Adresse auf die umgezogene Gemeindeseite korrigiert. Keine Förderung für Dach-PV, Speicher oder Wärmepumpe; der SolarCheck (150 € Beratung, IIb) ist eine Beratungsleistung ohne Zuschuss zur Anlage.",
+    "searches": [
+      "17.10.2026: alte Adressen unter edewecht.de liefern 404, Website nach gemeinde-edewecht.de umgezogen; Klimabonus-Seite und Richtlinie 2026 dort vollständig gelesen",
+      "17.10.2026: alle 12 erfassten Fundstellen unter der neuen Adresse geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://gemeinde-edewecht.de/wp-content/uploads/2025/12/Richtlinie_Kimabonus_Edewecht_2026.pdf",
+        "finding": "17.10.2026: „Ia) Steckerfertige Photovoltaikanlagen … Bis zu 200,- Euro … Maximal 50 %“; „Diese Richtlinie tritt am 1. Januar 2026 in Kraft.“"
+      },
+      {
+        "url": "https://gemeinde-edewecht.de/klimabonus/",
+        "finding": "17.10.2026: Klimabonus-Seite mit Förderschwerpunkten I–III, Ia nur für Mieter und Vermieter, Bewilligung vor Kauf."
+      }
+    ],
+    "sources": [
+      {
+        "url": "edewecht.de/klimabonus/foerderprogramm-1a",
+        "disposition": "replaced",
+        "reason": "Unterseite des Klimabonus unter der alten, nicht mehr erreichbaren Adresse; alle Fördergegenstände stehen auf der gelesenen Klimabonus-Seite und in der Richtlinie 2026 (nur Ia betrifft eine der vier Techniken).",
+        "evidenceUrl": "https://gemeinde-edewecht.de/wp-content/uploads/2025/12/Richtlinie_Kimabonus_Edewecht_2026.pdf"
+      },
+      {
+        "url": "edewecht.de/klimabonus/foerderprogramm-1c",
+        "disposition": "replaced",
+        "reason": "Unterseite des Klimabonus unter der alten, nicht mehr erreichbaren Adresse; alle Fördergegenstände stehen auf der gelesenen Klimabonus-Seite und in der Richtlinie 2026 (nur Ia betrifft eine der vier Techniken).",
+        "evidenceUrl": "https://gemeinde-edewecht.de/wp-content/uploads/2025/12/Richtlinie_Kimabonus_Edewecht_2026.pdf"
+      },
+      {
+        "url": "edewecht.de/klimabonus/foerderprogramm-2a",
+        "disposition": "replaced",
+        "reason": "Unterseite des Klimabonus unter der alten, nicht mehr erreichbaren Adresse; alle Fördergegenstände stehen auf der gelesenen Klimabonus-Seite und in der Richtlinie 2026 (nur Ia betrifft eine der vier Techniken).",
+        "evidenceUrl": "https://gemeinde-edewecht.de/wp-content/uploads/2025/12/Richtlinie_Kimabonus_Edewecht_2026.pdf"
+      },
+      {
+        "url": "edewecht.de/klimabonus/foerderprogramm-2b",
+        "disposition": "replaced",
+        "reason": "Unterseite des Klimabonus unter der alten, nicht mehr erreichbaren Adresse; alle Fördergegenstände stehen auf der gelesenen Klimabonus-Seite und in der Richtlinie 2026 (nur Ia betrifft eine der vier Techniken).",
+        "evidenceUrl": "https://gemeinde-edewecht.de/wp-content/uploads/2025/12/Richtlinie_Kimabonus_Edewecht_2026.pdf"
+      },
+      {
+        "url": "edewecht.de/klimabonus/foerderprogramm-3a",
+        "disposition": "replaced",
+        "reason": "Unterseite des Klimabonus unter der alten, nicht mehr erreichbaren Adresse; alle Fördergegenstände stehen auf der gelesenen Klimabonus-Seite und in der Richtlinie 2026 (nur Ia betrifft eine der vier Techniken).",
+        "evidenceUrl": "https://gemeinde-edewecht.de/wp-content/uploads/2025/12/Richtlinie_Kimabonus_Edewecht_2026.pdf"
+      },
+      {
+        "url": "edewecht.de/klimabonus/foerderprogramm-3b",
+        "disposition": "replaced",
+        "reason": "Unterseite des Klimabonus unter der alten, nicht mehr erreichbaren Adresse; alle Fördergegenstände stehen auf der gelesenen Klimabonus-Seite und in der Richtlinie 2026 (nur Ia betrifft eine der vier Techniken).",
+        "evidenceUrl": "https://gemeinde-edewecht.de/wp-content/uploads/2025/12/Richtlinie_Kimabonus_Edewecht_2026.pdf"
+      },
+      {
+        "url": "edewecht.de/edewechter-klimabonus-ab-dem-01-juli-wieder-foerdermittel-fuer-steckerfertige-pv-anlagen",
+        "disposition": "replaced",
+        "reason": "Ältere Meldung zu Ia (Balkonkraftwerke); unter neuer Adresse geöffnet, durch die gelesene Richtlinie 2026 ersetzt.",
+        "evidenceUrl": "https://gemeinde-edewecht.de/wp-content/uploads/2025/12/Richtlinie_Kimabonus_Edewecht_2026.pdf"
+      },
+      {
+        "url": "edewecht.de/energiesparchecks-und-foerdermittelfinder",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 unter neuer Adresse geöffnet: Informationsportal zu Energiesparen und Fördermitteln, kein eigenes Förderprogramm; die Checks stehen als Beratung in der Richtlinie (II).",
+        "evidenceUrl": "https://gemeinde-edewecht.de/wp-content/uploads/2025/12/Richtlinie_Kimabonus_Edewecht_2026.pdf"
+      },
+      {
+        "url": "edewecht.de/aktuell/projekte/foerdermittel-des-europaeischen-fonds-fuer-regionale-entwicklung",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 unter neuer Adresse geöffnet: EU-Regionalfonds-Mittel für ein Gemeindeprojekt, keine der vier Techniken.",
+        "evidenceUrl": "https://gemeinde-edewecht.de/klimabonus/"
+      },
+      {
+        "url": "edewecht.de/foerdermittel-des-europaeischen-fonds-fuer-regionale-entwicklung-erhalten",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 unter neuer Adresse geöffnet: EU-Regionalfonds-Mittel für ein Gemeindeprojekt, keine der vier Techniken.",
+        "evidenceUrl": "https://gemeinde-edewecht.de/klimabonus/"
+      },
+      {
+        "url": "edewecht.de/neue-foerderung-von-kleinstvorhaben-in-der-dorfentwicklung-dorfregion-edewecht-ost",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 unter neuer Adresse geöffnet: Kleinstvorhaben der Dorfentwicklung, keine der vier Techniken.",
+        "evidenceUrl": "https://gemeinde-edewecht.de/klimabonus/"
+      },
+      {
+        "url": "edewecht.de/die-schatztruhe-erhaelt-einen-existenzgruenderzuschuss",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 unter neuer Adresse geöffnet: Existenzgründerzuschuss für ein Geschäft, keine der vier Techniken.",
+        "evidenceUrl": "https://gemeinde-edewecht.de/klimabonus/"
+      }
+    ]
+  },
+  {
+    "regionId": "09373147",
+    "name": "Neumarkt i.d.OPf.",
+    "checkedAt": "2026-10-17T18:12:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Neumarkt fördert über das laufende Programm „Faktor 10“ (Richtlinie Januar 2023) Erd- und Grundwasser-Wärmepumpen mit 750 € pauschal; Photovoltaik nur ergänzend zu einer Komplettsanierung (KfW 85–40) oder einem Effizienzhaus-40-Neubau (150 €/kWp bis 10 kWp). Neu im Katalog als neumarkt-opf-faktor10, nur Hinweis ohne Abzug (Luft-Wasser-Wärmepumpen nicht genannt, PV an Sanierung gebunden). Kein Balkonkraftwerk- oder Speicherprogramm; Altstadt-Förderprogramm und Klimaanpassungsprogramm fördern keine der vier Techniken. Gegenprüfung 3/3 bestätigt.",
+    "searches": [
+      "17.10.2026: alle 13 erfassten Fundstellen der Stadt im Original gelesen",
+      "17.10.2026: Programmseite Faktor 10 mit allen verlinkten Richtlinien (2015, 2020, 2023) und Broschüre 2024; Übersicht der vier Stadtprogramme vom Infostand 07/2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf",
+        "finding": "17.10.2026: „2.3 Wärmepumpen Pauschal 750“; „Sole/Wasser- und Wasser/Wasser-Wärmepumpen sowie gasmotorisch angetriebene Wärmepumpen“; PV „150 € pro kWpeak bei einer maximalen Fördersumme von 1.500 € pro Gebäude“ nur zu Förderbaustein A bzw. Neubau EH 40."
+      },
+      {
+        "url": "https://www.neumarkt.de/planen-bauen/ihr-bauvorhaben/fachstelle-nachhaltiges-bauen/foerderprogramm-faktor-10",
+        "finding": "17.10.2026: „Antragstellung ab 1. Januar 2023: Förderrichtlinie Stand 01/2023“; kein Hinweis auf Stopp oder Ausschöpfung."
+      },
+      {
+        "url": "https://www.neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726",
+        "finding": "17.10.2026: Infostand 02.07.2026 nennt vier laufende Stadtprogramme, darunter Faktor 10; kein PV-, Speicher- oder Balkonprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 vollständig gelesen: geltende Richtlinie Faktor 10, aufgenommen als neumarkt-opf-faktor10.",
+        "evidenceUrl": "https://www.neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf"
+      },
+      {
+        "url": "neumarkt.de/planen-bauen/ihr-bauvorhaben/fachstelle-nachhaltiges-bauen/foerderprogramm-faktor-10",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Programmseite Faktor 10, aufgenommen.",
+        "evidenceUrl": "https://www.neumarkt.de/planen-bauen/ihr-bauvorhaben/fachstelle-nachhaltiges-bauen/foerderprogramm-faktor-10"
+      },
+      {
+        "url": "neumarkt.de/media/7395/2_1_richtlinie_f10_2015.pdf",
+        "disposition": "replaced",
+        "reason": "Fassung 2015 gilt laut Programmseite nur für Anträge vor dem 10.11.2020; ersetzt durch die gelesene Fassung 01/2023.",
+        "evidenceUrl": "https://www.neumarkt.de/planen-bauen/ihr-bauvorhaben/fachstelle-nachhaltiges-bauen/foerderprogramm-faktor-10"
+      },
+      {
+        "url": "neumarkt.de/media/7394/2_1_richtlinie_f10_2020.pdf",
+        "disposition": "replaced",
+        "reason": "Fassung 11/2020 gilt laut Programmseite nur für Anträge bis 31.12.2022; ersetzt durch die gelesene Fassung 01/2023.",
+        "evidenceUrl": "https://www.neumarkt.de/planen-bauen/ihr-bauvorhaben/fachstelle-nachhaltiges-bauen/foerderprogramm-faktor-10"
+      },
+      {
+        "url": "neumarkt.de/media/7393/2_2_energiebroschuere_2020.pdf",
+        "disposition": "replaced",
+        "reason": "Broschüre zur Fassung 2020; ersetzt durch Richtlinie 01/2023 und Broschüre 2024 (gelesen, gleiche 750 € für Wärmepumpen).",
+        "evidenceUrl": "https://www.neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf"
+      },
+      {
+        "url": "neumarkt.de/media/8221/f10-energiebroschu-re-2024.pdf",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Broschüre Stand Januar 2024, „2.3 Wärmepumpen pauschal 750“, deckungsgleich mit der Richtlinie.",
+        "evidenceUrl": "https://www.neumarkt.de/media/7396/2_1_richtlinie_f10_2023.pdf"
+      },
+      {
+        "url": "neumarkt.de/kommunales-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Altstadt-Förderprogramm für Sanierung und Gestaltung, keine der vier Techniken.",
+        "evidenceUrl": "https://www.neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726"
+      },
+      {
+        "url": "neumarkt.de/planen-bauen/ihr-bauvorhaben/foerdermoeglichkeiten",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: identischer Inhalt wie das Altstadt-Förderprogramm, keine der vier Techniken.",
+        "evidenceUrl": "https://www.neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726"
+      },
+      {
+        "url": "neumarkt.de/rathaus-buergerservice/aemter-und-dienstleistungen/wo-erledige-ich-was/zuschuesse-fuer-private-bauherrn-bei-sanierungsmassnahmen-in-der-altstadt",
+        "disposition": "replaced",
+        "reason": "Dienstleistungseintrag zum Altstadt-Förderprogramm; durch die gelesene Programmseite und die Programmübersicht vom Infostand erledigt, keine der vier Techniken.",
+        "evidenceUrl": "https://www.neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726"
+      },
+      {
+        "url": "neumarkt.de/planen-bauen/umwelt/klimaschutz-und-anpassung/klimaanpassung/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Klimaanpassung auf Privatgrundstücken, keine der vier Techniken.",
+        "evidenceUrl": "https://www.neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726"
+      },
+      {
+        "url": "neumarkt.de/bauen-umwelt/umwelt/klimaschutz-und-anpassung/klimaanpassung/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: dieselbe Seite Klimaanpassung unter alter Adresse, keine der vier Techniken.",
+        "evidenceUrl": "https://www.neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726"
+      },
+      {
+        "url": "neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Übersicht der vier laufenden Stadtprogramme.",
+        "evidenceUrl": "https://www.neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726"
+      },
+      {
+        "url": "neumarkt.de/rathaus-buergerservice/aemter-und-dienstleistungen/wo-erledige-ich-was/wohngeld-mietzuschuss",
+        "disposition": "reviewed",
+        "reason": "Wohngeld nach Bundesrecht, kein Förderprogramm für die vier Techniken (Titel und Zuständigkeit Wohngeldstelle).",
+        "evidenceUrl": "https://www.neumarkt.de/rathaus-buergerservice/aktuelles/aktuelles-aus-neumarkt/infostand-zu-kommunalen-foerderprogrammen-auf-dem-rathausplatz-0726"
+      }
+    ]
   }
 ]
