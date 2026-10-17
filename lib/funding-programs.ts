@@ -12298,6 +12298,59 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     },
   },
 
+  // AUFGENOMMEN 17.10.2026 — programme page, guideline (KIPKI, Stand April 2025)
+  // and the city's press release of 30.03.2026 read in raw text. The guideline
+  // and the KIPKI overview still say "bis 31.03.2026"; the programme page and
+  // the press release extend it ("um ein Jahr, bis 31. März 2027, verlängert",
+  // about 18.000 of 50.000 € paid out by then). The extension is the newer
+  // statement of the same authority, hence active. No `endetIso`: the city
+  // accepts applications until 31.03.2027 or until the budget is used up, and
+  // that day has not come.
+  "frankenthal-balkon-pv": {
+    id: "frankenthal-balkon-pv", name: "Förderung von Balkon-PV-Anlagen (KIPKI)",
+    traeger: "Stadt Frankenthal (Pfalz)", level: "kommune", region: "Frankenthal (Pfalz)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07311",
+    url: "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/",
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-05-01",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk",
+    maxFoerderung: "150 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk", value: "150 € pauschal" },
+    ],
+    conditions: [
+      "Erst kaufen, dann beantragen: gefördert werden Geräte, die ab dem 01.05.2025 neu gekauft wurden; den Antrag stellt man nach der Montage mit Kaufbeleg und Foto",
+      "Laut Richtlinie ist der Antrag spätestens sechs Monate nach dem Kauf zu stellen",
+      "Antragsberechtigt sind Eigentümer von selbstgenutztem Wohnraum sowie Mieter mit Hauptwohnsitz in Frankenthal; Mieter brauchen die Einverständniserklärung des Vermieters, Vermieter selbst sind ausgeschlossen",
+      "Gefördert wird ein Balkonkraftwerk je Haushalt bis 800 Watt Wechselrichter- und 2.000 Watt Modulleistung; es muss im Marktstammdatenregister angemeldet sein",
+      "Nicht gefördert werden gebrauchte Geräte, Eigen- und Umbauten sowie geleaste, gemietete oder über Contracting finanzierte Anlagen",
+      "Das Gerät muss mindestens fünf Jahre betrieben werden; bei vorzeitigem Verkauf ist der Zuschuss zurückzuzahlen",
+      "Anträge sind bis 31.03.2027 möglich oder bis die 50.000 € Landesmittel aufgebraucht sind; bearbeitet wird nach Eingang, einen Rechtsanspruch gibt es nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 150,
+    application: {
+      checkedAt: "2026-10-17T08:50:00Z",
+      sources: [
+        { url: "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/", title: "Stadt Frankenthal: Balkon-PV-Anlagen", quote: "Förderanträge können bis zum 31. März 2027 oder bis zur Ausschöpfung der verfügbaren Mittel eingereicht werden." },
+        { url: "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/foerderrichtlinie-balkon-pv-anlagen.pdf?cid=2aps", title: "Richtlinie der Stadt Frankenthal (Pfalz) zur Förderung privater Balkon-Photovoltaikanlagen", quote: "Der Antrag auf Zuwendung ist über das auf der Internetseite der Stadt Frankenthal (Pfalz) bereitgestellte Antragsformular … per E-Mail an klimaschutz@frankenthal.de zu richten." },
+        { url: "https://www.frankenthal.de/stadt-frankenthal/de/neuigkeiten/umwelt-und-klimaschutz/2026/balkon-pv-anlagen-foerderung-verlaengert/", title: "Stadt Frankenthal: Förderung für Balkon-PV-Anlagen verlängert (30.03.2026)", quote: "Bislang wurden rund 18.000 Euro abgerufen, deshalb wird der Zeitraum um ein Jahr, bis 31. März 2027, verlängert." },
+      ],
+      steps: [
+        { title: "Kaufen und montieren", text: "Das Balkonkraftwerk neu kaufen (ab 01.05.2025) und montieren.", kind: "implementation", evidenceUrls: ["https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/foerderrichtlinie-balkon-pv-anlagen.pdf?cid=2aps"] },
+        { title: "Im Register anmelden", text: "Das Gerät im Marktstammdatenregister der Bundesnetzagentur anmelden.", kind: "implementation", evidenceUrls: ["https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/", "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/foerderrichtlinie-balkon-pv-anlagen.pdf?cid=2aps"] },
+        { title: "Antrag per E-Mail stellen", text: "Das Antragsformular der Stadt ausfüllen und mit allen Nachweisen an klimaschutz@frankenthal.de schicken — laut Richtlinie spätestens sechs Monate nach dem Kauf.", kind: "application", evidenceUrls: ["https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/", "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/foerderrichtlinie-balkon-pv-anlagen.pdf?cid=2aps"] },
+        { title: "Auszahlung", text: "Nach Prüfung der Unterlagen überweist die Stadt 150 € auf das angegebene Konto.", kind: "payment", evidenceUrls: ["https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/foerderrichtlinie-balkon-pv-anlagen.pdf?cid=2aps"] },
+      ],
+      documents: [
+        { text: "Kaufbeleg mit Kaufdatum ab 01.05.2025, Foto der montierten Anlage, Nachweis der Anmeldung im Marktstammdatenregister, Kopie des Personalausweises; bei Miete die Einverständniserklärung des Vermieters; bei weiterer Förderung ein Nachweis über Art und Höhe", evidenceUrls: ["https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/", "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/foerderrichtlinie-balkon-pv-anlagen.pdf?cid=2aps"] },
+      ],
+      portal: { url: "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/antragsformular.pdf?cid=2b4s", label: "Antragsformular der Stadt Frankenthal (PDF)", evidenceUrls: ["https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/"] },
+    },
+  },
+
   "feldkirchen-westerham-klimaschutz": {
     id: "feldkirchen-westerham-klimaschutz", name: "Förderprogramm Klimaschutz, Nr. 4.2.4 Balkonkraftanlagen",
     traeger: "Gemeinde Feldkirchen-Westerham", level: "kommune", region: "Feldkirchen-Westerham",

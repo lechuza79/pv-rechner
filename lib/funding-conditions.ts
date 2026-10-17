@@ -1018,6 +1018,48 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
     ],
   },
 
+  // Added 17 Oct 2026 with the programme (guideline read in full; deadline per
+  // programme page and press release of 30.03.2026). Order: buy, then apply.
+  "frankenthal-balkon-pv": {
+    pruefungen: [
+      {
+        ausBedingung: "Erst kaufen, dann beantragen: gefördert werden Geräte, die ab dem 01.05.2025 neu gekauft wurden; den Antrag stellt man nach der Montage mit Kaufbeleg und Foto",
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "nach-inbetriebnahme" },
+      },
+      {
+        ausBedingung: "Erst kaufen, dann beantragen: gefördert werden Geräte, die ab dem 01.05.2025 neu gekauft wurden; den Antrag stellt man nach der Montage mit Kaufbeleg und Foto",
+        pruefung: { art: "antragsweg", weg: "formular" },
+      },
+    ],
+    durchRegion: [],
+    hinweise: [
+      {
+        ausBedingung: "Laut Richtlinie ist der Antrag spätestens sechs Monate nach dem Kauf zu stellen",
+        warum: "Frist nach dem Kauf, nicht aus den Eingaben ableitbar.",
+      },
+      {
+        ausBedingung: "Antragsberechtigt sind Eigentümer von selbstgenutztem Wohnraum sowie Mieter mit Hauptwohnsitz in Frankenthal; Mieter brauchen die Einverständniserklärung des Vermieters, Vermieter selbst sind ausgeschlossen",
+        warum: "Den Hauptwohnsitz deckt die Ortsauswahl nur teilweise ab; Miet- oder Eigentumsverhältnis fragt der Rechner nicht ab.",
+      },
+      {
+        ausBedingung: "Gefördert wird ein Balkonkraftwerk je Haushalt bis 800 Watt Wechselrichter- und 2.000 Watt Modulleistung; es muss im Marktstammdatenregister angemeldet sein",
+        warum: "Gerätegrenzen und Registerpflicht gelten für jedes zulässige Balkonkraftwerk ohnehin; der Rechner fragt die Modulleistung nicht gegen die Obergrenze ab.",
+      },
+      {
+        ausBedingung: "Nicht gefördert werden gebrauchte Geräte, Eigen- und Umbauten sowie geleaste, gemietete oder über Contracting finanzierte Anlagen",
+        warum: "Kauf- und Finanzierungsart kennt der Rechner nicht; der Hinweis muss beim Kauf beachtet werden.",
+      },
+      {
+        ausBedingung: "Das Gerät muss mindestens fünf Jahre betrieben werden; bei vorzeitigem Verkauf ist der Zuschuss zurückzuzahlen",
+        warum: "Pflicht nach der Auszahlung, keine Eigenschaft der Anlage.",
+      },
+      {
+        ausBedingung: "Anträge sind bis 31.03.2027 möglich oder bis die 50.000 € Landesmittel aufgebraucht sind; bearbeitet wird nach Eingang, einen Rechtsanspruch gibt es nicht",
+        warum: "Mittel- und Laufzeitvorbehalt, keine Eigenschaft der Anlage.",
+      },
+    ],
+  },
+
   "frankfurt-klimabonus": {
     pruefungen: [
       {

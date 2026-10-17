@@ -101976,5 +101976,189 @@
         "evidenceUrl": "https://ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme"
       }
     ]
+  },
+  {
+    "regionId": "16055000",
+    "name": "Weimar",
+    "checkedAt": "2026-10-17T08:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Weimar hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Ihre Seite „Beratung und Förderung – für Privatpersonen“ der Stabsstelle Klimaschutz nennt nur die Energieberatung der Verbraucherzentrale und den Stromspar-Check der Caritas (mit Kühlgeräte-Gutschein für einkommensschwache Haushalte). Die erfasste Fundstelle betrifft Wirtschaftsförderung für Gründer. Stand 17.10.2026.",
+    "searches": [
+      "Seiten „Klima“, „Energie“, „Beratung und Förderung“ und „für Privatpersonen“ auf stadt.weimar.de am 17.10.2026 im Rohtext gelesen",
+      "Websuche 17.10.2026: „Weimar Stadt Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss 2026“ — nur Treffer anderer Kommunen und Händler-Ratgeber",
+      "Einzige erfasste Fundstelle (Wirtschaft – Förderprogramme) geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://stadt.weimar.de/de/klima-beratung-foerderung-privatpersonen.html",
+        "finding": "Seite der Stabsstelle Klimaschutz für Privatpersonen: nur „Energieberatung der Verbraucherzentrale Thüringen“ und „Stromspar-Check der Caritas Weimar“, kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe (17.10.2026)."
+      },
+      {
+        "url": "https://stadt.weimar.de/de/wirtschaft-foerderprogramme.html",
+        "finding": "Förderung für Existenzgründer und Start-ups, kein Energiezuschuss für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt.weimar.de/de/wirtschaft-foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Wirtschaftsförderung für Gründer und Start-ups, kein Energiezuschuss.",
+        "evidenceUrl": "https://stadt.weimar.de/de/wirtschaft-foerderprogramme.html"
+      }
+    ]
+  },
+  {
+    "regionId": "09763000",
+    "name": "Kempten (Allgäu)",
+    "checkedAt": "2026-10-17T08:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Kempten (Allgäu) hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die „Solar-Offensive“ ist eine Informationskampagne mit Solarkataster, „Frau & PVau“ eine Infoveranstaltung zu Balkonkraftwerken; das Förderprojekt „CO2-Minderungsprogramm“ betrifft das Energiemanagement städtischer Liegenschaften. Das frühere Programm „Altbausanierung“ galt nur für Anträge bis 31.12.2022 und schloss Heizungen ausdrücklich aus. Die erfasste Fundstelle betrifft Kulturförderung. Stand 17.10.2026.",
+    "searches": [
+      "Seiten „Solar-Offensive“, „Frau & PVau – Balkonkraftwerke“ und „Förderprojekt CO2-Minderungsprogramm“ auf kempten.de am 17.10.2026 gelesen",
+      "Websuche 17.10.2026: „Kempten Allgäu Stadt Förderung Balkonkraftwerk Photovoltaik Speicher Zuschuss 2026“ — kein Stadtprogramm",
+      "Websuche 17.10.2026: „kempten.de Förderprogramm Altbausanierung“ — nur Merkblatt 2021/2022 (befristet bis 31.12.2022, Heizungssysteme nicht förderfähig)",
+      "Einzige erfasste Fundstelle (Kulturförderung – Förderprogramm) geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://kempten.de/solar-offensive-19486.html",
+        "finding": "„Die Solar-Offensive ist eine Kampagne der Stadt Kempten und des Landkreises Oberallgäu“ — Information und Solarkataster, kein Zuschuss (17.10.2026)."
+      },
+      {
+        "url": "https://www.eza-allgaeu.de/fileadmin/user_data/eza/Dokumente/Kommunen___Unternehmen/Foerderprogramm-Altbausanierung-KE/2021-04-26_Merkblatt_zum_Foerderprogramm_22042021.pdf",
+        "finding": "Merkblatt „Altbausanierung“ 2021/2022: „befristet und gilt für alle Anträge, die bis zum 31.12.2022“ eingehen; „Nicht förderfähig ist der Einbau von Heizungssystemen“."
+      },
+      {
+        "url": "https://kempten.de/forderprojekt-co2-minderungsprogramm-6871.html",
+        "finding": "„Optimierung des Betriebes von Liegenschaften mittels Energiemanagement“ — städtische Gebäude, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.kempten.de/forderprogramm-35834.html",
+        "finding": "Förderprogramm der Kulturförderung (Strukturförderung, Projekt-, Konzept-, Raum- und Themenförderung), kein Energiezuschuss (17.10.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kempten.de/forderprogramm-35834.html",
+        "disposition": "reviewed",
+        "reason": "Förderprogramm der Kulturförderung (Struktur-, Projekt-, Raumförderung), kein Energiezuschuss.",
+        "evidenceUrl": "https://www.kempten.de/forderprogramm-35834.html"
+      }
+    ]
+  },
+  {
+    "regionId": "09261000",
+    "name": "Landshut",
+    "checkedAt": "2026-10-17T08:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Landshut hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Seite „Angebote und Aktionen für Bürger“ des Klimaschutzmanagements nennt Energiespar-Flyer, das Leih-Lastenrad, Stadtradeln und Grünflächen-Patenschaften; die Seite zur Grundwasserwärmepumpe erklärt nur das wasserrechtliche Verfahren. Die erfasste Fundstelle ist die Übersicht des Sozialreferats. Stand 17.10.2026.",
+    "searches": [
+      "Seiten „Angebote und Aktionen für Bürger“, „Klimaschutz“, „Amt für Umwelt, Klima, Naturschutz“ und „Grundwasserwärmepumpe“ auf landshut.de am 17.10.2026 gelesen",
+      "Websuche 17.10.2026: „Landshut Stadt Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss 2026“ — kein Stadtprogramm",
+      "Websuche 17.10.2026: „landshut.de Förderprogramm Klimaschutz Bürger Zuschuss Solar Stadtrat“ — kein Treffer zu Landshut",
+      "Einzige erfasste Fundstelle (Referat 4 – Soziales) geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landshut.de/umwelt/klimaschutzmanagement/angebote-und-aktionen-fuer-buerger",
+        "finding": "„Die Stadt Landshut unterstützt dabei mit folgenden Angeboten:“ Energiespartipps, Lastenrad GABRIEL, Stadtradeln, KUNIbert — kein Zuschuss (17.10.2026)."
+      },
+      {
+        "url": "https://www.landshut.de/umwelt/wasser/grundwasserwaermepumpe",
+        "finding": "Wasserrechtliche Hinweise zu Grundwasserwärmepumpen, keine Förderung."
+      },
+      {
+        "url": "https://www.landshut.de/rathaus/referat-4-soziales",
+        "finding": "Übersicht des Referats Soziales; Energiebezug nur über den Navigationslink „Grundwasserwärmepumpe“ (17.10.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landshut.de/rathaus/referat-4-soziales",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite des Sozialreferats; einziger Bezug ist der Navigationslink zur Grundwasserwärmepumpe (nur Wasserrecht).",
+        "evidenceUrl": "https://www.landshut.de/rathaus/referat-4-soziales"
+      }
+    ]
+  },
+  {
+    "regionId": "09464000",
+    "name": "Hof",
+    "checkedAt": "2026-10-17T08:40:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Hof hat keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Klimaseiten nennen Klimaschutzmanagement, Solarpotenzialkataster, Beratungsimpulse zu Photovoltaik und Infoveranstaltungen „Haus und Hof“, aber keine Förderung. Die erfasste Fundstelle betrifft Taxi- und Mietwagenkonzessionen. Stand 17.10.2026.",
+    "searches": [
+      "Seiten „Klima“, „Klimaschutz“ und „Klimaschutz gestalten (Hof 2040)“ auf hof.de am 17.10.2026 gelesen",
+      "Websuche 17.10.2026: „Stadt Hof Saale Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss“ — kein Treffer zu Hof",
+      "Websuche 17.10.2026: „Stadt Hof Klimaschutz Förderprogramm Bürger Zuschuss Photovoltaik Speicher Stadtrat“ — kein Treffer zu Hof",
+      "Einzige erfasste Fundstelle (Personenbeförderung) geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hof.de/2040/klimaschutz-gestalten",
+        "finding": "Maßnahmen „Erstellung eines Solarpotenzialkatasters“, „Impulse und Beratung zum Ausbau von Photovoltaik“ — kein Zuschuss (17.10.2026)."
+      },
+      {
+        "url": "https://www.hof.de/bauen-wirtschaft/klima/klimaschutz",
+        "finding": "Klimaschutzmanagement und Solarpotenzialkataster, keine Förderung privater Anlagen."
+      },
+      {
+        "url": "https://www.hof.de/rathaus-service/buergerservice/fahrzeug-und-fuehrerschein/personenbefoerderung",
+        "finding": "Taxi- und Mietwagenkonzessionen, kein Energiezuschuss (17.10.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hof.de/rathaus-service/buergerservice/fahrzeug-und-fuehrerschein/personenbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Konzessionen für Taxi und Mietwagen, kein Energiezuschuss.",
+        "evidenceUrl": "https://www.hof.de/rathaus-service/buergerservice/fahrzeug-und-fuehrerschein/personenbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "07311000",
+    "name": "Frankenthal (Pfalz)",
+    "checkedAt": "2026-10-17T08:50:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Stadt Frankenthal fördert Balkonkraftwerke privater Haushalte mit 150 € je Haushalt aus Landesmitteln (KIPKI, 50.000 €); Anträge sind nach der Verlängerung vom 30.03.2026 bis 31.03.2027 oder bis zur Ausschöpfung möglich (im Katalog als frankenthal-balkon-pv, aktiv). Richtlinie und KIPKI-Übersicht nennen noch die alte Frist 31.03.2026. Eine städtische Förderung für Dach-PV, Speicher oder Wärmepumpen gibt es nicht. Stand 17.10.2026.",
+    "searches": [
+      "Seiten „Klima“, „KIPKI“ und „Balkon-PV-Anlagen“, Förderrichtlinie und Pressemitteilungen vom Mai 2025 und 30.03.2026 auf frankenthal.de am 17.10.2026 im Rohtext gelesen",
+      "Websuche 17.10.2026: „Frankenthal Pfalz Förderung Balkonkraftwerk KIPKI Zuschuss Stadt“ — Richtlinie im Ratsinformationssystem (Abruf dort mit Serverfehler 500)",
+      "Gegenprüfung durch drei unabhängige Prüfer (einer adversarial) am 17.10.2026: Verlängerung bis 31.03.2027 bestätigt, keine weitere Förderung für Dach-PV, Speicher oder Wärmepumpen gefunden",
+      "Einzige erfasste Fundstelle (Zuschüsse der Kinder- und Jugendbüros) geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.frankenthal.de/stadt-frankenthal/de/themen/umwelt-klima/klima/kipki/balkon-pv-anlagen/",
+        "finding": "„Förderanträge können bis zum 31. März 2027 oder bis zur Ausschöpfung der verfügbaren Mittel eingereicht werden.“ „Pro Haushalt kann ein einmaliger Zuschuss in Höhe von 150 Euro beantragt werden.“ (17.10.2026)"
+      },
+      {
+        "url": "https://www.frankenthal.de/stadt-frankenthal/de/neuigkeiten/umwelt-und-klimaschutz/2026/balkon-pv-anlagen-foerderung-verlaengert/",
+        "finding": "„Bislang wurden rund 18.000 Euro abgerufen, deshalb wird der Zeitraum um ein Jahr, bis 31. März 2027, verlängert.“"
+      },
+      {
+        "url": "https://www.frankenthal.de/kijub/de/kijub/zuschuesse",
+        "finding": "Zuschüsse nach §§ 74, 75 SGB VIII zur Förderung der freien Jugendhilfe, kein Energiezuschuss (17.10.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "frankenthal.de/kijub/de/kijub/zuschuesse",
+        "disposition": "reviewed",
+        "reason": "Zuschuss-Richtlinien der Jugendhilfe, kein Energiezuschuss.",
+        "evidenceUrl": "https://www.frankenthal.de/kijub/de/kijub/zuschuesse"
+      }
+    ]
   }
 ]
