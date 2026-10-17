@@ -11333,10 +11333,17 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Werne", level: "kommune", region: "Werne",
     bundesland: "Nordrhein-Westfalen", agsCode: "05978040",
     url: "https://www.werne.de/de/stadtentwicklung/klima-umwelt/klimaschutz/foerdermittel.php",
-    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // 17 Oct 2026: programme page "+++ Das Förderfenster ist geschlossen +++",
+    // application portal (werne.kommunalportal.nrw, service 46671) "Das
+    // Förderfenster ist geschlossen. Es können keine neuen Förderanträge mehr
+    // gestellt werden." The city's launch notice of 04.05.2026 says "Ist der
+    // Fördertopf ausgeschöpft, wird das Programm geschlossen." - so closed means
+    // exhausted. Guideline no. 12 keeps it valid until 31.12.2026 and allows a
+    // continuation; no reopening announced. Council 3/3: no new applications.
+    stand: "Oktober 2026", status: "ausgeschoepft", capped: true, verified: true,
     beginntIso: "2026-05-08", endetIso: "2026-12-31",
     eligibility: ["privat"],
-    coveredCosts: "Pauschale je Haushalt, unabhängig von der Modulzahl",
+    coveredCosts: "Pauschale je Haushalt, unabhängig von der Modulzahl (Fördertopf ausgeschöpft)",
     maxFoerderung: "100 € je Haushalt",
     rates: [
       { label: "Balkonkraftwerk", value: "100 € je Haushalt" },
@@ -11347,7 +11354,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Antrag muss vor dem Kauf gestellt werden — vor dem Bescheid gekaufte Geräte sind ausgeschlossen",
       "Nordausrichtung und verschattete Standorte werden nicht gefördert",
       "Zusammen mit anderen Fördermitteln höchstens 50 % der Gesamtkosten",
-      "Anträge nach dem 31. Dezember 2026 werden nicht mehr angenommen",
+      "Das Förderfenster ist geschlossen, der Fördertopf ausgeschöpft: Neue Anträge sind nicht mehr möglich; eine Wiedereröffnung hat die Stadt nicht angekündigt",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
