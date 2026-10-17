@@ -11118,37 +11118,34 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "waldalgesheim-balkon-pv", name: "Installation von Balkon-Photovoltaik-Anlagen",
     traeger: "Ortsgemeinde Waldalgesheim", level: "kommune", region: "Waldalgesheim",
     bundesland: "Rheinland-Pfalz", agsCode: "07339062",
-    // DIE BEIDEN BETRÄGE SIND AM 23.09.2026 AUFGEKLÄRT — der Abzug bleibt
-    // trotzdem bei 100 €, weil die Erhöhung über der Sprunggrenze des
-    // Wächter-Gates liegt (+100 %) und damit dem Betreiber gehört. Was die
-    // Prüfung ergeben hat (Council 2/2, einer adversarial):
-    //   · Ursprungsrichtlinie (Stand 09.09.2024, bis 14.06.2026 die einzige
-    //     verlinkte): "Pro Haushalt wird maximal eine Anlage mit 100€
-    //     gefördert. Der Förderzeitraum beginnt am 01.07.2024 und endet am
-    //     30.06.2026".
+    // 200 € SINCE 17.10.2026 (was 100 €). The council-adopted guideline is the
+    // binding rule, the page sentence is leftover text from 2024:
+    //   · Original guideline (Stand 09.09.2024): "Pro Haushalt wird maximal
+    //     eine Anlage mit 100€ gefördert … endet am 30.06.2026".
     //   · "FÖRDERRICHTLINIE 1. Änderung … Stand: 19.05.2026 -
-    //     Gemeinderatsbeschluss", seit dem 15.07.2026 als "aktualisierte
-    //     Version" die EINZIGE verlinkte: "Pro Haushalt wird maximal eine
-    //     Anlage mit 200 € gefördert … endet am 31.12.2026".
-    // DIE LAUFZEIT IST DER EIGENTLICHE BEFUND, nicht der Betrag: Ohne die
-    // Änderung wäre das Programm seit dem 30.06.2026 beendet. Unser `endetIso`
-    // (31.12.2026) stammt also bereits aus derselben Änderungsrichtlinie, deren
-    // Betrag wir nicht übernehmen — diese Unwucht ist bewusst und benannt, sie
-    // geht in die sichere Richtung (lieber zu wenig Geld als zu viel).
-    // NICHT BELEGT und deshalb nirgends behauptet: dass der Seitentext "einfach
-    // nicht nachgepflegt" sei. Die Seite wurde am 15.07.2026 neu veröffentlicht
-    // und im selben Zug mit den neuen Dateien bestückt — sie WURDE gepflegt und
-    // nennt trotzdem 100 €. Ebenso wenig belegt ist ein Inkrafttretens-Datum:
-    // Nr. 10 der Richtlinie knüpft es an die öffentliche Bekanntmachung, und
-    // eine solche ist auf der Website nicht auffindbar.
+    //     Gemeinderatsbeschluss", since 15.07.2026 the ONLY linked guideline
+    //     ("aktualisierte Version"): "Pro Haushalt wird maximal eine Anlage mit
+    //     200 € gefördert … endet am 31.12.2026".
+    //   · Page (modified 15.07.2026): "Der Zuschuss beträgt 100 €" — verbatim
+    //     the 2024 wording, with no end date.
+    // WHY 200 IS THE ONLY COHERENT VALUE: the programme runs today only if the
+    // amendment applies, and the amendment says 200 €. Without it the
+    // programme ended on 30.06.2026 and 100 € would be just as wrong. Our
+    // endetIso already rested on the amendment.
+    // Checks: Council 2/2 on 23.09.2026 (both documents read), adversarial
+    // re-check on 17.10.2026 against page, guideline and the current
+    // application form (form names no amount): verdict holds. Applied under
+    // the funding-amount exception to the jump limit (waechter-gate.md).
+    // OPEN, NOT CLAIMED: proof of the public announcement (Nr. 10 ties entry
+    // into force to it); none found on the website or in two web searches.
     url: "https://waldalgesheim.de/foerderung-balkonkraftwerke/",
-    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    stand: "Oktober 2026", status: "aktiv", capped: true, verified: true,
     beginntIso: "2024-07-01", endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Haushalt",
-    maxFoerderung: "100 € je Haushalt",
+    maxFoerderung: "200 € je Haushalt",
     rates: [
-      { label: "Balkonkraftwerk", value: "100 € pauschal je Haushalt" },
+      { label: "Balkonkraftwerk", value: "200 € pauschal je Haushalt" },
     ],
     conditions: [
       "Selbstnutzende Eigentümer und Mieter im Ortsgebiet; gewerblich genutzte Gebäude sind ausgeschlossen",
@@ -11157,11 +11154,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Antrag wird nach dem Kauf gestellt; eine Reservierung für noch nicht gekaufte Anlagen gibt es nicht",
       "Für die Anschaffung darf kein weiteres Förderprogramm in Anspruch genommen werden",
       "Fünf Jahre Haltedauer, Anmeldung beim Netzbetreiber und im Marktstammdatenregister",
-      "Die Ortsgemeinde nennt zwei verschiedene Beträge: 100 € im Seitentext, 200 € in der daneben verlinkten Richtlinie — wir rechnen den niedrigeren",
+      "Maßgeblich ist die geänderte Richtlinie vom Mai 2026 (200 €, Laufzeit bis Ende 2026); der Seitentext nennt noch den Betrag der Fassung von 2024 (100 €)",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
-    balkonPauschale: 100,
+    balkonPauschale: 200,
   },
 
   "bellheim-erneuerbare-energien": {
