@@ -12427,7 +12427,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
     balkonPauschale: 300, balkonNurMitSpeicher: true,
     application: {
-      checkedAt: "2026-10-17T14:50:00Z",
+      checkedAt: "2026-10-17T14:20:00Z",
       sources: [
         { url: "https://www.barleben.de/media/custom/2276_4165_1.PDF", title: "Gemeinde Barleben: Balkonkraftwerkfördersatzung", quote: "Die Höhe der Fördersumme beträgt für jede Anlage mit Speicher pauschal 300,00 €." },
         { url: "https://www.barleben.de/output/download.php?fid=2276.4168.1.PDF", title: "Gemeinde Barleben: Antrag auf Balkonkraftwerkförderung", quote: "Antrag auf Balkonkraftwerkförderung der Gemeinde Barleben" },
@@ -12440,7 +12440,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       documents: [
         { text: "Eigentumsnachweis (Grundbuch oder Kaufvertrag) bzw. bei Mietern Meldebescheinigung oder Mietvertrag, Rechnung mit Leistung und Modell, Foto der angebauten Anlage, Inbetriebnahmeprotokoll des Netzbetreibers oder Auszug aus dem Marktstammdatenregister; bei Miete die Erlaubnis des Eigentümers, bei Eigentümergemeinschaften deren Beschluss", evidenceUrls: ["https://www.barleben.de/media/custom/2276_4165_1.PDF"] },
       ],
-      portal: { url: "https://www.barleben.de/output/download.php?fid=2276.4168.1.PDF", label: "Antragsformular der Gemeinde Barleben (PDF)", evidenceUrls: ["https://www.barleben.de/"] },
+      portal: { url: "https://www.barleben.de/output/download.php?fid=2276.4168.1.PDF", label: "Antragsformular der Gemeinde Barleben (PDF)", evidenceUrls: ["https://www.barleben.de/output/download.php?fid=2276.4168.1.PDF"] },
     },
   },
 
