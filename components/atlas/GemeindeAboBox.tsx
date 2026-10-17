@@ -1,6 +1,7 @@
 "use client";
 
 import ActionButton from "../ActionButton";
+import LocationSearch, { type SearchLocation } from "../LocationSearch";
 import { useAboConfirmation } from "../../lib/use-abo-confirmation";
 import { useEffect, useRef, useState } from "react";
 import { v, space } from "../../lib/theme";
@@ -9,7 +10,7 @@ import InfoTooltip from "../InfoTooltip";
 import Modal, { ModalSticky } from "../Modal";
 import { IconGlocke } from "../Icons";
 import { ABO_BESTAETIGT_PARAM } from "../../lib/abo-bestaetigt";
-import { AKTUELLE_EINWILLIGUNG, FOERDER_ABO_EINWILLIGUNG } from "../../lib/abo-einwilligung";
+import { AKTUELLE_EINWILLIGUNG, FOERDER_ABO_EINWILLIGUNG, FOERDER_NEU_ABO_EINWILLIGUNG, type EinwilligungsFassung } from "../../lib/abo-einwilligung";
 import { ABO_TECHNIKEN, ABO_TECHNIK_LABEL, type AboTechnik } from "../../lib/abo-technik";
 import { HERKUNFT_PARAM, HERKUNFT_WERT } from "../../lib/brief-herkunft";
 
@@ -117,21 +118,68 @@ function ueberBrief(): boolean {
  */
 export const ABO_OEFFNEN = "abo:oeffnen";
 
+/** Municipality choice is independent of the current funding catalogue. */
+export function FundingMunicipalitySubscription() {
+  const [place, setPlace] = useState<SearchLocation | null>(null);
+  const [open, setOpen] = useState(false);
+  const confirmed = useAboConfirmation();
+  return (
+    <section aria-labelledby="bkw-abo-heading" style={{
+      background: v("--color-bg-raised"), border: `1px solid ${v("--color-border")}`,
+      borderRadius: v("--radius-md"), padding: space.lg, marginBottom: space.xl,
+    }}>
+      <h2 id="bkw-abo-heading" style={{ fontSize: v("--font-size-h3"), margin: `0 0 ${space.sm}px` }}>
+        Förderupdates für deine Gemeinde
+      </h2>
+      {confirmed && <p role="status">Dein Förder-Abo ist bestätigt. Du bekommst Bescheid, wenn wir etwas Neues zu deiner Auswahl erfassen.</p>}
+      <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, margin: `0 0 ${space.md}px` }}>
+        Wir schreiben dir, wenn wir ein Balkonkraftwerk-Programm für deinen Ort neu erfassen
+        oder Änderungen an der Förderung feststellen. Du kannst auch einen Ort wählen,
+        für den uns bisher kein Programm bekannt ist.
+      </p>
+      <LocationSearch appearance="default" municipalitiesOnly selected={place}
+        placeholder="Gemeinde oder PLZ suchen …"
+        onPick={setPlace} onClear={() => { setPlace(null); setOpen(false); }} />
+      <ActionButton variant="primary" disabled={!place} onClick={() => setOpen(true)}
+        style={{ marginTop: space.md, maxWidth: "100%", whiteSpace: "normal", textAlign: "center" }}>
+        <IconGlocke size={16} />{place ? `${place.name} abonnieren` : "Gemeinde wählen und abonnieren"}
+      </ActionButton>
+      <p style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-muted"), margin: `${space.sm}px 0 0` }}>
+        Kostenlos, mit Bestätigung per E-Mail und jederzeit abmeldbar. Gemeldet werden Änderungen
+        in unserem Katalog – eine vollständige Erfassung aller Förderungen können wir nicht zusagen.
+      </p>
+      {place && <GemeindeAboBox key={place.ags} name={place.name}
+        ags={`funding:region:${place.ags}`} quelle="foerderung" dialogOnly dialogOpen={open}
+        initialTechniken={["balkon"]} fundingConsent={FOERDER_NEU_ABO_EINWILLIGUNG}
+        onDialogClose={() => setOpen(false)} />}
+    </section>
+  );
+}
+
 export default function GemeindeAboBox({
   name,
   ags,
   quelle = "gemeinde",
   dialogOnly = false,
+  dialogOpen,
   onDialogClose,
+  initialTechniken = ABO_TECHNIKEN,
+  fundingConsent = FOERDER_ABO_EINWILLIGUNG,
 }: {
   name: string;
   ags: string;
   dialogOnly?: boolean;
+  dialogOpen?: boolean;
   onDialogClose?: () => void;
+  initialTechniken?: AboTechnik[];
+  fundingConsent?: EinwilligungsFassung;
   /** Auf welcher Seitengattung steht der Knopf. Steuert nur die Auswertung. */
   quelle?: "gemeinde" | "foerderung";
 }) {
-  const [offen, setOffen] = useState(dialogOnly);
+  const [offen, setOffen] = useState(dialogOpen ?? dialogOnly);
+  useEffect(() => {
+    if (dialogOpen !== undefined) setOffen(dialogOpen);
+  }, [dialogOpen]);
   const [email, setEmail] = useState("");
   const [falle, setFalle] = useState("");
   const [zustand, setZustand] = useState<Zustand>("bereit");
@@ -145,7 +193,7 @@ export default function GemeindeAboBox({
    * Das ist keine Vorauswahl im Sinne der Flow-Regel (die gilt Fragen mit einer
    * Antwort) — es ist der Ausgangszustand einer Ein/Aus-Angabe.
    */
-  const [gewaehlt, setGewaehlt] = useState<AboTechnik[]>([...ABO_TECHNIKEN]);
+  const [gewaehlt, setGewaehlt] = useState<AboTechnik[]>([...initialTechniken]);
   /**
    * Arbeitet die Person für die Verwaltung? NUR beim Bestands-Abo gefragt
    * (Betreiber, 31.08.2026) — spiegelbildlich zur Technik-Frage, die es nur
@@ -200,7 +248,7 @@ export default function GemeindeAboBox({
   }, []);
 
   const scoped = ags.startsWith("funding:");
-  const consent = scoped ? FOERDER_ABO_EINWILLIGUNG : AKTUELLE_EINWILLIGUNG;
+  const consent = scoped ? fundingConsent : AKTUELLE_EINWILLIGUNG;
   const texte = { ...TEXTE[quelle], intro: scoped ? consent.foerderung : TEXTE[quelle].intro };
   const sendet = zustand === "sendet";
   const fehler = typeof zustand === "object" ? zustand.fehler : null;
@@ -237,7 +285,7 @@ export default function GemeindeAboBox({
           ausVerwaltung: quelle === "gemeinde" ? ausVerwaltung : false,
           // Wozu genau eingewilligt wurde. Der Server prüft die Angabe gegen
           // das Archiv und übernimmt sie nicht ungeprüft.
-          einwilligung: scoped ? FOERDER_ABO_EINWILLIGUNG.version : AKTUELLE_EINWILLIGUNG.version,
+          einwilligung: consent.version,
         }),
       });
       if (!antwort.ok) {

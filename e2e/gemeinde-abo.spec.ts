@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { klickBisWirkung } from "./klick";
+import { ABO_BESTAETIGT_PARAM } from "../lib/abo-bestaetigt";
 
 // Das Abo auf der Gemeindeseite — geprüft dort, wo ein Nutzer es bedient.
 //
@@ -19,6 +20,74 @@ import { klickBisWirkung } from "./klick";
 // Förder-Stadtseiten; die Ortsseite des Atlas hat ein eigenes Fenster im
 // freigegebenen Design (e2e/gemeindeseite.spec.ts).
 const ORT = "/photovoltaik-foerderung/hessen/nidda";
+
+test("BKW-Abo: Gemeinde ohne PLZ bleibt wählbar, Landkreis verlangt Ortswahl", async ({ page }) => {
+  await page.route("**/api/abo/anmelden", route => route.abort());
+  await page.route("**/api/suche/standorte?**", route => route.fulfill({ json: { hits: [
+    { ags: "09679", name: "Würzburg", plz: "", kind: "Landkreis" },
+    { ags: "09679147", name: "Testort ohne PLZ", plz: "", kind: "Gemeinde" },
+    { ags: "071315001", name: "Testverband", plz: "", kind: "Verbandsgemeinde" },
+  ] } }));
+  await page.goto("/balkonkraftwerk/foerderung");
+  const section = page.getByRole("region", { name: "Förderupdates für deine Gemeinde" });
+  await section.getByRole("combobox").fill("Test");
+  await expect(section.getByRole("option", { name: /Testverband/ })).toHaveCount(0);
+  await section.getByRole("option", { name: "Würzburg Landkreis" }).click();
+  await expect(section).toContainText("Ort im Würzburg wählen");
+  await expect(section.getByRole("button", { name: "Gemeinde wählen und abonnieren" })).toBeDisabled();
+  await section.getByRole("combobox").fill("Test");
+  await section.getByRole("option", { name: "Testort ohne PLZ Gemeinde" }).click();
+  await klickBisWirkung(section.getByRole("button", { name: "Testort ohne PLZ abonnieren" }), page.getByRole("dialog"), "Ort ohne PLZ");
+  await expect(page.getByRole("dialog")).toContainText("Meldungen zu Testort ohne PLZ");
+});
+
+test("BKW-Abo: Bestätigungsrückkehr zeigt die Quittung", async ({ page }) => {
+  await page.goto(`/balkonkraftwerk/foerderung?${ABO_BESTAETIGT_PARAM}=1`);
+  await expect(page.getByRole("status")).toContainText("Dein Förder-Abo ist bestätigt");
+  await expect(page).toHaveURL(/\/balkonkraftwerk\/foerderung$/);
+});
+
+for (const width of [1280, 375, 320]) {
+  test(`BKW-Abo: Ort ohne Programm, Technik und Anmeldung bei ${width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 });
+    const errors: string[] = [];
+    page.on("pageerror", error => errors.push(error.message));
+    // Never let a browser test create a real subscription or send a mail.
+    let payload: Record<string, unknown> | undefined;
+    await page.route("**/api/abo/anmelden", async route => {
+      payload = route.request().postDataJSON();
+      await route.fulfill({ json: { ok: true } });
+    });
+    await page.goto("/balkonkraftwerk/foerderung");
+    const section = page.getByRole("region", { name: "Förderupdates für deine Gemeinde" });
+    await expect(section.getByRole("button", { name: "Gemeinde wählen und abonnieren" })).toBeDisabled();
+    // This real location lookup is independent of entries in the funding list.
+    await section.getByRole("combobox").fill("Buxtehude");
+    await section.getByRole("option", { name: /21614 Buxtehude/ }).click();
+    const dialog = page.getByRole("dialog");
+    await klickBisWirkung(section.getByRole("button", { name: "Buxtehude abonnieren" }), dialog, "BKW-Abo");
+    await expect(dialog.getByLabel("Balkonkraftwerk", { exact: true })).toBeChecked();
+    await expect(dialog.getByLabel("Solaranlage aufs Dach")).not.toBeChecked();
+    await expect(dialog.getByLabel("Wärmepumpe")).not.toBeChecked();
+    await expect(dialog).toContainText("neu erfasste Förderprogramme");
+    await expect(dialog.getByRole("link", { name: "Datenschutzerklärung" })).toHaveAttribute("href", "/datenschutz");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    const bounds = await dialog.boundingBox();
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width + 1);
+    await dialog.getByLabel("E-Mail-Adresse").fill("browser-test@example.invalid");
+    await dialog.getByRole("button", { name: "Abonnieren", exact: true }).click();
+    await expect(dialog).toContainText("Fast geschafft");
+    expect(payload).toMatchObject({ quelle: "foerderung", techniken: ["balkon"], einwilligung: "2026-10-17-foerderneu" });
+    expect(payload?.ags).toMatch(/^funding:region:\d{8}$/);
+    await dialog.getByRole("button", { name: "Schließen" }).click();
+    await expect(dialog).not.toBeVisible();
+    await section.getByRole("button", { name: "Standort löschen" }).click();
+    await expect(section.getByRole("button", { name: "Gemeinde wählen und abonnieren" })).toBeDisabled();
+    expect(errors).toEqual([]);
+    await section.screenshot({ path: testInfo.outputPath(`bkw-abo-${width}.png`) });
+  });
+}
 
 test.describe("Gemeinde-Abo", () => {
   test("der Knopf neben der Überschrift öffnet das Anmeldefenster", async ({ page }) => {

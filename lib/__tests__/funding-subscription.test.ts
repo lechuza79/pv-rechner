@@ -30,4 +30,5 @@ it("rejects unknown programmes and funding scopes on the general subscription pa
 
 it("returns a municipal funding subscription to its own funding page", async () => {
   expect(await aboRegionPath("funding:region:08221")).toBe("/photovoltaik-foerderung/baden-wuerttemberg/heidelberg");
+  expect(await aboRegionPath("funding:region:08221", ["balkon"])).toBe("/balkonkraftwerk/foerderung");
 });

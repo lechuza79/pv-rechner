@@ -157,6 +157,8 @@ export type MeldungsArt =
   | "bestand";
 
 export type Meldung = {
+  /** Original programme page for funding notifications. */
+  quelleUrl?: string;
   /** Stabiler Schlüssel. Die Abo-Mail merkt sich daran, was sie schon sandte. */
   schluessel: string;
   art: MeldungsArt;

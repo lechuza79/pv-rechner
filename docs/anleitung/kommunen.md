@@ -89,6 +89,38 @@ Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, 
 
 ## Gemeinde-Abo: „Bescheid bekommen, wenn sich hier etwas tut"
 
+### Einstieg auf der BKW-Förderübersicht (17.10.2026)
+
+`FundingMunicipalitySubscription` in `components/atlas/GemeindeAboBox.tsx` steht
+vor der Programmliste auf `/balkonkraftwerk/foerderung`. Es verwendet
+`LocationSearch` (Ortsregister, unabhängig vom Förderkatalog) und denselben
+Anmeldedialog mit ausschließlich `balkon` als Vorauswahl. Gemeinden ohne
+Programm oder ohne eigene PLZ bleiben wählbar; Landkreise führen zur Ortswahl.
+Bestätigung, Nachweis, Einstellungen und Abmeldung bleiben im bestehenden Abo.
+Der neue Einwilligungstext ist separat archiviert; frühere Fassungen bleiben erhalten.
+
+**Förder-Abos mit explizitem Umfang** (`funding:region:…` / `funding:program:…`)
+werden im bestehenden `aboLauf` vor dem Atlas-Datenpfad behandelt. Sie brauchen
+keinen Anlagenbestand. `lib/funding-abo-meldungen.ts` erzeugt Meldungen aus
+Aufnahmen und inhaltlichen Änderungen des Förderverlaufs. Eine Aufnahme heißt
+„neu im Förderkatalog“, niemals „neu gestartet“. Regionale Programme gelten über
+die bestehende Gebietszuordnung, Bundesprogramme für jeden Ort; Technik und
+Zeitpunkt werden danach je Abonnent gefiltert. Interne Rechenwerte, unveränderte,
+ungültige und zukünftige Einträge lösen keine Nachricht aus. Bestands-Abos behalten
+ihre bisherige Freigabeliste; neue Fördermeldungen gehen nicht an diese Empfänger.
+
+Die Zusage bezieht sich auf **erfasste Programme und aufgezeichnete Änderungen**,
+nicht auf eine vollständige Marktbeobachtung. Bei Programmen mit mehreren Techniken
+weist die Mail darauf hin, dass der Verlauf die Änderung nicht immer einer Technik
+zuordnen kann. Fördermails verlinken die Original-Programmseite und nennen den
+Förderkatalog als Grundlage statt des Anlagenregisters. Ein reines Balkon-Abo führt
+nach der Bestätigung und aus der Meldung zurück zur BKW-Förderübersicht.
+
+Prüfungen: `lib/__tests__/funding-abo-meldungen.test.ts`,
+`lib/__tests__/funding-abo-lauf.test.ts` und die BKW-Fälle in
+`e2e/gemeinde-abo.spec.ts`. Browser-Anmeldungen werden abgefangen; Versand und
+Schreibzugriffe im Ablauf-Test sind ersetzt. Keine echten Testabos erforderlich.
+
 Auf jeder Gemeindeseite im Solar-Atlas UND auf jeder Förder-Stadtseite steht rechts neben
 der Überschrift ein Knopf „<Ort> abonnieren", daneben in derselben Zeile der Erklärtext;
 das Formular liegt im Fenster dahinter (`components/atlas/GemeindeAboBox.tsx`). Wer sich

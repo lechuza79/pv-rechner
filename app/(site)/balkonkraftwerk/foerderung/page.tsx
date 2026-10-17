@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import RelatedLinks from "../../../../components/RelatedLinks";
+import { FundingMunicipalitySubscription } from "../../../../components/atlas/GemeindeAboBox";
 import { FundingStatusBadge, FUNDING_STATUS_NOTE } from "../../../../components/FundingProgramParts";
 import { IconArrowRight, IconExternal } from "../../../../components/Icons";
 import { getFundingPrograms } from "../../../../lib/funding-data";
@@ -205,6 +206,8 @@ export default async function BalkonFoerderungPage() {
           Förderung", sondern zuerst: uns ist keine bekannt. Verbindlich ist immer die Auskunft des
           Trägers.
         </div>
+
+        <FundingMunicipalitySubscription />
 
         {laender.map(([land, liste]) => {
           const offen = liste.filter((p) => fundingZaehlt(p)).length;
