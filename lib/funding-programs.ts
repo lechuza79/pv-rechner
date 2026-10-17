@@ -12715,7 +12715,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
     application: {
-      checkedAt: "2026-10-17T23:00:00Z",
+      checkedAt: "2026-10-17T22:20:00Z",
       sources: [
         { url: "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Forderrichtlinien_Photovoltaik_an_Wohngebauden-1708497980.pdf", title: "Gemeinde Muggensturm: Förderrichtlinien Photovoltaik an Wohngebäuden", quote: "Anträge müssen vor Durchführung einer Maßnahme gestellt werden." },
         { url: "https://www.muggensturm.de/fileadmin/Dateien/Cross7/Startseite/Leben_%26_Wohnen/Klimaschutz/Forderprogramm_%22Photovoltaik%22/Antrag_auf_Forderung_-_Forderprogramm_Photovoltaik_an_Wohngebauen.pdf", title: "Gemeinde Muggensturm: Antrag auf Förderung", quote: "einzureichen VOR Beauftragung der Maßnahmen" },
