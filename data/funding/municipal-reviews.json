@@ -104073,7 +104073,7 @@
     "outcome": "programme-geprueft",
     "conclusion": "Karlshuld fördert Balkonkraftwerke mit 100 € (ab 600 W) bzw. 50 € (darunter), Antrag vor dem Kauf, jährlich 5.000 € Budget; das entspricht dem Katalogeintrag karlshuld-balkonkraftwerke (aktiv). Die Förderübersicht der Gemeinde nennt keine weitere Förderung für Dach-PV, Speicher oder Wärmepumpen; das Straßenbeleuchtungsprojekt betrifft die Gemeinde selbst.",
     "searches": [
-      "18.10.2026: alle 11 erfassten Fundstellen der Gemeinde (4 Dokumente, übrige mit Anzeige-/Suchparametern) im Original gelesen bzw. zugeordnet",
+      "18.10.2026: alle 11 erfassten (12 Einträge) Fundstellen der Gemeinde (4 Dokumente, übrige mit Anzeige-/Suchparametern) im Original gelesen bzw. zugeordnet",
       "18.10.2026: Förderübersicht karlshuld.de/foerderungen auf weitere Programme durchgesehen"
     ],
     "evidence": [
@@ -104160,6 +104160,12 @@
         "disposition": "replaced",
         "reason": "Dieselbe Förderübersicht mit Anzeigeparameter; durch die am 18.10.2026 gelesene Übersicht erledigt.",
         "evidenceUrl": "https://www.karlshuld.de/foerderungen"
+      },
+      {
+        "url": "karlshuld.de/foerderantrag-balkonkraftwerk?suche=",
+        "disposition": "replaced",
+        "reason": "Dasselbe Antragsformular mit Suchparameter; durch das am 18.10.2026 gelesene Formular erledigt.",
+        "evidenceUrl": "https://www.karlshuld.de/foerderantrag-balkonkraftwerk"
       }
     ]
   },
