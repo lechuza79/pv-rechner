@@ -16916,7 +16916,7 @@
   {
     "regionId": "07132006",
     "name": "Betzdorf",
-    "checkedAt": "2026-10-17T12:40:00Z",
+    "checkedAt": "2026-10-17T12:20:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -19998,7 +19998,7 @@
   {
     "regionId": "07132063",
     "name": "Kirchen (Sieg)",
-    "checkedAt": "2026-10-17T12:40:00Z",
+    "checkedAt": "2026-10-17T12:20:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -20457,7 +20457,7 @@
   {
     "regionId": "07132072",
     "name": "Mudersbach",
-    "checkedAt": "2026-10-17T12:40:00Z",
+    "checkedAt": "2026-10-17T12:20:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -102543,7 +102543,7 @@
   {
     "regionId": "12054000",
     "name": "Potsdam",
-    "checkedAt": "2026-10-17T12:40:00Z",
+    "checkedAt": "2026-10-17T12:20:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -102634,13 +102634,19 @@
         "disposition": "reviewed",
         "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
         "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
+      },
+      {
+        "url": "potsdam.de/system/files/document/260511%20Antrag%20auf%20Zuschuss%20nach%20PKSchuFRLn%C3%84.pdf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zur Klimaschutzförderrichtlinie; Programm im Katalog (potsdam-klimaschutz, pausiert).",
+        "evidenceUrl": "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam"
       }
     ]
   },
   {
     "regionId": "09186143",
     "name": "Pfaffenhofen a.d.Ilm",
-    "checkedAt": "2026-10-17T12:40:00Z",
+    "checkedAt": "2026-10-17T12:20:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -102731,13 +102737,25 @@
         "disposition": "reviewed",
         "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
         "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/artikel/balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "17.10.2026 gelesen: Balkonförderung 2023, „wird nicht weiter fortgeführt“ (im Katalog als beendet).",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
+      },
+      {
+        "url": "pfaffenhofen.de/dokumente/4147/balkonkraftwerk_flyer_ONLINE.pdf",
+        "disposition": "reviewed",
+        "reason": "Flyer zur beendeten Balkonförderung 2023 (früher fachlich geprüft).",
+        "evidenceUrl": "https://pfaffenhofen.de/artikel/balkonkraftwerke/"
       }
     ]
   },
   {
     "regionId": "09772147",
     "name": "Gersthofen",
-    "checkedAt": "2026-10-17T12:40:00Z",
+    "checkedAt": "2026-10-17T12:20:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -102834,13 +102852,19 @@
         "disposition": "reviewed",
         "reason": "17.10.2026 im Original gelesen; Einordnung im Fazit, Beleg an der Hauptfundstelle.",
         "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
+      },
+      {
+        "url": "gersthofen.de/neuigkeiten/heizungsmodernisierung-neue-regeln-zur-foerderung",
+        "disposition": "reviewed",
+        "reason": "Meldung zur Bundesförderung für Heizungsmodernisierung, kein städtischer Zuschuss (früher fachlich geprüft, 17.10.2026 erneut geöffnet).",
+        "evidenceUrl": "https://gersthofen.de/stadt/klimaschutz-und-nachhaltigkeit/energie/solaraktion/"
       }
     ]
   },
   {
     "regionId": "08116076",
     "name": "Aichwald",
-    "checkedAt": "2026-10-17T12:40:00Z",
+    "checkedAt": "2026-10-17T12:20:00Z",
     "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
